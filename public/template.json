@@ -1,0 +1,140 @@
+{
+  "id": "starter-template",
+  "version": "1.0",
+  "title": "Curriculum Vitae",
+  "defaultLanguage": "en",
+  "currentLanguage": "en",
+  "availableLanguages": [
+    { "code": "en", "label": "English" },
+    { "code": "pt", "label": "Português" }
+  ],
+  "template": "lateralis",
+  "theme": {
+    "primaryColor": "#004f90",
+    "secondaryColor": "#337777",
+    "fontFamily": "inter",
+    "fontSize": "normal"
+  },
+  "personalInfo": {
+    "fullName": "First Last",
+    "headline": {
+      "en": "Professional Title | Specialization & Focus Area",
+      "pt": "Título Profissional | Especialização e Área de Foco"
+    },
+    "email": "your.email@example.com",
+    "phone": "(+123) 456 789 000",
+    "location": {
+      "en": "City, Country",
+      "pt": "Cidade, País"
+    },
+    "website": "https://example.com",
+    "photoUrl": "",
+    "photoShape": "circle",
+    "showPhoto": false,
+    "links": [
+      {
+        "id": "link-1",
+        "platform": "linkedin",
+        "label": { "en": "linkedin.com/in/username", "pt": "linkedin.com/in/username" },
+        "url": "https://linkedin.com/in/example"
+      },
+      {
+        "id": "link-2",
+        "platform": "github",
+        "label": { "en": "github.com/username", "pt": "github.com/username" },
+        "url": "https://github.com/example"
+      }
+    ],
+    "summary": {
+      "en": "Concise summary outlining your core strengths, professional trajectory, key achievements, and current objectives.",
+      "pt": "Resumo conciso detalhando os seus pontos fortes, trajetória profissional, conquistas e objetivos principais."
+    }
+  },
+  "sections": [
+    {
+      "id": "sec-exp",
+      "type": "experience",
+      "title": { "en": "Work Experience", "pt": "Experiência Profissional" },
+      "visible": true,
+      "order": 1,
+      "items": [
+        {
+          "id": "exp-1",
+          "role": { "en": "Senior Role Title", "pt": "Título da Função Sénior" },
+          "company": "Organization / Company Name",
+          "location": { "en": "City, Country", "pt": "Cidade, País" },
+          "startDate": "2022-01",
+          "endDate": "",
+          "isCurrent": true,
+          "url": "https://example.com",
+          "visible": true,
+          "highlights": {
+            "en": [
+              "Led high-impact project delivering measurable 30% performance improvements.",
+              "Collaborated with multidisciplinary teams across engineering, product, and design."
+            ],
+            "pt": [
+              "Liderou projeto de alto impacto entregando 30% de melhoria de performance mensurável.",
+              "Colaborou com equipas multidisciplinares de engenharia, produto e design."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sec-edu",
+      "type": "education",
+      "title": { "en": "Education & Qualifications", "pt": "Habilitações e Formação" },
+      "visible": true,
+      "order": 2,
+      "items": [
+        {
+          "id": "edu-1",
+          "degree": { "en": "Degree or Qualification Title", "pt": "Título da Licenciatura / Mestrado" },
+          "institution": "University or Academic Institution",
+          "location": { "en": "City, Country", "pt": "Cidade, País" },
+          "startDate": "2018",
+          "endDate": "2022",
+          "isCurrent": false,
+          "qeq": "EQF Level: 6",
+          "details": {
+            "en": "Focus on core subject areas, relevant coursework, and honors.",
+            "pt": "Especialização em áreas nucleares, módulos relevantes e distinções."
+          },
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "sec-skills",
+      "type": "skills",
+      "title": { "en": "Skills", "pt": "Competências" },
+      "visible": true,
+      "order": 3,
+      "categories": [
+        {
+          "id": "cat-1",
+          "name": { "en": "Core Competencies", "pt": "Competências Principais" },
+          "skills": ["Skill 1", "Skill 2", "Skill 3", "Skill 4"],
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "sec-lang",
+      "type": "languages",
+      "title": { "en": "Languages", "pt": "Competências Linguísticas" },
+      "visible": true,
+      "order": 4,
+      "items": [
+        {
+          "id": "lang-1",
+          "name": { "en": "English", "pt": "Inglês" },
+          "level": { "en": "Native / Fluent", "pt": "Fluente" },
+          "cefr": "C2",
+          "visible": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+%-------------------------------------------------------------------
+% CURRICULA - Standard Curriculum Vitae Template
+% Compatible with standard TeX engines (Overleaf, TeXLive, MikTeX)
+%-------------------------------------------------------------------
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+% Color Definitions
+\definecolor{primaryColor}{HTML}{004F90}
+\definecolor{darkgray}{HTML}{333333}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primaryColor,
+    urlcolor=primaryColor
+}
+
+% Section formatting
+\titleformat{\section}
+  {\color{primaryColor}\normalfont\large\bfseries\uppercase}
+  {}{0em}{}[\color{primaryColor}\titlerule]
+\titlespacing*{\section}{0pt}{10pt}{6pt}
+
+\pagestyle{empty}
+
+\begin{document}
+
+%-------------------------------------------------------------------
+% HEADER / CONTACT INFO
+%-------------------------------------------------------------------
+\begin{center}
+    {\color{primaryColor}\Huge\bfseries First Last}\\
+    \vspace{2pt}
+    {\color{darkgray}\normalsize\bfseries Professional Title | Specialization \& Focus}\\
+    \vspace{4pt}
+    {\small
+    \href{mailto:your.email@example.com}{your.email@example.com} $\cdot$ \href{tel:+1234567890}{(+123) 456 789 000} $\cdot$ City, Country $\cdot$ \href{https://example.com}{example.com} $\cdot$ \href{https://linkedin.com/in/username}{linkedin.com/in/username}
+    }
+\end{center}
+\vspace{-6pt}
+
+%-------------------------------------------------------------------
+% PROFILE SUMMARY
+%-------------------------------------------------------------------
+\section{Profile Summary}
+Concise summary outlining your core strengths, professional trajectory, key achievements, and current objectives.
+
+%-------------------------------------------------------------------
+% WORK EXPERIENCE
+%-------------------------------------------------------------------
+\section{Work Experience}
+\textbf{Senior Role Title} \hfill {\small 2022-01 -- Present}\\
+{\textit{Organization / Company Name, City, Country}}
+\begin{itemize}[leftmargin=1.5em, itemsep=1pt, topsep=2pt]
+  \item Led high-impact project delivering measurable 30\% performance improvements.
+  \item Collaborated with multidisciplinary teams across engineering, product, and design.
+\end{itemize}
+\vspace{4pt}
+
+%-------------------------------------------------------------------
+% EDUCATION
+%-------------------------------------------------------------------
+\section{Education \& Qualifications}
+\textbf{Degree or Qualification Title} \hfill {\small 2018 -- 2022}\\
+{\textit{University or Academic Institution, City, Country}}\\
+\vspace{3pt}
+
+%-------------------------------------------------------------------
+% SKILLS
+%-------------------------------------------------------------------
+\section{Skills}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=2pt]
+  \item \textbf{Core Competencies:} Skill 1, Skill 2, Skill 3, Skill 4
+\end{itemize}
+
+%-------------------------------------------------------------------
+% LANGUAGES
+%-------------------------------------------------------------------
+\section{Languages}
+\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=2pt]
+  \item \textbf{English:} Fluent (C2)
+\end{itemize}
+
+\end{document}
