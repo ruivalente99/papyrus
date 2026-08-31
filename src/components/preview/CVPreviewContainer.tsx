@@ -81,16 +81,16 @@ export function CVPreviewContainer({
   };
 
   return (
-    <div className="flex flex-col h-full bg-stone-200/60 dark:bg-stone-950 text-stone-800 dark:text-stone-200 transition-colors">
-      {/* Top Controls Toolbar */}
-      <div className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 px-4 py-2 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs transition-colors">
+    <div className="flex flex-col h-full bg-stone-200/50 dark:bg-stone-950 text-stone-800 dark:text-stone-200 transition-colors">
+      {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
+      <div className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs transition-colors">
         {/* Template, Density & Color Selector */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Template Selector */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-lg p-0.5 border border-stone-200 dark:border-stone-700">
+          {/* Template Selector (Pill Segmented) */}
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs">
             <button
               onClick={() => onSetTemplate("lateralis")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                 cv.template === "lateralis" || cv.template === "canva"
                   ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
@@ -100,7 +100,7 @@ export function CVPreviewContainer({
             </button>
             <button
               onClick={() => onSetTemplate("classic")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                 cv.template === "classic" || cv.template === "latex"
                   ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
@@ -110,7 +110,7 @@ export function CVPreviewContainer({
             </button>
             <button
               onClick={() => onSetTemplate("matrix")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                 cv.template === "matrix" || cv.template === "europass"
                   ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
@@ -120,14 +120,14 @@ export function CVPreviewContainer({
             </button>
           </div>
 
-          {/* Density Selector */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-lg p-0.5 border border-stone-200 dark:border-stone-700">
+          {/* Density Selector (Pill Segmented) */}
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs">
             <button
               onClick={() => onUpdateTheme({ fontSize: "compact" })}
               title="Compact spacing"
-              className={`px-2 py-0.5 text-[11px] font-medium rounded transition-all ${
+              className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                 cv.theme.fontSize === "compact"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-2xs"
+                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
               }`}
             >
@@ -136,9 +136,9 @@ export function CVPreviewContainer({
             <button
               onClick={() => onUpdateTheme({ fontSize: "normal" })}
               title="Balanced spacing"
-              className={`px-2 py-0.5 text-[11px] font-medium rounded transition-all ${
+              className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                 cv.theme.fontSize === "normal" || !cv.theme.fontSize
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-2xs"
+                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
               }`}
             >
@@ -147,9 +147,9 @@ export function CVPreviewContainer({
             <button
               onClick={() => onUpdateTheme({ fontSize: "spacious" })}
               title="Spacious breathing room"
-              className={`px-2 py-0.5 text-[11px] font-medium rounded transition-all ${
+              className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                 cv.theme.fontSize === "spacious"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-2xs"
+                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
               }`}
             >
@@ -158,16 +158,16 @@ export function CVPreviewContainer({
           </div>
 
           {/* Accent Color Circles */}
-          <div className="flex items-center gap-1.5 pl-1.5 border-l border-stone-200 dark:border-stone-700">
+          <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-stone-700">
             {ACCENT_COLORS.map((c) => (
               <button
                 key={c.hex}
                 onClick={() => onUpdateTheme({ primaryColor: c.hex })}
                 title={c.name}
-                className={`w-4 h-4 rounded-full transition-transform ${
+                className={`w-4.5 h-4.5 rounded-full transition-transform ${
                   cv.theme.primaryColor === c.hex
-                    ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900"
-                    : "hover:scale-110"
+                    ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
+                    : "hover:scale-110 opacity-85 hover:opacity-100"
                 }`}
                 style={{ backgroundColor: c.hex }}
               />
@@ -178,12 +178,12 @@ export function CVPreviewContainer({
         {/* Zoom & Export Actions */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Page count pill */}
-          <span className="text-[11px] font-semibold bg-stone-200/80 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2 py-0.5 rounded-md font-mono border border-stone-300 dark:border-stone-700">
+          <span className="text-[11px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-3 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs">
             {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
           </span>
 
-          {/* Zoom controls */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-lg p-0.5 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300">
+          {/* Zoom controls (Pill Shell) */}
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs">
             <button
               onClick={() => setZoom((z) => Math.max(0.4, z - 0.1))}
               title={tUI("zoomOut", lang)}
@@ -191,7 +191,7 @@ export function CVPreviewContainer({
             >
               <ZoomOut size={13} />
             </button>
-            <span className="text-[11px] font-mono px-1.5 min-w-[36px] text-center">
+            <span className="text-[11px] font-mono px-1.5 min-w-[36px] text-center font-bold">
               {Math.round(zoom * 100)}%
             </span>
             <button
@@ -210,11 +210,11 @@ export function CVPreviewContainer({
             </button>
           </div>
 
-          {/* Action Export Buttons */}
+          {/* Action Export Buttons (Charm Pills) */}
           <button
             onClick={printCV}
             title="Native Print / PDF"
-            className="flex items-center gap-1 text-xs font-semibold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Printer size={13} />
             <span className="hidden sm:inline">{tUI("printBtn", lang)}</span>
@@ -223,7 +223,7 @@ export function CVPreviewContainer({
           <button
             onClick={handleDownloadPdf}
             disabled={isExporting !== null}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-amber-700 hover:bg-amber-800 text-white px-3 py-1.5 rounded-lg shadow-xs transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-4 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50"
           >
             {isExporting === "pdf" ? (
               <Loader2 size={13} className="animate-spin" />
@@ -236,7 +236,7 @@ export function CVPreviewContainer({
           <button
             onClick={handleDownloadPng}
             disabled={isExporting !== null}
-            className="flex items-center gap-1 text-xs font-medium bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 text-xs font-semibold bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs disabled:opacity-50"
           >
             <ImageIcon size={13} />
             <span className="hidden sm:inline">{tUI("pngBtn", lang)}</span>
@@ -244,8 +244,8 @@ export function CVPreviewContainer({
         </div>
       </div>
 
-      {/* Page Canvas Viewport */}
-      <div className="flex-1 overflow-auto p-4 sm:p-8 flex justify-center items-start">
+      {/* Page Canvas Viewport with Dynamic Warm Backdrop */}
+      <div className="flex-1 overflow-auto p-4 sm:p-8 flex justify-center items-start charm-bg-dynamic">
         <div
           style={{
             transform: `scale(${zoom})`,
@@ -262,7 +262,7 @@ export function CVPreviewContainer({
               className="absolute left-0 right-0 border-b-2 border-dashed border-amber-600 pointer-events-none flex items-center justify-end px-3"
               style={{ top: `${A4_H_PX}px` }}
             >
-              <span className="bg-amber-700 text-white text-[10px] font-bold px-2 py-0.5 rounded -translate-y-1/2 shadow-xs">
+              <span className="bg-amber-700 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full -translate-y-1/2 shadow-xs">
                 {tUI("pageLimitGuide", lang)}
               </span>
             </div>

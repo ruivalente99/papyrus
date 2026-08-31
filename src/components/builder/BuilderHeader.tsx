@@ -7,6 +7,7 @@ import { LinterBadge } from "./linter/LinterBadge";
 import { LinterModal } from "./linter/LinterModal";
 import { LatexModal } from "./latex/LatexModal";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
+import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { PRESET_SEEDS } from "@/data/seeds";
 import { tUI } from "@/lib/i18n";
 import {
@@ -64,35 +65,15 @@ export function BuilderHeader({
   };
 
   return (
-    <header className="border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-30 shadow-2xs transition-colors">
+    <header className="border-b border-stone-200/80 dark:border-stone-800/80 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-30 shadow-2xs transition-colors">
       {/* Brand: Nano Banana Icon Button */}
       <div className="flex items-center">
         <button
           onClick={onOpenSetup}
           title="PAPYRUS — Setup & Overview"
-          className="p-1.5 rounded-xl bg-stone-900 dark:bg-stone-800 border border-stone-700/60 dark:border-stone-750 hover:border-amber-500/80 hover:bg-stone-850 dark:hover:bg-stone-750 shadow-xs transition-all flex items-center justify-center group"
+          className="group cursor-pointer focus:outline-hidden"
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 32 32"
-            className="transition-transform group-hover:scale-105"
-          >
-            <path
-              d="M7 16c1.5 5 6.5 8 12 8 4.5 0 7-2.5 7-4.5s-2.5-3.5-6-3.5c-5 0-9.5-3-11-7-1-3-.5-6 0-7 1.2 0 2.2 1.8 2.8 3.5.6 1.8 1.8 3.5 4.2 4.5"
-              fill="none"
-              stroke="#f59e0b"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M8 5c-.6 1.2-1.2 2.5-1.2 3.8"
-              stroke="#d97706"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          </svg>
+          <NanoBananaLogo size="md" glow />
         </button>
       </div>
 
@@ -116,14 +97,14 @@ export function BuilderHeader({
         />
       </div>
 
-      {/* Actions: New/Setup, Presets, TeX & JSON */}
+      {/* Actions: New/Setup, Presets, TeX & JSON with Charm Pill Geometry */}
       <div className="flex items-center gap-2 flex-wrap">
         {/* New / Setup screen button */}
         {onOpenSetup && (
           <button
             onClick={onOpenSetup}
             title={tUI("newDoc", activeLang)}
-            className="flex items-center gap-1 text-xs font-semibold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Plus size={13} className="text-amber-700 dark:text-amber-400" />
             <span>{tUI("newDoc", activeLang)}</span>
@@ -134,7 +115,7 @@ export function BuilderHeader({
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Layers size={13} />
             <span>{tUI("templates", activeLang)}</span>
@@ -142,8 +123,8 @@ export function BuilderHeader({
           </button>
 
           {showPresets && (
-            <div className="absolute right-0 mt-1 w-68 bg-white dark:bg-stone-900 rounded-xl shadow-xl border border-stone-200 dark:border-stone-800 p-2 z-50 animate-in fade-in duration-100">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400 px-2 py-1">
+            <div className="absolute right-0 mt-1.5 w-68 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-2 z-50 animate-in fade-in duration-100">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400 px-2 py-1 font-mono">
                 {activeLang === "pt" ? "Carregar Modelo de Exemplo" : "Load Preset Template"}
               </p>
               {PRESET_SEEDS.map((p) => (
@@ -153,9 +134,9 @@ export function BuilderHeader({
                     onLoadPreset(p.id);
                     setShowPresets(false);
                   }}
-                  className="w-full text-left p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs space-y-0.5"
+                  className="w-full text-left p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs space-y-0.5"
                 >
-                  <p className="font-semibold text-stone-800 dark:text-stone-200">{p.name}</p>
+                  <p className="font-bold text-stone-800 dark:text-stone-200">{p.name}</p>
                   <p className="text-[10.5px] text-stone-500 line-clamp-1">
                     {p.description}
                   </p>
@@ -169,7 +150,7 @@ export function BuilderHeader({
         <button
           onClick={() => setShowLatexModal(true)}
           title="Export TeX (.tex) or import from TeX"
-          className="flex items-center gap-1.5 text-xs font-semibold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-50/90 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800 px-3 py-1.5 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-50/90 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800 px-3.5 py-1.5 rounded-full transition-all shadow-2xs"
         >
           <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
           <span>{tUI("texManagement", activeLang)}</span>
@@ -179,7 +160,7 @@ export function BuilderHeader({
         <button
           onClick={() => fileInputRef.current?.click()}
           title={tUI("importAction", activeLang)}
-          className="flex items-center gap-1 text-xs font-medium text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 px-2.5 py-1.5 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-full transition-all shadow-2xs"
         >
           <FileUp size={13} />
           <span className="hidden sm:inline">{tUI("importAction", activeLang)}</span>
@@ -196,7 +177,7 @@ export function BuilderHeader({
         <button
           onClick={onExportJson}
           title={tUI("jsonBackup", activeLang)}
-          className="flex items-center gap-1 text-xs font-medium text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 px-2.5 py-1.5 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-full transition-all shadow-2xs"
         >
           <FileDown size={13} />
           <span className="hidden sm:inline">{tUI("jsonBackup", activeLang)}</span>

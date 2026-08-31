@@ -6,6 +6,7 @@ import { PRESET_SEEDS, emptySeed } from "@/data/seeds";
 import { importFromLatex } from "@/lib/latexEngine";
 import { tUI } from "@/lib/i18n";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
+import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import {
   Upload,
   FileCode,
@@ -17,6 +18,7 @@ import {
   AlertCircle,
   Code2,
   Layers,
+  ArrowRight,
 } from "lucide-react";
 
 interface Props {
@@ -172,44 +174,42 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-amber-700 selection:text-white transition-colors duration-200">
-      {/* Top Header */}
-      <header className="border-b border-stone-200 dark:border-stone-800 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+    <div className="min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-amber-700 selection:text-white transition-colors duration-300">
+      {/* Top Header - Charm Nav Style */}
+      <header className="border-b border-stone-200/80 dark:border-stone-800/80 bg-white/75 dark:bg-stone-900/75 backdrop-blur-md px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-700 text-white flex items-center justify-center font-black text-base shadow-lg shadow-amber-900/30">
-            P
-          </div>
+          <NanoBananaLogo size="md" glow />
           <div>
-            <h1 className="text-base font-extrabold tracking-widest text-stone-900 dark:text-stone-100 font-mono">
+            <h1 className="text-sm font-extrabold tracking-wider text-stone-900 dark:text-stone-100 font-mono">
               PAPYRUS
             </h1>
-            <p className="text-[10px] tracking-wider text-amber-700 dark:text-amber-500 font-mono">
-              ARCHITECTURA VITAE
+            <p className="text-[9.5px] tracking-widest text-amber-700 dark:text-amber-500 font-mono uppercase">
+              Architectura Vitae
             </p>
           </div>
         </div>
 
-        {/* Header Controls: Theme Selector & Language Switcher */}
-        <div className="flex items-center gap-2">
+        {/* Header Controls: Theme Selector & Pill Language Switcher */}
+        <div className="flex items-center gap-2.5">
           <ThemeSelector lang={uiLang} />
 
-          <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-900 p-1 rounded-xl border border-stone-200 dark:border-stone-800">
+          <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-800/90 p-1 rounded-full border border-stone-200 dark:border-stone-700 shadow-2xs">
             <button
               onClick={() => handleLanguageToggle("en")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                 uiLang === "en"
-                  ? "bg-amber-700 text-white shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
               }`}
             >
               EN
             </button>
             <button
               onClick={() => handleLanguageToggle("pt")}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                 uiLang === "pt"
-                  ? "bg-amber-700 text-white shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
               }`}
             >
               PT
@@ -220,45 +220,47 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
 
       {/* Main Content Area */}
       <main className="max-w-3xl mx-auto px-4 py-8 sm:py-12 flex-1 w-full flex flex-col justify-center space-y-8">
-        {/* Title Header */}
-        <div className="text-center space-y-2.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/70 border border-amber-300 dark:border-amber-800/60 text-amber-900 dark:text-amber-400 text-xs font-semibold">
-            <Sparkles size={13} />
+        {/* Title Header - Charm Eyebrow & Display Typography */}
+        <div className="text-center space-y-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 text-amber-900 dark:text-amber-400 text-xs font-mono tracking-wider uppercase font-semibold shadow-2xs">
+            <Sparkles size={12} className="text-amber-600 dark:text-amber-400" />
             <span>{tUI("tagline", uiLang)}</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">
+
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">
             {tUI("setupTitle", uiLang)}
           </h2>
-          <p className="text-sm text-stone-600 dark:text-stone-400 max-w-lg mx-auto">
+
+          <p className="text-sm text-stone-600 dark:text-stone-400 max-w-lg mx-auto leading-relaxed">
             {tUI("setupSubtitle", uiLang)}
           </p>
         </div>
 
         {/* Feedback Messages */}
         {errorMessage && (
-          <div className="p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 rounded-xl text-xs flex items-center justify-center gap-2 animate-in fade-in duration-200">
+          <div className="p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 rounded-2xl text-xs flex items-center justify-center gap-2 animate-in fade-in duration-200 shadow-2xs">
             <AlertCircle size={15} />
             <span>{errorMessage}</span>
           </div>
         )}
 
         {successMessage && (
-          <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 rounded-xl text-xs flex items-center justify-center gap-2 animate-in fade-in duration-200">
+          <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 rounded-2xl text-xs flex items-center justify-center gap-2 animate-in fade-in duration-200 shadow-2xs">
             <CheckCircle2 size={15} />
             <span>{successMessage}</span>
           </div>
         )}
 
-        {/* Primary Dropzone Area with Drag Animations */}
+        {/* Primary Dropzone Area - Charm Pill & Bento Style */}
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center group ${
+          className={`relative border-2 border-dashed rounded-3xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center group ${
             isDragging
-              ? "border-amber-500 bg-amber-50 dark:bg-amber-950/40 scale-[1.02] shadow-2xl shadow-amber-950/50 ring-4 ring-amber-500/20"
-              : "border-stone-300 dark:border-stone-700 bg-white/70 dark:bg-stone-900/50 hover:border-amber-600 hover:bg-white dark:hover:bg-stone-900/80 hover:shadow-xl"
+              ? "border-amber-500 bg-amber-50 dark:bg-amber-950/40 scale-[1.02] shadow-2xl shadow-amber-950/40 ring-4 ring-amber-500/20"
+              : "border-stone-300 dark:border-stone-750 bg-white/80 dark:bg-stone-900/60 hover:border-amber-600 hover:bg-white dark:hover:bg-stone-900/90 hover:shadow-xl shadow-xs"
           }`}
         >
           <input
@@ -288,14 +290,14 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
             {tUI("dropzoneSubtitle", uiLang)}
           </p>
 
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 group-hover:bg-amber-700 text-xs font-semibold text-stone-700 dark:text-stone-200 group-hover:text-white transition-all shadow-xs border border-stone-200 dark:border-stone-700">
+          <div className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-100 dark:bg-stone-800 group-hover:bg-amber-700 text-xs font-bold text-stone-700 dark:text-stone-200 group-hover:text-white transition-all shadow-xs border border-stone-200 dark:border-stone-700">
             <FileCode size={14} />
             <span>{tUI("browseFiles", uiLang)} (.json / .tex)</span>
           </div>
         </div>
 
         {/* Starter Template Download Boilerplates */}
-        <div className="bg-white/80 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+        <div className="bg-white/80 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
           <div className="space-y-0.5 text-center sm:text-left">
             <p className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center justify-center sm:justify-start gap-1.5">
               <FileDown size={14} className="text-amber-700 dark:text-amber-500" />
@@ -312,7 +314,7 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
             <a
               href="/template.json"
               download="template.json"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold border border-stone-200 dark:border-stone-700 transition-all hover:border-stone-400"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-all hover:border-stone-400 shadow-2xs"
             >
               <FileText size={13} className="text-amber-700 dark:text-amber-400" />
               <span>template.json</span>
@@ -321,7 +323,7 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
             <a
               href="/template.tex"
               download="template.tex"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold border border-stone-200 dark:border-stone-700 transition-all hover:border-stone-400"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold border border-stone-200 dark:border-stone-700 transition-all hover:border-stone-400 shadow-2xs"
             >
               <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
               <span>template.tex</span>
@@ -333,7 +335,7 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
         <div className="pt-2 space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1" />
-            <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
+            <span className="text-xs font-mono uppercase tracking-wider text-stone-500 font-semibold">
               {tUI("manualSetupTitle", uiLang)}
             </span>
             <div className="h-px bg-stone-200 dark:bg-stone-800 flex-1" />
@@ -344,7 +346,7 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
             <button
               type="button"
               onClick={() => handleStartManual(false)}
-              className="p-4 rounded-xl border border-stone-200 dark:border-stone-800 bg-white/70 dark:bg-stone-900/40 hover:border-amber-600 hover:bg-white dark:hover:bg-stone-900/80 text-left transition-all group flex items-start gap-3.5 shadow-2xs"
+              className="p-4 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white/80 dark:bg-stone-900/50 hover:border-amber-600 hover:bg-white dark:hover:bg-stone-900/90 text-left transition-all group flex items-start gap-3.5 shadow-2xs"
             >
               <div className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 group-hover:bg-amber-700 group-hover:text-white transition-colors">
                 <PlusCircle size={20} />
@@ -363,7 +365,7 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
             <button
               type="button"
               onClick={() => handleStartManual(true)}
-              className="p-4 rounded-xl border border-stone-200 dark:border-stone-800 bg-white/70 dark:bg-stone-900/40 hover:border-amber-600 hover:bg-white dark:hover:bg-stone-900/80 text-left transition-all group flex items-start gap-3.5 shadow-2xs"
+              className="p-4 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white/80 dark:bg-stone-900/50 hover:border-amber-600 hover:bg-white dark:hover:bg-stone-900/90 text-left transition-all group flex items-start gap-3.5 shadow-2xs"
             >
               <div className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 group-hover:bg-amber-700 group-hover:text-white transition-colors">
                 <Layers size={20} />
@@ -382,7 +384,7 @@ export function SetupScreen({ onComplete, onImportJson, lang = "en", onSwitchLan
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950 py-3.5 px-6 text-center text-xs text-stone-500 font-mono">
+      <footer className="border-t border-stone-200 dark:border-stone-800 bg-white/80 dark:bg-stone-950/80 py-3.5 px-6 text-center text-xs text-stone-500 font-mono">
         PAPYRUS • ARCHITECTURA VITAE • 100% Client-Side & Offline-Ready
       </footer>
     </div>

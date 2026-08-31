@@ -32,15 +32,16 @@ export function LanguageSwitcher({
 
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
-      <div className="flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-200 dark:border-stone-700">
+      {/* Pill Language Group */}
+      <div className="flex items-center bg-stone-100 dark:bg-stone-800 p-1 rounded-full border border-stone-200 dark:border-stone-700 shadow-2xs">
         {availableLanguages.map((l) => (
           <button
             key={l.code}
             onClick={() => onSwitchLanguage(l.code)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold uppercase transition-all ${
+            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold uppercase transition-all ${
               activeLang === l.code
-                ? "bg-amber-700 text-white shadow-xs"
-                : "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-stone-700"
+                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
             }`}
           >
             <span>{l.code}</span>
@@ -50,7 +51,7 @@ export function LanguageSwitcher({
         <button
           onClick={() => setShowAdd(!showAdd)}
           title="Adicionar novo idioma ao CV"
-          className="px-2 py-1 text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 text-xs font-medium flex items-center gap-0.5"
+          className="px-2 py-1 text-stone-400 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 text-xs font-bold flex items-center gap-0.5 rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-700 transition-colors"
         >
           <Plus size={12} />
         </button>
@@ -59,28 +60,28 @@ export function LanguageSwitcher({
       {showAdd && (
         <form
           onSubmit={handleAdd}
-          className="flex items-center gap-1.5 bg-white dark:bg-stone-800 p-1.5 rounded-lg border border-stone-300 dark:border-stone-700 shadow-md text-xs"
+          className="flex items-center gap-1.5 bg-white dark:bg-stone-800 p-1.5 rounded-full border border-stone-300 dark:border-stone-700 shadow-md text-xs animate-in fade-in duration-100"
         >
           <input
             type="text"
-            placeholder="Code (e.g. fr)"
+            placeholder="Code"
             value={newCode}
             onChange={(e) => setNewCode(e.target.value)}
-            className="w-16 px-1.5 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded text-xs"
+            className="w-14 px-2 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-full text-xs text-center font-bold uppercase"
             maxLength={3}
             required
           />
           <input
             type="text"
-            placeholder="Name (e.g. French)"
+            placeholder="Name (e.g. FR)"
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
-            className="w-24 px-1.5 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded text-xs"
+            className="w-24 px-2 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-full text-xs font-medium"
             required
           />
           <button
             type="submit"
-            className="bg-amber-700 text-white px-2 py-1 rounded hover:bg-amber-800 font-semibold"
+            className="bg-amber-700 text-white p-1 rounded-full hover:bg-amber-800 font-bold transition-colors"
           >
             <Check size={12} />
           </button>

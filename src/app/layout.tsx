@@ -33,7 +33,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased font-sans min-h-screen bg-stone-100 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-amber-700 selection:text-white transition-colors duration-150">
+      <body className="antialiased font-sans min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 selection:bg-amber-700 selection:text-white transition-colors duration-300">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

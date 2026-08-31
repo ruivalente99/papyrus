@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 import { exportToLatex, importFromLatex } from "@/lib/latexEngine";
-import { Code2, Download, Copy, Check, Upload, FileCode, X } from "lucide-react";
+import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
+import { Download, Copy, Check, Upload, FileCode, X } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -84,14 +85,12 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-stone-200 dark:border-stone-800 flex items-center justify-between bg-stone-50 dark:bg-stone-900">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-400">
-              <Code2 size={18} />
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]">
+        {/* Header - Charm Style */}
+        <div className="px-6 py-4 border-b border-stone-200/80 dark:border-stone-800/80 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
+          <div className="flex items-center gap-3">
+            <NanoBananaLogo size="sm" />
             <div>
               <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
                 {isPt ? "Gestão TeX (Exportar / Importar)" : "TeX Code Management"}
@@ -105,18 +104,18 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
           </div>
           <button
             onClick={() => onOpenChange(false)}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded-lg hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors"
+            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Tab Switcher */}
+        {/* Tab Switcher - Charm Pill Segmented */}
         <div className="px-6 pt-4 pb-1">
-          <div className="flex bg-stone-100 dark:bg-stone-800 p-1 rounded-lg border border-stone-200 dark:border-stone-700">
+          <div className="flex bg-stone-100 dark:bg-stone-800 p-1 rounded-full border border-stone-200 dark:border-stone-700 shadow-2xs">
             <button
               onClick={() => setActiveTab("export")}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all ${
                 activeTab === "export"
                   ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
@@ -126,7 +125,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
             </button>
             <button
               onClick={() => setActiveTab("import")}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all ${
+              className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all ${
                 activeTab === "import"
                   ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
@@ -142,20 +141,20 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
           {activeTab === "export" ? (
             <div className="flex-1 flex flex-col min-h-0 space-y-3">
               <div className="flex items-center justify-between gap-2 flex-wrap">
-                <span className="text-xs text-stone-500 dark:text-stone-400">
-                  {isPt ? "Idioma:" : "Language:"} <b>{lang.toUpperCase()}</b> • Standard UTF-8 TeX format.
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-mono">
+                  {isPt ? "Idioma:" : "Language:"} <b>{lang.toUpperCase()}</b> • UTF-8 TeX
                 </span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1.5 text-xs font-semibold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-colors shadow-2xs"
                   >
                     {copied ? <Check size={13} className="text-green-600 dark:text-green-400" /> : <Copy size={13} />}
                     <span>{copied ? (isPt ? "Copiado!" : "Copied!") : isPt ? "Copiar Código" : "Copy Source"}</span>
                   </button>
                   <button
                     onClick={handleDownload}
-                    className="flex items-center gap-1.5 text-xs font-semibold bg-amber-700 hover:bg-amber-800 text-white px-3 py-1.5 rounded-lg transition-colors shadow-xs"
+                    className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-4 py-1.5 rounded-full transition-colors shadow-xs"
                   >
                     <Download size={13} />
                     <span>{isPt ? "Descarregar .tex" : "Download .tex"}</span>
@@ -163,13 +162,13 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                 </div>
               </div>
 
-              <div className="flex-1 min-h-0 overflow-auto rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-900 p-3.5 text-stone-100 font-mono text-[11px] leading-relaxed">
+              <div className="flex-1 min-h-0 overflow-auto rounded-2xl border border-stone-200 dark:border-stone-700 bg-stone-950 p-4 text-stone-100 font-mono text-[11px] leading-relaxed shadow-inner">
                 <pre className="whitespace-pre">{latexCode}</pre>
               </div>
             </div>
           ) : (
             <div className="flex-1 flex flex-col min-h-0 space-y-3">
-              <div className="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-lg p-5 text-center hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors">
+              <div className="border-2 border-dashed border-stone-300 dark:border-stone-700 rounded-2xl p-5 text-center hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors">
                 <input
                   type="file"
                   id="latex-file-upload"
@@ -182,7 +181,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                   className="flex flex-col items-center gap-2 cursor-pointer"
                 >
                   <FileCode size={24} className="text-amber-700 dark:text-amber-400" />
-                  <span className="text-xs font-semibold text-stone-800 dark:text-stone-200">
+                  <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
                     {isPt ? "Clique para carregar ficheiro .tex ou arraste para aqui" : "Click to upload a .tex file or drag and drop"}
                   </span>
                   <span className="text-[11px] text-stone-500 dark:text-stone-400">
@@ -192,19 +191,19 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
               </div>
 
               <div className="space-y-1.5 flex-1 flex flex-col min-h-0">
-                <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">
+                <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
                   {isPt ? "Ou cole o código TeX diretamente:" : "Or paste TeX code directly:"}
                 </label>
                 <textarea
                   value={importText}
                   onChange={(e) => setImportText(e.target.value)}
                   placeholder="\begin{document} ... \end{document}"
-                  className="flex-1 text-xs font-mono p-2.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-amber-700 resize-none min-h-[120px]"
+                  className="flex-1 text-xs font-mono p-3 rounded-2xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-amber-500 resize-none min-h-[120px]"
                 />
               </div>
 
               {importStatus && (
-                <p className="text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 p-2 rounded-lg border border-amber-200 dark:border-amber-800">
+                <p className="text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 p-2.5 rounded-2xl border border-amber-200 dark:border-amber-800">
                   {importStatus}
                 </p>
               )}
@@ -213,7 +212,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                 <button
                   onClick={() => processImport(importText)}
                   disabled={!importText.trim()}
-                  className="flex items-center gap-1.5 text-xs font-semibold bg-amber-700 hover:bg-amber-800 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-xs"
+                  className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-5 py-2 rounded-full transition-colors disabled:opacity-50 shadow-xs"
                 >
                   <Upload size={13} />
                   <span>{isPt ? "Processar e Importar" : "Parse & Import"}</span>
@@ -221,16 +220,6 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
               </div>
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="px-6 py-3 border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 flex justify-end">
-          <button
-            onClick={() => onOpenChange(false)}
-            className="px-4 py-1.5 bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold rounded-lg transition-colors"
-          >
-            {isPt ? "Fechar" : "Close"}
-          </button>
         </div>
       </div>
     </div>

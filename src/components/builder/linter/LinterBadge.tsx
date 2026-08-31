@@ -29,13 +29,13 @@ export function LinterBadge({ report, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold shadow-2xs transition-all ${colorClasses}`}
+      className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold shadow-2xs transition-all ${colorClasses}`}
       title="Auditoria de qualidade e linter dinâmico"
     >
       <Icon size={13} />
-      <span>Score: {score}%</span>
+      <span className="font-mono">{score}%</span>
       {issues.length > 0 && (
-        <span className="w-4 h-4 rounded-full bg-black/10 dark:bg-white/20 flex items-center justify-center text-[10px]">
+        <span className="w-4 h-4 rounded-full bg-black/10 dark:bg-white/20 flex items-center justify-center text-[10px] font-mono font-bold">
           {issues.length}
         </span>
       )}

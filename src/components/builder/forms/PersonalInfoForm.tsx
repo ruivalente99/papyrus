@@ -71,7 +71,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
         <div className="space-y-1.5 flex-1">
           <div className="flex items-center gap-2">
-            <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 font-semibold px-2.5 py-1 rounded-lg border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
+            <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
               {isPt ? "Alterar Foto" : "Change Photo"}
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             </label>
@@ -79,7 +79,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               <button
                 type="button"
                 onClick={() => onChange({ photoUrl: "" })}
-                className="text-stone-500 hover:text-red-600 text-xs transition-colors"
+                className="text-stone-500 hover:text-red-600 text-xs font-semibold transition-colors px-2 py-1"
               >
                 {isPt ? "Remover" : "Remove"}
               </button>
@@ -101,7 +101,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               <select
                 value={data.photoShape || "circle"}
                 onChange={(e) => onChange({ photoShape: e.target.value as any })}
-                className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 rounded px-1.5 py-0.5 text-[11px]"
+                className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
               >
                 <option value="circle">{isPt ? "Circular" : "Circle"}</option>
                 <option value="rounded">{isPt ? "Arredondada" : "Rounded"}</option>

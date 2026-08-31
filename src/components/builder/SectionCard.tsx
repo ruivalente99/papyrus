@@ -170,7 +170,7 @@ export function SectionCard({
         <div className="px-5 pb-5 pt-1 border-t border-stone-100 dark:border-stone-800">
           {/* Custom Section Title Input */}
           <div className="mb-4 pt-2">
-            <label className="block text-[11px] font-semibold text-stone-500 dark:text-stone-400 mb-1">
+            <label className="block text-[11px] font-bold text-stone-500 dark:text-stone-400 mb-1 font-mono uppercase tracking-wider">
               {lang === "pt" ? "Título da Secção" : "Section Title"} ({lang.toUpperCase()})
             </label>
             <input
@@ -182,7 +182,8 @@ export function SectionCard({
                   title: { ...sec.title, [lang]: e.target.value },
                 }))
               }
-              className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+              placeholder="e.g. Work Experience / Experiência Profissional"
+              className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-full px-3.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
             />
           </div>
 

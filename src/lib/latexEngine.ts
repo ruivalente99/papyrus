@@ -41,7 +41,7 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
   const primaryHex = (cv.theme.primaryColor || "#004f90").replace("#", "");
 
   let tex = `%-------------------------------------------------------------------
-% CVANA - Dynamic Multilingual Resume
+% PAPYRUS - Architectura Vitae (Dynamic Multilingual Resume)
 % Generated on ${new Date().toISOString().split("T")[0]}
 %-------------------------------------------------------------------
 

@@ -38,18 +38,18 @@ export function ThemeSelector({ lang = "en" }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs font-semibold shadow-2xs transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 text-xs font-bold shadow-2xs transition-all"
         title="Tema / Theme"
       >
-        <CurrentIcon size={14} className="text-amber-600 dark:text-amber-400" />
-        <span className="hidden sm:inline capitalize">
+        <CurrentIcon size={13} className="text-amber-600 dark:text-amber-400" />
+        <span className="hidden sm:inline capitalize font-mono text-[11.5px]">
           {options.find((o) => o.id === theme)?.label || theme}
         </span>
         <ChevronDown size={11} className="text-stone-400" />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-1.5 w-40 bg-white dark:bg-stone-900 rounded-xl shadow-xl border border-stone-200 dark:border-stone-800 p-1.5 z-50 animate-in fade-in duration-100">
+        <div className="absolute right-0 mt-1.5 w-44 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-1.5 z-50 animate-in fade-in duration-100">
           {options.map((opt) => {
             const Icon = opt.icon;
             const isSelected = theme === opt.id;
@@ -61,13 +61,13 @@ export function ThemeSelector({ lang = "en" }: Props) {
                   setTheme(opt.id);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium text-left transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-left transition-colors ${
                   isSelected
-                    ? "bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-bold"
+                    ? "bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300"
                     : "text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
                 }`}
               >
-                <Icon size={13} className={isSelected ? "text-amber-700 dark:text-amber-400" : "text-stone-500"} />
+                <Icon size={14} className={isSelected ? "text-amber-700 dark:text-amber-400" : "text-stone-500"} />
                 <span>{opt.label}</span>
               </button>
             );
