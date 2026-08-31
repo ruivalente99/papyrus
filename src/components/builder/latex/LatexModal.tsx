@@ -87,26 +87,19 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]">
-        {/* Header - Charm Style */}
-        <div className="px-6 py-4 border-b border-stone-200/80 dark:border-stone-800/80 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
-          <div className="flex items-center gap-3">
+        {/* Header - Charm Minimalist */}
+        <div className="px-5 py-3.5 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
+          <div className="flex items-center gap-2.5">
             <NanoBananaLogo size="sm" />
-            <div>
-              <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
-                {isPt ? "Gestão TeX (Exportar / Importar)" : "TeX Code Management"}
-              </h3>
-              <p className="text-stone-500 dark:text-stone-400 text-xs">
-                {isPt
-                  ? "Gere código TeX compilável (.tex) ou importe documentos existentes."
-                  : "Generate compilable TeX source code (.tex) or import existing TeX resumes."}
-              </p>
-            </div>
+            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+              {isPt ? "Gestão TeX" : "TeX Management"}
+            </h3>
           </div>
           <button
             onClick={() => onOpenChange(false)}
             className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 

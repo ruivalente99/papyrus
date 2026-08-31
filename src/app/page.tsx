@@ -32,14 +32,18 @@ export default function BuilderPage() {
     isLoaded,
     isSetupOpen,
     openSetup,
+    resumeCV,
+    duplicateCV,
+    deleteCV,
+    hasCachedDoc,
     completeSetup,
   } = useCV();
 
   if (!isLoaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center charm-bg-dynamic text-stone-600 dark:text-stone-400 gap-2.5 transition-colors">
-        <Loader2 size={22} className="animate-spin text-amber-600 dark:text-amber-500" />
-        <span className="text-xs font-bold font-mono tracking-wider">PAPYRUS • Loading...</span>
+      <div className="flex min-h-screen items-center justify-center charm-bg-dynamic text-stone-600 dark:text-stone-400 gap-2 transition-colors">
+        <Loader2 size={18} className="animate-spin text-amber-600 dark:text-amber-500" />
+        <span className="text-xs font-bold font-mono lowercase tracking-tight">papyrus</span>
       </div>
     );
   }
@@ -49,6 +53,11 @@ export default function BuilderPage() {
     return (
       <SetupScreen
         onComplete={completeSetup}
+        onResume={resumeCV}
+        onDuplicate={duplicateCV}
+        onDelete={deleteCV}
+        activeCv={cv}
+        hasCachedDoc={hasCachedDoc}
         onImportJson={importJson}
         lang={activeLang}
         onSwitchLang={switchLanguage}
@@ -58,7 +67,7 @@ export default function BuilderPage() {
 
   return (
     <div className="flex flex-col min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
-      {/* Top Main Application Header (Navbar) */}
+      {/* Top Application Header */}
       <BuilderHeader
         cv={cv}
         activeLang={activeLang}
@@ -71,49 +80,20 @@ export default function BuilderPage() {
         linterReport={linterReport}
       />
 
-      {/* Mobile Segmented Switcher - Charm Pill Control */}
-      <div className="flex md:hidden border-b border-stone-200/80 dark:border-stone-800/80 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-4 py-2 no-print sticky top-[53px] z-20 justify-center">
-        <div className="flex bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 w-full max-w-xs shadow-2xs">
-          <button
-            onClick={() => setMobileTab("edit")}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 ${
-              mobileTab === "edit"
-                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
-            }`}
-          >
-            <Pencil size={13} />
-            <span>{tUI("editTab", activeLang)}</span>
-          </button>
-          <button
-            onClick={() => setMobileTab("preview")}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 ${
-              mobileTab === "preview"
-                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
-            }`}
-          >
-            <Eye size={13} />
-            <span>{tUI("previewTab", activeLang)}</span>
-          </button>
-        </div>
-      </div>
-
       {/* Split-Pane Main Body */}
-      <div className="flex flex-col md:flex-row flex-1">
+      <div className="flex flex-col md:flex-row flex-1 pb-16 md:pb-0">
         {/* Left Column: Form Editor Pane */}
         <div
-          className={`w-full md:w-1/2 bg-stone-50/60 dark:bg-stone-900/40 border-r border-stone-200/80 dark:border-stone-800/80 overflow-y-auto max-h-[calc(100vh-53px)] p-4 sm:p-6 builder-form-pane transition-colors ${
+          className={`w-full md:w-1/2 bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane transition-colors ${
             mobileTab === "edit" ? "block" : "hidden md:block"
           }`}
         >
-          <div className="max-w-2xl mx-auto space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+          <div className="max-w-2xl mx-auto space-y-3.5">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">
                 {tUI("sectionsBuilder", activeLang)}
-              </h2>
-              <span className="text-[11px] text-stone-500 dark:text-stone-400 font-mono">
-                {tUI("editingIn", activeLang)}{" "}
+              </span>
+              <span className="text-[11px] text-stone-400 font-mono">
                 <strong className="uppercase text-amber-700 dark:text-amber-400">{activeLang}</strong>
               </span>
             </div>
@@ -144,6 +124,34 @@ export default function BuilderPage() {
             onUpdateTheme={updateTheme}
             onExportJson={exportJson}
           />
+        </div>
+      </div>
+
+      {/* Mobile Floating Bottom Bar (iOS Native Style) */}
+      <div className="fixed md:hidden bottom-0 left-0 right-0 z-30 pb-safe px-4 py-2.5 bg-white/85 dark:bg-stone-900/85 backdrop-blur-lg border-t border-stone-200/70 dark:border-stone-800/70 shadow-lg flex justify-center">
+        <div className="flex bg-stone-100 dark:bg-stone-800 p-1 rounded-full border border-stone-200 dark:border-stone-700 w-full max-w-xs shadow-2xs">
+          <button
+            onClick={() => setMobileTab("edit")}
+            className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+              mobileTab === "edit"
+                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+            }`}
+          >
+            <Pencil size={13} />
+            <span>{tUI("editTab", activeLang)}</span>
+          </button>
+          <button
+            onClick={() => setMobileTab("preview")}
+            className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+              mobileTab === "preview"
+                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+            }`}
+          >
+            <Eye size={13} />
+            <span>{tUI("previewTab", activeLang)}</span>
+          </button>
         </div>
       </div>
     </div>

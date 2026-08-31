@@ -43,6 +43,8 @@
     background-color: var(--page);
     color: var(--heading);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 
   .dark body,
@@ -52,7 +54,21 @@
   }
 }
 
-/* Charm Dynamic Ambient Background Patterns */
+/* iOS Safe Area Utilities */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+.pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Charm Dynamic Ambient Background */
 .charm-bg-dynamic {
   background-color: var(--page);
   background-image: 
@@ -69,10 +85,10 @@
   background-attachment: fixed;
 }
 
-/* Custom scrollbars for clean editor experience */
+/* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -91,7 +107,23 @@
   background: #78716c;
 }
 
-/* Print CSS Optimizations for Exact A4 Page Generation */
+/* Micro animations */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-scale {
+  animation: fadeInScale 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Print Optimizations */
 @media print {
   @page {
     size: A4 portrait;
@@ -106,7 +138,6 @@
     print-color-adjust: exact !important;
   }
 
-  /* Hide everything except printable CV */
   header,
   nav,
   .no-print,

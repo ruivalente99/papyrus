@@ -12,9 +12,7 @@ import type {
   MultiLangString,
 } from "@/types/cv";
 import {
-  creativeSidebarSeed,
   technicalLatexSeed,
-  executiveSeed,
   emptySeed,
   PRESET_SEEDS,
 } from "@/data/seeds";
@@ -29,6 +27,7 @@ export function useCV() {
   const [activeLang, setActiveLang] = useState<SupportedLanguage>("en");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSetupOpen, setIsSetupOpen] = useState(false);
+  const [hasCachedDoc, setHasCachedDoc] = useState(false);
 
   // Load from LocalStorage on mount
   useEffect(() => {
@@ -44,7 +43,12 @@ export function useCV() {
         if (parsed && parsed.id && parsed.sections) {
           setCv(parsed);
           setActiveLang(parsed.currentLanguage || parsed.defaultLanguage || "en");
-          setIsSetupOpen(false);
+          setHasCachedDoc(true);
+          if (!isCompleted) {
+            setIsSetupOpen(true);
+          } else {
+            setIsSetupOpen(false);
+          }
         } else if (!isCompleted) {
           setIsSetupOpen(true);
         }
@@ -67,6 +71,7 @@ export function useCV() {
       const updatedCv = { ...cv, currentLanguage: activeLang, updatedAt: new Date().toISOString() };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCv));
       localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+      setHasCachedDoc(true);
     } catch (e) {
       console.warn("Failed to save CV to localStorage:", e);
     }
@@ -102,19 +107,19 @@ export function useCV() {
     []
   );
 
-  // Update Theme / Template
+  // Template & Theme
   const setTemplate = useCallback((template: TemplateId) => {
     setCv((prev) => ({ ...prev, template }));
   }, []);
 
-  const updateTheme = useCallback((themeUpdater: Partial<CVTheme>) => {
+  const updateTheme = useCallback((themeUpdate: Partial<CVTheme>) => {
     setCv((prev) => ({
       ...prev,
-      theme: { ...prev.theme, ...themeUpdater },
+      theme: { ...prev.theme, ...themeUpdate },
     }));
   }, []);
 
-  // Section CRUD
+  // Section Management
   const updateSection = useCallback((sectionId: string, updater: (sec: CVSection) => CVSection) => {
     setCv((prev) => ({
       ...prev,
@@ -134,19 +139,19 @@ export function useCV() {
   const moveSection = useCallback((sectionId: string, direction: "up" | "down") => {
     setCv((prev) => {
       const idx = prev.sections.findIndex((s) => s.id === sectionId);
-      if (idx === -1) return prev;
+      if (idx < 0) return prev;
       if (direction === "up" && idx === 0) return prev;
       if (direction === "down" && idx === prev.sections.length - 1) return prev;
 
-      const newSections = [...prev.sections];
       const targetIdx = direction === "up" ? idx - 1 : idx + 1;
-      const [moved] = newSections.splice(idx, 1);
-      newSections.splice(targetIdx, 0, moved);
+      const newSections = [...prev.sections];
+      const temp = newSections[idx];
+      newSections[idx] = newSections[targetIdx];
+      newSections[targetIdx] = temp;
 
-      // Re-index order
       return {
         ...prev,
-        sections: newSections.map((sec, i) => ({ ...sec, order: i + 1 })),
+        sections: newSections.map((s, i) => ({ ...s, order: i + 1 })),
       };
     });
   }, []);
@@ -154,30 +159,43 @@ export function useCV() {
   const deleteSection = useCallback((sectionId: string) => {
     setCv((prev) => ({
       ...prev,
-      sections: prev.sections.filter((s) => s.id !== sectionId),
+      sections: prev.sections
+        .filter((s) => s.id !== sectionId)
+        .map((s, i) => ({ ...s, order: i + 1 })),
     }));
   }, []);
 
   const addSection = useCallback(
-    (type: SectionType, customTitle?: string | MultiLangString) => {
-      const newSectionId = `sec-${generateId()}`;
+    (type: SectionType, customTitleText?: string) => {
+      const newId = generateId();
       let titleText: MultiLangString;
 
-      if (typeof customTitle === "string") {
-        titleText = { en: customTitle, pt: customTitle };
-      } else if (customTitle && typeof customTitle === "object") {
-        titleText = customTitle;
-      } else {
-        const defaultTitles: Record<SectionType, MultiLangString> = {
-          experience: { en: "Work Experience", pt: "Experiência Profissional" },
-          education: { en: "Education & Qualifications", pt: "Formação Académica" },
-          skills: { en: "Skills & Competencies", pt: "Competências" },
-          languages: { en: "Languages", pt: "Competências Linguísticas" },
-          certifications: { en: "Certifications", pt: "Certificações" },
-          hobbies: { en: "Interests & Volunteering", pt: "Interesses e Voluntariado" },
-          custom: { en: "Custom Section", pt: "Secção Personalizada" },
-        };
-        titleText = defaultTitles[type] || { en: "New Section", pt: "Nova Secção" };
+      switch (type) {
+        case "experience":
+          titleText = { en: "Experience", pt: "Experiência Profissional" };
+          break;
+        case "education":
+          titleText = { en: "Education", pt: "Formação Académica" };
+          break;
+        case "skills":
+          titleText = { en: "Skills", pt: "Competências & Tecnologias" };
+          break;
+        case "languages":
+          titleText = { en: "Languages", pt: "Línguas & Idiomas" };
+          break;
+        case "certifications":
+          titleText = { en: "Certifications", pt: "Certificações & Formações" };
+          break;
+        case "hobbies":
+          titleText = { en: "Interests", pt: "Interesses & Voluntariado" };
+          break;
+        case "custom":
+        default:
+          titleText = {
+            en: customTitleText || "Custom Section",
+            pt: customTitleText || "Secção Personalizada",
+          };
+          break;
       }
 
       let newSection: CVSection;
@@ -185,7 +203,7 @@ export function useCV() {
       switch (type) {
         case "experience":
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "experience",
             title: titleText,
             visible: true,
@@ -195,7 +213,7 @@ export function useCV() {
           break;
         case "education":
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "education",
             title: titleText,
             visible: true,
@@ -205,7 +223,7 @@ export function useCV() {
           break;
         case "skills":
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "skills",
             title: titleText,
             visible: true,
@@ -215,7 +233,7 @@ export function useCV() {
           break;
         case "languages":
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "languages",
             title: titleText,
             visible: true,
@@ -225,7 +243,7 @@ export function useCV() {
           break;
         case "certifications":
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "certifications",
             title: titleText,
             visible: true,
@@ -235,7 +253,7 @@ export function useCV() {
           break;
         case "hobbies":
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "hobbies",
             title: titleText,
             visible: true,
@@ -246,7 +264,7 @@ export function useCV() {
         case "custom":
         default:
           newSection = {
-            id: newSectionId,
+            id: newId,
             type: "custom",
             title: titleText,
             visible: true,
@@ -273,6 +291,7 @@ export function useCV() {
       setIsSetupOpen(false);
       localStorage.setItem(SETUP_COMPLETED_KEY, "true");
       localStorage.setItem(STORAGE_KEY, JSON.stringify(found.cv));
+      setHasCachedDoc(true);
     }
   }, []);
 
@@ -286,6 +305,7 @@ export function useCV() {
     setIsSetupOpen(false);
     localStorage.setItem(SETUP_COMPLETED_KEY, "true");
     localStorage.setItem(STORAGE_KEY, JSON.stringify(jsonData));
+    setHasCachedDoc(true);
   }, []);
 
   const exportJson = useCallback(() => {
@@ -301,9 +321,36 @@ export function useCV() {
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
   }, [cv]);
 
-  // Setup Screen handlers
+  // Setup Screen handlers: Resume, Duplicate, Delete, Complete
   const openSetup = useCallback(() => {
     setIsSetupOpen(true);
+  }, []);
+
+  const resumeCV = useCallback(() => {
+    setIsSetupOpen(false);
+  }, []);
+
+  const duplicateCV = useCallback(() => {
+    const cloned: CVDocument = JSON.parse(JSON.stringify(cv));
+    cloned.id = generateId();
+    cloned.title = `${cloned.title || "Curriculum"} (Copy)`;
+    cloned.updatedAt = new Date().toISOString();
+    setCv(cloned);
+    setIsSetupOpen(false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cloned));
+    localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+    setHasCachedDoc(true);
+  }, [cv]);
+
+  const deleteCV = useCallback(() => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(SETUP_COMPLETED_KEY);
+      localStorage.removeItem("curricula_active_document");
+      localStorage.removeItem("cvana_active_document");
+    } catch (e) {}
+    setCv(emptySeed);
+    setHasCachedDoc(false);
   }, []);
 
   const completeSetup = useCallback((newCv: CVDocument) => {
@@ -312,6 +359,7 @@ export function useCV() {
     setIsSetupOpen(false);
     localStorage.setItem(SETUP_COMPLETED_KEY, "true");
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newCv));
+    setHasCachedDoc(true);
   }, []);
 
   // Linter Report Calculation
@@ -340,6 +388,10 @@ export function useCV() {
     isLoaded,
     isSetupOpen,
     openSetup,
+    resumeCV,
+    duplicateCV,
+    deleteCV,
+    hasCachedDoc,
     completeSetup,
   };
 }

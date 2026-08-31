@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "cv": "tsx scripts/cv-cli.ts"
+    "cv": "tsx scripts/cv-cli.ts",
+    "test:e2e": "tsx scripts/test-e2e.ts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.4",

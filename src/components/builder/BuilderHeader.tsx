@@ -57,7 +57,7 @@ export function BuilderHeader({
         const parsed = JSON.parse(event.target?.result as string);
         onImportJson(parsed);
       } catch (err) {
-        alert("Invalid or corrupted JSON file.");
+        alert("Invalid JSON file.");
       }
     };
     reader.readAsText(file);
@@ -65,21 +65,23 @@ export function BuilderHeader({
   };
 
   return (
-    <header className="border-b border-stone-200/80 dark:border-stone-800/80 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-30 shadow-2xs transition-colors">
-      {/* Brand: Nano Banana Icon Button */}
-      <div className="flex items-center">
+    <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors pt-safe">
+      {/* Brand: Minimalist Logo + lowercase papyrus */}
+      <div className="flex items-center gap-2">
         <button
           onClick={onOpenSetup}
-          title="PAPYRUS — Setup & Overview"
-          className="group cursor-pointer focus:outline-hidden"
+          title="papyrus setup"
+          className="group cursor-pointer focus:outline-hidden flex items-center gap-2"
         >
-          <NanoBananaLogo size="md" glow />
+          <NanoBananaLogo size="sm" glow />
+          <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-stone-100 hidden sm:inline">
+            papyrus
+          </span>
         </button>
       </div>
 
-      {/* Language Switcher, Theme Selector & Linter Badge */}
-      <div className="flex items-center gap-2.5 flex-wrap">
-        {/* Multilingual Selector */}
+      {/* Center Controls: Language Switcher, Theme Selector, Linter Badge */}
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
         <LanguageSwitcher
           activeLang={activeLang}
           availableLanguages={cv.availableLanguages}
@@ -87,27 +89,25 @@ export function BuilderHeader({
           onAddLanguage={onAddLanguage}
         />
 
-        {/* Global App Theme Chooser (Light / Dark / System) */}
         <ThemeSelector lang={activeLang} />
 
-        {/* Quality Linter Badge */}
         <LinterBadge
           report={linterReport}
           onClick={() => setShowLinterModal(true)}
         />
       </div>
 
-      {/* Actions: New/Setup, Presets, TeX & JSON with Charm Pill Geometry */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {/* New / Setup screen button */}
+      {/* Actions: Presets, TeX, JSON */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Setup / Home screen button */}
         {onOpenSetup && (
           <button
             onClick={onOpenSetup}
             title={tUI("newDoc", activeLang)}
-            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Plus size={13} className="text-amber-700 dark:text-amber-400" />
-            <span>{tUI("newDoc", activeLang)}</span>
+            <span className="hidden md:inline">{tUI("newDoc", activeLang)}</span>
           </button>
         )}
 
@@ -115,17 +115,17 @@ export function BuilderHeader({
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Layers size={13} />
-            <span>{tUI("templates", activeLang)}</span>
-            <ChevronDown size={12} />
+            <span className="hidden md:inline">{tUI("templates", activeLang)}</span>
+            <ChevronDown size={11} />
           </button>
 
           {showPresets && (
-            <div className="absolute right-0 mt-1.5 w-68 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-2 z-50 animate-in fade-in duration-100">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-stone-400 px-2 py-1 font-mono">
-                {activeLang === "pt" ? "Carregar Modelo de Exemplo" : "Load Preset Template"}
+            <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-1.5 z-50 animate-in fade-in duration-100">
+              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 px-2 py-1">
+                {activeLang === "pt" ? "Modelos" : "Presets"}
               </p>
               {PRESET_SEEDS.map((p) => (
                 <button
@@ -134,12 +134,9 @@ export function BuilderHeader({
                     onLoadPreset(p.id);
                     setShowPresets(false);
                   }}
-                  className="w-full text-left p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs space-y-0.5"
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs"
                 >
                   <p className="font-bold text-stone-800 dark:text-stone-200">{p.name}</p>
-                  <p className="text-[10.5px] text-stone-500 line-clamp-1">
-                    {p.description}
-                  </p>
                 </button>
               ))}
             </div>
@@ -149,21 +146,20 @@ export function BuilderHeader({
         {/* TeX Modal Button */}
         <button
           onClick={() => setShowLatexModal(true)}
-          title="Export TeX (.tex) or import from TeX"
-          className="flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-50/90 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800 px-3.5 py-1.5 rounded-full transition-all shadow-2xs"
+          title="TeX Management"
+          className="flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-700/60 px-3 py-1.5 rounded-full transition-all shadow-2xs"
         >
           <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
-          <span>{tUI("texManagement", activeLang)}</span>
+          <span className="hidden lg:inline">TeX</span>
         </button>
 
         {/* Import JSON */}
         <button
           onClick={() => fileInputRef.current?.click()}
           title={tUI("importAction", activeLang)}
-          className="flex items-center gap-1.5 text-xs font-semibold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-full transition-all shadow-2xs"
+          className="p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
         >
           <FileUp size={13} />
-          <span className="hidden sm:inline">{tUI("importAction", activeLang)}</span>
         </button>
         <input
           ref={fileInputRef}
@@ -177,21 +173,19 @@ export function BuilderHeader({
         <button
           onClick={onExportJson}
           title={tUI("jsonBackup", activeLang)}
-          className="flex items-center gap-1.5 text-xs font-semibold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 px-3 py-1.5 rounded-full transition-all shadow-2xs"
+          className="p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
         >
           <FileDown size={13} />
-          <span className="hidden sm:inline">{tUI("jsonBackup", activeLang)}</span>
         </button>
       </div>
 
-      {/* Linter Modal */}
+      {/* Modals */}
       <LinterModal
         report={linterReport}
         isOpen={showLinterModal}
         onClose={() => setShowLinterModal(false)}
       />
 
-      {/* TeX Modal */}
       <LatexModal
         open={showLatexModal}
         onOpenChange={setShowLatexModal}
