@@ -52,6 +52,7 @@ export interface EducationItem {
   isCurrent: boolean;
   qeq?: string; // e.g. "EQF Level: 6"
   details?: MultiLangString;
+  notes?: MultiLangString;
   url?: string;
   visible: boolean;
 }
@@ -82,8 +83,9 @@ export interface CertificationItem {
   id: string;
   name: MultiLangString;
   issuer: string;
-  date: string;
+  date?: string;
   url?: string;
+  notes?: MultiLangString;
   visible: boolean;
 }
 
@@ -91,6 +93,8 @@ export interface HobbyItem {
   id: string;
   name: MultiLangString;
   description?: MultiLangString;
+  url?: string;
+  notes?: MultiLangString;
   visible: boolean;
 }
 
@@ -99,7 +103,9 @@ export interface CustomSectionItem {
   title: MultiLangString;
   subtitle?: MultiLangString;
   date?: string;
+  url?: string;
   description: MultiLangString;
+  notes?: MultiLangString;
   bullets?: MultiLangArray;
   visible: boolean;
 }

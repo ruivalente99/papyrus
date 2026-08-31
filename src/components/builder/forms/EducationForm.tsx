@@ -24,6 +24,9 @@ export function EducationForm({ section, lang, onChange }: Props) {
       startDate: "",
       endDate: "",
       isCurrent: false,
+      url: "",
+      details: { [lang]: "" },
+      notes: { [lang]: "" },
       visible: true,
     };
     onChange((sec) => ({
@@ -113,7 +116,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Licenciatura em Engenharia" : "e.g. Bachelor's in Computer Science"}
+                    placeholder={isPt ? "Ex: Licenciatura em Engenharia Informática" : "e.g. Bachelor's in Computer Science"}
                     value={item.degree?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -141,7 +144,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                 <div className="sm:col-span-2">
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Localização" : "Location"} ({lang.toUpperCase()})
+                    {isPt ? "Localização (Opcional)" : "Location (Optional)"} ({lang.toUpperCase()})
                   </label>
                   <input
                     type="text"
@@ -158,7 +161,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Início" : "Start"} (Ano/Mês)
+                    {isPt ? "Início" : "Start"} (YYYY)
                   </label>
                   <input
                     type="text"
@@ -170,15 +173,32 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Fim" : "End"} (Ano/Mês)
-                  </label>
+                  <div className="flex justify-between items-center mb-0.5">
+                    <label className="font-medium text-stone-600 dark:text-stone-400">
+                      {isPt ? "Fim" : "End"}
+                    </label>
+                    <label className="flex items-center gap-1 text-[10.5px] text-amber-700 dark:text-amber-400 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={item.isCurrent}
+                        onChange={(e) =>
+                          handleUpdateItem(item.id, {
+                            isCurrent: e.target.checked,
+                            endDate: e.target.checked ? "" : item.endDate,
+                          })
+                        }
+                        className="rounded text-amber-700"
+                      />
+                      <span>{isPt ? "Atual" : "Present"}</span>
+                    </label>
+                  </div>
                   <input
                     type="text"
-                    placeholder="2022"
+                    placeholder={item.isCurrent ? (isPt ? "Presente" : "Present") : "2022"}
+                    disabled={item.isCurrent}
                     value={item.endDate || ""}
                     onChange={(e) => handleUpdateItem(item.id, { endDate: e.target.value })}
-                    className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
+                    className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
                   />
                 </div>
               </div>
@@ -186,7 +206,20 @@ export function EducationForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Nível QEQ / Distinção" : "EQF Level / Distinction"}
+                    {isPt ? "Website / Link da Instituição (Opcional)" : "Institution / Course URL (Optional)"}
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={item.url || ""}
+                    onChange={(e) => handleUpdateItem(item.id, { url: e.target.value })}
+                    className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
+                    {isPt ? "Nível QEQ / Distinção (Opcional)" : "EQF Level / Distinction (Optional)"}
                   </label>
                   <input
                     type="text"
@@ -196,23 +229,27 @@ export function EducationForm({ section, lang, onChange }: Props) {
                     className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Detalhes / Média" : "Coursework / Honors"} ({lang.toUpperCase()})
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={isPt ? "Módulos de especialização..." : "Specialization modules..."}
-                    value={item.details?.[lang] || ""}
-                    onChange={(e) =>
-                      handleUpdateItem(item.id, {
-                        details: { ...item.details, [lang]: e.target.value },
-                      })
-                    }
-                    className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
-                  />
-                </div>
+              <div>
+                <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
+                  {isPt ? "Detalhes / Média / Tese (Opcional)" : "Coursework / Thesis / Honors (Optional)"} ({lang.toUpperCase()})
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder={
+                    isPt
+                      ? "Ex: Módulos de especialização, tese sobre redes neuronais, média final 18/20..."
+                      : "e.g. Specialization coursework, master thesis, GPA 3.9/4.0..."
+                  }
+                  value={item.details?.[lang] || ""}
+                  onChange={(e) =>
+                    handleUpdateItem(item.id, {
+                      details: { ...item.details, [lang]: e.target.value },
+                    })
+                  }
+                  className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 resize-y"
+                />
               </div>
             </div>
           </div>

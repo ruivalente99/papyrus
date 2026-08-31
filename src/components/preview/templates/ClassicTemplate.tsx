@@ -291,6 +291,7 @@ export function ClassicTemplate({ cv, lang }: Props) {
                     .filter((i) => i.visible)
                     .map((item) => {
                       const name = t(item.name, lang, cv.defaultLanguage);
+                      const notes = t(item.notes, lang, cv.defaultLanguage);
                       return (
                         <div
                           key={item.id}
@@ -311,6 +312,7 @@ export function ClassicTemplate({ cv, lang }: Props) {
                               <span className="font-semibold text-stone-900">• {name}</span>
                             )}
                             <span className="text-stone-500 text-[10.5px] italic"> — {item.issuer}</span>
+                            {notes && <span className="text-stone-500 text-[10px] italic"> ({notes})</span>}
                           </div>
                           {item.date && (
                             <span className="text-[10.5px] text-stone-500 shrink-0">{item.date}</span>
@@ -321,7 +323,7 @@ export function ClassicTemplate({ cv, lang }: Props) {
                 </div>
               )}
 
-              {/* Hobbies / Custom */}
+              {/* Hobbies / Interests */}
               {section.type === "hobbies" && (
                 <div data-page-break-avoid="true" className="space-y-0.5 text-xs cv-item">
                   {section.items
@@ -329,10 +331,23 @@ export function ClassicTemplate({ cv, lang }: Props) {
                     .map((item) => {
                       const name = t(item.name, lang, cv.defaultLanguage);
                       const desc = t(item.description, lang, cv.defaultLanguage);
+                      const notes = t(item.notes, lang, cv.defaultLanguage);
                       return (
                         <div key={item.id} className="text-stone-700 break-words">
-                          <span className="font-semibold text-stone-800">• {name}</span>
+                          {item.url ? (
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold text-stone-800 hover:underline"
+                            >
+                              • {name}
+                            </a>
+                          ) : (
+                            <span className="font-semibold text-stone-800">• {name}</span>
+                          )}
                           {desc && <span className="text-stone-600"> — {desc}</span>}
+                          {notes && <span className="text-stone-500 text-[10px] italic"> ({notes})</span>}
                         </div>
                       );
                     })}

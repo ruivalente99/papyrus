@@ -10,17 +10,11 @@ import type {
 } from "@/types/cv";
 import { PersonalInfoForm } from "./forms/PersonalInfoForm";
 import { SectionCard } from "./SectionCard";
+import { AddSectionModal } from "./AddSectionModal";
 import { tUI } from "@/lib/i18n";
 import {
   User,
   Plus,
-  Briefcase,
-  GraduationCap,
-  Sparkles,
-  Languages,
-  Award,
-  Heart,
-  FileText,
   ChevronDown,
 } from "lucide-react";
 
@@ -45,18 +39,8 @@ export function SectionList({
   onDeleteSection,
   onAddSection,
 }: Props) {
-  const [showAddMenu, setShowAddMenu] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isPersonalExpanded, setIsPersonalExpanded] = useState(true);
-
-  const availableSectionTypes: Array<{ type: SectionType; labelKey: any; icon: any }> = [
-    { type: "experience", labelKey: "experience", icon: Briefcase },
-    { type: "education", labelKey: "education", icon: GraduationCap },
-    { type: "skills", labelKey: "skills", icon: Sparkles },
-    { type: "languages", labelKey: "languages", icon: Languages },
-    { type: "certifications", labelKey: "certifications", icon: Award },
-    { type: "hobbies", labelKey: "hobbies", icon: Heart },
-    { type: "custom", labelKey: "custom", icon: FileText },
-  ];
 
   return (
     <div className="space-y-4 pb-12">
@@ -116,41 +100,25 @@ export function SectionList({
         />
       ))}
 
-      {/* 3. Add New Section Button / Menu */}
-      <div className="relative pt-2">
+      {/* 3. Add New Section Button (Opens AddSectionModal) */}
+      <div className="pt-2">
         <button
           type="button"
-          onClick={() => setShowAddMenu(!showAddMenu)}
-          className="w-full py-3 px-4 border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-amber-700 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 rounded-2xl text-stone-600 dark:text-stone-300 hover:text-amber-800 dark:hover:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs"
+          onClick={() => setIsAddModalOpen(true)}
+          className="w-full py-3.5 px-4 border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-amber-700 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 rounded-2xl text-stone-600 dark:text-stone-300 hover:text-amber-800 dark:hover:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs"
         >
-          <Plus size={15} />
+          <Plus size={16} />
           <span>{tUI("addSection", lang)}</span>
         </button>
-
-        {showAddMenu && (
-          <div className="absolute left-0 right-0 bottom-full mb-2 bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-2 z-40 animate-in fade-in duration-100 grid grid-cols-1 sm:grid-cols-2 gap-1">
-            {availableSectionTypes.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.type}
-                  type="button"
-                  onClick={() => {
-                    onAddSection(item.type);
-                    setShowAddMenu(false);
-                  }}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 text-left transition-colors text-xs font-semibold text-stone-700 dark:text-stone-300"
-                >
-                  <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0">
-                    <Icon size={13} />
-                  </div>
-                  <span>{tUI(item.labelKey, lang)}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
+
+      {/* Modal for adding sections */}
+      <AddSectionModal
+        isOpen={isAddModalOpen}
+        lang={lang}
+        onClose={() => setIsAddModalOpen(false)}
+        onAddSection={onAddSection}
+      />
     </div>
   );
 }

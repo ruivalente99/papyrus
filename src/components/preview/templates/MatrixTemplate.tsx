@@ -371,29 +371,32 @@ export function MatrixTemplate({ cv, lang }: Props) {
               <div className="space-y-1 text-xs">
                 {certSection.items
                   .filter((i) => i.visible)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      data-page-break-avoid="true"
-                      className="text-[10px] text-stone-800 break-words cv-item"
-                    >
-                      {item.url ? (
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-semibold hover:underline"
-                        >
-                          {t(item.name, lang, cv.defaultLanguage)}
-                        </a>
-                      ) : (
-                        <span className="font-semibold">{t(item.name, lang, cv.defaultLanguage)}</span>
-                      )}
-                      <span className="text-stone-500 block text-[9px]">
-                        {item.issuer} {item.date ? `(${item.date})` : ""}
-                      </span>
-                    </div>
-                  ))}
+                  .map((item) => {
+                    const notes = t(item.notes, lang, cv.defaultLanguage);
+                    return (
+                      <div
+                        key={item.id}
+                        data-page-break-avoid="true"
+                        className="text-[10px] text-stone-800 break-words cv-item"
+                      >
+                        {item.url ? (
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-semibold hover:underline"
+                          >
+                            {t(item.name, lang, cv.defaultLanguage)}
+                          </a>
+                        ) : (
+                          <span className="font-semibold">{t(item.name, lang, cv.defaultLanguage)}</span>
+                        )}
+                        <span className="text-stone-500 block text-[9px]">
+                          {item.issuer} {item.date ? `(${item.date})` : ""} {notes ? `• ${notes}` : ""}
+                        </span>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           )}
@@ -411,11 +414,23 @@ export function MatrixTemplate({ cv, lang }: Props) {
               <ul className="space-y-0.5 text-xs text-stone-700">
                 {hobbiesSection.items
                   .filter((i) => i.visible)
-                  .map((h) => (
-                    <li key={h.id} data-page-break-avoid="true" className="text-[10px] break-words cv-item">
-                      • {t(h.name, lang, cv.defaultLanguage)}
-                    </li>
-                  ))}
+                  .map((h) => {
+                    const desc = t(h.description, lang, cv.defaultLanguage);
+                    const notes = t(h.notes, lang, cv.defaultLanguage);
+                    return (
+                      <li key={h.id} data-page-break-avoid="true" className="text-[10px] break-words cv-item">
+                        {h.url ? (
+                          <a href={h.url} target="_blank" rel="noreferrer" className="font-semibold hover:underline">
+                            • {t(h.name, lang, cv.defaultLanguage)}
+                          </a>
+                        ) : (
+                          <span className="font-semibold">• {t(h.name, lang, cv.defaultLanguage)}</span>
+                        )}
+                        {desc && <span className="text-stone-500 block ml-2 text-[9px]">{desc}</span>}
+                        {notes && <span className="text-blue-900 block ml-2 text-[8.5px] italic">{notes}</span>}
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
           )}

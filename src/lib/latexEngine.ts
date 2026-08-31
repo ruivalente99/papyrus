@@ -194,23 +194,31 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
         certs.items
           .filter((i) => i.visible)
           .forEach((item) => {
-            const name = escapeLatex(t(item.name, lang, cv.defaultLanguage));
+            const rawName = t(item.name, lang, cv.defaultLanguage);
+            const name = item.url
+              ? `\\href{${item.url}}{${escapeLatex(rawName)}}`
+              : escapeLatex(rawName);
             const issuer = escapeLatex(item.issuer);
             const date = item.date ? ` (${escapeLatex(item.date)})` : "";
-            tex += `  \\item \\textbf{${name}} -- ${issuer}${date}\n`;
+            const notes = item.notes ? ` -- \\textit{${escapeLatex(t(item.notes, lang, cv.defaultLanguage))}}` : "";
+            tex += `  \\item \\textbf{${name}} -- ${issuer}${date}${notes}\n`;
           });
         tex += `\\end{itemize}\n`;
       } else if (section.type === "hobbies") {
         const hobbies = section as HobbiesSection;
-        tex += `\n%-------------------------------------------------------------------\n% INTERESTS\n%-------------------------------------------------------------------\n`;
+        tex += `\n%-------------------------------------------------------------------\n% INTERESTS & VOLUNTEERING\n%-------------------------------------------------------------------\n`;
         tex += `\\section{${sectionTitle}}\n`;
         tex += `\\begin{itemize}[leftmargin=1em, itemsep=1pt, topsep=2pt]\n`;
         hobbies.items
           .filter((i) => i.visible)
           .forEach((item) => {
-            const name = escapeLatex(t(item.name, lang, cv.defaultLanguage));
+            const rawName = t(item.name, lang, cv.defaultLanguage);
+            const name = item.url
+              ? `\\href{${item.url}}{${escapeLatex(rawName)}}`
+              : escapeLatex(rawName);
             const desc = t(item.description, lang, cv.defaultLanguage);
-            tex += `  \\item \\textbf{${name}}${desc ? ` -- ${escapeLatex(desc)}` : ""}\n`;
+            const notes = t(item.notes, lang, cv.defaultLanguage);
+            tex += `  \\item \\textbf{${name}}${desc ? ` -- ${escapeLatex(desc)}` : ""}${notes ? ` (${escapeLatex(notes)})` : ""}\n`;
           });
         tex += `\\end{itemize}\n`;
       } else if (section.type === "custom") {
@@ -220,7 +228,10 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
         custom.items
           .filter((i) => i.visible)
           .forEach((item) => {
-            const title = escapeLatex(t(item.title, lang, cv.defaultLanguage));
+            const rawTitle = t(item.title, lang, cv.defaultLanguage);
+            const title = item.url
+              ? `\\href{${item.url}}{${escapeLatex(rawTitle)}}`
+              : escapeLatex(rawTitle);
             const sub = escapeLatex(t(item.subtitle, lang, cv.defaultLanguage));
             const date = item.date ? ` \\hfill {\\small ${escapeLatex(item.date)}}` : "";
             const desc = escapeLatex(t(item.description, lang, cv.defaultLanguage));

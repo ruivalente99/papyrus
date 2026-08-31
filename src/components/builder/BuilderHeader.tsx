@@ -65,24 +65,34 @@ export function BuilderHeader({
 
   return (
     <header className="border-b border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-30 shadow-2xs transition-colors">
-      {/* Brand & Motto */}
-      <div className="flex items-center gap-3">
+      {/* Brand: Nano Banana Icon Button */}
+      <div className="flex items-center">
         <button
           onClick={onOpenSetup}
-          title="Return to Setup / Overview"
-          className="flex items-center gap-3 text-left hover:opacity-85 transition-opacity"
+          title="PAPYRUS — Setup & Overview"
+          className="p-1.5 rounded-xl bg-stone-900 dark:bg-stone-800 border border-stone-700/60 dark:border-stone-750 hover:border-amber-500/80 hover:bg-stone-850 dark:hover:bg-stone-750 shadow-xs transition-all flex items-center justify-center group"
         >
-          <div className="w-8 h-8 rounded-xl bg-amber-700 text-white flex items-center justify-center font-black text-sm tracking-wider shadow-xs">
-            P
-          </div>
-          <div>
-            <h1 className="text-base font-extrabold tracking-widest text-stone-900 dark:text-stone-100 leading-tight font-mono">
-              PAPYRUS
-            </h1>
-            <p className="text-[10px] font-mono text-amber-700 dark:text-amber-500 tracking-wider">
-              ARCHITECTURA VITAE
-            </p>
-          </div>
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 32 32"
+            className="transition-transform group-hover:scale-105"
+          >
+            <path
+              d="M7 16c1.5 5 6.5 8 12 8 4.5 0 7-2.5 7-4.5s-2.5-3.5-6-3.5c-5 0-9.5-3-11-7-1-3-.5-6 0-7 1.2 0 2.2 1.8 2.8 3.5.6 1.8 1.8 3.5 4.2 4.5"
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M8 5c-.6 1.2-1.2 2.5-1.2 3.8"
+              stroke="#d97706"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          </svg>
         </button>
       </div>
 
