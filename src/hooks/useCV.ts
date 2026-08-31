@@ -9,6 +9,7 @@ import type {
   SectionType,
   TemplateId,
   CVTheme,
+  MultiLangString,
 } from "@/types/cv";
 import {
   creativeSidebarSeed,
@@ -33,17 +34,23 @@ export function useCV() {
   useEffect(() => {
     try {
       const isCompleted = localStorage.getItem(SETUP_COMPLETED_KEY);
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved =
+        localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem("curricula_active_document") ||
+        localStorage.getItem("cvana_active_document");
 
-      if (!isCompleted) {
-        // First visit: open Setup Screen
-        setIsSetupOpen(true);
-      } else if (saved) {
+      if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id && parsed.sections) {
           setCv(parsed);
-          setActiveLang(parsed.currentLanguage || "en");
+          setActiveLang(parsed.currentLanguage || parsed.defaultLanguage || "en");
+          setIsSetupOpen(false);
+        } else if (!isCompleted) {
+          setIsSetupOpen(true);
         }
+      } else if (!isCompleted) {
+        // First visit: open Setup Screen
+        setIsSetupOpen(true);
       }
     } catch (e) {
       console.warn("Failed to load CV from localStorage:", e);
@@ -100,14 +107,14 @@ export function useCV() {
     setCv((prev) => ({ ...prev, template }));
   }, []);
 
-  const updateTheme = useCallback((themeUpdate: Partial<CVTheme>) => {
+  const updateTheme = useCallback((themeUpdater: Partial<CVTheme>) => {
     setCv((prev) => ({
       ...prev,
-      theme: { ...prev.theme, ...themeUpdate },
+      theme: { ...prev.theme, ...themeUpdater },
     }));
   }, []);
 
-  // Section Management
+  // Section CRUD
   const updateSection = useCallback((sectionId: string, updater: (sec: CVSection) => CVSection) => {
     setCv((prev) => ({
       ...prev,
@@ -119,7 +126,7 @@ export function useCV() {
     setCv((prev) => ({
       ...prev,
       sections: prev.sections.map((sec) =>
-        sec.id === sectionId ? ({ ...sec, visible: !sec.visible } as CVSection) : sec
+        sec.id === sectionId ? { ...sec, visible: !sec.visible } : sec
       ),
     }));
   }, []);
@@ -131,11 +138,12 @@ export function useCV() {
       if (direction === "up" && idx === 0) return prev;
       if (direction === "down" && idx === prev.sections.length - 1) return prev;
 
-      const targetIdx = direction === "up" ? idx - 1 : idx + 1;
       const newSections = [...prev.sections];
+      const targetIdx = direction === "up" ? idx - 1 : idx + 1;
       const [moved] = newSections.splice(idx, 1);
       newSections.splice(targetIdx, 0, moved);
 
+      // Re-index order
       return {
         ...prev,
         sections: newSections.map((sec, i) => ({ ...sec, order: i + 1 })),
@@ -150,89 +158,134 @@ export function useCV() {
     }));
   }, []);
 
-  const addSection = useCallback((type: SectionType, customTitle?: string) => {
-    setCv((prev) => {
-      const newId = `sec-${generateId()}`;
-      const defaultTitles: Record<SectionType, { en: string; pt: string }> = {
-        experience: { en: "Work Experience", pt: "Experiência Profissional" },
-        education: { en: "Education & Qualifications", pt: "Habilitações & Formação" },
-        skills: { en: "Skills", pt: "Competências" },
-        languages: { en: "Languages", pt: "Competências Linguísticas" },
-        certifications: { en: "Certifications", pt: "Certificações" },
-        hobbies: { en: "Interests & Activities", pt: "Interesses & Atividades" },
-        custom: { en: customTitle || "Other Activities", pt: customTitle || "Outras Atividades" },
-      };
+  const addSection = useCallback(
+    (type: SectionType, customTitle?: string | MultiLangString) => {
+      const newSectionId = `sec-${generateId()}`;
+      let titleText: MultiLangString;
 
-      const base = {
-        id: newId,
-        type,
-        title: defaultTitles[type],
-        visible: true,
-        order: prev.sections.length + 1,
-      };
+      if (typeof customTitle === "string") {
+        titleText = { en: customTitle, pt: customTitle };
+      } else if (customTitle && typeof customTitle === "object") {
+        titleText = customTitle;
+      } else {
+        const defaultTitles: Record<SectionType, MultiLangString> = {
+          experience: { en: "Work Experience", pt: "Experiência Profissional" },
+          education: { en: "Education & Qualifications", pt: "Formação Académica" },
+          skills: { en: "Skills & Competencies", pt: "Competências" },
+          languages: { en: "Languages", pt: "Competências Linguísticas" },
+          certifications: { en: "Certifications", pt: "Certificações" },
+          hobbies: { en: "Interests & Volunteering", pt: "Interesses e Voluntariado" },
+          custom: { en: "Custom Section", pt: "Secção Personalizada" },
+        };
+        titleText = defaultTitles[type] || { en: "New Section", pt: "Nova Secção" };
+      }
 
       let newSection: CVSection;
+
       switch (type) {
         case "experience":
-          newSection = { ...base, type: "experience", items: [] };
+          newSection = {
+            id: newSectionId,
+            type: "experience",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            items: [],
+          };
           break;
         case "education":
-          newSection = { ...base, type: "education", items: [] };
+          newSection = {
+            id: newSectionId,
+            type: "education",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            items: [],
+          };
           break;
         case "skills":
-          newSection = { ...base, type: "skills", categories: [] };
+          newSection = {
+            id: newSectionId,
+            type: "skills",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            categories: [],
+          };
           break;
         case "languages":
-          newSection = { ...base, type: "languages", items: [] };
+          newSection = {
+            id: newSectionId,
+            type: "languages",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            items: [],
+          };
           break;
         case "certifications":
-          newSection = { ...base, type: "certifications", items: [] };
+          newSection = {
+            id: newSectionId,
+            type: "certifications",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            items: [],
+          };
           break;
         case "hobbies":
-          newSection = { ...base, type: "hobbies", items: [] };
+          newSection = {
+            id: newSectionId,
+            type: "hobbies",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            items: [],
+          };
           break;
         case "custom":
         default:
-          newSection = { ...base, type: "custom", items: [] };
+          newSection = {
+            id: newSectionId,
+            type: "custom",
+            title: titleText,
+            visible: true,
+            order: cv.sections.length + 1,
+            items: [],
+          };
           break;
       }
 
-      return {
+      setCv((prev) => ({
         ...prev,
         sections: [...prev.sections, newSection],
-      };
-    });
-  }, []);
+      }));
+    },
+    [cv.sections.length]
+  );
 
-  // Presets & Import / Export
+  // Preset loading
   const loadPreset = useCallback((presetId: string) => {
     const found = PRESET_SEEDS.find((p) => p.id === presetId);
-    let selected: CVDocument;
-
     if (found) {
-      selected = JSON.parse(JSON.stringify(found.cv));
-    } else if (presetId === "classic" || presetId === "technical-latex" || presetId === "latex") {
-      selected = JSON.parse(JSON.stringify(technicalLatexSeed));
-    } else if (presetId === "matrix" || presetId === "executive-pro" || presetId === "europass") {
-      selected = JSON.parse(JSON.stringify(executiveSeed));
-    } else if (presetId === "empty") {
-      selected = JSON.parse(JSON.stringify(emptySeed));
-    } else {
-      selected = JSON.parse(JSON.stringify(creativeSidebarSeed));
+      setCv(found.cv);
+      setActiveLang(found.cv.defaultLanguage || "en");
+      setIsSetupOpen(false);
+      localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(found.cv));
     }
-
-    setCv(selected);
-    setActiveLang(selected.defaultLanguage || "en");
   }, []);
 
+  // Import / Export JSON
   const importJson = useCallback((jsonData: CVDocument) => {
-    if (!jsonData || !jsonData.sections || !jsonData.personalInfo) {
+    if (!jsonData || typeof jsonData !== "object" || !jsonData.sections) {
       throw new Error("Invalid JSON CV Document structure");
     }
     setCv(jsonData);
     setActiveLang(jsonData.currentLanguage || jsonData.defaultLanguage || "en");
     setIsSetupOpen(false);
     localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(jsonData));
   }, []);
 
   const exportJson = useCallback(() => {
