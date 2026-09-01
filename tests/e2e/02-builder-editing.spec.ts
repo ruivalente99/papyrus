@@ -59,12 +59,15 @@ test.describe("PAPYRUS Field Editing & Live Preview Synchronization", () => {
     }
   });
 
-  test("generates DiceBear avatar in Personal Info form", async ({ page }) => {
-    const diceBearBtn = page.locator('button:has-text("DiceBear")').first();
-    await expect(diceBearBtn).toBeVisible();
-    await diceBearBtn.click();
-    const avatarImg = page.locator("#section-personal img[src*='api.dicebear.com']");
+  test("generates and re-rolls DiceBear Dylan avatar in Personal Info form", async ({ page }) => {
+    const rerollBtn = page.locator('button:has-text("Re-roll Dylan")').first();
+    await expect(rerollBtn).toBeVisible();
+    const avatarImg = page.locator("#section-personal img").first();
     await expect(avatarImg).toBeVisible();
+    const srcBefore = await avatarImg.getAttribute("src");
+    await rerollBtn.click();
+    const srcAfter = await avatarImg.getAttribute("src");
+    expect(srcAfter).not.toBe(srcBefore);
   });
 
   test("supports horizontal scrolling and wrap toggle in section builder pills", async ({ page, isMobile }) => {

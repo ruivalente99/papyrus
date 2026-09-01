@@ -23,6 +23,8 @@ export interface PersonalInfo {
   location: MultiLangString;
   website?: string;
   photoUrl?: string;
+  avatarSeed?: string;
+  isCustomPhoto?: boolean;
   photoShape: "circle" | "rounded" | "square";
   showPhoto: boolean;
   links: SocialLink[];

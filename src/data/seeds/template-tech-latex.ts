@@ -1,4 +1,5 @@
 import type { CVDocument } from "@/types/cv";
+import { createDylanAvatarDataUri } from "@/lib/avatar";
 
 export const technicalLatexSeed: CVDocument = {
   id: "preset-technical-latex",
@@ -30,7 +31,8 @@ export const technicalLatexSeed: CVDocument = {
       pt: "Lorem, Mundo",
     },
     website: "https://loremipsum.dev",
-    photoUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Latex&backgroundColor=c0aede,d1d4f9",
+    photoUrl: createDylanAvatarDataUri("Lorem Ipsum"),
+    avatarSeed: "Lorem Ipsum",
     photoShape: "circle",
     showPhoto: false,
     links: [

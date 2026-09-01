@@ -15,6 +15,7 @@ import type {
 import { t, tArray } from "@/lib/i18n";
 import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
 interface Props {
@@ -71,7 +72,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
             title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
           >
             {/* Avatar / Photo */}
-            {personalInfo.showPhoto && personalInfo.photoUrl && (
+            {personalInfo.showPhoto && (
               <div data-page-break-avoid="true" className="flex justify-center mb-2">
                 <div
                   className={`overflow-hidden border-3 shadow-xs ${
@@ -87,7 +88,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={personalInfo.photoUrl}
+                    src={resolveAvatarUrl(personalInfo)}
                     alt={personalInfo.fullName}
                     className="w-full h-full object-cover select-none pointer-events-none"
                     draggable={false}

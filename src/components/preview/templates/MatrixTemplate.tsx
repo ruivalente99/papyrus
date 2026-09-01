@@ -14,6 +14,7 @@ import type {
 import { t, tArray } from "@/lib/i18n";
 import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { Mail, Phone, MapPin, Globe, Briefcase, GraduationCap, Languages } from "lucide-react";
 
 interface Props {
@@ -61,7 +62,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
         className="flex gap-5 items-center pb-3 border-b border-stone-200 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
         title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
       >
-        {personalInfo.showPhoto && personalInfo.photoUrl && (
+        {personalInfo.showPhoto && (
           <div
             className={`w-20 h-20 overflow-hidden border-2 shrink-0 shadow-2xs ${
               personalInfo.photoShape === "circle"
@@ -74,7 +75,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={personalInfo.photoUrl}
+              src={resolveAvatarUrl(personalInfo)}
               alt={personalInfo.fullName}
               className="w-full h-full object-cover select-none pointer-events-none"
               draggable={false}

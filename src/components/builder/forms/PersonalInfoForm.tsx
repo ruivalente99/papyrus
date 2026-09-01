@@ -5,7 +5,8 @@ import type { PersonalInfo, SupportedLanguage, SocialLink } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { IconPicker } from "../IconPicker";
 import { ICON_OPTIONS } from "@/lib/iconMap";
-import { User, Plus, Trash2, Sparkles } from "lucide-react";
+import { User, Plus, Trash2, Dices, Sparkles } from "lucide-react";
+import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
 
 interface Props {
   data: PersonalInfo;
@@ -22,10 +23,27 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      onChange({ photoUrl: ev.target?.result as string, showPhoto: true });
+      onChange({
+        photoUrl: ev.target?.result as string,
+        isCustomPhoto: true,
+        showPhoto: true,
+      });
     };
     reader.readAsDataURL(file);
     e.target.value = "";
+  };
+
+  const handleRerollDylanAvatar = () => {
+    const baseName = (data.fullName && data.fullName.trim()) || "Luna";
+    const randomSuffix = Math.floor(Math.random() * 10000);
+    const newSeed = `${baseName}-${randomSuffix}`;
+    const newUri = createDylanAvatarDataUri(newSeed);
+    onChange({
+      avatarSeed: newSeed,
+      photoUrl: newUri,
+      isCustomPhoto: false,
+      showPhoto: true,
+    });
   };
 
   const handleAddLink = () => {
@@ -33,8 +51,8 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
     const newLink: SocialLink = {
       id: generateId(),
       platform: "linkedin",
-      label: { [lang]: defaultOption.defaultLabel },
-      url: "https://",
+      url: "",
+      label: { pt: "", en: "" },
     };
     onChange((prev) => ({
       ...prev,
@@ -56,52 +74,56 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
     }));
   };
 
+  const currentAvatarSrc = resolveAvatarUrl(data);
+
   return (
     <div className="space-y-4 text-xs">
       {/* Profile Photo & Visibility */}
       <div className="flex items-center gap-4 bg-stone-50 dark:bg-stone-900/60 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
         <div className="relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 flex items-center justify-center shrink-0">
-          {data.photoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={data.photoUrl}
-              alt="Avatar"
-              className="w-full h-full object-cover select-none pointer-events-none"
-              draggable={false}
-            />
-          ) : (
-            <User size={28} className="text-stone-400" />
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={currentAvatarSrc}
+            alt="Avatar"
+            className="w-full h-full object-cover select-none pointer-events-none"
+            draggable={false}
+          />
         </div>
 
         <div className="space-y-1.5 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
-            <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
-              {isPt ? "Alterar Foto" : "Change Photo"}
-              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-            </label>
+            {/* Re-roll Dylan Avatar Die Button */}
             <button
               type="button"
-              onClick={() => {
-                const seed = Math.random().toString(36).substring(7);
-                const styles = ["avataaars", "bottts", "personas", "lorelei", "micah", "notionists"];
-                const style = styles[Math.floor(Math.random() * styles.length)];
-                const diceBearUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
-                onChange({ photoUrl: diceBearUrl, showPhoto: true });
-              }}
-              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 font-bold px-3 py-1.5 rounded-full border border-amber-500/20 text-xs shadow-2xs transition-colors flex items-center gap-1.5 active:scale-95"
-              title={isPt ? "Gerar avatar DiceBear aleatório" : "Generate random DiceBear avatar"}
+              onClick={handleRerollDylanAvatar}
+              className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-300 font-bold px-3 py-1.5 rounded-full border border-amber-500/30 text-xs shadow-2xs transition-colors flex items-center gap-1.5 active:scale-95"
+              title={isPt ? "Re-roll Avatar Dylan (DiceBear)" : "Re-roll Dylan Avatar (DiceBear)"}
             >
-              <Sparkles size={12} />
-              <span>DiceBear</span>
+              <Dices size={14} className="text-amber-600 dark:text-amber-400" />
+              <span>{isPt ? "Re-roll Dylan" : "Re-roll Dylan"}</span>
             </button>
-            {data.photoUrl && (
+
+            {/* Custom Photo Upload */}
+            <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
+              {isPt ? "Importar Foto" : "Import Photo"}
+              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+            </label>
+
+            {data.isCustomPhoto && (
               <button
                 type="button"
-                onClick={() => onChange({ photoUrl: "" })}
-                className="text-stone-500 hover:text-red-600 text-xs font-semibold transition-colors px-2 py-1"
+                onClick={() => {
+                  const baseSeed = data.fullName?.trim() || "Luna";
+                  onChange({
+                    photoUrl: createDylanAvatarDataUri(baseSeed),
+                    isCustomPhoto: false,
+                    avatarSeed: undefined,
+                  });
+                }}
+                className="text-stone-500 hover:text-amber-700 dark:hover:text-amber-400 text-xs font-semibold transition-colors px-2 py-1"
+                title={isPt ? "Voltar ao avatar Dylan automático" : "Restore automatic Dylan avatar"}
               >
-                {isPt ? "Remover" : "Remove"}
+                {isPt ? "Restaurar Dylan" : "Restore Dylan"}
               </button>
             )}
           </div>
@@ -141,8 +163,15 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           <input
             type="text"
             value={data.fullName || ""}
-            onChange={(e) => onChange({ fullName: e.target.value })}
-            placeholder={isPt ? "Ex: Alex Silva" : "e.g. Alex Silva"}
+            onChange={(e) => {
+              const newName = e.target.value;
+              const updates: Partial<PersonalInfo> = { fullName: newName };
+              if (!data.isCustomPhoto && !data.avatarSeed) {
+                updates.photoUrl = createDylanAvatarDataUri(newName || "Luna");
+              }
+              onChange(updates);
+            }}
+            placeholder={isPt ? "Ex: Luna Silva" : "e.g. Luna Silva"}
             className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>

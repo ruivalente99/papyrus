@@ -1,4 +1,5 @@
 import type { CVDocument } from "@/types/cv";
+import { createDylanAvatarDataUri } from "@/lib/avatar";
 
 export const creativeSidebarSeed: CVDocument = {
   id: "preset-creative-sidebar",
@@ -31,7 +32,8 @@ export const creativeSidebarSeed: CVDocument = {
       en: "Lorem Ipsum, World",
     },
     website: "https://loremipsum.dev",
-    photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lorem&backgroundColor=b6e3f4,c0aede,d1d4f9",
+    photoUrl: createDylanAvatarDataUri("Lorem Ipsum"),
+    avatarSeed: "Lorem Ipsum",
     photoShape: "circle",
     showPhoto: true,
     links: [

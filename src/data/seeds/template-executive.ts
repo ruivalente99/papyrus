@@ -1,4 +1,5 @@
 import type { CVDocument } from "@/types/cv";
+import { createDylanAvatarDataUri } from "@/lib/avatar";
 
 export const executiveSeed: CVDocument = {
   id: "preset-executive-pro",
@@ -30,7 +31,8 @@ export const executiveSeed: CVDocument = {
       en: "Lorem, World",
     },
     website: "https://loremipsum.com",
-    photoUrl: "https://api.dicebear.com/7.x/personas/svg?seed=Executive&backgroundColor=ffd5dc,ffdfbf",
+    photoUrl: createDylanAvatarDataUri("Lorem Ipsum"),
+    avatarSeed: "Lorem Ipsum",
     photoShape: "circle",
     showPhoto: true,
     links: [
