@@ -20,6 +20,8 @@ import {
   User,
   Plus,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronsUpDown,
   Briefcase,
   GraduationCap,
@@ -142,17 +144,121 @@ export function SectionList({
     }
   };
 
+  const pillsRef = React.useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isWrapMode, setIsWrapMode] = useState(false);
+
+  const checkScroll = React.useCallback(() => {
+    const el = pillsRef.current;
+    if (!el || isWrapMode) {
+      setCanScrollLeft(false);
+      setCanScrollRight(false);
+      return;
+    }
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, [isWrapMode]);
+
+  React.useEffect(() => {
+    checkScroll();
+    const el = pillsRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [checkScroll, cv.sections]);
+
+  const scrollPills = (direction: "left" | "right") => {
+    const el = pillsRef.current;
+    if (!el) return;
+    const distance = 200;
+    el.scrollBy({
+      left: direction === "left" ? -distance : distance,
+      behavior: "smooth",
+    });
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const el = pillsRef.current;
+    if (!el || isWrapMode) return;
+    if (e.deltaY !== 0) {
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+      checkScroll();
+    }
+  };
+
+  const isDragging = React.useRef(false);
+  const startX = React.useRef(0);
+  const startScrollLeft = React.useRef(0);
+  const hasDragged = React.useRef(false);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = pillsRef.current;
+    if (!el || isWrapMode) return;
+    isDragging.current = true;
+    hasDragged.current = false;
+    startX.current = e.pageX - el.offsetLeft;
+    startScrollLeft.current = el.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = pillsRef.current;
+    if (!isDragging.current || !el || isWrapMode) return;
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    if (Math.abs(walk) > 4) {
+      hasDragged.current = true;
+    }
+    el.scrollLeft = startScrollLeft.current - walk;
+    checkScroll();
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
   const isPersonalHighlighted = highlightedSectionId === "personal";
 
   return (
     <div className="space-y-3.5 pb-12">
-      {/* Quick Jump Pills & View Controls (Sticky Mobile Toolbar) */}
-      <div className="sticky top-0 z-20 -mx-3 sm:-mx-5 px-3 sm:px-5 py-2 bg-stone-50/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between gap-2 shadow-2xs">
-        {/* Horizontal Scrollable Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 flex-1 min-w-0">
+      {/* Quick Jump Pills & View Controls (Sticky Toolbar with Web Horizontal Scroll & Wrap) */}
+      <div className="sticky top-0 z-20 -mx-3 sm:-mx-5 px-3 sm:px-5 py-2 bg-stone-50/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between gap-1.5 shadow-2xs">
+        {/* Left Scroll Arrow (Desktop/Web) */}
+        {!isWrapMode && canScrollLeft && (
           <button
             type="button"
-            onClick={() => handleJumpTo("personal")}
+            onClick={() => scrollPills("left")}
+            title={isPt ? "Deslocar para a esquerda" : "Scroll left"}
+            className="hidden sm:flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
+          >
+            <ChevronLeft size={13} />
+          </button>
+        )}
+
+        {/* Scrollable / Wrappable Pills Track */}
+        <div
+          ref={pillsRef}
+          onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          className={`flex items-center gap-1.5 py-0.5 flex-1 min-w-0 ${
+            isWrapMode
+              ? "flex-wrap overflow-visible"
+              : "overflow-x-auto no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing select-none"
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              if (!hasDragged.current) handleJumpTo("personal");
+            }}
             className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700/80 transition-all shadow-2xs shrink-0 active:scale-95"
           >
             <User size={12} className="text-amber-600 dark:text-amber-400" />
@@ -166,11 +272,13 @@ export function SectionList({
               <button
                 key={section.id}
                 type="button"
-                onClick={() => handleJumpTo(section.id)}
+                onClick={() => {
+                  if (!hasDragged.current) handleJumpTo(section.id);
+                }}
                 className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700/80 transition-all shadow-2xs shrink-0 active:scale-95"
               >
                 {getSectionIcon(section.type)}
-                <span className="truncate max-w-[120px]">{title}</span>
+                <span className="truncate max-w-[130px]">{title}</span>
                 {count > 0 && (
                   <span className="text-[9.5px] font-mono font-black bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 px-1.5 py-0.2 rounded-full ml-0.5">
                     {count}
@@ -190,18 +298,47 @@ export function SectionList({
           </button>
         </div>
 
-        {/* Global Expand/Collapse Toggle Button */}
-        <button
-          type="button"
-          onClick={toggleExpandAll}
-          title={areAllExpanded ? (isPt ? "Recolher tudo" : "Collapse all") : (isPt ? "Expandir tudo" : "Expand all")}
-          className="flex items-center gap-1 text-[11px] font-bold text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200 bg-white dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80 px-2 py-1 rounded-full shadow-2xs shrink-0 active:scale-95"
-        >
-          <ChevronsUpDown size={12} />
-          <span className="hidden sm:inline">
-            {areAllExpanded ? (isPt ? "Recolher" : "Collapse") : (isPt ? "Expandir" : "Expand")}
-          </span>
-        </button>
+        {/* Right Scroll Arrow (Desktop/Web) */}
+        {!isWrapMode && canScrollRight && (
+          <button
+            type="button"
+            onClick={() => scrollPills("right")}
+            title={isPt ? "Deslocar para a direita" : "Scroll right"}
+            className="hidden sm:flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
+          >
+            <ChevronRight size={13} />
+          </button>
+        )}
+
+        {/* Right Action Controls: Wrap Toggle & Expand/Collapse */}
+        <div className="flex items-center gap-1 shrink-0">
+          {/* Desktop Wrap / Carousel Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsWrapMode(!isWrapMode)}
+            title={isWrapMode ? (isPt ? "Modo Carrossel em Linha" : "Single Row Carousel") : (isPt ? "Ver Todas as Secções" : "Wrap All Sections")}
+            className={`hidden md:flex items-center justify-center w-6 h-6 rounded-full border text-[11px] font-mono font-bold transition-all shadow-2xs ${
+              isWrapMode
+                ? "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400 border-amber-400 dark:border-amber-700"
+                : "bg-white dark:bg-stone-800 text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100 border-stone-200/80 dark:border-stone-700/80"
+            }`}
+          >
+            {isWrapMode ? "⇄" : "⊞"}
+          </button>
+
+          {/* Global Expand/Collapse Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleExpandAll}
+            title={areAllExpanded ? (isPt ? "Recolher tudo" : "Collapse all") : (isPt ? "Expandir tudo" : "Expand all")}
+            className="flex items-center gap-1 text-[11px] font-bold text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200 bg-white dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80 px-2 py-1 rounded-full shadow-2xs shrink-0 active:scale-95"
+          >
+            <ChevronsUpDown size={12} />
+            <span className="hidden sm:inline">
+              {areAllExpanded ? (isPt ? "Recolher" : "Collapse") : (isPt ? "Expandir" : "Expand")}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* 1. Personal Info Card */}

@@ -166,13 +166,20 @@ export default function BuilderPage() {
           }`}
         >
           <div className="max-w-2xl mx-auto space-y-3.5 pb-28 sm:pb-8">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500">
-                {tUI("sectionsBuilder", activeLang)}
-              </span>
-              <span className="text-[11px] text-stone-400 font-mono">
-                <strong className="uppercase text-amber-700 dark:text-amber-400">{activeLang}</strong>
-              </span>
+            <div className="flex items-center justify-between px-1 py-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+                  {tUI("sectionsBuilder", activeLang)}
+                </span>
+                <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full">
+                  {cv.sections.length + 1} {activeLang === "pt" ? "secções" : "sections"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 font-mono">
+                <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-300/60 dark:border-amber-800/60">
+                  {activeLang}
+                </span>
+              </div>
             </div>
 
             <SectionList

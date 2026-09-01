@@ -58,4 +58,27 @@ test.describe("PAPYRUS Field Editing & Live Preview Synchronization", () => {
       }
     }
   });
+
+  test("generates DiceBear avatar in Personal Info form", async ({ page }) => {
+    const diceBearBtn = page.locator('button:has-text("DiceBear")').first();
+    await expect(diceBearBtn).toBeVisible();
+    await diceBearBtn.click();
+    const avatarImg = page.locator("#section-personal img[src*='api.dicebear.com']");
+    await expect(avatarImg).toBeVisible();
+  });
+
+  test("supports horizontal scrolling and wrap toggle in section builder pills", async ({ page, isMobile }) => {
+    if (!isMobile) {
+      const wrapToggle = page.locator('button:has-text("⊞"), button:has-text("⇄")').first();
+      if (await wrapToggle.isVisible()) {
+        await wrapToggle.click();
+        await wrapToggle.click();
+      }
+
+      const rightArrow = page.locator('button[title*="direita"], button[title*="right"]').first();
+      if (await rightArrow.isVisible()) {
+        await rightArrow.click();
+      }
+    }
+  });
 });

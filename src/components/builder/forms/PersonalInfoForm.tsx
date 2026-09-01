@@ -5,7 +5,7 @@ import type { PersonalInfo, SupportedLanguage, SocialLink } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { IconPicker } from "../IconPicker";
 import { ICON_OPTIONS } from "@/lib/iconMap";
-import { User, Plus, Trash2 } from "lucide-react";
+import { User, Plus, Trash2, Sparkles } from "lucide-react";
 
 interface Props {
   data: PersonalInfo;
@@ -75,11 +75,26 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
         </div>
 
         <div className="space-y-1.5 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
               {isPt ? "Alterar Foto" : "Change Photo"}
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             </label>
+            <button
+              type="button"
+              onClick={() => {
+                const seed = Math.random().toString(36).substring(7);
+                const styles = ["avataaars", "bottts", "personas", "lorelei", "micah", "notionists"];
+                const style = styles[Math.floor(Math.random() * styles.length)];
+                const diceBearUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
+                onChange({ photoUrl: diceBearUrl, showPhoto: true });
+              }}
+              className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 font-bold px-3 py-1.5 rounded-full border border-amber-500/20 text-xs shadow-2xs transition-colors flex items-center gap-1.5 active:scale-95"
+              title={isPt ? "Gerar avatar DiceBear aleatório" : "Generate random DiceBear avatar"}
+            >
+              <Sparkles size={12} />
+              <span>DiceBear</span>
+            </button>
             {data.photoUrl && (
               <button
                 type="button"
