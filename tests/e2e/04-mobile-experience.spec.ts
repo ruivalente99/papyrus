@@ -47,4 +47,24 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
     const classList = await formContainer.getAttribute("class");
     expect(classList).toContain("pb-28");
   });
+
+  test("mobile preview sheet is fully visible, centered, and not cut off on the left", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Mobile specific test");
+    const previewBtn = page.getByRole("button", { name: /Pré-visualização|Preview/i });
+    await previewBtn.click();
+    await expect(page.locator("#cv-printable-page")).toBeVisible();
+
+    // Wait for auto-fit animation to settle
+    await page.waitForTimeout(200);
+
+    // Check that the preview sheet's left edge is within the viewport (not pushed negative)
+    const box = await page.locator("#cv-printable-page").boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      const viewportWidth = page.viewportSize()?.width || 390;
+      // It should fit horizontally on screen without pushing right edge off-screen
+      expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth + 20);
+    }
+  });
 });

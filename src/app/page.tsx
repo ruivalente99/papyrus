@@ -143,6 +143,7 @@ export default function BuilderPage() {
             onUpdateTheme={updateTheme}
             onExportJson={exportJson}
             onSelectSection={handleSelectSection}
+            mobileTab={mobileTab}
           />
         </div>
       </div>

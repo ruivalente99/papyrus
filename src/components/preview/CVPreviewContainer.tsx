@@ -22,6 +22,7 @@ interface Props {
   onUpdateTheme: (theme: Partial<CVDocument["theme"]>) => void;
   onExportJson: () => void;
   onSelectSection?: (sectionId: string) => void;
+  mobileTab?: "edit" | "preview";
 }
 
 const ACCENT_COLORS = [
@@ -40,6 +41,7 @@ export function CVPreviewContainer({
   onSetTemplate,
   onUpdateTheme,
   onSelectSection,
+  mobileTab,
 }: Props) {
   const [zoom, setZoom] = useState<number>(0.85);
   const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
@@ -66,23 +68,29 @@ export function CVPreviewContainer({
     const calcAutoFit = () => {
       if (!isAutoFit) return;
       const width = container.clientWidth;
-      if (!width) return;
+      if (!width || width <= 0) return;
       // Provide comfortable breathing room: 16px on mobile, 40px on tablet/desktop
       const margin = width < 640 ? 16 : 40;
-      const availableWidth = width - margin;
+      const availableWidth = Math.max(260, width - margin);
       const calculatedScale = Math.min(1.2, Math.max(0.32, availableWidth / A4_W_PX));
       setZoom(Number(calculatedScale.toFixed(2)));
     };
 
     calcAutoFit();
+    const rafId = requestAnimationFrame(calcAutoFit);
+    const timeoutId = setTimeout(calcAutoFit, 80);
+
     const ro = new ResizeObserver(calcAutoFit);
     ro.observe(container);
     window.addEventListener("resize", calcAutoFit);
+
     return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutId);
       ro.disconnect();
       window.removeEventListener("resize", calcAutoFit);
     };
-  }, [isAutoFit]);
+  }, [isAutoFit, mobileTab, cv.template]);
 
   const handleZoomChange = (delta: number) => {
     setIsAutoFit(false);
@@ -294,7 +302,7 @@ export function CVPreviewContainer({
       {/* Page Canvas Viewport with Dynamic Warm Backdrop and Box Containment */}
       <div
         ref={viewportRef}
-        className="flex-1 overflow-auto p-2 sm:p-5 flex justify-center items-start charm-bg-dynamic min-h-0 select-none"
+        className="flex-1 overflow-auto p-2 sm:p-5 flex items-start charm-bg-dynamic min-h-0 select-none pb-24 sm:pb-8"
         style={{ touchAction: "pan-y" }}
       >
         <div
@@ -303,7 +311,7 @@ export function CVPreviewContainer({
             height: `${actualDocHeight * zoom}px`,
             transition: "width 0.15s ease-out, height 0.15s ease-out",
           }}
-          className="relative shrink-0 flex justify-center"
+          className="relative shrink-0 m-auto"
         >
           <div
             style={{
@@ -312,7 +320,7 @@ export function CVPreviewContainer({
               transformOrigin: "top left",
               transition: "transform 0.15s ease-out",
             }}
-            className="relative"
+            className="absolute top-0 left-0"
           >
             <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={onSelectSection} />
 

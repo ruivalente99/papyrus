@@ -123,7 +123,7 @@ export const UI_DICTIONARY = {
     bilingualSupportDesc: "Switch and export between languages without creating separate files.",
     enterBuilder: "Enter Editor",
     // Preview Toolbar
-    pageCountSingle: "1 A4 Page",
+    pageCountSingle: "A4 Page",
     pageCountPlural: "A4 Pages",
     densityCompact: "Compact",
     densityNormal: "Balanced",
@@ -186,7 +186,7 @@ export const UI_DICTIONARY = {
     bilingualSupportDesc: "Alterne e exporte entre línguas sem necessitar de duplicar ficheiros.",
     enterBuilder: "Entrar no Construtor",
     // Preview Toolbar
-    pageCountSingle: "1 Página A4",
+    pageCountSingle: "Página A4",
     pageCountPlural: "Páginas A4",
     densityCompact: "Compacto",
     densityNormal: "Equilibrado",
