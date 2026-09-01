@@ -91,7 +91,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             )}
           </div>
 
-          <div className="flex items-center gap-3 pt-0.5 text-stone-600 dark:text-stone-400">
+          <div className="flex items-center gap-2.5 sm:gap-3 pt-0.5 text-stone-600 dark:text-stone-400 flex-wrap">
             <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="checkbox"
@@ -221,7 +221,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="font-semibold text-stone-700 dark:text-stone-300">
-            {isPt ? "Links & Redes Sociais com Ícones Personalizados" : "Links & Social Platforms with Custom Icons"}
+            {isPt ? "Links & Redes Sociais" : "Links & Social"}
           </label>
           <button
             type="button"
@@ -251,7 +251,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
                 <input
                   type="text"
-                  placeholder={isPt ? "Rótulo visível" : "Visible label"}
+                  placeholder={isPt ? "Rótulo (ex: LinkedIn)" : "Label (e.g. LinkedIn)"}
                   value={link.label?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateLink(link.id, {
@@ -278,7 +278,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               <div className="flex items-center gap-2 w-full sm:flex-1 min-w-0">
                 <input
                   type="url"
-                  placeholder="https://..."
+                  placeholder={isPt ? "URL (https://...)" : "URL (https://...)"}
                   value={link.url || ""}
                   onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
                   className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"

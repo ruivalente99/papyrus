@@ -65,13 +65,13 @@ export function BuilderHeader({
   };
 
   return (
-    <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors pt-safe">
+    <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-2.5 sm:px-5 py-2 sm:py-2.5 flex items-center justify-between gap-1.5 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors pt-safe">
       {/* Brand: Minimalist Logo + lowercase papyrus */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <button
           onClick={onOpenSetup}
           title="papyrus setup"
-          className="group cursor-pointer focus:outline-hidden flex items-center gap-2"
+          className="group cursor-pointer focus:outline-hidden flex items-center gap-1.5 sm:gap-2"
         >
           <NanoBananaLogo size="sm" glow />
           <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-stone-100 hidden sm:inline">
@@ -81,7 +81,7 @@ export function BuilderHeader({
       </div>
 
       {/* Center Controls: Language Switcher, Theme Selector, Linter Badge */}
-      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0 flex-nowrap">
         <LanguageSwitcher
           activeLang={activeLang}
           availableLanguages={cv.availableLanguages}
@@ -98,13 +98,13 @@ export function BuilderHeader({
       </div>
 
       {/* Actions: Presets, TeX, JSON */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        {/* Setup / Home screen button */}
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* Setup / Home screen button (Desktop / Tablet only) */}
         {onOpenSetup && (
           <button
             onClick={onOpenSetup}
             title={tUI("newDoc", activeLang)}
-            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="hidden sm:flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Plus size={13} className="text-amber-700 dark:text-amber-400" />
             <span className="hidden md:inline">{tUI("newDoc", activeLang)}</span>
@@ -115,7 +115,7 @@ export function BuilderHeader({
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-2.5 sm:px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
           >
             <Layers size={13} />
             <span className="hidden md:inline">{tUI("templates", activeLang)}</span>
@@ -142,6 +142,18 @@ export function BuilderHeader({
 
               {/* Mobile Extended Actions inside Dropdown */}
               <div className="sm:hidden border-t border-stone-150 dark:border-stone-800 my-1 pt-1 space-y-0.5">
+                {onOpenSetup && (
+                  <button
+                    onClick={() => {
+                      onOpenSetup();
+                      setShowPresets(false);
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                  >
+                    <Plus size={13} className="text-amber-700 dark:text-amber-400" />
+                    <span>{tUI("newDoc", activeLang)}</span>
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setShowLatexModal(true);
