@@ -3,11 +3,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { CVDocument, SupportedLanguage, TemplateId } from "@/types/cv";
 import { CVPage } from "./CVPage";
-import { exportToPdf, exportToPng, printCV, A4_H_PX, A4_W_PX } from "@/lib/pdfExport";
+import { exportToPdf, exportToPng, A4_H_PX, A4_W_PX } from "@/lib/pdfExport";
 import { tUI } from "@/lib/i18n";
 import {
   Download,
-  Printer,
   Image as ImageIcon,
   ZoomIn,
   ZoomOut,
@@ -337,17 +336,8 @@ export function CVPreviewContainer({
               </div>
             </div>
 
-            {/* Right: Print, PDF, PNG actions */}
+            {/* Right: PDF, PNG actions */}
             <div className="flex items-center gap-1.5 shrink-0">
-              <button
-                onClick={printCV}
-                title="Native Print / PDF"
-                className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs shrink-0"
-              >
-                <Printer size={13} />
-                <span>{tUI("printBtn", lang)}</span>
-              </button>
-
               <button
                 onClick={handleDownloadPdf}
                 disabled={isExporting !== null}

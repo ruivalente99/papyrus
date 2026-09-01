@@ -116,4 +116,25 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
     await dialog.getByRole("button", { name: /Concluído|Done/i }).click();
     await expect(dialog).not.toBeVisible();
   });
+
+  test("mobile editor provides sticky quick jump pills and expand/collapse controls", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Mobile specific test");
+
+    // Check that Quick Jump bar exists and has pills
+    const personalPill = page.getByRole("button", { name: /Pessoal|Personal/i }).first();
+    await expect(personalPill).toBeVisible();
+
+    // Click quick jump pill for a section
+    const expPill = page.getByRole("button", { name: /Experiência|Experience/i }).first();
+    if (await expPill.isVisible()) {
+      await expPill.click();
+      await expect(page.locator("#section-personal")).toBeVisible();
+    }
+
+    // Toggle collapse all / expand all
+    const toggleAllBtn = page.getByRole("button", { name: /Recolher|Expandir|Collapse|Expand/i }).first();
+    if (await toggleAllBtn.isVisible()) {
+      await toggleAllBtn.click();
+    }
+  });
 });

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { LinterReport, SupportedLanguage, LinterIssue } from "@/types/cv";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import {
@@ -23,8 +24,22 @@ type FilterLevel = "all" | "error" | "warning" | "info";
 
 export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
   const [filter, setFilter] = useState<FilterLevel>("all");
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !mounted) return null;
 
   const isPt = lang === "pt";
   const { score, issues, passedChecks, totalChecks } = report;
@@ -70,16 +85,16 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
             : "Essential fields missing to pass recruiter screening.",
         };
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center sm:items-center bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center sm:items-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-stone-200/80 dark:border-stone-800 w-full sm:max-w-lg max-h-[90dvh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200"
+        className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-stone-200/80 dark:border-stone-800 w-full sm:max-w-xl max-h-[90dvh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200 mx-auto"
       >
         {/* iOS Drag handle on mobile */}
         <div className="sm:hidden pt-3 pb-1 flex justify-center shrink-0">
@@ -235,7 +250,8 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

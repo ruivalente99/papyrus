@@ -1,7 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import type { CVSection, SupportedLanguage } from "@/types/cv";
+import type {
+  CVSection,
+  SupportedLanguage,
+  ExperienceSection,
+  EducationSection,
+  SkillsSection,
+  LanguagesSection,
+  CertificationsSection,
+  HobbiesSection,
+  CustomSection,
+} from "@/types/cv";
 import { t } from "@/lib/i18n";
 import {
   ChevronDown,
@@ -33,11 +43,66 @@ interface Props {
   isFirst: boolean;
   isLast: boolean;
   isHighlighted?: boolean;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
   onUpdate: (updater: (sec: CVSection) => CVSection) => void;
   onToggleVisibility: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDelete: () => void;
+}
+
+function getSectionSummary(section: CVSection, lang: SupportedLanguage): string {
+  const isPt = lang === "pt";
+  switch (section.type) {
+    case "experience": {
+      const exp = section as ExperienceSection;
+      const count = exp.items?.length || 0;
+      return count === 1
+        ? (isPt ? "1 cargo profissional" : "1 role")
+        : `${count} ${isPt ? "cargos profissionais" : "roles"}`;
+    }
+    case "education": {
+      const edu = section as EducationSection;
+      const count = edu.items?.length || 0;
+      return count === 1
+        ? (isPt ? "1 formação académica" : "1 degree")
+        : `${count} ${isPt ? "formações académicas" : "degrees"}`;
+    }
+    case "skills": {
+      const sk = section as SkillsSection;
+      const total = sk.categories?.reduce((acc, c) => acc + (c.skills?.length || 0), 0) || 0;
+      return `${total} ${isPt ? "competências" : "skills"}`;
+    }
+    case "languages": {
+      const lng = section as LanguagesSection;
+      const count = lng.items?.length || 0;
+      return count === 1
+        ? (isPt ? "1 idioma" : "1 language")
+        : `${count} ${isPt ? "idiomas" : "languages"}`;
+    }
+    case "certifications": {
+      const cert = section as CertificationsSection;
+      const count = cert.items?.length || 0;
+      return count === 1
+        ? (isPt ? "1 certificação" : "1 certification")
+        : `${count} ${isPt ? "certificações" : "certifications"}`;
+    }
+    case "hobbies": {
+      const hb = section as HobbiesSection;
+      const count = hb.items?.length || 0;
+      return count === 1
+        ? (isPt ? "1 interesse" : "1 hobby")
+        : `${count} ${isPt ? "interesses" : "hobbies"}`;
+    }
+    case "custom": {
+      const cs = section as CustomSection;
+      const count = cs.items?.length || 0;
+      return `${count} ${count === 1 ? (isPt ? "item" : "item") : (isPt ? "itens" : "items")}`;
+    }
+    default:
+      return "";
+  }
 }
 
 export function SectionCard({
@@ -47,19 +112,30 @@ export function SectionCard({
   isFirst,
   isLast,
   isHighlighted,
+  isExpanded: controlledExpanded,
+  onToggleExpand,
   onUpdate,
   onToggleVisibility,
   onMoveUp,
   onMoveDown,
   onDelete,
 }: Props) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [internalExpanded, setInternalExpanded] = useState(true);
+  const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded;
+
+  const handleToggle = () => {
+    if (onToggleExpand) {
+      onToggleExpand();
+    } else {
+      setInternalExpanded(!internalExpanded);
+    }
+  };
 
   React.useEffect(() => {
-    if (isHighlighted) {
-      setIsExpanded(true);
+    if (isHighlighted && controlledExpanded === undefined) {
+      setInternalExpanded(true);
     }
-  }, [isHighlighted]);
+  }, [isHighlighted, controlledExpanded]);
 
   const getSectionIcon = () => {
     switch (section.type) {
@@ -97,7 +173,7 @@ export function SectionCard({
       {/* Header */}
       <div className="p-4 flex items-center justify-between gap-2 select-none">
         <div
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={handleToggle}
           className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
         >
           <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center shrink-0">
@@ -112,8 +188,8 @@ export function SectionCard({
                 </span>
               )}
             </h3>
-            <p className="text-[11px] text-stone-400 capitalize truncate">
-              {section.type} • #{section.order}
+            <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
+              {getSectionSummary(section, lang) || `${section.type} • #${section.order}`}
             </p>
           </div>
         </div>
@@ -163,7 +239,7 @@ export function SectionCard({
 
           <button
             type="button"
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={handleToggle}
             className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 ml-1"
           >
             <ChevronDown

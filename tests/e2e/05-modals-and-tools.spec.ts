@@ -12,13 +12,20 @@ test.describe("PAPYRUS Modals & Export Engine", () => {
     const linterBadge = page.getByTestId("linter-badge");
     await linterBadge.click();
 
-    // Verify modal appears with score card
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("dialog").getByRole("heading", { level: 3 })).toBeVisible();
-    await expect(page.getByRole("dialog").getByText(/Score/i)).toBeVisible();
+    // Verify modal appears with score card and full viewport size
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole("heading", { level: 3 })).toBeVisible();
+    await expect(dialog.getByText(/Score/i)).toBeVisible();
+
+    const dialogBox = await dialog.boundingBox();
+    expect(dialogBox).not.toBeNull();
+    if (dialogBox) {
+      expect(dialogBox.height).toBeGreaterThan(250);
+    }
 
     // Close modal via Done / Concluído or close button
-    const closeBtn = page.getByRole("dialog").locator("button").filter({ hasText: /✕|Fechar|Close|Concluído|Done/i }).first();
+    const closeBtn = dialog.locator("button").filter({ hasText: /✕|Fechar|Close|Concluído|Done/i }).first();
     if (await closeBtn.isVisible()) {
       await closeBtn.click();
     } else {
