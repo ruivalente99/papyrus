@@ -154,7 +154,7 @@ export function SetupScreen({
   return (
     <div className="min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-amber-700 selection:text-white transition-colors duration-300">
       {/* Top Header - Minimalist */}
-      <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/70 dark:bg-stone-900/70 backdrop-blur-md px-5 py-3 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+      <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/70 dark:bg-stone-900/70 backdrop-blur-md px-4 sm:px-6 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <NanoBananaLogo size="md" glow />
           <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-stone-100">

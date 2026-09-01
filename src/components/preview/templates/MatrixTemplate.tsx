@@ -19,13 +19,19 @@ import { Mail, Phone, MapPin, Globe, Briefcase, GraduationCap, Languages } from 
 interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
+  onSelectSection?: (sectionId: string) => void;
 }
 
-export function MatrixTemplate({ cv, lang }: Props) {
+export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#1e3a8a";
   const isCompact = theme.fontSize === "compact";
   const isSpacious = theme.fontSize === "spacious";
+
+  const handleSectionClick = (sectionId: string, e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a")) return;
+    onSelectSection?.(sectionId);
+  };
 
   const expSection = sections.find((s): s is ExperienceSection => s.type === "experience" && s.visible);
   const eduSection = sections.find((s): s is EducationSection => s.type === "education" && s.visible);
@@ -49,7 +55,12 @@ export function MatrixTemplate({ cv, lang }: Props) {
       }}
     >
       {/* Top Header */}
-      <div data-page-break-avoid="true" className="flex gap-5 items-center pb-3 border-b border-stone-200">
+      <div
+        data-page-break-avoid="true"
+        onClick={(e) => handleSectionClick("personal", e)}
+        className="flex gap-5 items-center pb-3 border-b border-stone-200 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+        title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
+      >
         {personalInfo.showPhoto && personalInfo.photoUrl && (
           <div
             className={`w-20 h-20 overflow-hidden border-2 shrink-0 shadow-2xs ${
@@ -150,7 +161,11 @@ export function MatrixTemplate({ cv, lang }: Props) {
         <div className={`col-span-2 min-w-0 ${isCompact ? "space-y-2.5" : "space-y-3.5"}`}>
           {/* Experience */}
           {expSection && (
-            <div className="cv-section">
+            <div
+              onClick={(e) => handleSectionClick(expSection.id, e)}
+              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(expSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(expSection.title, lang, cv.defaultLanguage)}`}
+            >
               <div
                 data-page-break-avoid="true"
                 className="flex items-center gap-1.5 pb-0.5 border-b mb-2"
@@ -217,7 +232,11 @@ export function MatrixTemplate({ cv, lang }: Props) {
 
           {/* Education */}
           {eduSection && (
-            <div className="cv-section">
+            <div
+              onClick={(e) => handleSectionClick(eduSection.id, e)}
+              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(eduSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(eduSection.title, lang, cv.defaultLanguage)}`}
+            >
               <div
                 data-page-break-avoid="true"
                 className="flex items-center gap-1.5 pb-0.5 border-b mb-2"
@@ -284,7 +303,11 @@ export function MatrixTemplate({ cv, lang }: Props) {
         <div className={`col-span-1 min-w-0 ${isCompact ? "space-y-2.5" : "space-y-3.5"}`}>
           {/* Languages */}
           {langSection && (
-            <div className="cv-section">
+            <div
+              onClick={(e) => handleSectionClick(langSection.id, e)}
+              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(langSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(langSection.title, lang, cv.defaultLanguage)}`}
+            >
               <div
                 data-page-break-avoid="true"
                 className="flex items-center gap-1.5 pb-0.5 border-b mb-1.5"
@@ -329,7 +352,11 @@ export function MatrixTemplate({ cv, lang }: Props) {
 
           {/* Skills */}
           {skillsSection && (
-            <div className="cv-section">
+            <div
+              onClick={(e) => handleSectionClick(skillsSection.id, e)}
+              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(skillsSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(skillsSection.title, lang, cv.defaultLanguage)}`}
+            >
               <h2
                 data-page-break-avoid="true"
                 className="text-xs font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b text-stone-900"
@@ -365,7 +392,11 @@ export function MatrixTemplate({ cv, lang }: Props) {
 
           {/* Certifications */}
           {certSection && (
-            <div className="cv-section">
+            <div
+              onClick={(e) => handleSectionClick(certSection.id, e)}
+              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(certSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(certSection.title, lang, cv.defaultLanguage)}`}
+            >
               <h2
                 data-page-break-avoid="true"
                 className="text-xs font-bold uppercase tracking-wider pb-0.5 mb-1 border-b text-stone-900"
@@ -408,7 +439,11 @@ export function MatrixTemplate({ cv, lang }: Props) {
 
           {/* Hobbies */}
           {hobbiesSection && (
-            <div className="cv-section">
+            <div
+              onClick={(e) => handleSectionClick(hobbiesSection.id, e)}
+              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(hobbiesSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(hobbiesSection.title, lang, cv.defaultLanguage)}`}
+            >
               <h2
                 data-page-break-avoid="true"
                 className="text-xs font-bold uppercase tracking-wider pb-0.5 mb-1 border-b text-stone-900"

@@ -32,6 +32,7 @@ interface Props {
   defaultLang: SupportedLanguage;
   isFirst: boolean;
   isLast: boolean;
+  isHighlighted?: boolean;
   onUpdate: (updater: (sec: CVSection) => CVSection) => void;
   onToggleVisibility: () => void;
   onMoveUp: () => void;
@@ -45,6 +46,7 @@ export function SectionCard({
   defaultLang,
   isFirst,
   isLast,
+  isHighlighted,
   onUpdate,
   onToggleVisibility,
   onMoveUp,
@@ -52,6 +54,12 @@ export function SectionCard({
   onDelete,
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(true);
+
+  React.useEffect(() => {
+    if (isHighlighted) {
+      setIsExpanded(true);
+    }
+  }, [isHighlighted]);
 
   const getSectionIcon = () => {
     switch (section.type) {
@@ -77,8 +85,11 @@ export function SectionCard({
 
   return (
     <div
-      className={`bg-white dark:bg-stone-900 rounded-2xl border transition-all shadow-xs ${
-        section.visible
+      id={`section-${section.id}`}
+      className={`bg-white dark:bg-stone-900 rounded-2xl border transition-all duration-300 shadow-xs ${
+        isHighlighted
+          ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 border-amber-500 dark:border-amber-500 shadow-md scale-[1.01]"
+          : section.visible
           ? "border-stone-200 dark:border-stone-800"
           : "border-stone-200/60 dark:border-stone-800/60 bg-stone-50/70 dark:bg-stone-950/40 opacity-70"
       }`}

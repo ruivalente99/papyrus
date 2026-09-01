@@ -21,6 +21,7 @@ interface Props {
   onSetTemplate: (t: TemplateId) => void;
   onUpdateTheme: (theme: Partial<CVDocument["theme"]>) => void;
   onExportJson: () => void;
+  onSelectSection?: (sectionId: string) => void;
 }
 
 const ACCENT_COLORS = [
@@ -38,6 +39,7 @@ export function CVPreviewContainer({
   lang,
   onSetTemplate,
   onUpdateTheme,
+  onSelectSection,
 }: Props) {
   const [zoom, setZoom] = useState<number>(0.85);
   const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
@@ -312,7 +314,7 @@ export function CVPreviewContainer({
             }}
             className="relative"
           >
-            <CVPage ref={pageRef} cv={cv} lang={lang} />
+            <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={onSelectSection} />
 
             {/* Visual A4 Page Break Guide when document exceeds 1 page */}
             {pageCount > 1 && (

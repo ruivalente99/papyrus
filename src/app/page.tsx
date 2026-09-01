@@ -11,6 +11,24 @@ import { Pencil, Eye, Loader2 } from "lucide-react";
 
 export default function BuilderPage() {
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
+  const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
+
+  const handleSelectSection = (sectionId: string) => {
+    setHighlightedSectionId(sectionId);
+    setMobileTab("edit");
+
+    setTimeout(() => {
+      const targetId = sectionId === "personal" ? "section-personal" : `section-${sectionId}`;
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 100);
+
+    setTimeout(() => {
+      setHighlightedSectionId((curr) => (curr === sectionId ? null : curr));
+    }, 2500);
+  };
 
   const {
     cv,
@@ -101,6 +119,7 @@ export default function BuilderPage() {
             <SectionList
               cv={cv}
               lang={activeLang}
+              highlightedSectionId={highlightedSectionId}
               onUpdatePersonalInfo={updatePersonalInfo}
               onUpdateSection={updateSection}
               onToggleSectionVisibility={toggleSectionVisibility}
@@ -123,6 +142,7 @@ export default function BuilderPage() {
             onSetTemplate={setTemplate}
             onUpdateTheme={updateTheme}
             onExportJson={exportJson}
+            onSelectSection={handleSelectSection}
           />
         </div>
       </div>

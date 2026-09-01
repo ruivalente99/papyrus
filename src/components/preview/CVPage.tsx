@@ -10,9 +10,10 @@ import { A4_W_PX, A4_H_PX } from "@/lib/pdfExport";
 interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
+  onSelectSection?: (sectionId: string) => void;
 }
 
-export const CVPage = forwardRef<HTMLDivElement, Props>(({ cv, lang }, ref) => {
+export const CVPage = forwardRef<HTMLDivElement, Props>(({ cv, lang, onSelectSection }, ref) => {
   const { template } = cv;
 
   return (
@@ -27,9 +28,15 @@ export const CVPage = forwardRef<HTMLDivElement, Props>(({ cv, lang }, ref) => {
         boxSizing: "border-box",
       }}
     >
-      {(template === "classic" || template === "latex") && <ClassicTemplate cv={cv} lang={lang} />}
-      {(template === "lateralis" || template === "canva") && <LateralisTemplate cv={cv} lang={lang} />}
-      {(template === "matrix" || template === "europass") && <MatrixTemplate cv={cv} lang={lang} />}
+      {(template === "classic" || template === "latex") && (
+        <ClassicTemplate cv={cv} lang={lang} onSelectSection={onSelectSection} />
+      )}
+      {(template === "lateralis" || template === "canva") && (
+        <LateralisTemplate cv={cv} lang={lang} onSelectSection={onSelectSection} />
+      )}
+      {(template === "matrix" || template === "europass") && (
+        <MatrixTemplate cv={cv} lang={lang} onSelectSection={onSelectSection} />
+      )}
     </div>
   );
 });

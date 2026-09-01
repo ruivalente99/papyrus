@@ -10,13 +10,19 @@ import { Globe, Mail, Phone, MapPin } from "lucide-react";
 interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
+  onSelectSection?: (sectionId: string) => void;
 }
 
-export function ClassicTemplate({ cv, lang }: Props) {
+export function ClassicTemplate({ cv, lang, onSelectSection }: Props) {
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#004f90";
   const isCompact = theme.fontSize === "compact";
   const isSpacious = theme.fontSize === "spacious";
+
+  const handleSectionClick = (sectionId: string, e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a")) return;
+    onSelectSection?.(sectionId);
+  };
 
   return (
     <div
@@ -33,7 +39,12 @@ export function ClassicTemplate({ cv, lang }: Props) {
       }}
     >
       {/* Header */}
-      <div data-page-break-avoid="true" className="text-center pb-2.5 border-b border-stone-200">
+      <div
+        data-page-break-avoid="true"
+        onClick={(e) => handleSectionClick("personal", e)}
+        className="text-center pb-2.5 border-b border-stone-200 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+        title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
+      >
         <h1
           className="text-2xl font-bold tracking-tight uppercase break-words"
           style={{ color: primaryColor }}
@@ -109,7 +120,12 @@ export function ClassicTemplate({ cv, lang }: Props) {
 
       {/* Profile Summary */}
       {personalInfo.summary && t(personalInfo.summary, lang, cv.defaultLanguage) && (
-        <div data-page-break-avoid="true" className="mt-2.5">
+        <div
+          data-page-break-avoid="true"
+          onClick={(e) => handleSectionClick("personal", e)}
+          className="mt-2.5 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+          title={lang === "pt" ? "Clique para editar perfil profissional" : "Click to edit summary"}
+        >
           <h2
             className="text-xs font-bold uppercase tracking-wider pb-0.5 border-b border-stone-300 mb-1"
             style={{ color: primaryColor }}
@@ -129,7 +145,12 @@ export function ClassicTemplate({ cv, lang }: Props) {
           const sectionTitle = t(section.title, lang, cv.defaultLanguage);
 
           return (
-            <div key={section.id} className="mt-2.5 cv-section">
+            <div
+              key={section.id}
+              onClick={(e) => handleSectionClick(section.id, e)}
+              className="mt-2.5 cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${sectionTitle}` : `Click to edit ${sectionTitle}`}
+            >
               <h2
                 data-page-break-avoid="true"
                 className="text-xs font-bold uppercase tracking-wider pb-0.5 border-b border-stone-300 mb-1.5"

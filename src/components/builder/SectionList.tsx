@@ -21,6 +21,7 @@ import {
 interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
+  highlightedSectionId?: string | null;
   onUpdatePersonalInfo: (updater: Partial<PersonalInfo> | ((prev: PersonalInfo) => PersonalInfo)) => void;
   onUpdateSection: (sectionId: string, updater: (sec: CVSection) => CVSection) => void;
   onToggleSectionVisibility: (sectionId: string) => void;
@@ -32,6 +33,7 @@ interface Props {
 export function SectionList({
   cv,
   lang,
+  highlightedSectionId,
   onUpdatePersonalInfo,
   onUpdateSection,
   onToggleSectionVisibility,
@@ -42,10 +44,25 @@ export function SectionList({
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isPersonalExpanded, setIsPersonalExpanded] = useState(true);
 
+  React.useEffect(() => {
+    if (highlightedSectionId === "personal") {
+      setIsPersonalExpanded(true);
+    }
+  }, [highlightedSectionId]);
+
+  const isPersonalHighlighted = highlightedSectionId === "personal";
+
   return (
     <div className="space-y-4 pb-12">
       {/* 1. Personal Info Card */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs transition-colors">
+      <div
+        id="section-personal"
+        className={`bg-white dark:bg-stone-900 rounded-2xl border shadow-xs transition-all duration-300 ${
+          isPersonalHighlighted
+            ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 border-amber-500 dark:border-amber-500 shadow-md scale-[1.01]"
+            : "border-stone-200 dark:border-stone-800"
+        }`}
+      >
         <div
           onClick={() => setIsPersonalExpanded(!isPersonalExpanded)}
           className="p-4 flex items-center justify-between gap-2 cursor-pointer select-none"
@@ -92,6 +109,7 @@ export function SectionList({
           defaultLang={cv.defaultLanguage}
           isFirst={idx === 0}
           isLast={idx === cv.sections.length - 1}
+          isHighlighted={highlightedSectionId === section.id}
           onUpdate={(updater) => onUpdateSection(section.id, updater)}
           onToggleVisibility={() => onToggleSectionVisibility(section.id)}
           onMoveUp={() => onMoveSection(section.id, "up")}

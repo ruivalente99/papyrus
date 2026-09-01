@@ -20,14 +20,20 @@ import { Mail, Phone, MapPin, Globe } from "lucide-react";
 interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
+  onSelectSection?: (sectionId: string) => void;
 }
 
-export function LateralisTemplate({ cv, lang }: Props) {
+export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#005555";
   const secondaryColor = theme.secondaryColor || "#007777";
   const isCompact = theme.fontSize === "compact";
   const isSpacious = theme.fontSize === "spacious";
+
+  const handleSectionClick = (sectionId: string, e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a")) return;
+    onSelectSection?.(sectionId);
+  };
 
   const expSection = sections.find((s): s is ExperienceSection => s.type === "experience" && s.visible);
   const eduSection = sections.find((s): s is EducationSection => s.type === "education" && s.visible);
@@ -58,34 +64,40 @@ export function LateralisTemplate({ cv, lang }: Props) {
         style={{ backgroundColor: "#f6faf9" }}
       >
         <div className={isCompact ? "space-y-3" : isSpacious ? "space-y-4.5" : "space-y-3.5"}>
-          {/* Avatar / Photo */}
-          {personalInfo.showPhoto && personalInfo.photoUrl && (
-            <div data-page-break-avoid="true" className="flex justify-center mb-2">
-              <div
-                className={`overflow-hidden border-3 shadow-xs ${
-                  isCompact ? "w-22 h-22" : "w-24 h-24"
-                } ${
-                  personalInfo.photoShape === "circle"
-                    ? "rounded-full"
-                    : personalInfo.photoShape === "rounded"
-                    ? "rounded-2xl"
-                    : "rounded-none"
-                }`}
-                style={{ borderColor: primaryColor }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={personalInfo.photoUrl}
-                  alt={personalInfo.fullName}
-                  className="w-full h-full object-cover select-none pointer-events-none"
-                  draggable={false}
-                />
+          {/* Personal Info: Avatar & Contacts */}
+          <div
+            onClick={(e) => handleSectionClick("personal", e)}
+            className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
+            title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
+          >
+            {/* Avatar / Photo */}
+            {personalInfo.showPhoto && personalInfo.photoUrl && (
+              <div data-page-break-avoid="true" className="flex justify-center mb-2">
+                <div
+                  className={`overflow-hidden border-3 shadow-xs ${
+                    isCompact ? "w-22 h-22" : "w-24 h-24"
+                  } ${
+                    personalInfo.photoShape === "circle"
+                      ? "rounded-full"
+                      : personalInfo.photoShape === "rounded"
+                      ? "rounded-2xl"
+                      : "rounded-none"
+                  }`}
+                  style={{ borderColor: primaryColor }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={personalInfo.photoUrl}
+                    alt={personalInfo.fullName}
+                    className="w-full h-full object-cover select-none pointer-events-none"
+                    draggable={false}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Contact Details */}
-          <div data-page-break-avoid="true" className="space-y-1.5 text-xs">
+            {/* Contact Details */}
+            <div data-page-break-avoid="true" className="space-y-1.5 text-xs">
             {personalInfo.phone && typeof personalInfo.phone === "string" && (
               <div className="flex items-center gap-1.5 text-stone-700">
                 <span
@@ -175,11 +187,17 @@ export function LateralisTemplate({ cv, lang }: Props) {
                   </div>
                 );
               })}
+            </div>
           </div>
 
           {/* Languages Sidebar */}
           {langSection && (
-            <div data-page-break-avoid="true">
+            <div
+              data-page-break-avoid="true"
+              onClick={(e) => handleSectionClick(langSection.id, e)}
+              className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(langSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(langSection.title, lang, cv.defaultLanguage)}`}
+            >
               <h3
                 className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b-2"
                 style={{ color: primaryColor, borderColor: primaryColor }}
@@ -205,7 +223,12 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
           {/* Skills Sidebar */}
           {skillsSection && (
-            <div data-page-break-avoid="true">
+            <div
+              data-page-break-avoid="true"
+              onClick={(e) => handleSectionClick(skillsSection.id, e)}
+              className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(skillsSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(skillsSection.title, lang, cv.defaultLanguage)}`}
+            >
               <h3
                 className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b-2"
                 style={{ color: primaryColor, borderColor: primaryColor }}
@@ -240,7 +263,12 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
           {/* Hobbies / Interests Sidebar */}
           {hobbiesSection && (
-            <div data-page-break-avoid="true">
+            <div
+              data-page-break-avoid="true"
+              onClick={(e) => handleSectionClick(hobbiesSection.id, e)}
+              className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
+              title={lang === "pt" ? `Clique para editar ${t(hobbiesSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(hobbiesSection.title, lang, cv.defaultLanguage)}`}
+            >
               <h3
                 className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b-2"
                 style={{ color: primaryColor, borderColor: primaryColor }}
@@ -275,7 +303,13 @@ export function LateralisTemplate({ cv, lang }: Props) {
         }`}
       >
         {/* Name and Header */}
-        <div data-page-break-avoid="true" className="border-b-2 pb-2" style={{ borderColor: primaryColor }}>
+        <div
+          data-page-break-avoid="true"
+          onClick={(e) => handleSectionClick("personal", e)}
+          className="border-b-2 pb-2 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+          style={{ borderColor: primaryColor }}
+          title={lang === "pt" ? "Clique para editar perfil pessoal" : "Click to edit profile"}
+        >
           <h1
             className="text-2xl font-black tracking-wider uppercase leading-none break-words"
             style={{ color: primaryColor }}
@@ -296,7 +330,11 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
         {/* Experience Timeline */}
         {expSection && (
-          <div className="cv-section">
+          <div
+            onClick={(e) => handleSectionClick(expSection.id, e)}
+            className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+            title={lang === "pt" ? `Clique para editar ${t(expSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(expSection.title, lang, cv.defaultLanguage)}`}
+          >
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-2 flex items-center gap-2 border-b"
@@ -373,7 +411,11 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
         {/* Education Timeline */}
         {eduSection && (
-          <div className="cv-section">
+          <div
+            onClick={(e) => handleSectionClick(eduSection.id, e)}
+            className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+            title={lang === "pt" ? `Clique para editar ${t(eduSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(eduSection.title, lang, cv.defaultLanguage)}`}
+          >
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-2 flex items-center gap-2 border-b"
@@ -447,7 +489,11 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
         {/* Certifications */}
         {certSection && (
-          <div className="cv-section">
+          <div
+            onClick={(e) => handleSectionClick(certSection.id, e)}
+            className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+            title={lang === "pt" ? `Clique para editar ${t(certSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(certSection.title, lang, cv.defaultLanguage)}`}
+          >
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b"
@@ -492,7 +538,11 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
         {/* Custom Section */}
         {customSection && (
-          <div className="cv-section">
+          <div
+            onClick={(e) => handleSectionClick(customSection.id, e)}
+            className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+            title={lang === "pt" ? `Clique para editar ${t(customSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(customSection.title, lang, cv.defaultLanguage)}`}
+          >
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b"
