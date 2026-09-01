@@ -19,6 +19,9 @@ import {
   Code2,
   Plus,
   BookOpen,
+  Undo2,
+  Redo2,
+  Command,
 } from "lucide-react";
 
 interface Props {
@@ -31,6 +34,12 @@ interface Props {
   onImportJson: (data: CVDocument) => void;
   onExportJson: () => void;
   linterReport: LinterReport;
+  canUndo?: boolean;
+  canRedo?: boolean;
+  onUndo?: () => void;
+  onRedo?: () => void;
+  onOpenCommandPalette?: () => void;
+  saveStatus?: "saved" | "saving";
 }
 
 export function BuilderHeader({
@@ -43,6 +52,12 @@ export function BuilderHeader({
   onImportJson,
   onExportJson,
   linterReport,
+  canUndo = false,
+  canRedo = false,
+  onUndo,
+  onRedo,
+  onOpenCommandPalette,
+  saveStatus = "saved",
 }: Props) {
   const [showPresets, setShowPresets] = useState(false);
   const [showLinterModal, setShowLinterModal] = useState(false);
@@ -69,7 +84,7 @@ export function BuilderHeader({
   return (
     <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-2.5 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1.5 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors">
       {/* Brand: Minimalist Logo + lowercase papyrus */}
-      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <Link
           href="/"
           title="papyrus editor"
@@ -80,6 +95,72 @@ export function BuilderHeader({
             papyrus
           </span>
         </Link>
+
+        {/* Undo / Redo Controls (Desktop / Tablet) */}
+        {onUndo && onRedo && (
+          <div className="hidden lg:flex items-center gap-0.5 bg-stone-100 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-200 dark:border-stone-700">
+            <button
+              type="button"
+              onClick={onUndo}
+              disabled={!canUndo}
+              title={activeLang === "pt" ? "Desfazer (⌘Z / Ctrl+Z)" : "Undo (⌘Z / Ctrl+Z)"}
+              className="p-1 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            >
+              <Undo2 size={13} />
+            </button>
+            <button
+              type="button"
+              onClick={onRedo}
+              disabled={!canRedo}
+              title={activeLang === "pt" ? "Refazer (⌘⇧Z / Ctrl+Y)" : "Redo (⌘⇧Z / Ctrl+Y)"}
+              className="p-1 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+            >
+              <Redo2 size={13} />
+            </button>
+          </div>
+        )}
+
+        {/* Command Palette Button */}
+        {onOpenCommandPalette && (
+          <button
+            type="button"
+            onClick={onOpenCommandPalette}
+            title={activeLang === "pt" ? "Abrir Paleta de Comandos (⌘K)" : "Open Command Palette (⌘K)"}
+            className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono font-bold rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 border border-stone-200 dark:border-stone-700 hover:border-amber-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors shadow-2xs active:scale-95"
+          >
+            <Command size={11} className="text-amber-600 dark:text-amber-400" />
+            <span>⌘K</span>
+          </button>
+        )}
+
+        {/* Save Status Indicator */}
+        <div
+          title={
+            saveStatus === "saving"
+              ? activeLang === "pt"
+                ? "A guardar alterações..."
+                : "Saving changes..."
+              : activeLang === "pt"
+              ? "Todas as alterações guardadas localmente"
+              : "All changes saved locally"
+          }
+          className="hidden 2xl:flex items-center gap-1 text-[10px] font-mono text-stone-400 dark:text-stone-500 select-none"
+        >
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              saveStatus === "saving" ? "bg-amber-500 animate-ping" : "bg-emerald-500"
+            }`}
+          />
+          <span>
+            {saveStatus === "saving"
+              ? activeLang === "pt"
+                ? "A guardar..."
+                : "Saving..."
+              : activeLang === "pt"
+              ? "Guardado"
+              : "Saved"}
+          </span>
+        </div>
       </div>
 
       {/* Center Controls: Language Switcher, Theme Selector, Linter Badge */}
@@ -243,6 +324,7 @@ export function BuilderHeader({
         isOpen={showLinterModal}
         onClose={() => setShowLinterModal(false)}
         lang={activeLang}
+        cv={cv}
       />
 
       <LatexModal

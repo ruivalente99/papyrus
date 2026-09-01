@@ -7,6 +7,7 @@ import { IconPicker } from "../IconPicker";
 import { ICON_OPTIONS } from "@/lib/iconMap";
 import { User, Plus, Trash2, Dices, Sparkles } from "lucide-react";
 import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
+import { compressImageFile } from "@/lib/imageCompressor";
 
 interface Props {
   data: PersonalInfo;
@@ -18,19 +19,29 @@ interface Props {
 export function PersonalInfoForm({ data, lang, onChange }: Props) {
   const isPt = lang === "pt";
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+    try {
+      const optimizedUrl = await compressImageFile(file, 400, 0.85);
       onChange({
-        photoUrl: ev.target?.result as string,
+        photoUrl: optimizedUrl,
         isCustomPhoto: true,
         showPhoto: true,
       });
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
+    } catch (err) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        onChange({
+          photoUrl: ev.target?.result as string,
+          isCustomPhoto: true,
+          showPhoto: true,
+        });
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      e.target.value = "";
+    }
   };
 
   const handleRerollDylanAvatar = () => {

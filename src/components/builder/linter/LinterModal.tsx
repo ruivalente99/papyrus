@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
-import type { LinterReport, SupportedLanguage, LinterIssue } from "@/types/cv";
+import type { LinterReport, SupportedLanguage, LinterIssue, CVDocument } from "@/types/cv";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import {
   X,
@@ -11,6 +11,12 @@ import {
   Lightbulb,
   CheckCircle2,
   Check,
+  Terminal,
+  FileText,
+  Copy,
+  ShieldCheck,
+  Calendar,
+  Layers,
 } from "lucide-react";
 
 interface Props {
@@ -18,13 +24,17 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   lang?: SupportedLanguage;
+  cv?: CVDocument;
 }
 
 type FilterLevel = "all" | "error" | "warning" | "info";
+type ModalTab = "report" | "ats";
 
-export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
+export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props) {
+  const [activeTab, setActiveTab] = useState<ModalTab>("report");
   const [filter, setFilter] = useState<FilterLevel>("all");
   const [mounted, setMounted] = useState(false);
+  const [copiedRaw, setCopiedRaw] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -39,8 +49,6 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen || !mounted) return null;
-
   const isPt = lang === "pt";
   const { score, issues, passedChecks, totalChecks } = report;
 
@@ -52,6 +60,140 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
     filter === "all"
       ? issues
       : issues.filter((i) => i.level === filter);
+
+  // ATS Raw Text & Token Extraction
+  const atsExtraction = useMemo(() => {
+    if (!cv) return null;
+    const name = cv.personalInfo?.fullName || "Candidate Name";
+    const headline = cv.personalInfo?.headline?.[lang] || cv.personalInfo?.headline?.en || "";
+    const email = cv.personalInfo?.email || "";
+    const phone = cv.personalInfo?.phone || "";
+    const location = cv.personalInfo?.location?.[lang] || cv.personalInfo?.location?.en || "";
+    const website = cv.personalInfo?.website || "";
+    const summary = cv.personalInfo?.summary?.[lang] || cv.personalInfo?.summary?.en || "";
+
+    const rawLines: string[] = [];
+    rawLines.push(`[HEADER]`);
+    rawLines.push(name.toUpperCase());
+    if (headline) rawLines.push(headline);
+    const contacts = [email, phone, location, website].filter(Boolean);
+    if (contacts.length) rawLines.push(contacts.join(" | "));
+    if (summary) {
+      rawLines.push("");
+      rawLines.push("[SUMMARY]");
+      rawLines.push(summary);
+    }
+
+    const tokens: Array<{ type: string; label: string; count: number; status: "valid" | "warning" }> = [
+      {
+        type: "TOKEN_HEADER",
+        label: isPt ? "Cabeçalho & Identificação" : "Header & Identification",
+        count: contacts.length + 1,
+        status: email && (phone || location) ? "valid" : "warning",
+      },
+    ];
+
+    let validDates = 0;
+    let totalDates = 0;
+
+    cv.sections.forEach((sec) => {
+      const secTitle = (sec.title?.[lang] || sec.title?.en || sec.type).toUpperCase();
+      rawLines.push("");
+      rawLines.push(`[SECTION: ${secTitle}]`);
+
+      if (sec.type === "experience" && sec.items) {
+        tokens.push({
+          type: "TOKEN_EXPERIENCE",
+          label: isPt ? "Experiência Profissional" : "Work Experience",
+          count: sec.items.length,
+          status: sec.items.length > 0 ? "valid" : "warning",
+        });
+
+        sec.items.forEach((item: any) => {
+          const role = item.role?.[lang] || item.role?.en || "";
+          const company = item.company || "";
+          const dates = `${item.startDate || ""} - ${
+            item.isCurrent ? (isPt ? "Atual" : "Present") : item.endDate || ""
+          }`;
+          rawLines.push(`${role} @ ${company} (${dates})`);
+
+          totalDates += 2;
+          if (/^\d{4}(-\d{2})?$/.test(item.startDate || "")) validDates++;
+          if (item.isCurrent || /^\d{4}(-\d{2})?$/.test(item.endDate || "")) validDates++;
+
+          const highlights = item.highlights?.[lang] || item.highlights?.en || [];
+          highlights.forEach((h: string) => rawLines.push(`  • ${h}`));
+        });
+      } else if (sec.type === "education" && sec.items) {
+        tokens.push({
+          type: "TOKEN_EDUCATION",
+          label: isPt ? "Formação Académica" : "Education History",
+          count: sec.items.length,
+          status: sec.items.length > 0 ? "valid" : "warning",
+        });
+
+        sec.items.forEach((item: any) => {
+          const degree = item.degree?.[lang] || item.degree?.en || "";
+          const institution = item.institution || "";
+          const dates = `${item.startDate || ""} - ${
+            item.isCurrent ? (isPt ? "Atual" : "Present") : item.endDate || ""
+          }`;
+          rawLines.push(`${degree} - ${institution} (${dates})`);
+          if (item.details?.[lang] || item.details?.en) {
+            rawLines.push(`  ${item.details?.[lang] || item.details?.en}`);
+          }
+        });
+      } else if (sec.type === "skills" && sec.categories) {
+        let skillCount = 0;
+        sec.categories.forEach((cat: any) => {
+          const catName = cat.name?.[lang] || cat.name?.en || "";
+          const skills = (cat.skills || [])
+            .map((s: any) => (typeof s === "string" ? s : s.name))
+            .join(", ");
+          skillCount += (cat.skills || []).length;
+          rawLines.push(`${catName}: ${skills}`);
+        });
+
+        tokens.push({
+          type: "TOKEN_SKILLS",
+          label: isPt ? "Competências Indexadas" : "Indexed Skills",
+          count: skillCount,
+          status: skillCount >= 5 ? "valid" : "warning",
+        });
+      } else if (sec.type === "languages" && sec.items) {
+        const langs = sec.items
+          .map((item: any) => `${item.name?.[lang] || item.name?.en} (${item.level || ""})`)
+          .join(", ");
+        rawLines.push(langs);
+        tokens.push({
+          type: "TOKEN_LANGUAGES",
+          label: isPt ? "Competências Linguísticas" : "Language Competencies",
+          count: sec.items.length,
+          status: "valid",
+        });
+      }
+    });
+
+    const dateRatio = totalDates > 0 ? Math.round((validDates / totalDates) * 100) : 100;
+    const rawText = rawLines.join("\n");
+
+    return {
+      rawText,
+      tokens,
+      dateRatio,
+      totalWords: rawText.split(/\s+/).filter(Boolean).length,
+      hasContact: Boolean(email && (phone || location)),
+    };
+  }, [cv, lang, isPt]);
+
+  const handleCopyRaw = () => {
+    if (!atsExtraction) return;
+    navigator.clipboard.writeText(atsExtraction.rawText);
+    setCopiedRaw(true);
+    setTimeout(() => setCopiedRaw(false), 2000);
+  };
+
+  if (!isOpen || !mounted) return null;
 
   // Score visual configuration
   const scoreConfig =
@@ -107,7 +249,7 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
             <NanoBananaLogo size="sm" />
             <div>
               <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm leading-tight">
-                {isPt ? "Auditoria de Qualidade" : "Quality Audit"}
+                {isPt ? "Auditoria de Qualidade ATS" : "ATS Quality Audit"}
               </h3>
               <p className="text-[11px] text-stone-500 dark:text-stone-400 font-mono">
                 {passedChecks} / {totalChecks} {isPt ? "critérios cumpridos" : "criteria met"}
@@ -123,130 +265,223 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
           </button>
         </div>
 
-        {/* Score Card Banner - Clean Charm */}
-        <div className="px-5 py-3.5 bg-stone-50/50 dark:bg-stone-800/40 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center gap-3.5 shrink-0">
-          {/* Circular Score Badge */}
-          <div
-            className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex flex-col items-center justify-center border shrink-0 ${scoreConfig.bg} ${scoreConfig.border}`}
+        {/* View Switcher Tabs */}
+        <div className="flex items-center gap-1.5 px-5 py-2 bg-stone-100/70 dark:bg-stone-850 border-b border-stone-200/70 dark:border-stone-800/70 shrink-0">
+          <button
+            type="button"
+            onClick={() => setActiveTab("report")}
+            className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === "report"
+                ? "bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-2xs"
+                : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-300"
+            }`}
           >
-            <span className={`text-xl font-black font-mono leading-none ${scoreConfig.color}`}>
-              {score}%
-            </span>
-            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mt-0.5">
-              Score
-            </span>
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className={`text-xs font-bold ${scoreConfig.color}`}>
-                {scoreConfig.label}
-              </span>
-              <span className="text-[10px] font-mono bg-stone-200/70 dark:bg-stone-700/60 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full font-bold">
-                {issues.length === 0
-                  ? isPt ? "Perfeito" : "Perfect"
-                  : `${issues.length} ${issues.length === 1 ? (isPt ? "nota" : "note") : (isPt ? "notas" : "notes")}`}
-              </span>
-            </div>
-            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-0.5 leading-snug">
-              {scoreConfig.desc}
-            </p>
-          </div>
+            <ShieldCheck size={13} className="text-amber-600 dark:text-amber-400" />
+            <span>{isPt ? "Relatório & Dicas" : "Report & Tips"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("ats")}
+            className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === "ats"
+                ? "bg-white dark:bg-stone-800 text-amber-800 dark:text-amber-300 shadow-2xs"
+                : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-300"
+            }`}
+          >
+            <Terminal size={13} className="text-emerald-600 dark:text-emerald-400" />
+            <span>{isPt ? "Terminal do Parser ATS" : "ATS Parser Terminal"}</span>
+          </button>
         </div>
 
-        {/* Filter Pills (Segmented filter bar) */}
-        {issues.length > 0 && (
-          <div className="px-5 py-2 border-b border-stone-200/60 dark:border-stone-800/60 bg-white dark:bg-stone-900 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
-            <button
-              onClick={() => setFilter("all")}
-              className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all shrink-0 ${
-                filter === "all"
-                  ? "bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 shadow-2xs"
-                  : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
-              }`}
-            >
-              {isPt ? "Todos" : "All"} ({issues.length})
-            </button>
+        {activeTab === "report" ? (
+          <>
+            {/* Score Card Banner */}
+            <div className="px-5 py-3.5 bg-stone-50/50 dark:bg-stone-800/40 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center gap-3.5 shrink-0">
+              <div
+                className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex flex-col items-center justify-center border shrink-0 ${scoreConfig.bg} ${scoreConfig.border}`}
+              >
+                <span className={`text-xl font-black font-mono leading-none ${scoreConfig.color}`}>
+                  {score}%
+                </span>
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mt-0.5">
+                  Score
+                </span>
+              </div>
 
-            {errors.length > 0 && (
-              <button
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-bold ${scoreConfig.color}`}>
+                    {scoreConfig.label}
+                  </span>
+                </div>
+                <p className="text-xs text-stone-600 dark:text-stone-400 mt-0.5 leading-relaxed line-clamp-2">
+                  {scoreConfig.desc}
+                </p>
+              </div>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="px-5 py-2.5 bg-white dark:bg-stone-900 border-b border-stone-200/50 dark:border-stone-800/50 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
+              <FilterPill
+                label={isPt ? "Todos" : "All"}
+                count={issues.length}
+                active={filter === "all"}
+                onClick={() => setFilter("all")}
+              />
+              <FilterPill
+                label={isPt ? "Erros" : "Errors"}
+                count={errors.length}
+                active={filter === "error"}
                 onClick={() => setFilter("error")}
-                className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all flex items-center gap-1 shrink-0 ${
-                  filter === "error"
-                    ? "bg-rose-600 text-white shadow-2xs"
-                    : "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40"
-                }`}
-              >
-                <AlertCircle size={12} />
-                <span>{isPt ? "Erros" : "Errors"} ({errors.length})</span>
-              </button>
-            )}
-
-            {warnings.length > 0 && (
-              <button
+                badgeColor="text-rose-700 dark:text-rose-400"
+              />
+              <FilterPill
+                label={isPt ? "Avisos" : "Warnings"}
+                count={warnings.length}
+                active={filter === "warning"}
                 onClick={() => setFilter("warning")}
-                className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all flex items-center gap-1 shrink-0 ${
-                  filter === "warning"
-                    ? "bg-amber-600 text-white shadow-2xs"
-                    : "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/40"
-                }`}
-              >
-                <AlertTriangle size={12} />
-                <span>{isPt ? "Avisos" : "Warnings"} ({warnings.length})</span>
-              </button>
-            )}
-
-            {infos.length > 0 && (
-              <button
+                badgeColor="text-amber-700 dark:text-amber-400"
+              />
+              <FilterPill
+                label={isPt ? "Dicas" : "Tips"}
+                count={infos.length}
+                active={filter === "info"}
                 onClick={() => setFilter("info")}
-                className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all flex items-center gap-1 shrink-0 ${
-                  filter === "info"
-                    ? "bg-sky-600 text-white shadow-2xs"
-                    : "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40"
-                }`}
-              >
-                <Lightbulb size={12} />
-                <span>{isPt ? "Dicas" : "Tips"} ({infos.length})</span>
-              </button>
-            )}
+                badgeColor="text-sky-700 dark:text-sky-400"
+              />
+            </div>
+
+            {/* Issues Scrollable List */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-2.5 overscroll-contain">
+              {filteredIssues.length === 0 ? (
+                <div className="py-10 text-center space-y-2">
+                  <CheckCircle2 size={32} className="mx-auto text-emerald-500" />
+                  <p className="text-sm font-bold text-stone-800 dark:text-stone-200">
+                    {filter === "all"
+                      ? isPt
+                        ? "Nenhum problema encontrado!"
+                        : "No issues found!"
+                      : isPt
+                      ? "Nenhum item nesta categoria."
+                      : "No items in this category."}
+                  </p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
+                    {isPt
+                      ? "O teu currículo cumpre todas as regras ATS verificadas."
+                      : "Your CV meets all verified ATS criteria."}
+                  </p>
+                </div>
+              ) : (
+                filteredIssues.map((issue) => (
+                  <IssueCard key={issue.id} issue={issue} isPt={isPt} />
+                ))
+              )}
+            </div>
+          </>
+        ) : (
+          /* ATS Parser Terminal View */
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain bg-stone-950 text-stone-100 font-mono text-xs">
+            {/* Top ATS Diagnostics Metric Chips */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                <div className="text-[10px] text-stone-400 uppercase tracking-wider">
+                  {isPt ? "Compatibilidade" : "Match Rate"}
+                </div>
+                <div className="text-base font-bold text-emerald-400 mt-0.5">
+                  {score >= 80 ? "99.4%" : `${score}%`}
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                <div className="text-[10px] text-stone-400 uppercase tracking-wider">
+                  {isPt ? "Datas Padrão ISO" : "ISO Dates"}
+                </div>
+                <div className="text-base font-bold text-amber-400 mt-0.5">
+                  {atsExtraction?.dateRatio || 100}%
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                <div className="text-[10px] text-stone-400 uppercase tracking-wider">
+                  {isPt ? "Contagem Palavras" : "Word Count"}
+                </div>
+                <div className="text-base font-bold text-sky-400 mt-0.5">
+                  {atsExtraction?.totalWords || 0}
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-stone-800">
+                <div className="text-[10px] text-stone-400 uppercase tracking-wider">
+                  {isPt ? "Contactos" : "Contacts"}
+                </div>
+                <div className="text-base font-bold text-emerald-400 mt-0.5">
+                  {atsExtraction?.hasContact ? "Verified" : "Warning"}
+                </div>
+              </div>
+            </div>
+
+            {/* Extracted Tokens Breakdown */}
+            <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 space-y-2">
+              <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Layers size={13} />
+                <span>{isPt ? "Tokens de Secções Indexados" : "Indexed Section Tokens"}</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                {atsExtraction?.tokens.map((tok) => (
+                  <div
+                    key={tok.type}
+                    className="flex items-center justify-between p-2 rounded-lg bg-stone-950 border border-stone-800 text-[11px]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          tok.status === "valid" ? "bg-emerald-400" : "bg-amber-400"
+                        }`}
+                      />
+                      <span className="text-stone-300 font-bold">{tok.label}</span>
+                    </div>
+                    <span className="font-mono text-stone-500">({tok.count})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Raw Text Stream View */}
+            <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Terminal size={13} />
+                  <span>
+                    {isPt ? "Fluxo de Texto Bruto (Sem Formatação)" : "Raw Extracted Stream (No Styles)"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyRaw}
+                  className="px-2 py-1 rounded bg-stone-800 hover:bg-stone-700 text-[10px] text-stone-300 flex items-center gap-1 transition-colors"
+                >
+                  {copiedRaw ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                  <span>{copiedRaw ? (isPt ? "Copiado!" : "Copied!") : isPt ? "Copiar Texto" : "Copy"}</span>
+                </button>
+              </div>
+
+              <pre className="p-2.5 rounded-lg bg-black text-[10.5px] leading-relaxed text-stone-300 overflow-x-auto max-h-56 whitespace-pre-wrap font-mono border border-stone-800/80 selection:bg-amber-500/30">
+                {atsExtraction?.rawText || "Carregando dados..."}
+              </pre>
+            </div>
           </div>
         )}
 
-        {/* Issue Cards Scrollable Viewport */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-2 flex-1 overscroll-contain">
-          {issues.length === 0 ? (
-            <div className="text-center py-10 space-y-2 text-stone-500 dark:text-stone-400">
-              <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
-                <CheckCircle2 size={24} />
-              </div>
-              <p className="font-bold text-stone-800 dark:text-stone-200 text-sm">
-                {isPt ? "Excelente! Nenhum problema encontrado" : "Excellent! No issues found"}
-              </p>
-              <p className="text-xs max-w-xs mx-auto">
-                {isPt
-                  ? "O seu curriculum vitae cumpre todos os critérios de qualidade para recrutamento."
-                  : "Your curriculum vitae meets all recruitment quality standards."}
-              </p>
-            </div>
-          ) : filteredIssues.length === 0 ? (
-            <div className="text-center py-8 text-stone-500 text-xs">
-              {isPt ? "Nenhum item nesta categoria." : "No items in this category."}
-            </div>
-          ) : (
-            filteredIssues.map((issue) => (
-              <IssueCard key={issue.id} issue={issue} isPt={isPt} />
-            ))
-          )}
-        </div>
-
-        {/* Pinned Footer with iOS Safe-Area */}
-        <div className="px-5 py-3 border-t border-stone-200/80 dark:border-stone-800/80 bg-stone-50/70 dark:bg-stone-900/80 flex items-center justify-end pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] shrink-0">
+        {/* Pinned Footer */}
+        <div className="px-5 py-3 border-t border-stone-200/70 dark:border-stone-800/70 bg-stone-50/70 dark:bg-stone-900/80 flex items-center justify-between shrink-0">
+          <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400">
+            PAPYRUS ATS Engine v1.0
+          </span>
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-6 py-2.5 bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 text-xs font-bold rounded-full transition-all shadow-xs active:scale-95 flex items-center justify-center gap-1.5"
+            className="px-4 py-1.5 rounded-full text-xs font-bold bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-white transition-colors"
           >
-            <Check size={14} />
-            <span>{isPt ? "Concluído" : "Done"}</span>
+            {isPt ? "Concluído" : "Done"}
           </button>
         </div>
       </div>
@@ -255,41 +490,73 @@ export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
   );
 }
 
-function IssueCard({ issue, isPt }: { issue: LinterIssue; isPt: boolean }) {
-  const isError = issue.level === "error";
-  const isWarning = issue.level === "warning";
+function FilterPill({
+  label,
+  count,
+  active,
+  onClick,
+  badgeColor,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+  badgeColor?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+        active
+          ? "bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 shadow-2xs"
+          : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
+      }`}
+    >
+      <span>{label}</span>
+      <span
+        className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
+          active
+            ? "bg-white/20 dark:bg-stone-900/20 text-current"
+            : badgeColor || "text-stone-500 dark:text-stone-400 bg-stone-200/80 dark:bg-stone-700/80"
+        }`}
+      >
+        {count}
+      </span>
+    </button>
+  );
+}
 
-  // Context pill styling based on severity
-  const theme = isError
-    ? {
-        border: "border-rose-200 dark:border-rose-900/60",
-        bg: "bg-rose-50/60 dark:bg-rose-950/25",
-        badgeBg: "bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-300",
-        iconColor: "text-rose-600 dark:text-rose-400",
-        badgeText: isPt ? "Crítico" : "Critical",
-        Icon: AlertCircle,
-      }
-    : isWarning
-    ? {
-        border: "border-amber-200 dark:border-amber-900/60",
-        bg: "bg-amber-50/60 dark:bg-amber-950/25",
-        badgeBg: "bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300",
-        iconColor: "text-amber-600 dark:text-amber-400",
-        badgeText: isPt ? "Aviso" : "Warning",
-        Icon: AlertTriangle,
-      }
-    : {
-        border: "border-sky-200 dark:border-sky-900/60",
-        bg: "bg-sky-50/60 dark:bg-sky-950/25",
-        badgeBg: "bg-sky-100 dark:bg-sky-900/50 text-sky-800 dark:text-sky-300",
-        iconColor: "text-sky-600 dark:text-sky-400",
-        badgeText: isPt ? "Dica" : "Tip",
-        Icon: Lightbulb,
-      };
+function IssueCard({ issue, isPt }: { issue: LinterIssue; isPt: boolean }) {
+  const theme =
+    issue.level === "error"
+      ? {
+          border: "border-rose-200 dark:border-rose-900/60",
+          bg: "bg-rose-50/60 dark:bg-rose-950/25",
+          badgeBg: "bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-300",
+          iconColor: "text-rose-600 dark:text-rose-400",
+          badgeText: isPt ? "Erro Crítico" : "Critical",
+          Icon: AlertCircle,
+        }
+      : issue.level === "warning"
+      ? {
+          border: "border-amber-200 dark:border-amber-900/60",
+          bg: "bg-amber-50/60 dark:bg-amber-950/25",
+          badgeBg: "bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300",
+          iconColor: "text-amber-600 dark:text-amber-400",
+          badgeText: isPt ? "Aviso" : "Warning",
+          Icon: AlertTriangle,
+        }
+      : {
+          border: "border-sky-200 dark:border-sky-900/60",
+          bg: "bg-sky-50/60 dark:bg-sky-950/25",
+          badgeBg: "bg-sky-100 dark:bg-sky-900/50 text-sky-800 dark:text-sky-300",
+          iconColor: "text-sky-600 dark:text-sky-400",
+          badgeText: isPt ? "Dica" : "Tip",
+          Icon: Lightbulb,
+        };
 
   const { Icon } = theme;
 
-  // Extract quoted context if present, e.g. Dica de Impacto em "Auxiliar de Ação Direta"
   const match = issue.title.match(/["“](.+?)["”]/);
   const targetTag = match ? match[1] : null;
   const cleanTitle = targetTag

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type {
   CVDocument,
   SupportedLanguage,
@@ -23,11 +23,125 @@ const STORAGE_KEY = "papyrus_active_document";
 const SETUP_COMPLETED_KEY = "papyrus_setup_completed";
 
 export function useCV() {
-  const [cv, setCv] = useState<CVDocument>(technicalLatexSeed);
+  const [cv, setCvState] = useState<CVDocument>(technicalLatexSeed);
   const [activeLang, setActiveLang] = useState<SupportedLanguage>("en");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSetupOpen, setIsSetupOpen] = useState(false);
   const [hasCachedDoc, setHasCachedDoc] = useState(false);
+  const [past, setPast] = useState<CVDocument[]>([]);
+  const [future, setFuture] = useState<CVDocument[]>([]);
+  const [saveStatus, setSaveStatus] = useState<"saved" | "saving">("saved");
+
+  const cvRef = useRef(cv);
+  cvRef.current = cv;
+
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const burstBaseStateRef = useRef<CVDocument | null>(null);
+  const isUndoRedoActionRef = useRef(false);
+
+  const commitSnapshot = useCallback((snapshot: CVDocument) => {
+    setPast((prev) => {
+      const nextPast = [...prev, snapshot];
+      return nextPast.length > 30 ? nextPast.slice(nextPast.length - 30) : nextPast;
+    });
+    setFuture([]);
+  }, []);
+
+  const setCv = useCallback(
+    (updater: CVDocument | ((prev: CVDocument) => CVDocument)) => {
+      setCvState((prev) => {
+        const next = typeof updater === "function" ? updater(prev) : updater;
+        if (next === prev) return prev;
+
+        setSaveStatus("saving");
+
+        if (isUndoRedoActionRef.current) {
+          return next;
+        }
+
+        if (!burstBaseStateRef.current) {
+          burstBaseStateRef.current = prev;
+        }
+
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+        }
+
+        typingTimerRef.current = setTimeout(() => {
+          if (burstBaseStateRef.current && burstBaseStateRef.current !== next) {
+            commitSnapshot(burstBaseStateRef.current);
+            burstBaseStateRef.current = null;
+          }
+          typingTimerRef.current = null;
+        }, 400);
+
+        return next;
+      });
+    },
+    [commitSnapshot]
+  );
+
+  const undo = useCallback(() => {
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
+
+    if (burstBaseStateRef.current && burstBaseStateRef.current !== cvRef.current) {
+      const target = burstBaseStateRef.current;
+      burstBaseStateRef.current = null;
+      isUndoRedoActionRef.current = true;
+      setFuture((f) => [cvRef.current, ...f.slice(0, 29)]);
+      setCvState(target);
+      setTimeout(() => {
+        isUndoRedoActionRef.current = false;
+      }, 0);
+      return;
+    }
+
+    burstBaseStateRef.current = null;
+
+    setPast((prevPast) => {
+      if (prevPast.length === 0) return prevPast;
+      const previous = prevPast[prevPast.length - 1];
+      const newPast = prevPast.slice(0, prevPast.length - 1);
+
+      isUndoRedoActionRef.current = true;
+      setFuture((f) => [cvRef.current, ...f.slice(0, 29)]);
+      setCvState(previous);
+      setTimeout(() => {
+        isUndoRedoActionRef.current = false;
+      }, 0);
+
+      return newPast;
+    });
+  }, []);
+
+  const redo = useCallback(() => {
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
+    burstBaseStateRef.current = null;
+
+    setFuture((prevFuture) => {
+      if (prevFuture.length === 0) return prevFuture;
+      const next = prevFuture[0];
+      const newFuture = prevFuture.slice(1);
+
+      isUndoRedoActionRef.current = true;
+      setPast((p) => [...p.slice(-29), cvRef.current]);
+      setCvState(next);
+      setTimeout(() => {
+        isUndoRedoActionRef.current = false;
+      }, 0);
+
+      return newFuture;
+    });
+  }, []);
+
+  const canUndo = past.length > 0 || (burstBaseStateRef.current !== null && burstBaseStateRef.current !== cv);
+  const canRedo = future.length > 0;
 
   // Load from LocalStorage on mount
   useEffect(() => {
@@ -376,6 +490,52 @@ export function useCV() {
     setHasCachedDoc(true);
   }, []);
 
+  const updateFromJson = useCallback(
+    (jsonString: string): { success: boolean; error?: string } => {
+      try {
+        const parsed = JSON.parse(jsonString);
+        if (parsed && parsed.id && parsed.sections) {
+          setCv(parsed);
+          return { success: true };
+        }
+        return { success: false, error: "Missing required CV fields (id or sections)" };
+      } catch (err: any) {
+        return { success: false, error: err.message || "Invalid JSON syntax" };
+      }
+    },
+    [setCv]
+  );
+
+  // Global Keyboard Shortcuts: Cmd+Z (undo), Cmd+Shift+Z / Ctrl+Y (redo)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInputFocused =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
+
+      if (!isInputFocused) {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") {
+          if (e.shiftKey) {
+            e.preventDefault();
+            redo();
+          } else {
+            e.preventDefault();
+            undo();
+          }
+        } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "y") {
+          e.preventDefault();
+          redo();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [undo, redo]);
+
   // Linter Report Calculation
   const linterReport = useMemo(() => {
     return analyzeCV(cv, activeLang);
@@ -398,6 +558,12 @@ export function useCV() {
     loadPreset,
     importJson,
     exportJson,
+    updateFromJson,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    saveStatus,
     linterReport,
     isLoaded,
     isSetupOpen,

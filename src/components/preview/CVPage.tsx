@@ -20,7 +20,8 @@ export const CVPage = forwardRef<HTMLDivElement, Props>(({ cv, lang, onSelectSec
     <div
       ref={ref}
       id="cv-printable-page"
-      className="cv-sheet bg-white shadow-2xl rounded-xs mx-auto overflow-hidden relative"
+      data-template={template}
+      className={`cv-sheet cv-template-${template} bg-white shadow-2xl rounded-xs mx-auto overflow-hidden relative`}
       style={{
         width: `${A4_W_PX}px`,
         minHeight: `${A4_H_PX}px`,
