@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useCV } from "@/hooks/useCV";
 import { BuilderHeader } from "@/components/builder/BuilderHeader";
 import { SectionList } from "@/components/builder/SectionList";
@@ -12,6 +12,54 @@ import { Pencil, Eye, Loader2 } from "lucide-react";
 export default function BuilderPage() {
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
+  const [splitRatio, setSplitRatio] = useState<number>(50);
+  const [isDraggingSplit, setIsDraggingSplit] = useState(false);
+  const splitContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("papyrus_split_ratio");
+      if (saved) {
+        const val = parseFloat(saved);
+        if (!isNaN(val) && val >= 25 && val <= 75) {
+          setSplitRatio(val);
+        }
+      }
+    } catch (e) {}
+  }, []);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    setIsDraggingSplit(true);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingSplit || !splitContainerRef.current) return;
+    const rect = splitContainerRef.current.getBoundingClientRect();
+    const newRatio = ((e.clientX - rect.left) / rect.width) * 100;
+    const clamped = Math.max(25, Math.min(75, Number(newRatio.toFixed(1))));
+    setSplitRatio(clamped);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isDraggingSplit) {
+      try {
+        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      setIsDraggingSplit(false);
+      try {
+        localStorage.setItem("papyrus_split_ratio", splitRatio.toString());
+      } catch (err) {}
+    }
+  };
+
+  const handleResetSplit = () => {
+    setSplitRatio(50);
+    try {
+      localStorage.setItem("papyrus_split_ratio", "50");
+    } catch (err) {}
+  };
 
   const handleSelectSection = (sectionId: string) => {
     setHighlightedSectionId(sectionId);
@@ -99,10 +147,21 @@ export default function BuilderPage() {
       />
 
       {/* Split-Pane Main Body */}
-      <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-x-hidden">
+      <div
+        ref={splitContainerRef}
+        style={
+          {
+            "--split-ratio": `${splitRatio}%`,
+            "--split-inv": `${100 - splitRatio}%`,
+          } as React.CSSProperties
+        }
+        className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-x-hidden ${
+          isDraggingSplit ? "select-none cursor-col-resize" : ""
+        }`}
+      >
         {/* Left Column: Form Editor Pane */}
         <div
-          className={`w-full md:w-1/2 bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
+          className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
             mobileTab === "edit" ? "block" : "hidden md:block"
           }`}
         >
@@ -130,9 +189,49 @@ export default function BuilderPage() {
           </div>
         </div>
 
+        {/* Draggable Split Resizer (Desktop only) */}
+        <div
+          role="separator"
+          data-testid="split-resizer"
+          aria-label="Redimensionar editor e pré-visualização"
+          aria-orientation="vertical"
+          aria-valuenow={Math.round(splitRatio)}
+          aria-valuemin={25}
+          aria-valuemax={75}
+          tabIndex={0}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onDoubleClick={handleResetSplit}
+          title={activeLang === "pt" ? "Arrastar para redimensionar (Duplo-clique para 50/50)" : "Drag to resize (Double-click for 50/50)"}
+          className={`hidden md:flex items-center justify-center w-2.5 hover:w-3.5 -mx-1.5 cursor-col-resize z-20 transition-all select-none group relative shrink-0 ${
+            isDraggingSplit
+              ? "bg-amber-500 w-3.5 cursor-col-resize"
+              : "bg-transparent hover:bg-stone-300 dark:hover:bg-stone-700"
+          }`}
+        >
+          {/* Grip pill indicator */}
+          <div
+            className={`w-1 h-8 rounded-full transition-all flex items-center justify-center ${
+              isDraggingSplit
+                ? "bg-white shadow-sm"
+                : "bg-stone-300 dark:bg-stone-700 group-hover:bg-amber-600 dark:group-hover:bg-amber-500"
+            }`}
+          />
+
+          {/* Floating badge showing percentage on drag or hover */}
+          <div
+            className={`absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-stone-900/90 dark:bg-stone-800/90 text-white text-[10px] font-mono font-bold whitespace-nowrap pointer-events-none shadow-md transition-opacity duration-150 ${
+              isDraggingSplit ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-95"
+            }`}
+          >
+            {Math.round(splitRatio)}% | {Math.round(100 - splitRatio)}%
+          </div>
+        </div>
+
         {/* Right Column: Live A4 Synchronized Preview Pane */}
         <div
-          className={`w-full md:w-1/2 md:sticky md:top-[53px] h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] overflow-hidden builder-preview-pane ${
+          className={`w-full md:w-[var(--split-inv)] md:sticky md:top-[53px] h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] overflow-hidden builder-preview-pane ${
             mobileTab === "preview" ? "block" : "hidden md:block"
           }`}
         >

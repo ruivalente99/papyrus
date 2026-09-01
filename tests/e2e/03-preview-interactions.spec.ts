@@ -103,4 +103,25 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
       }
     }
   });
+
+  test("allows resizing split-pane on desktop using draggable divider", async ({ page, isMobile }) => {
+    test.skip(isMobile, "Desktop specific test");
+
+    const resizer = page.getByTestId("split-resizer");
+    await expect(resizer).toBeVisible();
+
+    const box = await resizer.boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      // Drag resizer to the right (increase editor width)
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box.x + 80, box.y + box.height / 2);
+      await page.mouse.up();
+
+      // Double click resizer to reset to 50%
+      await resizer.dblclick();
+      await expect(resizer).toHaveAttribute("aria-valuenow", "50");
+    }
+  });
 });
