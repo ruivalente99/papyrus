@@ -360,7 +360,7 @@ export default function GuidePage() {
                     {/* Video Player */}
                     <div
                       onClick={() => togglePlay(item.step)}
-                      className="relative cursor-pointer group bg-black/5 dark:bg-black/40 flex items-center justify-center overflow-hidden"
+                      className="relative cursor-pointer group bg-black flex items-center justify-center overflow-hidden"
                     >
                       <video
                         ref={(el) => {
@@ -372,47 +372,67 @@ export default function GuidePage() {
                         loop
                         muted
                         playsInline
-                        className="w-full h-auto max-h-[500px] object-contain rounded-b-xl"
+                        className="w-full h-auto object-cover"
                       />
 
-                      {/* Pause overlay icon on hover */}
-                      <div className="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-stone-900/80 backdrop-blur-sm text-white text-[11px] font-mono flex items-center gap-1.5 opacity-75 group-hover:opacity-100 transition-opacity">
-                        {isPaused ? <Play size={11} /> : <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />}
-                        <span>{isPaused ? "Pausado" : "Loop Dinâmico"}</span>
+                      {/* Play/pause pill indicator */}
+                      <div className={`absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-stone-900/85 backdrop-blur-sm text-white text-[11px] font-mono flex items-center gap-1.5 transition-opacity ${isPaused ? "opacity-100 ring-2 ring-amber-500" : "opacity-0 group-hover:opacity-90"}`}>
+                        {isPaused ? <Play size={11} className="text-amber-400" /> : <Pause size={11} />}
+                        <span>{isPaused ? (isPt ? "Pausado" : "Paused") : (isPt ? "Pausar" : "Pause")}</span>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  /* iPhone Mockup Frame for Mobile */
-                  <div className="max-w-sm mx-auto rounded-[38px] p-2 bg-stone-800 dark:bg-stone-700 shadow-2xl border-4 border-stone-700 dark:border-stone-600">
-                    <div className="rounded-[30px] overflow-hidden bg-black relative">
-                      {/* iPhone Dynamic Island */}
-                      <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-full z-20 flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-stone-900 ring-1 ring-white/10" />
+                  /* Clean, Modern Mobile Action Card (No artificial notches or double phone bezels) */
+                  <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-stone-300/80 dark:border-stone-700/80 bg-stone-100 dark:bg-stone-900 shadow-lg">
+                    {/* Clean Header Bar */}
+                    <div className="flex items-center justify-between px-4 py-2 bg-stone-200/80 dark:bg-stone-800/80 border-b border-stone-300/70 dark:border-stone-700/70">
+                      <div className="flex items-center gap-2">
+                        <Smartphone size={14} className="text-amber-600 dark:text-amber-400" />
+                        <span className="text-[11px] font-mono font-bold text-stone-700 dark:text-stone-300">
+                          {isPt ? "Ecrã Mobile" : "Mobile View"}
+                        </span>
+                        <span className="text-stone-300 dark:text-stone-600">•</span>
+                        <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400">{item.badge}</span>
                       </div>
 
-                      {/* Video Player */}
-                      <div
-                        onClick={() => togglePlay(item.step)}
-                        className="relative cursor-pointer group flex items-center justify-center pt-2"
-                      >
-                        <video
-                          ref={(el) => {
-                            videoRefs.current[item.step] = el;
-                          }}
-                          src={currentVideo}
-                          poster={currentPoster}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          className="w-full h-auto max-h-[560px] object-contain rounded-2xl"
-                        />
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>LIVE</span>
+                        </span>
+                        <button
+                          onClick={() => togglePlay(item.step)}
+                          title={isPaused ? "Reproduzir" : "Pausar"}
+                          className="p-1 rounded-md text-stone-500 hover:text-stone-900 dark:hover:text-white transition-colors"
+                        >
+                          {isPaused ? <Play size={13} /> : <Pause size={13} />}
+                        </button>
+                      </div>
+                    </div>
 
-                        <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-sm text-white text-[10px] font-mono flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                          {isPaused ? <Play size={10} /> : <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
-                          <span>{isPaused ? "Pausado" : "Live"}</span>
-                        </div>
+                    {/* Video Player - 100% visible, zero overlays covering UI, native aspect ratio */}
+                    <div
+                      onClick={() => togglePlay(item.step)}
+                      className="relative cursor-pointer group bg-black flex items-center justify-center overflow-hidden"
+                    >
+                      <video
+                        ref={(el) => {
+                          videoRefs.current[item.step] = el;
+                        }}
+                        src={currentVideo}
+                        poster={currentPoster}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-auto object-cover"
+                      />
+
+                      {/* Play/pause pill indicator */}
+                      <div className={`absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-stone-900/85 backdrop-blur-sm text-white text-[11px] font-mono flex items-center gap-1.5 transition-opacity ${isPaused ? "opacity-100 ring-2 ring-amber-500" : "opacity-0 group-hover:opacity-90"}`}>
+                        {isPaused ? <Play size={11} className="text-amber-400" /> : <Pause size={11} />}
+                        <span>{isPaused ? (isPt ? "Pausado" : "Paused") : (isPt ? "Pausar" : "Pause")}</span>
                       </div>
                     </div>
                   </div>

@@ -44,21 +44,24 @@ export function useCV() {
           setCv(parsed);
           setActiveLang(parsed.currentLanguage || parsed.defaultLanguage || "en");
           setHasCachedDoc(true);
-          if (!isCompleted) {
-            setIsSetupOpen(true);
-          } else {
-            setIsSetupOpen(false);
-          }
+          setIsSetupOpen(false);
+          try {
+            localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+          } catch (e) {}
         } else if (!isCompleted) {
           setIsSetupOpen(true);
+        } else {
+          setIsSetupOpen(false);
         }
       } else if (!isCompleted) {
         // First visit: open Setup Screen
         setIsSetupOpen(true);
+      } else {
+        setIsSetupOpen(false);
       }
     } catch (e) {
       console.warn("Failed to load CV from localStorage:", e);
-      setIsSetupOpen(true);
+      setIsSetupOpen(false);
     } finally {
       setIsLoaded(true);
     }

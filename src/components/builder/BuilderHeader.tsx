@@ -70,16 +70,16 @@ export function BuilderHeader({
     <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-2.5 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1.5 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors">
       {/* Brand: Minimalist Logo + lowercase papyrus */}
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <button
-          onClick={onOpenSetup}
-          title="papyrus setup"
+        <Link
+          href="/"
+          title="papyrus editor"
           className="group cursor-pointer focus:outline-hidden flex items-center gap-1.5 sm:gap-2"
         >
           <NanoBananaLogo size="sm" glow />
           <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-stone-100 hidden sm:inline">
             papyrus
           </span>
-        </button>
+        </Link>
       </div>
 
       {/* Center Controls: Language Switcher, Theme Selector, Linter Badge */}
