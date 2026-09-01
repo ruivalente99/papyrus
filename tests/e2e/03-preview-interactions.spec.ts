@@ -124,4 +124,28 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
       await expect(resizer).toHaveAttribute("aria-valuenow", "50");
     }
   });
+
+  test("provides Miro-style canvas pan and zoom toolbar controls", async ({ page, isMobile }) => {
+    if (isMobile) {
+      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+    }
+    await expect(page.locator("#cv-printable-page")).toBeVisible();
+
+    // Verify floating Miro canvas control bar
+    const canvasToolbar = page.getByTestId("canvas-floating-toolbar");
+    await expect(canvasToolbar).toBeVisible();
+
+    // Test Zoom In via floating toolbar
+    const zoomInBtn = canvasToolbar.getByTitle(/Zoom in|Aumentar/i);
+    await zoomInBtn.click();
+
+    // Test Auto-Fit via floating toolbar
+    const fitBtn = canvasToolbar.getByTitle(/Ajustar ao tamanho do ecrã|Fit to screen size/i);
+    await fitBtn.click();
+
+    // Test Reset view via floating toolbar
+    const resetBtn = canvasToolbar.getByTitle(/Repor posição original|Reset view/i);
+    await resetBtn.click();
+    await expect(canvasToolbar.getByText("100%")).toBeVisible();
+  });
 });

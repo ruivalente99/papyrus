@@ -13,6 +13,9 @@ import {
   Maximize2,
   Loader2,
   Palette,
+  Hand,
+  MousePointer,
+  RotateCcw,
 } from "lucide-react";
 import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 
@@ -35,13 +38,22 @@ export function CVPreviewContainer({
   mobileTab,
 }: Props) {
   const [zoom, setZoom] = useState<number>(0.85);
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
+  const [toolMode, setToolMode] = useState<"pointer" | "hand">("pointer");
+  const [isSpacePressed, setIsSpacePressed] = useState<boolean>(false);
+  const [isPanning, setIsPanning] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [docHeight, setDocHeight] = useState<number>(A4_H_PX);
   const [isExporting, setIsExporting] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number>(1);
   const pageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+
+  const dragStartRef = useRef<{ x: number; y: number; panX: number; panY: number }>({ x: 0, y: 0, panX: 0, panY: 0 });
+  const dragMovedRef = useRef<number>(0);
+  const pinchStartRef = useRef<{ distance: number; initialZoom: number } | null>(null);
+  const lastTapRef = useRef<number>(0);
 
   // Calculate live page count & actual height for scaling container
   useEffect(() => {
@@ -84,13 +96,185 @@ export function CVPreviewContainer({
     };
   }, [isAutoFit, mobileTab, cv.template]);
 
+  // Listen for Spacebar on desktop for quick pan/hand mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.code === "Space" &&
+        !isSpacePressed &&
+        !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)
+      ) {
+        setIsSpacePressed(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        setIsSpacePressed(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [isSpacePressed]);
+
   const handleZoomChange = (delta: number) => {
     setIsAutoFit(false);
-    setZoom((z) => Math.max(0.3, Math.min(1.5, Number((z + delta).toFixed(2)))));
+    setZoom((z) => Math.max(0.25, Math.min(2.5, Number((z + delta).toFixed(2)))));
   };
 
   const handleToggleAutoFit = () => {
     setIsAutoFit(true);
+    setPan({ x: 0, y: 0 });
+  };
+
+  const handleResetCanvas = () => {
+    setIsAutoFit(false);
+    setZoom(1.0);
+    setPan({ x: 0, y: 0 });
+  };
+
+  // Mouse & Pointer Panning
+  const handlePointerDown = (e: React.PointerEvent) => {
+    const isBackdrop = e.target === viewportRef.current || (e.target as HTMLElement).dataset.canvasArea === "true";
+    const shouldPan = toolMode === "hand" || isSpacePressed || e.button === 1 || isBackdrop;
+
+    if (shouldPan) {
+      setIsPanning(true);
+      dragMovedRef.current = 0;
+      dragStartRef.current = {
+        x: e.clientX,
+        y: e.clientY,
+        panX: pan.x,
+        panY: pan.y,
+      };
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch (err) {}
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isPanning) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+    dragMovedRef.current += Math.hypot(dx, dy);
+
+    setIsAutoFit(false);
+    setPan({
+      x: dragStartRef.current.panX + dx,
+      y: dragStartRef.current.panY + dy,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (isPanning) {
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      setIsPanning(false);
+    }
+  };
+
+  // Touch Multitouch (Pinch-to-zoom & Pan on Mobile)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      // Check for double tap to toggle zoom
+      const now = Date.now();
+      if (now - lastTapRef.current < 300) {
+        if (isAutoFit) {
+          setIsAutoFit(false);
+          setZoom(1.1);
+          setPan({ x: 0, y: 0 });
+        } else {
+          handleToggleAutoFit();
+        }
+        lastTapRef.current = 0;
+        return;
+      }
+      lastTapRef.current = now;
+
+      setIsPanning(true);
+      dragMovedRef.current = 0;
+      dragStartRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        panX: pan.x,
+        panY: pan.y,
+      };
+    } else if (e.touches.length === 2) {
+      setIsPanning(false);
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const distance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+      pinchStartRef.current = {
+        distance,
+        initialZoom: zoom,
+      };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1 && isPanning) {
+      const dx = e.touches[0].clientX - dragStartRef.current.x;
+      const dy = e.touches[0].clientY - dragStartRef.current.y;
+      dragMovedRef.current += Math.hypot(dx, dy);
+
+      setIsAutoFit(false);
+      setPan({
+        x: dragStartRef.current.panX + dx,
+        y: dragStartRef.current.panY + dy,
+      });
+    } else if (e.touches.length === 2 && pinchStartRef.current) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const currentDist = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+      const factor = currentDist / pinchStartRef.current.distance;
+      const newZoom = Math.max(0.25, Math.min(2.5, Number((pinchStartRef.current.initialZoom * factor).toFixed(2))));
+
+      setIsAutoFit(false);
+      setZoom(newZoom);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) {
+      setIsPanning(false);
+      pinchStartRef.current = null;
+    } else if (e.touches.length === 1) {
+      dragStartRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        panX: pan.x,
+        panY: pan.y,
+      };
+      pinchStartRef.current = null;
+    }
+  };
+
+  // Wheel zoom with Ctrl or Pan with trackpad
+  const handleWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      setIsAutoFit(false);
+      const delta = -e.deltaY * 0.01;
+      setZoom((z) => Math.max(0.25, Math.min(2.5, Number((z + delta).toFixed(2)))));
+    } else {
+      setIsAutoFit(false);
+      setPan((p) => ({
+        x: p.x - e.deltaX,
+        y: p.y - e.deltaY,
+      }));
+    }
+  };
+
+  const handleSectionSelect = (sectionId: string) => {
+    if (dragMovedRef.current > 6) return;
+    if (onSelectSection) {
+      onSelectSection(sectionId);
+    }
   };
 
   const handleDownloadPdf = async () => {
@@ -364,30 +548,48 @@ export function CVPreviewContainer({
         </div>
       </div>
 
-      {/* Page Canvas Viewport with Dynamic Warm Backdrop and Box Containment */}
+      {/* Page Canvas Viewport with Miro-style Pan & Gestures */}
       <div
         ref={viewportRef}
-        className="flex-1 overflow-auto p-2 sm:p-5 flex items-start charm-bg-dynamic min-h-0 select-none pb-24 sm:pb-8"
-        style={{ touchAction: "pan-y" }}
+        data-canvas-area="true"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onWheel={handleWheel}
+        className={`flex-1 relative overflow-hidden flex items-start justify-center charm-bg-dynamic min-h-0 select-none pt-4 sm:pt-6 pb-24 sm:pb-12 ${
+          isPanning
+            ? "cursor-grabbing"
+            : toolMode === "hand" || isSpacePressed
+            ? "cursor-grab"
+            : "cursor-default"
+        }`}
+        style={{ touchAction: "none" }}
       >
+        {/* Canvas World Container (Pan translation) */}
         <div
+          data-canvas-area="true"
           style={{
-            width: `${A4_W_PX * zoom}px`,
-            height: `${actualDocHeight * zoom}px`,
-            transition: "width 0.15s ease-out, height 0.15s ease-out",
+            transform: `translate3d(${pan.x}px, ${pan.y}px, 0px)`,
+            transition: isPanning ? "none" : "transform 0.15s ease-out",
           }}
-          className="relative shrink-0 m-auto"
+          className="relative shrink-0 flex items-center justify-center will-change-transform"
         >
+          {/* A4 Page Container (Scale zoom from top-center) */}
           <div
             style={{
               width: `${A4_W_PX}px`,
+              height: `${actualDocHeight}px`,
               transform: `scale(${zoom})`,
-              transformOrigin: "top left",
-              transition: "transform 0.15s ease-out",
+              transformOrigin: "center top",
+              transition: isPanning ? "none" : "transform 0.15s ease-out",
             }}
-            className="absolute top-0 left-0"
+            className="relative shadow-2xl rounded-xs bg-white dark:bg-stone-900"
           >
-            <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={onSelectSection} />
+            <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={handleSectionSelect} />
 
             {/* Visual A4 Page Break Guide when document exceeds 1 page */}
             {pageCount > 1 && (
@@ -401,6 +603,90 @@ export function CVPreviewContainer({
               </div>
             )}
           </div>
+        </div>
+
+        {/* Floating Miro-Style Canvas Control Bar */}
+        <div
+          data-testid="canvas-floating-toolbar"
+          className="absolute bottom-4 right-4 z-20 flex items-center gap-1 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border border-stone-200/80 dark:border-stone-800/80 shadow-lg rounded-full p-1 text-stone-700 dark:text-stone-300 transition-all duration-200 hover:shadow-xl"
+        >
+          {/* Hand / Pointer Mode Toggle (Desktop only) */}
+          <div className="hidden sm:flex items-center pr-1 border-r border-stone-200 dark:border-stone-700">
+            <button
+              onClick={() => setToolMode("pointer")}
+              title={lang === "pt" ? "Modo Seleção / Interagir" : "Selection mode"}
+              className={`p-1.5 rounded-full transition-all ${
+                toolMode === "pointer"
+                  ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
+                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+              }`}
+            >
+              <MousePointer size={13} />
+            </button>
+            <button
+              onClick={() => setToolMode("hand")}
+              title={lang === "pt" ? "Modo Mão / Arrastar Canvas (Miro)" : "Hand tool / Pan canvas (Miro)"}
+              className={`p-1.5 rounded-full transition-all ${
+                toolMode === "hand"
+                  ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
+                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+              }`}
+            >
+              <Hand size={13} />
+            </button>
+          </div>
+
+          {/* Zoom Out */}
+          <button
+            onClick={() => handleZoomChange(-0.1)}
+            title={tUI("zoomOut", lang)}
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+          >
+            <ZoomOut size={13} />
+          </button>
+
+          {/* Percentage badge (click to 100%) */}
+          <button
+            onClick={() => {
+              setIsAutoFit(false);
+              setZoom(1.0);
+            }}
+            title={lang === "pt" ? "Zoom a 100%" : "Zoom 100%"}
+            className="px-2 py-0.5 text-[11px] font-mono font-bold hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors min-w-[42px] text-center"
+          >
+            {Math.round(zoom * 100)}%
+          </button>
+
+          {/* Zoom In */}
+          <button
+            onClick={() => handleZoomChange(0.1)}
+            title={tUI("zoomIn", lang)}
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+          >
+            <ZoomIn size={13} />
+          </button>
+
+          {/* Auto-Fit */}
+          <button
+            onClick={handleToggleAutoFit}
+            title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
+            className={`p-1.5 rounded-full transition-colors ${
+              isAutoFit
+                ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
+                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+            }`}
+          >
+            <Maximize2 size={13} />
+          </button>
+
+          {/* Reset Viewport Position */}
+          <button
+            onClick={handleResetCanvas}
+            title={lang === "pt" ? "Repor posição original" : "Reset view"}
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+          >
+            <RotateCcw size={12} />
+          </button>
         </div>
       </div>
 
