@@ -7,7 +7,7 @@ test.describe("PAPYRUS Guide Page, Alignment Grid & Pointer/Drag Switching", () 
 
     // Verify title and header
     await expect(page.locator("h1")).toBeVisible();
-    await expect(page.getByText(/1\. Escolher o Modelo|1\. Choose Template/i)).toBeVisible();
+    await expect(page.getByText(/1\. Troca de Modelos|1\. Live Templates|1\. Escolher/i)).toBeVisible();
 
     // Verify device switcher exists and toggles
     const mobileBtn = page.getByRole("button", { name: /Telemóvel|Mobile/i });
@@ -17,11 +17,11 @@ test.describe("PAPYRUS Guide Page, Alignment Grid & Pointer/Drag Switching", () 
 
     // Switch to mobile mode
     await mobileBtn.click();
-    await expect(page.locator('img[src*="mobile-step1-templates.png"]')).toBeVisible();
+    await expect(page.locator('video[src*="mobile-action-1-templates.webm"]')).toBeVisible();
 
     // Switch to web mode
     await webBtn.click();
-    await expect(page.locator('img[src*="web-step1-templates.png"]')).toBeVisible();
+    await expect(page.locator('video[src*="web-action-1-templates.webm"]')).toBeVisible();
 
     // Click back to editor link
     await page.getByRole("link", { name: /Voltar ao Editor|Back to Editor/i }).first().click();
