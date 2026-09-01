@@ -25,15 +25,23 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
     };
     onChange((sec) => ({
       ...sec,
-      categories: [...sec.categories, newCat],
+      categories: [...(sec.categories || []), newCat],
     }));
   };
 
   const handleUpdateCategoryName = (catId: string, nameVal: string) => {
     onChange((sec) => ({
       ...sec,
-      categories: sec.categories.map((c) =>
-        c.id === catId ? { ...c, name: { ...c.name, [lang]: nameVal } } : c
+      categories: (sec.categories || []).map((c) =>
+        c.id === catId
+          ? {
+              ...c,
+              name: {
+                ...(typeof c.name === "object" ? c.name : {}),
+                [lang]: nameVal,
+              },
+            }
+          : c
       ),
     }));
   };
@@ -41,14 +49,14 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
   const handleDeleteCategory = (catId: string) => {
     onChange((sec) => ({
       ...sec,
-      categories: sec.categories.filter((c) => c.id !== catId),
+      categories: (sec.categories || []).filter((c) => c.id !== catId),
     }));
   };
 
   const handleToggleCategory = (catId: string) => {
     onChange((sec) => ({
       ...sec,
-      categories: sec.categories.map((c) =>
+      categories: (sec.categories || []).map((c) =>
         c.id === catId ? { ...c, visible: !c.visible } : c
       ),
     }));
@@ -60,12 +68,13 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
 
     onChange((sec) => ({
       ...sec,
-      categories: sec.categories.map((c) => {
+      categories: (sec.categories || []).map((c) => {
         if (c.id !== catId) return c;
-        if (c.skills.includes(val)) return c;
+        const currentSkills = Array.isArray(c.skills) ? c.skills : [];
+        if (currentSkills.includes(val)) return c;
         return {
           ...c,
-          skills: [...c.skills, val],
+          skills: [...currentSkills, val],
         };
       }),
     }));
@@ -76,21 +85,24 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
   const handleRemoveSkillTag = (catId: string, skillIdx: number) => {
     onChange((sec) => ({
       ...sec,
-      categories: sec.categories.map((c) => {
+      categories: (sec.categories || []).map((c) => {
         if (c.id !== catId) return c;
+        const currentSkills = Array.isArray(c.skills) ? c.skills : [];
         return {
           ...c,
-          skills: c.skills.filter((_, idx) => idx !== skillIdx),
+          skills: currentSkills.filter((_, idx) => idx !== skillIdx),
         };
       }),
     }));
   };
 
+  const categories = Array.isArray(section.categories) ? section.categories : [];
+
   return (
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Categorias de Competências (${section.categories.length})` : `Skill Groups (${section.categories.length})`}
+          {isPt ? `Categorias de Competências (${categories.length})` : `Skill Groups (${categories.length})`}
         </span>
         <button
           type="button"
@@ -103,7 +115,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
       </div>
 
       <div className="space-y-3">
-        {section.categories.map((cat) => (
+        {categories.map((cat) => (
           <div
             key={cat.id}
             className={`p-3 rounded-xl border transition-all ${

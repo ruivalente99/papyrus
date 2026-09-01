@@ -20,8 +20,9 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   }
 
   // 1. Personal Information Checks
+  const pInfo = cv.personalInfo || ({} as any);
   check(
-    Boolean(cv.personalInfo.fullName && cv.personalInfo.fullName.trim().length >= 3),
+    Boolean(pInfo.fullName && typeof pInfo.fullName === "string" && pInfo.fullName.trim().length >= 3),
     {
       level: "error",
       sectionId: "personalInfo",
@@ -36,7 +37,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   );
 
   check(
-    Boolean(cv.personalInfo.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cv.personalInfo.email)),
+    Boolean(pInfo.email && typeof pInfo.email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(pInfo.email.trim())),
     {
       level: "error",
       sectionId: "personalInfo",
@@ -51,7 +52,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   );
 
   check(
-    Boolean(cv.personalInfo.phone && cv.personalInfo.phone.trim().length >= 6),
+    Boolean(pInfo.phone && typeof pInfo.phone === "string" && pInfo.phone.trim().length >= 6),
     {
       level: "warning",
       sectionId: "personalInfo",
@@ -65,7 +66,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
     "p-phone"
   );
 
-  const summaryText = t(cv.personalInfo.summary, lang, cv.defaultLanguage);
+  const summaryText = t(pInfo.summary, lang, cv.defaultLanguage);
   check(
     Boolean(summaryText && summaryText.trim().length >= 50),
     {
@@ -82,7 +83,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   );
 
   check(
-    Boolean(cv.personalInfo.links && cv.personalInfo.links.length > 0),
+    Boolean(Array.isArray(pInfo.links) && pInfo.links.length > 0),
     {
       level: "info",
       sectionId: "personalInfo",
@@ -97,9 +98,9 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   );
 
   // 2. Experience Section Checks
-  const expSection = cv.sections.find((s) => s.type === "experience");
+  const expSection = Array.isArray(cv.sections) ? cv.sections.find((s) => s.type === "experience") : undefined;
   if (expSection && expSection.visible) {
-    const expItems = expSection.items.filter((i) => i.visible);
+    const expItems = Array.isArray(expSection.items) ? expSection.items.filter((i) => i && i.visible) : [];
 
     check(
       expItems.length > 0,
@@ -133,7 +134,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
       );
 
       check(
-        Boolean(item.company && item.company.trim().length > 0),
+        Boolean(item.company && typeof item.company === "string" && item.company.trim().length > 0),
         {
           level: "error",
           sectionId: expSection.id,
@@ -148,7 +149,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
       );
 
       check(
-        Boolean(item.startDate && item.startDate.trim().length > 0),
+        Boolean(item.startDate && typeof item.startDate === "string" && item.startDate.trim().length > 0),
         {
           level: "warning",
           sectionId: expSection.id,
@@ -177,7 +178,7 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
       );
 
       // Action verbs & numbers check
-      const hasMetrics = bullets.some((b) => /\d+|%|\$|€|mil|k/i.test(b));
+      const hasMetrics = bullets.some((b) => typeof b === "string" && /\d+|%|\$|€|mil|k/i.test(b));
       check(
         hasMetrics,
         {
@@ -195,9 +196,9 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   }
 
   // 3. Education Section Checks
-  const eduSection = cv.sections.find((s) => s.type === "education");
+  const eduSection = Array.isArray(cv.sections) ? cv.sections.find((s) => s.type === "education") : undefined;
   if (eduSection && eduSection.visible) {
-    const eduItems = eduSection.items.filter((i) => i.visible);
+    const eduItems = Array.isArray(eduSection.items) ? eduSection.items.filter((i) => i && i.visible) : [];
 
     check(
       eduItems.length > 0,
@@ -215,11 +216,15 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   }
 
   // 4. Skills & Languages Checks
-  const skillsSection = cv.sections.find((s) => s.type === "skills");
+  const skillsSection = Array.isArray(cv.sections) ? cv.sections.find((s) => s.type === "skills") : undefined;
   if (skillsSection && skillsSection.visible) {
-    const totalSkills = skillsSection.categories
-      .filter((c) => c.visible)
-      .reduce((acc, cat) => acc + cat.skills.length, 0);
+    const categories = Array.isArray(skillsSection.categories)
+      ? skillsSection.categories.filter((c) => c && c.visible)
+      : [];
+    const totalSkills = categories.reduce(
+      (acc, cat) => acc + (Array.isArray(cat.skills) ? cat.skills.length : 0),
+      0
+    );
 
     check(
       totalSkills >= 3,
@@ -238,7 +243,10 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
 
   // 5. Language translation check in current active language
   if (lang !== cv.defaultLanguage) {
-    const isHeadlineTranslated = Boolean(cv.personalInfo.headline[lang]);
+    const headline = pInfo.headline;
+    const isHeadlineTranslated = Boolean(
+      headline && typeof headline === "object" ? headline[lang] : typeof headline === "string" ? headline : false
+    );
     check(
       isHeadlineTranslated,
       {

@@ -10,40 +10,48 @@ export function generateId(): string {
 }
 
 export function formatDateRange(
-  startDate: string,
+  startDate?: string,
   endDate?: string,
   isCurrent?: boolean,
   lang: string = "pt"
 ): string {
-  if (!startDate) return "";
+  if (!startDate && !endDate && !isCurrent) return "";
 
   const presentLabel = lang === "pt" ? "Atual" : "Present";
 
-  const formatSingle = (d: string) => {
-    if (!d) return "";
-    // If format is YYYY-MM
-    if (/^\d{4}-\d{2}$/.test(d)) {
-      const [year, month] = d.split("-");
-      const dateObj = new Date(parseInt(year), parseInt(month) - 1, 1);
-      return dateObj.toLocaleDateString(lang === "pt" ? "pt-PT" : "en-US", {
-        month: "short",
-        year: "numeric",
-      });
+  const formatSingle = (d?: string): string => {
+    if (!d || typeof d !== "string") return "";
+    const trimmed = d.trim();
+    if (!trimmed) return "";
+
+    try {
+      if (/^\d{4}-\d{2}$/.test(trimmed)) {
+        const [yearStr, monthStr] = trimmed.split("-");
+        const y = parseInt(yearStr, 10);
+        const m = parseInt(monthStr, 10);
+        if (isNaN(y) || isNaN(m) || m < 1 || m > 12) return trimmed;
+        const dateObj = new Date(y, m - 1, 1);
+        if (isNaN(dateObj.getTime())) return trimmed;
+        return dateObj.toLocaleDateString(lang === "pt" ? "pt-PT" : "en-US", {
+          month: "short",
+          year: "numeric",
+        });
+      }
+    } catch {
+      return trimmed;
     }
-    // If format is DD/MM/YYYY
-    if (/^\d{2}\/\d{2}\/\d{4}$/.test(d)) {
-      return d;
-    }
-    return d;
+
+    return trimmed;
   };
 
   const startFormatted = formatSingle(startDate);
   if (isCurrent) {
-    return `${startFormatted} — ${presentLabel}`;
+    return startFormatted ? `${startFormatted} — ${presentLabel}` : presentLabel;
   }
   if (!endDate) {
     return startFormatted;
   }
   const endFormatted = formatSingle(endDate);
+  if (!startFormatted) return endFormatted;
   return `${startFormatted} — ${endFormatted}`;
 }

@@ -45,14 +45,14 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
   const handleUpdateLink = (id: string, update: Partial<SocialLink>) => {
     onChange((prev) => ({
       ...prev,
-      links: prev.links.map((l) => (l.id === id ? { ...l, ...update } : l)),
+      links: (prev.links || []).map((l) => (l.id === id ? { ...l, ...update } : l)),
     }));
   };
 
   const handleRemoveLink = (id: string) => {
     onChange((prev) => ({
       ...prev,
-      links: prev.links.filter((l) => l.id !== id),
+      links: (prev.links || []).filter((l) => l.id !== id),
     }));
   };
 
@@ -137,7 +137,10 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             onChange={(e) =>
               onChange((prev) => ({
                 ...prev,
-                headline: { ...prev.headline, [lang]: e.target.value },
+                headline: {
+                  ...(typeof prev.headline === "object" ? prev.headline : {}),
+                  [lang]: e.target.value,
+                },
               }))
             }
             placeholder={isPt ? "Ex: Engenheiro de Software Sénior" : "e.g. Lead Software Engineer"}
@@ -184,7 +187,10 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             onChange={(e) =>
               onChange((prev) => ({
                 ...prev,
-                location: { ...prev.location, [lang]: e.target.value },
+                location: {
+                  ...(typeof prev.location === "object" ? prev.location : {}),
+                  [lang]: e.target.value,
+                },
               }))
             }
             placeholder={isPt ? "Ex: Lisboa / Porto, Portugal" : "e.g. London, UK"}
@@ -243,7 +249,10 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 value={link.label?.[lang] || ""}
                 onChange={(e) =>
                   handleUpdateLink(link.id, {
-                    label: { ...link.label, [lang]: e.target.value },
+                    label: {
+                      ...(typeof link.label === "object" ? link.label : {}),
+                      [lang]: e.target.value,
+                    },
                   })
                 }
                 className="flex-1 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
@@ -252,7 +261,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               <input
                 type="url"
                 placeholder="https://..."
-                value={link.url}
+                value={link.url || ""}
                 onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
                 className="flex-1 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
               />
@@ -281,7 +290,10 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           onChange={(e) =>
             onChange((prev) => ({
               ...prev,
-              summary: { ...prev.summary, [lang]: e.target.value },
+              summary: {
+                ...(typeof prev.summary === "object" ? prev.summary : {}),
+                [lang]: e.target.value,
+              },
             }))
           }
           placeholder={

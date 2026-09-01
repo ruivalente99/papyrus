@@ -193,9 +193,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newItems) =>
-                onUpdate((sec) => ({ ...sec, items: newItems } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
 
@@ -204,9 +202,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newItems) =>
-                onUpdate((sec) => ({ ...sec, items: newItems } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
 
@@ -215,9 +211,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newCats) =>
-                onUpdate((sec) => ({ ...sec, categories: newCats } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
 
@@ -226,9 +220,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newItems) =>
-                onUpdate((sec) => ({ ...sec, items: newItems } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
 
@@ -237,9 +229,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newItems) =>
-                onUpdate((sec) => ({ ...sec, items: newItems } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
 
@@ -248,9 +238,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newItems) =>
-                onUpdate((sec) => ({ ...sec, items: newItems } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
 
@@ -259,9 +247,7 @@ export function SectionCard({
               section={section}
               lang={lang}
               defaultLang={defaultLang}
-              onChange={(newItems) =>
-                onUpdate((sec) => ({ ...sec, items: newItems } as any))
-              }
+              onChange={onUpdate as any}
             />
           )}
         </div>

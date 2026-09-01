@@ -27,36 +27,38 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
     };
     onChange((sec) => ({
       ...sec,
-      items: [...sec.items, newItem],
+      items: [...(sec.items || []), newItem],
     }));
   };
 
   const handleUpdateItem = (itemId: string, updater: Partial<CertificationItem>) => {
     onChange((sec) => ({
       ...sec,
-      items: sec.items.map((it) => (it.id === itemId ? { ...it, ...updater } : it)),
+      items: (sec.items || []).map((it) => (it.id === itemId ? { ...it, ...updater } : it)),
     }));
   };
 
   const handleDeleteItem = (itemId: string) => {
     onChange((sec) => ({
       ...sec,
-      items: sec.items.filter((it) => it.id !== itemId),
+      items: (sec.items || []).filter((it) => it.id !== itemId),
     }));
   };
 
   const handleToggleVisibility = (itemId: string) => {
     onChange((sec) => ({
       ...sec,
-      items: sec.items.map((it) => (it.id === itemId ? { ...it, visible: !it.visible } : it)),
+      items: (sec.items || []).map((it) => (it.id === itemId ? { ...it, visible: !it.visible } : it)),
     }));
   };
+
+  const items = Array.isArray(section.items) ? section.items : [];
 
   return (
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Certificações & Licenças (${section.items.length})` : `Certifications & Credentials (${section.items.length})`}
+          {isPt ? `Certificações & Licenças (${items.length})` : `Certifications & Credentials (${items.length})`}
         </span>
         <button
           type="button"
@@ -69,7 +71,7 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
       </div>
 
       <div className="space-y-3">
-        {section.items.map((item) => (
+        {items.map((item) => (
           <div
             key={item.id}
             className={`p-3.5 rounded-xl border transition-all ${

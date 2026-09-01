@@ -31,28 +31,28 @@ export function EducationForm({ section, lang, onChange }: Props) {
     };
     onChange((sec) => ({
       ...sec,
-      items: [newItem, ...sec.items],
+      items: [newItem, ...(sec.items || [])],
     }));
   };
 
   const handleUpdateItem = (itemId: string, updater: Partial<EducationItem>) => {
     onChange((sec) => ({
       ...sec,
-      items: sec.items.map((it) => (it.id === itemId ? { ...it, ...updater } : it)),
+      items: (sec.items || []).map((it) => (it.id === itemId ? { ...it, ...updater } : it)),
     }));
   };
 
   const handleDeleteItem = (itemId: string) => {
     onChange((sec) => ({
       ...sec,
-      items: sec.items.filter((it) => it.id !== itemId),
+      items: (sec.items || []).filter((it) => it.id !== itemId),
     }));
   };
 
   const handleToggleVisibility = (itemId: string) => {
     onChange((sec) => ({
       ...sec,
-      items: sec.items.map((it) => (it.id === itemId ? { ...it, visible: !it.visible } : it)),
+      items: (sec.items || []).map((it) => (it.id === itemId ? { ...it, visible: !it.visible } : it)),
     }));
   };
 
@@ -73,7 +73,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
       </div>
 
       <div className="space-y-3">
-        {section.items.map((item, index) => (
+        {(section.items || []).map((item, index) => (
           <div
             key={item.id}
             className={`p-3.5 rounded-xl border transition-all ${

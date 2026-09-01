@@ -4,38 +4,68 @@ import type { MultiLangString, MultiLangArray, SupportedLanguage } from "@/types
  * Returns the text in the requested language, with fallback to defaultLang, or first available string.
  */
 export function t(
-  field?: MultiLangString | null,
+  field?: MultiLangString | string | null,
   lang: SupportedLanguage = "en",
   defaultLang: SupportedLanguage = "en"
 ): string {
-  if (!field || typeof field !== "object") return "";
-  if (field[lang] && field[lang].trim().length > 0) {
-    return field[lang];
+  if (field === undefined || field === null) return "";
+  if (typeof field === "string") return field;
+  if (typeof field !== "object") return String(field);
+
+  const langVal = field[lang];
+  if (langVal !== undefined && langVal !== null) {
+    const str = String(langVal);
+    if (str.trim().length > 0) return str;
   }
-  if (field[defaultLang] && field[defaultLang].trim().length > 0) {
-    return field[defaultLang];
+
+  const defVal = field[defaultLang];
+  if (defVal !== undefined && defVal !== null) {
+    const str = String(defVal);
+    if (str.trim().length > 0) return str;
   }
-  const firstKey = Object.keys(field)[0];
-  return firstKey && field[firstKey] ? field[firstKey] : "";
+
+  const keys = Object.keys(field);
+  for (const k of keys) {
+    const v = field[k];
+    if (v !== undefined && v !== null && String(v).trim().length > 0) {
+      return String(v);
+    }
+  }
+
+  return "";
 }
 
 /**
  * Returns array of strings in the requested language, with fallback.
  */
 export function tArray(
-  field?: MultiLangArray | null,
+  field?: MultiLangArray | string[] | null,
   lang: SupportedLanguage = "en",
   defaultLang: SupportedLanguage = "en"
 ): string[] {
-  if (!field || typeof field !== "object") return [];
-  if (Array.isArray(field[lang]) && field[lang].length > 0) {
-    return field[lang];
+  if (field === undefined || field === null) return [];
+  if (Array.isArray(field)) return field.map(String);
+  if (typeof field !== "object") return [String(field)];
+
+  const langArr = (field as any)[lang];
+  if (Array.isArray(langArr) && langArr.length > 0) {
+    return langArr.map(String);
   }
-  if (Array.isArray(field[defaultLang]) && field[defaultLang].length > 0) {
-    return field[defaultLang];
+
+  const defArr = (field as any)[defaultLang];
+  if (Array.isArray(defArr) && defArr.length > 0) {
+    return defArr.map(String);
   }
-  const firstKey = Object.keys(field)[0];
-  return firstKey && Array.isArray(field[firstKey]) ? field[firstKey] : [];
+
+  const keys = Object.keys(field);
+  for (const k of keys) {
+    const v = (field as any)[k];
+    if (Array.isArray(v) && v.length > 0) {
+      return v.map(String);
+    }
+  }
+
+  return [];
 }
 
 /**

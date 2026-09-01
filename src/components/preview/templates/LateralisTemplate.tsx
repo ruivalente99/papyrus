@@ -85,7 +85,7 @@ export function LateralisTemplate({ cv, lang }: Props) {
 
           {/* Contact Details */}
           <div data-page-break-avoid="true" className="space-y-1.5 text-xs">
-            {personalInfo.phone && (
+            {personalInfo.phone && typeof personalInfo.phone === "string" && (
               <div className="flex items-center gap-1.5 text-stone-700">
                 <span
                   className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 shadow-2xs"
@@ -130,7 +130,7 @@ export function LateralisTemplate({ cv, lang }: Props) {
                 </span>
               </div>
             )}
-            {personalInfo.website && (
+            {personalInfo.website && typeof personalInfo.website === "string" && (
               <div className="flex items-center gap-1.5 text-stone-700">
                 <span
                   className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 shadow-2xs"
@@ -149,25 +149,31 @@ export function LateralisTemplate({ cv, lang }: Props) {
                 </a>
               </div>
             )}
-            {personalInfo.links?.map((link) => (
-              <div key={link.id} className="flex items-center gap-1.5 text-stone-700">
-                <span
-                  className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 shadow-2xs"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  {renderPlatformIcon(link.platform, 9.5)}
-                </span>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:underline text-[10px] break-all font-medium"
-                  style={{ color: primaryColor }}
-                >
-                  {t(link.label, lang, cv.defaultLanguage) || link.url.replace(/^https?:\/\//, "")}
-                </a>
-              </div>
-            ))}
+            {Array.isArray(personalInfo.links) &&
+              personalInfo.links.map((link) => {
+                const label =
+                  t(link.label, lang, cv.defaultLanguage) ||
+                  (typeof link.url === "string" ? link.url.replace(/^https?:\/\//, "") : "");
+                return (
+                  <div key={link.id} className="flex items-center gap-1.5 text-stone-700">
+                    <span
+                      className="w-5 h-5 rounded-full flex items-center justify-center text-white shrink-0 shadow-2xs"
+                      style={{ backgroundColor: primaryColor }}
+                    >
+                      {renderPlatformIcon(link.platform, 9.5)}
+                    </span>
+                    <a
+                      href={link.url || "#"}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline text-[10px] break-all font-medium"
+                      style={{ color: primaryColor }}
+                    >
+                      {label}
+                    </a>
+                  </div>
+                );
+              })}
           </div>
 
           {/* Languages Sidebar */}
@@ -180,8 +186,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
                 {t(langSection.title, lang, cv.defaultLanguage)}
               </h3>
               <div className="space-y-0.5 text-xs">
-                {langSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(langSection.items) ? langSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((item) => (
                     <div key={item.id} className="flex justify-between items-baseline text-[10.5px]">
                       <span className="font-semibold text-stone-800">
@@ -206,8 +212,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
                 {t(skillsSection.title, lang, cv.defaultLanguage)}
               </h3>
               <div className="space-y-1.5">
-                {skillsSection.categories
-                  .filter((c) => c.visible)
+                {(Array.isArray(skillsSection.categories) ? skillsSection.categories : [])
+                  .filter((c) => c && c.visible)
                   .map((cat) => (
                     <div key={cat.id} className="space-y-0.5">
                       {cat.name && (
@@ -216,7 +222,7 @@ export function LateralisTemplate({ cv, lang }: Props) {
                         </p>
                       )}
                       <div className="flex flex-wrap gap-1">
-                        {cat.skills.map((sk, sIdx) => (
+                        {(Array.isArray(cat.skills) ? cat.skills : []).map((sk, sIdx) => (
                           <span
                             key={sIdx}
                             className="text-[9.5px] bg-white border border-teal-200/80 text-stone-800 px-1.5 py-0.2 rounded shadow-2xs font-medium"
@@ -241,8 +247,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
                 {t(hobbiesSection.title, lang, cv.defaultLanguage)}
               </h3>
               <ul className="space-y-0.5 text-xs text-stone-700">
-                {hobbiesSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(hobbiesSection.items) ? hobbiesSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((hob) => (
                     <li key={hob.id} className="text-[10px] leading-tight">
                       <span className="font-semibold text-stone-800">
@@ -304,8 +310,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
               }`}
               style={{ borderColor: primaryColor }}
             >
-              {expSection.items
-                .filter((i) => i.visible)
+              {(Array.isArray(expSection.items) ? expSection.items : [])
+                .filter((i) => i && i.visible)
                 .map((item) => {
                   const role = t(item.role, lang, cv.defaultLanguage);
                   const loc = t(item.location, lang, cv.defaultLanguage);
@@ -381,8 +387,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
               }`}
               style={{ borderColor: secondaryColor }}
             >
-              {eduSection.items
-                .filter((i) => i.visible)
+              {(Array.isArray(eduSection.items) ? eduSection.items : [])
+                .filter((i) => i && i.visible)
                 .map((item) => {
                   const degree = t(item.degree, lang, cv.defaultLanguage);
                   const loc = t(item.location, lang, cv.defaultLanguage);
@@ -449,8 +455,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
               {t(certSection.title, lang, cv.defaultLanguage)}
             </h2>
             <div className="space-y-1 text-xs">
-              {certSection.items
-                .filter((i) => i.visible)
+              {(Array.isArray(certSection.items) ? certSection.items : [])
+                .filter((i) => i && i.visible)
                 .map((item) => (
                   <div
                     key={item.id}
@@ -494,8 +500,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
               {t(customSection.title, lang, cv.defaultLanguage)}
             </h2>
             <div className="space-y-1 text-xs">
-              {customSection.items
-                .filter((i) => i.visible)
+              {(Array.isArray(customSection.items) ? customSection.items : [])
+                .filter((i) => i && i.visible)
                 .map((item) => (
                   <div
                     key={item.id}

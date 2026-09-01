@@ -49,7 +49,7 @@ export function ClassicTemplate({ cv, lang }: Props) {
 
         {/* Contact info bar */}
         <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-xs text-stone-600 mt-1.5">
-          {personalInfo.website && (
+          {personalInfo.website && typeof personalInfo.website === "string" && (
             <a
               href={personalInfo.website}
               target="_blank"
@@ -70,7 +70,7 @@ export function ClassicTemplate({ cv, lang }: Props) {
               <span>{personalInfo.email}</span>
             </a>
           )}
-          {personalInfo.phone && (
+          {personalInfo.phone && typeof personalInfo.phone === "string" && (
             <a
               href={`tel:${personalInfo.phone.replace(/[\s()]/g, "")}`}
               className="flex items-center gap-1 hover:underline text-stone-700"
@@ -85,14 +85,17 @@ export function ClassicTemplate({ cv, lang }: Props) {
               <span>{t(personalInfo.location, lang, cv.defaultLanguage)}</span>
             </span>
           )}
-          {personalInfo.links?.map((link) => {
-            const label = t(link.label, lang, cv.defaultLanguage) || link.url.replace(/^https?:\/\//, "");
-            return (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
+          {Array.isArray(personalInfo.links) &&
+            personalInfo.links.map((link) => {
+              const label =
+                t(link.label, lang, cv.defaultLanguage) ||
+                (typeof link.url === "string" ? link.url.replace(/^https?:\/\//, "") : "");
+              return (
+                <a
+                  key={link.id}
+                  href={link.url || "#"}
+                  target="_blank"
+                  rel="noreferrer"
                 className="flex items-center gap-1 hover:underline"
                 style={{ color: primaryColor }}
               >
@@ -138,8 +141,8 @@ export function ClassicTemplate({ cv, lang }: Props) {
               {/* Experience */}
               {section.type === "experience" && (
                 <div className={isCompact ? "space-y-1.5" : "space-y-2.5"}>
-                  {section.items
-                    .filter((i) => i.visible)
+                  {(Array.isArray(section.items) ? section.items : [])
+                    .filter((i) => i && i.visible)
                     .map((item) => {
                       const role = t(item.role, lang, cv.defaultLanguage);
                       const loc = t(item.location, lang, cv.defaultLanguage);
@@ -195,8 +198,8 @@ export function ClassicTemplate({ cv, lang }: Props) {
               {/* Education */}
               {section.type === "education" && (
                 <div className={isCompact ? "space-y-1.5" : "space-y-2"}>
-                  {section.items
-                    .filter((i) => i.visible)
+                  {(Array.isArray(section.items) ? section.items : [])
+                    .filter((i) => i && i.visible)
                     .map((item) => {
                       const degree = t(item.degree, lang, cv.defaultLanguage);
                       const loc = t(item.location, lang, cv.defaultLanguage);
@@ -248,16 +251,17 @@ export function ClassicTemplate({ cv, lang }: Props) {
               {/* Skills */}
               {section.type === "skills" && (
                 <div className="space-y-0.5 text-xs">
-                  {section.categories
-                    .filter((c) => c.visible)
+                  {(Array.isArray(section.categories) ? section.categories : [])
+                    .filter((c) => c && c.visible)
                     .map((cat) => {
                       const catName = t(cat.name, lang, cv.defaultLanguage);
+                      const skillList = Array.isArray(cat.skills) ? cat.skills.join(", ") : "";
                       return (
                         <div key={cat.id} data-page-break-avoid="true" className="flex gap-2 cv-item">
                           <span className="font-bold text-stone-800 shrink-0 min-w-[130px]">
                             {catName}:
                           </span>
-                          <span className="text-stone-700 break-words">{cat.skills.join(", ")}</span>
+                          <span className="text-stone-700 break-words">{skillList}</span>
                         </div>
                       );
                     })}
@@ -267,8 +271,8 @@ export function ClassicTemplate({ cv, lang }: Props) {
               {/* Languages */}
               {section.type === "languages" && (
                 <div data-page-break-avoid="true" className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs cv-item">
-                  {section.items
-                    .filter((i) => i.visible)
+                  {(Array.isArray(section.items) ? section.items : [])
+                    .filter((i) => i && i.visible)
                     .map((item) => {
                       const name = t(item.name, lang, cv.defaultLanguage);
                       const level = t(item.level, lang, cv.defaultLanguage);
@@ -287,8 +291,8 @@ export function ClassicTemplate({ cv, lang }: Props) {
               {/* Certifications */}
               {section.type === "certifications" && (
                 <div className="space-y-0.5 text-xs">
-                  {section.items
-                    .filter((i) => i.visible)
+                  {(Array.isArray(section.items) ? section.items : [])
+                    .filter((i) => i && i.visible)
                     .map((item) => {
                       const name = t(item.name, lang, cv.defaultLanguage);
                       const notes = t(item.notes, lang, cv.defaultLanguage);
@@ -326,8 +330,8 @@ export function ClassicTemplate({ cv, lang }: Props) {
               {/* Hobbies / Interests */}
               {section.type === "hobbies" && (
                 <div data-page-break-avoid="true" className="space-y-0.5 text-xs cv-item">
-                  {section.items
-                    .filter((i) => i.visible)
+                  {(Array.isArray(section.items) ? section.items : [])
+                    .filter((i) => i && i.visible)
                     .map((item) => {
                       const name = t(item.name, lang, cv.defaultLanguage);
                       const desc = t(item.description, lang, cv.defaultLanguage);
@@ -356,8 +360,8 @@ export function ClassicTemplate({ cv, lang }: Props) {
 
               {section.type === "custom" && (
                 <div className="space-y-1 text-xs">
-                  {section.items
-                    .filter((i) => i.visible)
+                  {(Array.isArray(section.items) ? section.items : [])
+                    .filter((i) => i && i.visible)
                     .map((item) => {
                       const title = t(item.title, lang, cv.defaultLanguage);
                       const subtitle = t(item.subtitle, lang, cv.defaultLanguage);

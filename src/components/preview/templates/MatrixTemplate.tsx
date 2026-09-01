@@ -93,7 +93,7 @@ export function MatrixTemplate({ cv, lang }: Props) {
                 <span className="truncate">{personalInfo.email}</span>
               </a>
             )}
-            {personalInfo.phone && (
+            {personalInfo.phone && typeof personalInfo.phone === "string" && (
               <a
                 href={`tel:${personalInfo.phone.replace(/[\s()]/g, "")}`}
                 className="flex items-center gap-1.5 hover:underline"
@@ -108,7 +108,7 @@ export function MatrixTemplate({ cv, lang }: Props) {
                 <span className="truncate">{t(personalInfo.location, lang, cv.defaultLanguage)}</span>
               </span>
             )}
-            {personalInfo.website && (
+            {personalInfo.website && typeof personalInfo.website === "string" && (
               <a
                 href={personalInfo.website}
                 target="_blank"
@@ -120,21 +120,25 @@ export function MatrixTemplate({ cv, lang }: Props) {
                 <span className="truncate">{personalInfo.website.replace(/^https?:\/\//, "")}</span>
               </a>
             )}
-            {personalInfo.links?.map((link) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-1.5 hover:underline truncate"
-                style={{ color: primaryColor }}
-              >
-                {renderPlatformIcon(link.platform, 11, "shrink-0")}
-                <span className="truncate">
-                  {t(link.label, lang, cv.defaultLanguage) || link.url.replace(/^https?:\/\//, "")}
-                </span>
-              </a>
-            ))}
+            {Array.isArray(personalInfo.links) &&
+              personalInfo.links.map((link) => {
+                const label =
+                  t(link.label, lang, cv.defaultLanguage) ||
+                  (typeof link.url === "string" ? link.url.replace(/^https?:\/\//, "") : "");
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url || "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1.5 hover:underline truncate"
+                    style={{ color: primaryColor }}
+                  >
+                    {renderPlatformIcon(link.platform, 11, "shrink-0")}
+                    <span className="truncate">{label}</span>
+                  </a>
+                );
+              })}
           </div>
         </div>
       </div>
@@ -158,8 +162,8 @@ export function MatrixTemplate({ cv, lang }: Props) {
               </div>
 
               <div className={isCompact ? "space-y-2" : "space-y-2.5"}>
-                {expSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(expSection.items) ? expSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((item) => {
                     const role = t(item.role, lang, cv.defaultLanguage);
                     const loc = t(item.location, lang, cv.defaultLanguage);
@@ -225,8 +229,8 @@ export function MatrixTemplate({ cv, lang }: Props) {
               </div>
 
               <div className={isCompact ? "space-y-1.5" : "space-y-2"}>
-                {eduSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(eduSection.items) ? eduSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((item) => {
                     const degree = t(item.degree, lang, cv.defaultLanguage);
                     const loc = t(item.location, lang, cv.defaultLanguage);
@@ -292,8 +296,8 @@ export function MatrixTemplate({ cv, lang }: Props) {
               </div>
 
               <div className="space-y-1 text-xs">
-                {langSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(langSection.items) ? langSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((item) => (
                     <div
                       key={item.id}
@@ -333,8 +337,8 @@ export function MatrixTemplate({ cv, lang }: Props) {
                 {t(skillsSection.title, lang, cv.defaultLanguage)}
               </h2>
               <div className="space-y-1.5">
-                {skillsSection.categories
-                  .filter((c) => c.visible)
+                {(Array.isArray(skillsSection.categories) ? skillsSection.categories : [])
+                  .filter((c) => c && c.visible)
                   .map((cat) => (
                     <div key={cat.id} data-page-break-avoid="true" className="cv-item">
                       {cat.name && (
@@ -343,7 +347,7 @@ export function MatrixTemplate({ cv, lang }: Props) {
                         </p>
                       )}
                       <div className="flex flex-wrap gap-1">
-                        {cat.skills.map((sk, sIdx) => (
+                        {(Array.isArray(cat.skills) ? cat.skills : []).map((sk, sIdx) => (
                           <span
                             key={sIdx}
                             className="text-[9px] bg-stone-100 border border-stone-200 text-stone-800 px-1.5 py-0.2 rounded"
@@ -369,8 +373,8 @@ export function MatrixTemplate({ cv, lang }: Props) {
                 {t(certSection.title, lang, cv.defaultLanguage)}
               </h2>
               <div className="space-y-1 text-xs">
-                {certSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(certSection.items) ? certSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((item) => {
                     const notes = t(item.notes, lang, cv.defaultLanguage);
                     return (
@@ -412,8 +416,8 @@ export function MatrixTemplate({ cv, lang }: Props) {
                 {t(hobbiesSection.title, lang, cv.defaultLanguage)}
               </h2>
               <ul className="space-y-0.5 text-xs text-stone-700">
-                {hobbiesSection.items
-                  .filter((i) => i.visible)
+                {(Array.isArray(hobbiesSection.items) ? hobbiesSection.items : [])
+                  .filter((i) => i && i.visible)
                   .map((h) => {
                     const desc = t(h.description, lang, cv.defaultLanguage);
                     const notes = t(h.notes, lang, cv.defaultLanguage);
