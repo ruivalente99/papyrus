@@ -66,6 +66,30 @@
     background-color: var(--page);
     color: var(--heading);
   }
+
+  /* Charm Unified Input Defaults */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="date"],
+  select,
+  textarea {
+    border-radius: 0.75rem; /* rounded-xl (12px) */
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  input[type="date"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #d97706;
+    box-shadow: 0 0 0 1px #d97706;
+  }
 }
 
 /* Hide scrollbars for clean horizontal pill bars */

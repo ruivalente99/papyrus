@@ -122,7 +122,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
         <button
           type="button"
           onClick={handleAddItem}
-          className="flex items-center gap-1 text-xs font-semibold bg-amber-700 hover:bg-amber-800 text-white px-2.5 py-1 rounded-lg transition-colors shadow-2xs"
+          className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
           <span>{isPt ? "+ Adicionar Cargo" : "+ Add Experience"}</span>

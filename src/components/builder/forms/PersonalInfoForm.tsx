@@ -226,7 +226,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           <button
             type="button"
             onClick={handleAddLink}
-            className="flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800"
+            className="flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-0.5 rounded-full transition-all active:scale-95 shadow-2xs"
           >
             <Plus size={12} />
             <span>{isPt ? "Adicionar Link" : "Add Link"}</span>

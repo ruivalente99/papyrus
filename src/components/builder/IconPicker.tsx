@@ -90,15 +90,15 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
           </div>
 
           {/* Category Tabs */}
-          <div className="flex gap-1 overflow-x-auto pb-2 mb-2 border-b border-stone-100 dark:border-stone-800 text-[10.5px]">
+          <div className="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-stone-100 dark:border-stone-800 text-[10.5px]">
             {categories.map((c) => (
               <button
                 key={c.id}
                 type="button"
                 onClick={() => setSelectedCategory(c.id)}
-                className={`px-2 py-0.5 rounded-md whitespace-nowrap font-medium transition-colors ${
+                className={`px-2.5 py-0.5 rounded-full whitespace-nowrap font-bold transition-all ${
                   selectedCategory === c.id
-                    ? "bg-amber-700 text-white font-bold"
+                    ? "bg-amber-700 text-white shadow-2xs"
                     : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
                 }`}
               >

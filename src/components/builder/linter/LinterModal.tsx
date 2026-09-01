@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { LinterReport } from "@/types/cv";
+import type { LinterReport, SupportedLanguage } from "@/types/cv";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import {
   X,
@@ -14,11 +14,13 @@ interface Props {
   report: LinterReport;
   isOpen: boolean;
   onClose: () => void;
+  lang?: SupportedLanguage;
 }
 
-export function LinterModal({ report, isOpen, onClose }: Props) {
+export function LinterModal({ report, isOpen, onClose, lang = "en" }: Props) {
   if (!isOpen) return null;
 
+  const isPt = lang === "pt";
   const { score, issues, passedChecks, totalChecks } = report;
 
   const errors = issues.filter((i) => i.level === "error");
@@ -32,7 +34,9 @@ export function LinterModal({ report, isOpen, onClose }: Props) {
         <div className="px-5 py-3.5 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
           <div className="flex items-center gap-2.5">
             <NanoBananaLogo size="sm" />
-            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">Quality Audit</h3>
+            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+              {isPt ? "Auditoria de Qualidade" : "Quality Audit"}
+            </h3>
           </div>
           <button
             onClick={onClose}
@@ -48,16 +52,22 @@ export function LinterModal({ report, isOpen, onClose }: Props) {
             <div className="text-3xl font-black font-mono tracking-tight">{score}%</div>
             <div className="text-xs text-stone-300 mt-0.5">
               {score >= 90
-                ? "Excellent! Your resume is complete and ATS-optimized."
+                ? isPt
+                  ? "Excelente! O currículo está completo e otimizado para ATS."
+                  : "Excellent! Your resume is complete and ATS-optimized."
                 : score >= 75
-                ? "Good quality, with small actionable recommendations."
+                ? isPt
+                  ? "Boa qualidade, com pequenas recomendações práticas."
+                  : "Good quality, with small actionable recommendations."
+                : isPt
+                ? "Requer atenção para preencher campos em falta e melhorar a leitura."
                 : "Requires attention to fill missing fields and improve readability."}
             </div>
           </div>
 
           <div className="text-right">
             <span className="text-xs font-mono bg-stone-800 text-stone-200 px-3 py-1 rounded-full font-bold border border-stone-700">
-              {passedChecks}/{totalChecks} checks
+              {passedChecks}/{totalChecks} {isPt ? "validações" : "checks"}
             </span>
           </div>
         </div>
@@ -66,8 +76,14 @@ export function LinterModal({ report, isOpen, onClose }: Props) {
         <div className="p-6 overflow-y-auto space-y-3 flex-1 text-xs">
           {issues.length === 0 ? (
             <div className="text-center py-8 space-y-2 text-stone-500 dark:text-stone-400">
-              <p className="font-bold text-stone-800 dark:text-stone-200">No issues found!</p>
-              <p className="text-xs">Your curriculum vitae meets all quality standards.</p>
+              <p className="font-bold text-stone-800 dark:text-stone-200">
+                {isPt ? "Nenhum problema encontrado!" : "No issues found!"}
+              </p>
+              <p className="text-xs">
+                {isPt
+                  ? "O seu curriculum vitae cumpre todos os critérios de qualidade."
+                  : "Your curriculum vitae meets all quality standards."}
+              </p>
             </div>
           ) : (
             <>
@@ -119,7 +135,7 @@ export function LinterModal({ report, isOpen, onClose }: Props) {
             onClick={onClose}
             className="px-5 py-1.5 bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-full transition-colors shadow-2xs"
           >
-            Close
+            {isPt ? "Fechar" : "Close"}
           </button>
         </div>
       </div>

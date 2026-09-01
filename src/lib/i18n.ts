@@ -84,8 +84,8 @@ export function isFieldTranslated(
  */
 export const UI_DICTIONARY = {
   en: {
-    brandName: "PAPYRUS",
-    brandSubtitle: "ARCHITECTURA VITAE",
+    brandName: "papyrus",
+    brandSubtitle: "architectura vitae",
     tagline: "Dynamic Multilingual Resume & CV Engine",
     // Navigation
     newDoc: "New / Setup",
@@ -147,8 +147,8 @@ export const UI_DICTIONARY = {
     custom: "Custom Section",
   },
   pt: {
-    brandName: "PAPYRUS",
-    brandSubtitle: "ARCHITECTURA VITAE",
+    brandName: "papyrus",
+    brandSubtitle: "architectura vitae",
     tagline: "Motor Dinâmico e Multilíngue de Criação de Currículos",
     // Navigation
     newDoc: "Novo / Setup",

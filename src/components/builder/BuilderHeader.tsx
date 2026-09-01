@@ -218,6 +218,7 @@ export function BuilderHeader({
         report={linterReport}
         isOpen={showLinterModal}
         onClose={() => setShowLinterModal(false)}
+        lang={activeLang}
       />
 
       <LatexModal
