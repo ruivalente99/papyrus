@@ -127,7 +127,7 @@ export default function GuidePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-amber-500/20">
+    <div className="w-full min-h-screen overflow-x-clip bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-amber-500/20 touch-pan-y">
       {/* Sticky Top Navbar */}
       <header className="sticky top-0 z-40 bg-white/85 dark:bg-stone-900/85 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-4 sm:px-8 py-3 transition-colors">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">

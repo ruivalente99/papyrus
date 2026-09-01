@@ -28,6 +28,25 @@ test.describe("PAPYRUS Guide Page, Alignment Grid & Pointer/Drag Switching", () 
     await page.waitForURL("**/");
   });
 
+  test("verifies smooth vertical scroll works on /guide page", async ({ page }) => {
+    await page.goto("/guide");
+    await page.waitForLoadState("networkidle");
+
+    const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+    const clientHeight = await page.evaluate(() => document.documentElement.clientHeight);
+    expect(scrollHeight).toBeGreaterThan(clientHeight);
+
+    // Scroll down 400px
+    await page.evaluate(() => window.scrollBy({ top: 400, behavior: "instant" }));
+    const scrollY = await page.evaluate(() => window.scrollY);
+    expect(scrollY).toBeGreaterThan(0);
+
+    // Scroll to the bottom CTA
+    await page.getByText(/Pronto para criar o teu currículo|Ready to craft your resume/i).scrollIntoViewIfNeeded();
+    const finalScrollY = await page.evaluate(() => window.scrollY);
+    expect(finalScrollY).toBeGreaterThan(500);
+  });
+
   test("toggles alignment grid on preview canvas and verifies grid overlay", async ({ page, isMobile }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
