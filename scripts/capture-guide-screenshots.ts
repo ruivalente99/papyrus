@@ -2,6 +2,17 @@ import { chromium, devices } from "playwright";
 import fs from "fs";
 import path from "path";
 
+async function enterBuilder(page: any) {
+  if (await page.locator("#section-personal").isVisible()) {
+    return;
+  }
+  const demoBtn = page.getByRole("button", { name: /Demo/i });
+  if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await demoBtn.click();
+    await page.waitForSelector("#section-personal", { timeout: 5000 });
+  }
+}
+
 async function main() {
   const outDir = path.resolve(process.cwd(), "public/guide");
   if (!fs.existsSync(outDir)) {
@@ -9,8 +20,8 @@ async function main() {
   }
 
   const browser = await chromium.launch({ headless: true });
-  const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || "https://papyrus.ruivalente.com";
-  console.log(`Capturing guide screenshots against ${baseUrl}...`);
+  const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3000";
+  console.log(`📸 Capturing guide screenshots with fresh Lorem Ipsum & Dylan avatars from ${baseUrl}...`);
 
   // ==========================================
   // 1. DESKTOP (Web) CAPTURES (1280x820)
@@ -23,17 +34,13 @@ async function main() {
 
   await deskPage.goto(baseUrl);
   await deskPage.waitForLoadState("networkidle");
-
-  const demoBtn = deskPage.getByRole("button", { name: /Experimentar Demonstração|Try Demo/i });
-  if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await demoBtn.click();
-    await deskPage.waitForTimeout(500);
-  }
+  await enterBuilder(deskPage);
 
   const ptBtn = deskPage.getByRole("button", { name: /^PT$/i });
   if (await ptBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
     await ptBtn.click();
   }
+  await deskPage.waitForTimeout(500);
 
   // Web Step 1: Templates & Design Selection
   await deskPage.screenshot({
@@ -42,18 +49,19 @@ async function main() {
   });
   console.log("✓ Captured web-step1-templates.png");
 
-  // Web Step 2: Editor Pane
+  // Web Step 2: Editor Pane with Dylan Avatar & Re-roll
   await deskPage.screenshot({
     path: path.join(outDir, "web-step2-editor.png"),
-    clip: { x: 0, y: 53, width: 620, height: 600 },
+    clip: { x: 0, y: 53, width: 620, height: 620 },
   });
   console.log("✓ Captured web-step2-editor.png");
 
   // Web Step 3: Interactive Canvas with Grid
-  const gridBtn = deskPage.getByTestId("canvas-floating-toolbar").getByTitle(/grelha/i);
+  const canvasToolbar = deskPage.getByTestId("canvas-floating-toolbar");
+  const gridBtn = canvasToolbar.getByTitle(/grelha|grid/i);
   if (await gridBtn.isVisible()) {
     await gridBtn.click();
-    await deskPage.waitForTimeout(200);
+    await deskPage.waitForTimeout(300);
   }
   await deskPage.screenshot({
     path: path.join(outDir, "web-step3-canvas.png"),
@@ -69,7 +77,7 @@ async function main() {
   const linterBadge = deskPage.locator('[data-testid="linter-badge"]');
   if (await linterBadge.isVisible({ timeout: 2000 }).catch(() => false)) {
     await linterBadge.click();
-    await deskPage.waitForTimeout(400);
+    await deskPage.waitForTimeout(500);
     await deskPage.screenshot({
       path: path.join(outDir, "web-step4-linter.png"),
       clip: { x: 300, y: 80, width: 680, height: 600 },
@@ -99,12 +107,8 @@ async function main() {
 
   await mobPage.goto(baseUrl);
   await mobPage.waitForLoadState("networkidle");
-
-  const mobDemo = mobPage.getByRole("button", { name: /Experimentar Demonstração|Try Demo/i });
-  if (await mobDemo.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await mobDemo.click();
-    await mobPage.waitForTimeout(500);
-  }
+  await enterBuilder(mobPage);
+  await mobPage.waitForTimeout(400);
 
   // Mobile Step 2: Mobile Editor
   await mobPage.screenshot({
@@ -116,14 +120,14 @@ async function main() {
   const previewTab = mobPage.getByRole("button", { name: /Pré-visualização|Preview/i });
   if (await previewTab.isVisible()) {
     await previewTab.click();
-    await mobPage.waitForTimeout(300);
+    await mobPage.waitForTimeout(400);
   }
 
   // Mobile Step 1: Style Drawer
   const styleBtn = mobPage.locator('button:has-text("Estilo"), button:has-text("Style")').first();
   if (await styleBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
     await styleBtn.click();
-    await mobPage.waitForTimeout(400);
+    await mobPage.waitForTimeout(500);
     await mobPage.screenshot({
       path: path.join(outDir, "mobile-step1-templates.png"),
       clip: { x: 0, y: 250, width: 390, height: 594 },
@@ -147,7 +151,7 @@ async function main() {
   const mobLinter = mobPage.locator('[data-testid="linter-badge"]');
   if (await mobLinter.isVisible({ timeout: 2000 }).catch(() => false)) {
     await mobLinter.click();
-    await mobPage.waitForTimeout(400);
+    await mobPage.waitForTimeout(500);
     await mobPage.screenshot({
       path: path.join(outDir, "mobile-step4-linter.png"),
       clip: { x: 0, y: 200, width: 390, height: 644 },

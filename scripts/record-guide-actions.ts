@@ -7,7 +7,18 @@ if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
 }
 
-const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || "https://papyrus.ruivalente.com";
+const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3000";
+
+async function enterBuilder(page: any) {
+  if (await page.locator("#section-personal").isVisible()) {
+    return;
+  }
+  const demoBtn = page.getByRole("button", { name: /Demo/i });
+  if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await demoBtn.click();
+    await page.waitForSelector("#section-personal", { timeout: 5000 });
+  }
+}
 
 async function recordAction(
   filename: string,
@@ -15,8 +26,8 @@ async function recordAction(
   actionFn: (page: any) => Promise<void>
 ) {
   const finalPath = path.join(outDir, filename);
-  if (fs.existsSync(finalPath) && fs.statSync(finalPath).size > 10000) {
-    console.log(`- Skipping ${filename}, already recorded.`);
+  if (process.env.SKIP_EXISTING && fs.existsSync(finalPath) && fs.statSync(finalPath).mtimeMs > Date.now() - 30 * 60 * 1000) {
+    console.log(`- Skipping ${filename}, recorded in this session.`);
     return;
   }
 
@@ -43,12 +54,8 @@ async function recordAction(
   try {
     await page.goto(baseUrl);
     await page.waitForLoadState("networkidle");
-
-    const demoBtn = page.getByRole("button", { name: /Demo/i });
-    if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await demoBtn.click();
-      await page.waitForTimeout(500);
-    }
+    await enterBuilder(page);
+    await page.waitForTimeout(400);
 
     // Execute specific scenario
     await actionFn(page);
@@ -71,9 +78,9 @@ async function recordAction(
 }
 
 async function main() {
-  console.log(`🎬 Recording dynamic action videos/GIFs from ${baseUrl}...`);
+  console.log(`🎬 Recording dynamic action videos with Lorem Ipsum & Dylan avatars from ${baseUrl}...`);
 
-  // Web 1: Templates & Colors Live Transformation
+  // Web 1: Templates & Colors Live Transformation with Dylan Avatar
   await recordAction("web-action-1-templates.webm", { isMobile: false }, async (page) => {
     await page.waitForTimeout(500);
     const classicBtn = page.locator('button:has-text("Classic")').first();
@@ -95,16 +102,27 @@ async function main() {
     await page.waitForTimeout(900);
   });
 
-  // Web 2: Live Sync Typing in Editor
+  // Web 2: Live Sync Typing & DiceBear Dylan Re-roll in Editor
   await recordAction("web-action-2-editor.webm", { isMobile: false }, async (page) => {
     await page.waitForTimeout(400);
-    const titleInput = page.locator('input[placeholder*="Lead Software Engineer"], input[placeholder*="Senior Software Engineer"], input[value*="Project Management"]').first();
-    if (await titleInput.isVisible()) {
-      await titleInput.click();
-      await titleInput.fill("");
+
+    // Click Re-roll Dylan avatar
+    const rerollBtn = page.locator('button:has-text("Re-roll Dylan")').first();
+    if (await rerollBtn.isVisible()) {
+      await rerollBtn.click();
+      await page.waitForTimeout(700);
+      await rerollBtn.click();
+      await page.waitForTimeout(700);
+    }
+
+    // Live-sync typing full name with Lorem Ipsum
+    const nameInput = page.locator('#section-personal input[type="text"]').first();
+    if (await nameInput.isVisible()) {
+      await nameInput.click();
+      await nameInput.fill("");
       await page.waitForTimeout(200);
-      await titleInput.pressSequentially("Principal Solutions Architect & Tech Lead", { delay: 40 });
-      await page.waitForTimeout(1200);
+      await nameInput.pressSequentially("Lorem Ipsum Luna", { delay: 50 });
+      await page.waitForTimeout(1000);
     }
   });
 
@@ -188,19 +206,27 @@ async function main() {
     await page.waitForTimeout(800);
   });
 
-  // Mobile 2: Sticky Jump Pills & Collapse in Editor
+  // Mobile 2: Sticky Jump Pills & Dylan Re-roll in Mobile Editor
   await recordAction("mobile-action-2-editor.webm", { isMobile: true }, async (page) => {
     await page.waitForTimeout(400);
+    const rerollBtn = page.locator('button:has-text("Re-roll Dylan")').first();
+    if (await rerollBtn.isVisible()) {
+      await rerollBtn.click();
+      await page.waitForTimeout(700);
+    }
+
     const expPill = page.locator('button:has-text("Experiência"), button:has-text("Work Experience")').first();
     if (await expPill.isVisible()) {
       await expPill.click();
       await page.waitForTimeout(800);
     }
-    const collapseBtn = page.locator('button:has-text("Recolher"), button:has-text("Collapse")').first();
+
+    const collapseBtn = page.locator('button[title*="Recolher"], button[title*="Collapse"], button[title*="Expandir"], button[title*="Expand"]').first();
     if (await collapseBtn.isVisible()) {
       await collapseBtn.click();
       await page.waitForTimeout(800);
-      await collapseBtn.click();
+      const expandBtn = page.locator('button[title*="Recolher"], button[title*="Collapse"], button[title*="Expandir"], button[title*="Expand"]').first();
+      await expandBtn.click();
       await page.waitForTimeout(600);
     }
   });
@@ -247,7 +273,7 @@ async function main() {
     }
   });
 
-  console.log("🎉 All 10 live action videos recorded successfully!");
+  console.log("🎉 All 10 live action videos recorded successfully with Lorem Ipsum & Dylan avatars!");
 }
 
 main().catch((err) => {
