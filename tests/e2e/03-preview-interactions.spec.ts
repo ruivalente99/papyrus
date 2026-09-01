@@ -35,40 +35,72 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
   test("switches templates using preview toolbar buttons", async ({ page, isMobile }) => {
     if (isMobile) {
       await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
-    }
-
-    // Switch to Classic Tech template
-    const classicBtn = page.getByRole("button", { name: "Classic (Minimal ATS)" });
-    if (await classicBtn.isVisible()) {
-      await classicBtn.click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
-    }
 
-    // Switch to Matrix template
-    const matrixBtn = page.getByRole("button", { name: "Matrix (Executive Grid)" });
-    if (await matrixBtn.isVisible()) {
-      await matrixBtn.click();
+      // Open Style sheet
+      const styleBtn = page.getByRole("button", { name: /Estilo|Style/i });
+      await styleBtn.click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+
+      // Click Classic template
+      await page.getByRole("dialog").getByRole("button", { name: /^Classic/i }).click();
+
+      // Click Matrix template
+      await page.getByRole("dialog").getByRole("button", { name: /^Matrix/i }).click();
+
+      // Close sheet
+      await page.getByRole("dialog").getByRole("button", { name: /Concluído|Done/i }).click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
+    } else {
+      // Switch to Classic Tech template
+      const classicBtn = page.getByRole("button", { name: "Classic (Minimal ATS)" });
+      if (await classicBtn.isVisible()) {
+        await classicBtn.click();
+        await expect(page.locator("#cv-printable-page")).toBeVisible();
+      }
+
+      // Switch to Matrix template
+      const matrixBtn = page.getByRole("button", { name: "Matrix (Executive Grid)" });
+      if (await matrixBtn.isVisible()) {
+        await matrixBtn.click();
+        await expect(page.locator("#cv-printable-page")).toBeVisible();
+      }
     }
   });
 
   test("toggles font size density between compact, normal and spacious", async ({ page, isMobile }) => {
     if (isMobile) {
       await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
-    }
-
-    // Click compact density
-    const compactBtn = page.getByRole("button", { name: /Compact/i });
-    if (await compactBtn.isVisible()) {
-      await compactBtn.click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
-    }
 
-    // Click spacious density
-    const spaciousBtn = page.getByRole("button", { name: /Spacious/i });
-    if (await spaciousBtn.isVisible()) {
-      await spaciousBtn.click();
+      // Open Style sheet
+      const styleBtn = page.getByRole("button", { name: /Estilo|Style/i });
+      await styleBtn.click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+
+      // Click compact density
+      await page.getByRole("dialog").getByRole("button", { name: /Compact/i }).click();
+
+      // Click spacious density
+      await page.getByRole("dialog").getByRole("button", { name: /Spacious/i }).click();
+
+      // Close sheet
+      await page.getByRole("dialog").getByRole("button", { name: /Concluído|Done/i }).click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
+    } else {
+      // Click compact density
+      const compactBtn = page.getByRole("button", { name: /Compact/i });
+      if (await compactBtn.isVisible()) {
+        await compactBtn.click();
+        await expect(page.locator("#cv-printable-page")).toBeVisible();
+      }
+
+      // Click spacious density
+      const spaciousBtn = page.getByRole("button", { name: /Spacious/i });
+      if (await spaciousBtn.isVisible()) {
+        await spaciousBtn.click();
+        await expect(page.locator("#cv-printable-page")).toBeVisible();
+      }
     }
   });
 });

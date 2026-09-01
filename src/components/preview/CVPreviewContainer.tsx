@@ -13,7 +13,9 @@ import {
   ZoomOut,
   Maximize2,
   Loader2,
+  Palette,
 } from "lucide-react";
+import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 
 interface Props {
   cv: CVDocument;
@@ -25,16 +27,6 @@ interface Props {
   mobileTab?: "edit" | "preview";
 }
 
-const ACCENT_COLORS = [
-  { name: "Teal (Lateralis)", hex: "#005555" },
-  { name: "Royal Blue (Classic)", hex: "#004f90" },
-  { name: "Navy Blue (Matrix)", hex: "#1e3a8a" },
-  { name: "Emerald", hex: "#047857" },
-  { name: "Amber / Bronze", hex: "#b45309" },
-  { name: "Rose / Burgundy", hex: "#9f1239" },
-  { name: "Slate / Charcoal", hex: "#334155" },
-];
-
 export function CVPreviewContainer({
   cv,
   lang,
@@ -45,6 +37,7 @@ export function CVPreviewContainer({
 }: Props) {
   const [zoom, setZoom] = useState<number>(0.85);
   const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [docHeight, setDocHeight] = useState<number>(A4_H_PX);
   const [isExporting, setIsExporting] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number>(1);
@@ -134,168 +127,239 @@ export function CVPreviewContainer({
   return (
     <div className="flex flex-col h-full bg-stone-200/50 dark:bg-stone-950 text-stone-800 dark:text-stone-200 transition-colors">
       {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
-      <div className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shadow-2xs transition-colors shrink-0">
-        {/* Template, Density & Color Selector (Smooth horizontal pill row on mobile) */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 shrink-0">
-          {/* Template Selector (Pill Segmented) */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
-            <button
-              onClick={() => onSetTemplate("lateralis")}
-              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                cv.template === "lateralis" || cv.template === "canva"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-              }`}
-            >
-              {tUI("templateLateralis", lang)}
-            </button>
-            <button
-              onClick={() => onSetTemplate("classic")}
-              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                cv.template === "classic" || cv.template === "latex"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-              }`}
-            >
-              {tUI("templateClassic", lang)}
-            </button>
-            <button
-              onClick={() => onSetTemplate("matrix")}
-              className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                cv.template === "matrix" || cv.template === "europass"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-              }`}
-            >
-              {tUI("templateMatrix", lang)}
-            </button>
-          </div>
+      {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
+      <div className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-3 sm:px-4 py-2 shadow-2xs transition-colors shrink-0">
+        {/* MOBILE TOOLBAR: Clean Single 44px Row */}
+        <div className="flex sm:hidden items-center justify-between gap-2">
+          {/* Left: Page Count Badge & Compact Zoom Pill */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
+            </span>
 
-          {/* Density Selector (Pill Segmented) */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
-            <button
-              onClick={() => onUpdateTheme({ fontSize: "compact" })}
-              title="Compact spacing"
-              className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                cv.theme.fontSize === "compact"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
-              }`}
-            >
-              {tUI("densityCompact", lang)}
-            </button>
-            <button
-              onClick={() => onUpdateTheme({ fontSize: "normal" })}
-              title="Balanced spacing"
-              className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                cv.theme.fontSize === "normal" || !cv.theme.fontSize
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
-              }`}
-            >
-              {tUI("densityNormal", lang)}
-            </button>
-            <button
-              onClick={() => onUpdateTheme({ fontSize: "spacious" })}
-              title="Spacious breathing room"
-              className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                cv.theme.fontSize === "spacious"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
-                  : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
-              }`}
-            >
-              {tUI("densitySpacious", lang)}
-            </button>
-          </div>
-
-          {/* Accent Color Circles */}
-          <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-stone-700 shrink-0">
-            {ACCENT_COLORS.map((c) => (
+            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-0.5 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs shrink-0">
               <button
-                key={c.hex}
-                onClick={() => onUpdateTheme({ primaryColor: c.hex })}
-                title={c.name}
-                className={`w-4.5 h-4.5 rounded-full transition-transform ${
-                  cv.theme.primaryColor === c.hex
-                    ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
-                    : "hover:scale-110 opacity-85 hover:opacity-100"
+                onClick={() => handleZoomChange(-0.1)}
+                title={tUI("zoomOut", lang)}
+                className="p-1 hover:text-stone-900 dark:hover:text-white"
+              >
+                <ZoomOut size={12} />
+              </button>
+              <span className="text-[10px] font-mono px-1 min-w-[28px] text-center font-bold">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={() => handleZoomChange(0.1)}
+                title={tUI("zoomIn", lang)}
+                className="p-1 hover:text-stone-900 dark:hover:text-white"
+              >
+                <ZoomIn size={12} />
+              </button>
+              <button
+                onClick={handleToggleAutoFit}
+                title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
+                className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1 transition-colors ${
+                  isAutoFit
+                    ? "text-amber-700 dark:text-amber-400 font-bold"
+                    : "hover:text-stone-900 dark:hover:text-white text-stone-400"
                 }`}
-                style={{ backgroundColor: c.hex }}
+              >
+                <Maximize2 size={11} />
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Estilo/Style Drawer Trigger & PDF Download Action */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label={tUI("customizeStyle", lang)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-stone-200/80 dark:bg-stone-800 dark:hover:bg-stone-700/80 text-stone-800 dark:text-stone-200 rounded-full text-xs font-bold border border-stone-200/80 dark:border-stone-700 shadow-2xs transition-all active:scale-95 shrink-0"
+            >
+              <span
+                className="w-2.5 h-2.5 rounded-full ring-1 ring-black/10 shrink-0"
+                style={{ backgroundColor: cv.theme.primaryColor || "#005555" }}
               />
-            ))}
+              <Palette size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>{tUI("customizeStyle", lang)}</span>
+            </button>
+
+            <button
+              onClick={handleDownloadPdf}
+              disabled={isExporting !== null}
+              className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0"
+            >
+              {isExporting === "pdf" ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <Download size={13} />
+              )}
+              <span>{tUI("pdfBtn", lang)}</span>
+            </button>
           </div>
         </div>
 
-        {/* Zoom & Export Actions */}
-        <div className="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-2 flex-wrap">
-          {/* Page count pill */}
-          <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
-            {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
-          </span>
+        {/* DESKTOP TOOLBAR: Full Horizontal Segmented Bar */}
+        <div className="hidden sm:flex items-center justify-between gap-2">
+          {/* Template, Density & Color Selector */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Template Selector */}
+            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              <button
+                onClick={() => onSetTemplate("lateralis")}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                  cv.template === "lateralis" || cv.template === "canva"
+                    ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                    : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                }`}
+              >
+                {tUI("templateLateralis", lang)}
+              </button>
+              <button
+                onClick={() => onSetTemplate("classic")}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                  cv.template === "classic" || cv.template === "latex"
+                    ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                    : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                }`}
+              >
+                {tUI("templateClassic", lang)}
+              </button>
+              <button
+                onClick={() => onSetTemplate("matrix")}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                  cv.template === "matrix" || cv.template === "europass"
+                    ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
+                    : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                }`}
+              >
+                {tUI("templateMatrix", lang)}
+              </button>
+            </div>
 
-          {/* Zoom controls (Pill Shell) with Auto-Fit */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs shrink-0">
-            <button
-              onClick={() => handleZoomChange(-0.1)}
-              title={tUI("zoomOut", lang)}
-              className="p-1 hover:text-stone-900 dark:hover:text-white"
-            >
-              <ZoomOut size={13} />
-            </button>
-            <span className="text-[11px] font-mono px-1 min-w-[34px] text-center font-bold">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button
-              onClick={() => handleZoomChange(0.1)}
-              title={tUI("zoomIn", lang)}
-              className="p-1 hover:text-stone-900 dark:hover:text-white"
-            >
-              <ZoomIn size={13} />
-            </button>
-            <button
-              onClick={handleToggleAutoFit}
-              title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
-              className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors ${
-                isAutoFit
-                  ? "text-amber-700 dark:text-amber-400 font-bold"
-                  : "hover:text-stone-900 dark:hover:text-white text-stone-400"
-              }`}
-            >
-              <Maximize2 size={12} />
-            </button>
+            {/* Density Selector */}
+            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              <button
+                onClick={() => onUpdateTheme({ fontSize: "compact" })}
+                title="Compact spacing"
+                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
+                  cv.theme.fontSize === "compact"
+                    ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
+                    : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                }`}
+              >
+                {tUI("densityCompact", lang)}
+              </button>
+              <button
+                onClick={() => onUpdateTheme({ fontSize: "normal" })}
+                title="Balanced spacing"
+                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
+                  cv.theme.fontSize === "normal" || !cv.theme.fontSize
+                    ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
+                    : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                }`}
+              >
+                {tUI("densityNormal", lang)}
+              </button>
+              <button
+                onClick={() => onUpdateTheme({ fontSize: "spacious" })}
+                title="Spacious breathing room"
+                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
+                  cv.theme.fontSize === "spacious"
+                    ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
+                    : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                }`}
+              >
+                {tUI("densitySpacious", lang)}
+              </button>
+            </div>
+
+            {/* Accent Color Circles */}
+            <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-stone-700 shrink-0">
+              {ACCENT_COLORS.map((c) => (
+                <button
+                  key={c.hex}
+                  onClick={() => onUpdateTheme({ primaryColor: c.hex })}
+                  title={c.name}
+                  className={`w-4.5 h-4.5 rounded-full transition-transform ${
+                    cv.theme.primaryColor === c.hex
+                      ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
+                      : "hover:scale-110 opacity-85 hover:opacity-100"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Action Export Buttons (Charm Pills) */}
-          <button
-            onClick={printCV}
-            title="Native Print / PDF"
-            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs shrink-0"
-          >
-            <Printer size={13} />
-            <span className="hidden sm:inline">{tUI("printBtn", lang)}</span>
-          </button>
+          {/* Desktop Zoom & Export Actions */}
+          <div className="flex items-center justify-end gap-1.5 sm:gap-2 flex-wrap shrink-0">
+            <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
+            </span>
 
-          <button
-            onClick={handleDownloadPdf}
-            disabled={isExporting !== null}
-            className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0"
-          >
-            {isExporting === "pdf" ? (
-              <Loader2 size={13} className="animate-spin" />
-            ) : (
-              <Download size={13} />
-            )}
-            <span>{tUI("pdfBtn", lang)}</span>
-          </button>
+            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs shrink-0">
+              <button
+                onClick={() => handleZoomChange(-0.1)}
+                title={tUI("zoomOut", lang)}
+                className="p-1 hover:text-stone-900 dark:hover:text-white"
+              >
+                <ZoomOut size={13} />
+              </button>
+              <span className="text-[11px] font-mono px-1 min-w-[34px] text-center font-bold">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={() => handleZoomChange(0.1)}
+                title={tUI("zoomIn", lang)}
+                className="p-1 hover:text-stone-900 dark:hover:text-white"
+              >
+                <ZoomIn size={13} />
+              </button>
+              <button
+                onClick={handleToggleAutoFit}
+                title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
+                className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors ${
+                  isAutoFit
+                    ? "text-amber-700 dark:text-amber-400 font-bold"
+                    : "hover:text-stone-900 dark:hover:text-white text-stone-400"
+                }`}
+              >
+                <Maximize2 size={12} />
+              </button>
+            </div>
 
-          <button
-            onClick={handleDownloadPng}
-            disabled={isExporting !== null}
-            className="hidden sm:flex items-center gap-1 text-xs font-semibold bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs disabled:opacity-50 shrink-0"
-          >
-            <ImageIcon size={13} />
-            <span>{tUI("pngBtn", lang)}</span>
-          </button>
+            <button
+              onClick={printCV}
+              title="Native Print / PDF"
+              className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs shrink-0"
+            >
+              <Printer size={13} />
+              <span>{tUI("printBtn", lang)}</span>
+            </button>
+
+            <button
+              onClick={handleDownloadPdf}
+              disabled={isExporting !== null}
+              className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0"
+            >
+              {isExporting === "pdf" ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <Download size={13} />
+              )}
+              <span>{tUI("pdfBtn", lang)}</span>
+            </button>
+
+            <button
+              onClick={handleDownloadPng}
+              disabled={isExporting !== null}
+              className="hidden sm:flex items-center gap-1 text-xs font-semibold bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs disabled:opacity-50 shrink-0"
+            >
+              <ImageIcon size={13} />
+              <span>{tUI("pngBtn", lang)}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -338,6 +402,18 @@ export function CVPreviewContainer({
           </div>
         </div>
       </div>
+
+      {/* Mobile iOS Style Settings Sheet */}
+      <PreviewSettingsSheet
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        lang={lang}
+        currentTemplate={cv.template}
+        currentDensity={cv.theme.fontSize}
+        currentColor={cv.theme.primaryColor}
+        onSetTemplate={onSetTemplate}
+        onUpdateTheme={onUpdateTheme}
+      />
     </div>
   );
 }

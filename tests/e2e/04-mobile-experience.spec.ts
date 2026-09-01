@@ -67,4 +67,28 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
       expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth + 20);
     }
   });
+
+  test("mobile preview style sheet opens and allows customizing colors and templates", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Mobile specific test");
+    const previewBtn = page.getByRole("button", { name: /Pré-visualização|Preview/i });
+    await previewBtn.click();
+    await expect(page.locator("#cv-printable-page")).toBeVisible();
+
+    // Open style sheet
+    const styleBtn = page.getByRole("button", { name: /Estilo|Style/i });
+    await styleBtn.click();
+    const sheet = page.getByRole("dialog");
+    await expect(sheet).toBeVisible();
+
+    // Select a color swatch (e.g. Emerald)
+    const emeraldSwatch = sheet.locator('button[title*="Emerald"]').first();
+    if (await emeraldSwatch.isVisible()) {
+      await emeraldSwatch.click();
+    }
+
+    // Close sheet
+    const doneBtn = sheet.getByRole("button", { name: /Concluído|Done/i });
+    await doneBtn.click();
+    await expect(sheet).not.toBeVisible();
+  });
 });
