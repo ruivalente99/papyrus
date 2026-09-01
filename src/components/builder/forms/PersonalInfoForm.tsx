@@ -128,7 +128,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.fullName || ""}
             onChange={(e) => onChange({ fullName: e.target.value })}
             placeholder={isPt ? "Ex: Alex Silva" : "e.g. Alex Silva"}
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
 
@@ -149,7 +149,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               }))
             }
             placeholder={isPt ? "Ex: Engenheiro de Software Sénior" : "e.g. Lead Software Engineer"}
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
       </div>
@@ -165,7 +165,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.email || ""}
             onChange={(e) => onChange({ email: e.target.value })}
             placeholder="email@example.com"
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
 
@@ -178,7 +178,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.phone || ""}
             onChange={(e) => onChange({ phone: e.target.value })}
             placeholder="(+123) 456 789 000"
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
 
@@ -199,7 +199,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               }))
             }
             placeholder={isPt ? "Ex: Lisboa / Porto, Portugal" : "e.g. London, UK"}
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
 
@@ -212,7 +212,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.website || ""}
             onChange={(e) => onChange({ website: e.target.value })}
             placeholder="https://example.com"
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
       </div>
@@ -261,7 +261,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                       },
                     })
                   }
-                  className="flex-1 sm:w-28 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                  className="flex-1 sm:w-28 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
                 />
 
                 <button
@@ -281,7 +281,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                   placeholder={isPt ? "URL (https://...)" : "URL (https://...)"}
                   value={link.url || ""}
                   onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
-                  className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                  className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
                 />
 
                 <button
@@ -320,7 +320,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               ? "Breve resumo da sua experiência profissional, conquistas e competências de destaque..."
               : "Concise summary outlining your core strengths, professional trajectory, and key achievements..."
           }
-          className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden resize-y"
+          className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden resize-y"
         />
       </div>
     </div>

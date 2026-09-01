@@ -40,6 +40,28 @@ test.describe("PAPYRUS Modals & Export Engine", () => {
     await closeBtn.click();
   });
 
+  test("opens Add Section modal in dark mode and verifies dark options styling", async ({ page }) => {
+    // Set dark theme on html
+    await page.evaluate(() => document.documentElement.classList.add("dark"));
+
+    const addSectionBtn = page.getByRole("button", { name: /Adicionar Secção|Add Section/i });
+    await addSectionBtn.scrollIntoViewIfNeeded();
+    await addSectionBtn.click();
+
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+
+    // Verify option button has dark:bg-stone-800 class and not raw white
+    const unselectedOption = dialog.locator('button:has-text("Educação"), button:has-text("Education")').first();
+    await expect(unselectedOption).toBeVisible();
+    const classList = await unselectedOption.getAttribute("class");
+    expect(classList).toContain("dark:bg-stone-800/60");
+
+    // Close modal
+    const closeBtn = dialog.locator("button").first();
+    await closeBtn.click();
+  });
+
   test("opens TeX Modal and presents compilable LaTeX code", async ({ page, isMobile }) => {
     if (isMobile) {
       // On mobile, TeX is inside Presets / Modelos dropdown

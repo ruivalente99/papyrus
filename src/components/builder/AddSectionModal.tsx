@@ -149,7 +149,7 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
                   className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-start gap-3.5 ${
                     isSelected
                       ? "bg-amber-50/80 dark:bg-amber-950/40 border-amber-500 dark:border-amber-600 shadow-xs ring-1 ring-amber-500/30"
-                      : "bg-white dark:bg-stone-850/60 border-stone-200 dark:border-stone-750 hover:bg-stone-50 dark:hover:bg-stone-800 hover:border-stone-300 dark:hover:border-stone-700"
+                      : "bg-white dark:bg-stone-800/60 border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800 hover:border-stone-300 dark:hover:border-stone-700"
                   }`}
                 >
                   <div
@@ -174,7 +174,7 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
                         {sec.title[lang as "en" | "pt"] || sec.title.en}
                       </h4>
                       {sec.badge && (
-                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-stone-200 dark:bg-stone-750 text-stone-700 dark:text-stone-300">
+                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300">
                           {sec.badge[lang as "en" | "pt"] || sec.badge.en}
                         </span>
                       )}

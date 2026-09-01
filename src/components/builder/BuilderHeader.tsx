@@ -203,7 +203,7 @@ export function BuilderHeader({
         <button
           onClick={() => fileInputRef.current?.click()}
           title={tUI("importAction", activeLang)}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
         >
           <FileUp size={13} />
         </button>
@@ -219,7 +219,7 @@ export function BuilderHeader({
         <button
           onClick={onExportJson}
           title={tUI("jsonBackup", activeLang)}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
         >
           <FileDown size={13} />
         </button>

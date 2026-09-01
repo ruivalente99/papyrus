@@ -38,7 +38,7 @@ export function ThemeSelector({ lang = "en" }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 sm:gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-750 text-stone-700 dark:text-stone-300 text-xs font-bold shadow-2xs transition-all shrink-0"
+        className="flex items-center gap-1 sm:gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold shadow-2xs transition-all shrink-0"
         title="Tema / Theme"
       >
         <CurrentIcon size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />

@@ -280,7 +280,7 @@ export function SetupScreen({
           className={`relative border-2 border-dashed rounded-3xl p-6 sm:p-8 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center group ${
             isDragging
               ? "border-amber-500 bg-amber-500/10 scale-[1.01] shadow-lg shadow-amber-500/10 ring-2 ring-amber-500/20"
-              : "border-stone-300 dark:border-stone-750 bg-white/70 dark:bg-stone-900/50 hover:border-amber-500 hover:bg-white dark:hover:bg-stone-900/80 shadow-xs"
+              : "border-stone-300 dark:border-stone-700 bg-white/70 dark:bg-stone-900/50 hover:border-amber-500 hover:bg-white dark:hover:bg-stone-900/80 shadow-xs"
           }`}
         >
           <input
@@ -368,7 +368,7 @@ export function SetupScreen({
             <a
               href="/template.json"
               download="template.json"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-stone-750 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-stone-700 transition-colors"
             >
               <FileText size={11} />
               <span>.json</span>
@@ -376,7 +376,7 @@ export function SetupScreen({
             <a
               href="/template.tex"
               download="template.tex"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-stone-750 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-stone-700 transition-colors"
             >
               <Code2 size={11} />
               <span>.tex</span>

@@ -194,7 +194,7 @@ export function SectionCard({
                 }))
               }
               placeholder="e.g. Work Experience / Experiência Profissional"
-              className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-full px-3.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+              className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-full px-3.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
             />
           </div>
 
