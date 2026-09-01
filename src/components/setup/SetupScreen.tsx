@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Link from "next/link";
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 import { PRESET_SEEDS, emptySeed } from "@/data/seeds";
 import { importFromLatex } from "@/lib/latexEngine";
@@ -21,6 +22,7 @@ import {
   Copy,
   Trash2,
   Play,
+  BookOpen,
 } from "lucide-react";
 
 interface Props {
@@ -358,6 +360,17 @@ export function SetupScreen({
                 </p>
               </div>
             </button>
+          </div>
+
+          {/* Link to Guide / Tutorial */}
+          <div className="pt-2 flex justify-center">
+            <Link
+              href="/guide"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 text-xs font-bold border border-amber-500/20 transition-all shadow-2xs active:scale-95"
+            >
+              <BookOpen size={14} />
+              <span>{isPt ? "Ver Guia Passo a Passo" : "View Step-by-Step Guide"}</span>
+            </Link>
           </div>
 
           {/* Boilerplate downloads (Minimalist) */}

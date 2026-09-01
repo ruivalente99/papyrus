@@ -16,6 +16,8 @@ import {
   Hand,
   MousePointer,
   RotateCcw,
+  Grid,
+  Pipette,
 } from "lucide-react";
 import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 
@@ -43,6 +45,7 @@ export function CVPreviewContainer({
   const [toolMode, setToolMode] = useState<"pointer" | "hand">("pointer");
   const [isSpacePressed, setIsSpacePressed] = useState<boolean>(false);
   const [isPanning, setIsPanning] = useState<boolean>(false);
+  const [showGrid, setShowGrid] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [docHeight, setDocHeight] = useState<number>(A4_H_PX);
   const [isExporting, setIsExporting] = useState<string | null>(null);
@@ -55,6 +58,30 @@ export function CVPreviewContainer({
   const pinchStartRef = useRef<{ distance: number; initialZoom: number } | null>(null);
   const lastTapRef = useRef<number>(0);
 
+  // Load alignment grid preference
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("papyrus_preview_grid");
+      if (saved === "true") setShowGrid(true);
+    } catch (e) {}
+  }, []);
+
+  const toggleGrid = () => {
+    setShowGrid((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("papyrus_preview_grid", String(next));
+      } catch (e) {}
+      return next;
+    });
+  };
+
+  const handleSetToolMode = (mode: "pointer" | "hand") => {
+    setToolMode(mode);
+    setIsPanning(false);
+    dragMovedRef.current = 0;
+  };
+
   // Calculate live page count & actual height for scaling container
   useEffect(() => {
     if (!pageRef.current) return;
@@ -64,13 +91,18 @@ export function CVPreviewContainer({
     setPageCount(pages);
   }, [cv, lang]);
 
+  const isAutoFitRef = useRef<boolean>(isAutoFit);
+  useEffect(() => {
+    isAutoFitRef.current = isAutoFit;
+  }, [isAutoFit]);
+
   // Responsive Auto-Fit calculation based on screen and container size
   useEffect(() => {
     const container = viewportRef.current;
     if (!container) return;
 
     const calcAutoFit = () => {
-      if (!isAutoFit) return;
+      if (!isAutoFitRef.current) return;
       const width = container.clientWidth;
       if (!width || width <= 0) return;
       // Provide comfortable breathing room: 16px on mobile, 40px on tablet/desktop
@@ -121,16 +153,19 @@ export function CVPreviewContainer({
   }, [isSpacePressed]);
 
   const handleZoomChange = (delta: number) => {
+    isAutoFitRef.current = false;
     setIsAutoFit(false);
     setZoom((z) => Math.max(0.25, Math.min(2.5, Number((z + delta).toFixed(2)))));
   };
 
   const handleToggleAutoFit = () => {
+    isAutoFitRef.current = true;
     setIsAutoFit(true);
     setPan({ x: 0, y: 0 });
   };
 
   const handleResetCanvas = () => {
+    isAutoFitRef.current = false;
     setIsAutoFit(false);
     setZoom(1.0);
     setPan({ x: 0, y: 0 });
@@ -138,8 +173,26 @@ export function CVPreviewContainer({
 
   // Mouse & Pointer Panning
   const handlePointerDown = (e: React.PointerEvent) => {
-    const isBackdrop = e.target === viewportRef.current || (e.target as HTMLElement).dataset.canvasArea === "true";
-    const shouldPan = toolMode === "hand" || isSpacePressed || e.button === 1 || isBackdrop;
+    const targetElement = e.target as HTMLElement;
+    // Don't pan or capture pointer when interacting with floating toolbar controls
+    if (targetElement.closest("[data-testid='canvas-floating-toolbar']")) {
+      return;
+    }
+
+    const isInsideDoc = targetElement.closest("#cv-printable-page") !== null;
+
+    // In pointer mode:
+    // - If clicking inside the CV document, DO NOT initiate canvas pan or capture pointer!
+    //   This ensures the click event cleanly reaches the section element.
+    // - If clicking on the backdrop (outside the CV document), or if spacebar is held,
+    //   or middle button (button === 1), then initiate pan!
+    // In hand mode:
+    // - Clicking anywhere (inside or outside document) initiates pan!
+    const shouldPan =
+      toolMode === "hand" ||
+      isSpacePressed ||
+      e.button === 1 ||
+      (toolMode === "pointer" && !isInsideDoc);
 
     if (shouldPan) {
       setIsPanning(true);
@@ -153,6 +206,8 @@ export function CVPreviewContainer({
       try {
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
       } catch (err) {}
+    } else {
+      dragMovedRef.current = 0;
     }
   };
 
@@ -271,6 +326,8 @@ export function CVPreviewContainer({
   };
 
   const handleSectionSelect = (sectionId: string) => {
+    // In hand mode, ignore section click because hand tool is for canvas dragging
+    if (toolMode === "hand") return;
     if (dragMovedRef.current > 6) return;
     if (onSelectSection) {
       onSelectSection(sectionId);
@@ -469,20 +526,45 @@ export function CVPreviewContainer({
                     onClick={() => onUpdateTheme({ primaryColor: c.hex })}
                     title={c.name}
                     className={`w-4.5 h-4.5 rounded-full transition-transform ${
-                      cv.theme.primaryColor === c.hex
+                      cv.theme.primaryColor?.toLowerCase() === c.hex.toLowerCase()
                         ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
                         : "hover:scale-110 opacity-85 hover:opacity-100"
                     }`}
                     style={{ backgroundColor: c.hex }}
                   />
                 ))}
+
+                {/* Custom Color "Outra" Picker */}
+                <label
+                  title={lang === "pt" ? "Outra cor personalizada" : "Custom color"}
+                  className={`w-4.5 h-4.5 rounded-full cursor-pointer relative flex items-center justify-center transition-transform ${
+                    !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
+                      ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
+                      : "hover:scale-110 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-stone-600 bg-stone-100 dark:bg-stone-800"
+                  }`}
+                  style={{
+                    backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
+                      ? cv.theme.primaryColor
+                      : undefined,
+                  }}
+                >
+                  <input
+                    type="color"
+                    value={cv.theme.primaryColor || "#005555"}
+                    onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
+                    className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                  />
+                  {ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase()) && (
+                    <Pipette size={9} className="text-stone-500 dark:text-stone-400 pointer-events-none" />
+                  )}
+                </label>
               </div>
             </div>
           </div>
 
           {/* Row 2: Navigation & Output Actions */}
           <div className="flex items-center justify-between gap-2 pt-0.5">
-            {/* Left: Page count badge & Zoom controls with Auto-Fit */}
+            {/* Left: Page count badge & Zoom controls with Auto-Fit & Grid */}
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
                 {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
@@ -516,6 +598,17 @@ export function CVPreviewContainer({
                   }`}
                 >
                   <Maximize2 size={12} />
+                </button>
+                <button
+                  onClick={toggleGrid}
+                  title={lang === "pt" ? (showGrid ? "Ocultar grelha de alinhamento" : "Mostrar grelha de alinhamento") : (showGrid ? "Hide alignment grid" : "Show alignment grid")}
+                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors ${
+                    showGrid
+                      ? "text-amber-700 dark:text-amber-400 font-bold"
+                      : "hover:text-stone-900 dark:hover:text-white text-stone-400"
+                  }`}
+                >
+                  <Grid size={12} />
                 </button>
               </div>
             </div>
@@ -551,7 +644,6 @@ export function CVPreviewContainer({
       {/* Page Canvas Viewport with Miro-style Pan & Gestures */}
       <div
         ref={viewportRef}
-        data-canvas-area="true"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -569,14 +661,30 @@ export function CVPreviewContainer({
         }`}
         style={{ touchAction: "none" }}
       >
+        {/* Alignment Grid Overlay on Canvas Background */}
+        {showGrid && (
+          <div
+            data-testid="alignment-grid-overlay"
+            className="absolute inset-0 pointer-events-none z-0"
+            style={{
+              backgroundImage: `
+                radial-gradient(circle, currentColor 1px, transparent 1px),
+                linear-gradient(to right, currentColor 1px, transparent 1px),
+                linear-gradient(to bottom, currentColor 1px, transparent 1px)
+              `,
+              backgroundSize: "20px 20px, 100px 100px, 100px 100px",
+              opacity: 0.15,
+            }}
+          />
+        )}
+
         {/* Canvas World Container (Pan translation) */}
         <div
-          data-canvas-area="true"
           style={{
             transform: `translate3d(${pan.x}px, ${pan.y}px, 0px)`,
             transition: isPanning ? "none" : "transform 0.15s ease-out",
           }}
-          className="relative shrink-0 flex items-center justify-center will-change-transform"
+          className="relative shrink-0 flex items-center justify-center will-change-transform z-10"
         >
           {/* A4 Page Container (Scale zoom from top-center) */}
           <div
@@ -590,6 +698,18 @@ export function CVPreviewContainer({
             className="relative shadow-2xl rounded-xs bg-white dark:bg-stone-900"
           >
             <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={handleSectionSelect} />
+
+            {/* Alignment Grid Overlay on Document itself */}
+            {showGrid && (
+              <div
+                className="absolute inset-0 pointer-events-none z-10 border border-amber-500/40"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(217, 119, 6, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(217, 119, 6, 0.08) 1px, transparent 1px)",
+                  backgroundSize: "20px 20px",
+                }}
+              />
+            )}
 
             {/* Visual A4 Page Break Guide when document exceeds 1 page */}
             {pageCount > 1 && (
@@ -608,12 +728,16 @@ export function CVPreviewContainer({
         {/* Floating Miro-Style Canvas Control Bar */}
         <div
           data-testid="canvas-floating-toolbar"
+          onPointerDown={(e) => e.stopPropagation()}
+          onPointerUp={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
           className="absolute bottom-4 right-4 z-20 flex items-center gap-1 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border border-stone-200/80 dark:border-stone-800/80 shadow-lg rounded-full p-1 text-stone-700 dark:text-stone-300 transition-all duration-200 hover:shadow-xl"
         >
           {/* Hand / Pointer Mode Toggle (Desktop only) */}
           <div className="hidden sm:flex items-center pr-1 border-r border-stone-200 dark:border-stone-700">
             <button
-              onClick={() => setToolMode("pointer")}
+              onClick={() => handleSetToolMode("pointer")}
               title={lang === "pt" ? "Modo Seleção / Interagir" : "Selection mode"}
               className={`p-1.5 rounded-full transition-all ${
                 toolMode === "pointer"
@@ -624,7 +748,7 @@ export function CVPreviewContainer({
               <MousePointer size={13} />
             </button>
             <button
-              onClick={() => setToolMode("hand")}
+              onClick={() => handleSetToolMode("hand")}
               title={lang === "pt" ? "Modo Mão / Arrastar Canvas (Miro)" : "Hand tool / Pan canvas (Miro)"}
               className={`p-1.5 rounded-full transition-all ${
                 toolMode === "hand"
@@ -635,6 +759,19 @@ export function CVPreviewContainer({
               <Hand size={13} />
             </button>
           </div>
+
+          {/* Alignment Grid Toggle Button */}
+          <button
+            onClick={toggleGrid}
+            title={lang === "pt" ? (showGrid ? "Ocultar grelha de alinhamento" : "Mostrar grelha de alinhamento") : (showGrid ? "Hide alignment grid" : "Show alignment grid")}
+            className={`p-1.5 rounded-full transition-colors ${
+              showGrid
+                ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold"
+                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+            }`}
+          >
+            <Grid size={13} />
+          </button>
 
           {/* Zoom Out */}
           <button

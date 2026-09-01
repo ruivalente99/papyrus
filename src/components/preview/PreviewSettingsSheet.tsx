@@ -11,6 +11,7 @@ import {
   Check,
   Palette,
   Sparkles,
+  Pipette,
 } from "lucide-react";
 
 export const ACCENT_COLORS = [
@@ -244,6 +245,33 @@ export function PreviewSettingsSheet({
                   </button>
                 );
               })}
+
+              {/* Custom "Outra" Color Picker Button */}
+              <label
+                title={isPt ? "Outra cor personalizada" : "Custom color"}
+                className={`h-9 px-3 rounded-full flex items-center gap-1.5 cursor-pointer transition-all border shrink-0 text-xs font-bold active:scale-90 ${
+                  !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())
+                    ? "scale-105 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 shadow-md bg-stone-100 dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    : "hover:scale-105 opacity-90 hover:opacity-100 border-dashed border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-300"
+                }`}
+              >
+                <div
+                  className="w-4 h-4 rounded-full border border-stone-300 dark:border-stone-600 shrink-0"
+                  style={{
+                    backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())
+                      ? currentColor
+                      : "#ffffff",
+                  }}
+                />
+                <input
+                  type="color"
+                  value={currentColor || "#005555"}
+                  onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
+                  className="opacity-0 absolute w-0 h-0"
+                />
+                <Pipette size={13} className="text-stone-500" />
+                <span>{isPt ? "Outra" : "Custom"}</span>
+              </label>
             </div>
           </div>
         </div>

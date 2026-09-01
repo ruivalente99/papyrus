@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Link from "next/link";
 import type { CVDocument, SupportedLanguage, LinterReport } from "@/types/cv";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { LinterBadge } from "./linter/LinterBadge";
@@ -17,6 +18,7 @@ import {
   ChevronDown,
   Code2,
   Plus,
+  BookOpen,
 } from "lucide-react";
 
 interface Props {
@@ -99,6 +101,16 @@ export function BuilderHeader({
 
       {/* Actions: Presets, TeX, JSON */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* Guide / Tutorial Link */}
+        <Link
+          href="/guide"
+          title={activeLang === "pt" ? "Como construir um CV passo a passo" : "Step-by-step CV guide"}
+          className="flex items-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 px-2.5 sm:px-3 py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95"
+        >
+          <BookOpen size={13} />
+          <span className="hidden md:inline">{activeLang === "pt" ? "Guia" : "Guide"}</span>
+        </Link>
+
         {/* Setup / Home screen button (Desktop / Tablet only) */}
         {onOpenSetup && (
           <button
