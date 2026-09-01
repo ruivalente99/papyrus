@@ -10,4 +10,7 @@ npx tsx scripts/test-field-editing.ts > /dev/null
 echo "🔍 [PAPYRUS QUALITY GATE] Running TypeScript type check..."
 npx tsc --noEmit
 
+echo "🔍 [PAPYRUS QUALITY GATE] Running browser E2E test suite (Playwright)..."
+npx playwright test
+
 echo "✅ [PAPYRUS QUALITY GATE] All pre-commit checks passed successfully!"

@@ -29,6 +29,8 @@ export function LinterBadge({ report, onClick }: Props) {
   return (
     <button
       onClick={onClick}
+      data-testid="linter-badge"
+      aria-label="Quality score"
       className={`flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border text-[11px] sm:text-xs font-bold shadow-2xs transition-all shrink-0 ${colorClasses}`}
       title="Auditoria de qualidade e linter dinâmico"
     >

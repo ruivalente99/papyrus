@@ -8,7 +8,9 @@
     "start": "next start",
     "cv": "tsx scripts/cv-cli.ts",
     "test:e2e": "tsx scripts/test-e2e.ts",
-    "test:fields": "tsx scripts/test-field-editing.ts"
+    "test:fields": "tsx scripts/test-field-editing.ts",
+    "test:playwright": "playwright test",
+    "test:all": "tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && playwright test"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.4",
@@ -29,6 +31,7 @@
     "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.0.9",
     "@types/node": "^22.13.5",
     "@types/react": "^19.0.10",
