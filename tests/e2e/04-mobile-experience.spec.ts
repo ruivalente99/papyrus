@@ -91,4 +91,29 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
     await doneBtn.click();
     await expect(sheet).not.toBeVisible();
   });
+
+  test("mobile linter modal opens as bottom sheet and score is fully visible without clipping", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Mobile specific test");
+    const linterBadge = page.getByTestId("linter-badge");
+    await linterBadge.click();
+
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+
+    // Verify header is visible and inside top viewport boundary (never clipped off top of screen)
+    const heading = dialog.getByRole("heading", { level: 3 });
+    await expect(heading).toBeVisible();
+    const headingBox = await heading.boundingBox();
+    expect(headingBox).not.toBeNull();
+    if (headingBox) {
+      expect(headingBox.y).toBeGreaterThanOrEqual(0);
+    }
+
+    // Verify Score is visible
+    await expect(dialog.getByText(/Score/i)).toBeVisible();
+
+    // Close via Done button
+    await dialog.getByRole("button", { name: /Concluído|Done/i }).click();
+    await expect(dialog).not.toBeVisible();
+  });
 });

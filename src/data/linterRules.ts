@@ -184,11 +184,11 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
         {
           level: "info",
           sectionId: expSection.id,
-          title: lang === "pt" ? `Dica de Impacto em "${role || item.company}"` : `Impact Tip on "${role || item.company}"`,
+          title: lang === "pt" ? `Métricas em "${role || item.company}"` : `Metrics in "${role || item.company}"`,
           message:
             lang === "pt"
-              ? "Incluir números ou métricas (ex: percentagens, número de pessoas, projetos) destaca o seu impacto."
-              : "Including quantifiable metrics (e.g. %, team size, projects) highlights your impact.",
+              ? "Adicionar números ou dados quantificáveis (ex: %, volume de equipa ou projetos) valoriza este cargo."
+              : "Adding quantifiable metrics (e.g. %, team size, projects) strengthens this role.",
         },
         `exp-metrics-${item.id}`
       );
