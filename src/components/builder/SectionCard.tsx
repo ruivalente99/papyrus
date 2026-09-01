@@ -87,21 +87,21 @@ export function SectionCard({
       <div className="p-4 flex items-center justify-between gap-2 select-none">
         <div
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2.5 cursor-pointer flex-1"
+          className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
         >
           <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center shrink-0">
             {getSectionIcon()}
           </div>
-          <div>
-            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm flex items-center gap-2">
-              <span>{sectionTitle}</span>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm flex items-center gap-2 truncate">
+              <span className="truncate">{sectionTitle}</span>
               {!section.visible && (
-                <span className="text-[10px] bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-400 px-1.5 py-0.5 rounded font-medium">
+                <span className="text-[10px] bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-400 px-1.5 py-0.5 rounded font-medium shrink-0">
                   {lang === "pt" ? "Oculta" : "Hidden"}
                 </span>
               )}
             </h3>
-            <p className="text-[11px] text-stone-400 capitalize">
+            <p className="text-[11px] text-stone-400 capitalize truncate">
               {section.type} • #{section.order}
             </p>
           </div>

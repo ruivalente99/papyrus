@@ -39,7 +39,11 @@
 }
 
 @layer base {
+  html,
   body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
     background-color: var(--page);
     color: var(--heading);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -47,11 +51,30 @@
     -webkit-touch-callout: none;
   }
 
+  /* Prevent browser ghost dragging of elements on mobile/desktop */
+  *, *::before, *::after {
+    -webkit-user-drag: none;
+  }
+
+  img, a, button, svg {
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+
   .dark body,
   body.dark {
     background-color: var(--page);
     color: var(--heading);
   }
+}
+
+/* Hide scrollbars for clean horizontal pill bars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* iOS Safe Area Utilities */

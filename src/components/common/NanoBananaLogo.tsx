@@ -32,7 +32,7 @@ export function NanoBananaLogo({ size = "md", className = "", glow = false }: Pr
         width={current.icon}
         height={current.icon}
         viewBox="0 0 32 32"
-        className="transition-transform duration-300 group-hover:rotate-6"
+        className="transition-transform duration-300 group-hover:rotate-6 select-none pointer-events-none"
       >
         {/* Outer Nano Banana Curve */}
         <path

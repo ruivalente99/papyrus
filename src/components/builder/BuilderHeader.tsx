@@ -139,25 +139,59 @@ export function BuilderHeader({
                   <p className="font-bold text-stone-800 dark:text-stone-200">{p.name}</p>
                 </button>
               ))}
+
+              {/* Mobile Extended Actions inside Dropdown */}
+              <div className="sm:hidden border-t border-stone-150 dark:border-stone-800 my-1 pt-1 space-y-0.5">
+                <button
+                  onClick={() => {
+                    setShowLatexModal(true);
+                    setShowPresets(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                >
+                  <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
+                  <span>TeX Import / Export</span>
+                </button>
+                <button
+                  onClick={() => {
+                    fileInputRef.current?.click();
+                    setShowPresets(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                >
+                  <FileUp size={13} />
+                  <span>{tUI("importAction", activeLang)}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onExportJson();
+                    setShowPresets(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                >
+                  <FileDown size={13} />
+                  <span>{tUI("jsonBackup", activeLang)}</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        {/* TeX Modal Button */}
+        {/* TeX Modal Button (Desktop / Tablet) */}
         <button
           onClick={() => setShowLatexModal(true)}
           title="TeX Management"
-          className="flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-700/60 px-3 py-1.5 rounded-full transition-all shadow-2xs"
+          className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-700/60 px-3 py-1.5 rounded-full transition-all shadow-2xs"
         >
           <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
           <span className="hidden lg:inline">TeX</span>
         </button>
 
-        {/* Import JSON */}
+        {/* Import JSON (Desktop / Tablet) */}
         <button
           onClick={() => fileInputRef.current?.click()}
           title={tUI("importAction", activeLang)}
-          className="p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
         >
           <FileUp size={13} />
         </button>
@@ -169,11 +203,11 @@ export function BuilderHeader({
           className="hidden"
         />
 
-        {/* Export JSON */}
+        {/* Export JSON (Desktop / Tablet) */}
         <button
           onClick={onExportJson}
           title={tUI("jsonBackup", activeLang)}
-          className="p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-750 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
         >
           <FileDown size={13} />
         </button>

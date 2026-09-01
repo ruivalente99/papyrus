@@ -63,7 +63,12 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
         <div className="relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 flex items-center justify-center shrink-0">
           {data.photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={data.photoUrl} alt="Avatar" className="w-full h-full object-cover" />
+            <img
+              src={data.photoUrl}
+              alt="Avatar"
+              className="w-full h-full object-cover select-none pointer-events-none"
+              draggable={false}
+            />
           ) : (
             <User size={28} className="text-stone-400" />
           )}
@@ -228,52 +233,66 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           </button>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {data.links?.map((link) => (
             <div
               key={link.id}
-              className="flex items-center gap-2 bg-stone-50 dark:bg-stone-900/50 p-2 rounded-xl border border-stone-200 dark:border-stone-800"
+              className="flex flex-col sm:flex-row sm:items-center gap-2 bg-stone-50 dark:bg-stone-900/50 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800"
             >
-              {/* Interactive Visual Icon Picker */}
-              <IconPicker
-                value={link.platform}
-                onChange={(newPlatform) =>
-                  handleUpdateLink(link.id, { platform: newPlatform as any })
-                }
-                lang={lang}
-              />
+              {/* Row 1 on mobile: Icon Picker + Label + Delete button */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <IconPicker
+                  value={link.platform}
+                  onChange={(newPlatform) =>
+                    handleUpdateLink(link.id, { platform: newPlatform as any })
+                  }
+                  lang={lang}
+                />
 
-              <input
-                type="text"
-                placeholder={isPt ? "Rótulo visível" : "Visible label"}
-                value={link.label?.[lang] || ""}
-                onChange={(e) =>
-                  handleUpdateLink(link.id, {
-                    label: {
-                      ...(typeof link.label === "object" ? link.label : {}),
-                      [lang]: e.target.value,
-                    },
-                  })
-                }
-                className="flex-1 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
-              />
+                <input
+                  type="text"
+                  placeholder={isPt ? "Rótulo visível" : "Visible label"}
+                  value={link.label?.[lang] || ""}
+                  onChange={(e) =>
+                    handleUpdateLink(link.id, {
+                      label: {
+                        ...(typeof link.label === "object" ? link.label : {}),
+                        [lang]: e.target.value,
+                      },
+                    })
+                  }
+                  className="flex-1 sm:w-28 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                />
 
-              <input
-                type="url"
-                placeholder="https://..."
-                value={link.url || ""}
-                onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
-                className="flex-1 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
-              />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveLink(link.id)}
+                  className="sm:hidden text-stone-400 hover:text-red-500 p-1.5 rounded-lg transition-colors shrink-0"
+                  title={isPt ? "Remover link" : "Remove link"}
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => handleRemoveLink(link.id)}
-                className="text-stone-400 hover:text-red-500 p-1 rounded-lg transition-colors"
-                title={isPt ? "Remover link" : "Remove link"}
-              >
-                <Trash2 size={13} />
-              </button>
+              {/* Row 2 on mobile, flex-1 on desktop: URL input + Delete button (desktop) */}
+              <div className="flex items-center gap-2 w-full sm:flex-1 min-w-0">
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={link.url || ""}
+                  onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
+                  className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-850 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => handleRemoveLink(link.id)}
+                  className="hidden sm:block text-stone-400 hover:text-red-500 p-1 rounded-lg transition-colors shrink-0"
+                  title={isPt ? "Remover link" : "Remove link"}
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
             </div>
           ))}
         </div>

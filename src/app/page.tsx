@@ -66,7 +66,7 @@ export default function BuilderPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
+    <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
       {/* Top Application Header */}
       <BuilderHeader
         cv={cv}
@@ -81,10 +81,10 @@ export default function BuilderPage() {
       />
 
       {/* Split-Pane Main Body */}
-      <div className="flex flex-col md:flex-row flex-1 pb-16 md:pb-0">
+      <div className="flex flex-col md:flex-row flex-1 pb-14 md:pb-0 min-h-0 overflow-x-hidden">
         {/* Left Column: Form Editor Pane */}
         <div
-          className={`w-full md:w-1/2 bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane transition-colors ${
+          className={`w-full md:w-1/2 bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto h-[calc(100dvh-53px-56px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane transition-colors ${
             mobileTab === "edit" ? "block" : "hidden md:block"
           }`}
         >
@@ -113,7 +113,7 @@ export default function BuilderPage() {
 
         {/* Right Column: Live A4 Synchronized Preview Pane */}
         <div
-          className={`w-full md:w-1/2 md:sticky md:top-[53px] md:h-[calc(100vh-53px)] overflow-hidden builder-preview-pane ${
+          className={`w-full md:w-1/2 md:sticky md:top-[53px] h-[calc(100dvh-53px-56px)] md:h-[calc(100vh-53px)] overflow-hidden builder-preview-pane ${
             mobileTab === "preview" ? "block" : "hidden md:block"
           }`}
         >

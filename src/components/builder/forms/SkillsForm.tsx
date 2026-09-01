@@ -131,7 +131,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                 value={cat.name?.[lang] || cat.name?.[defaultLang] || ""}
                 onChange={(e) => handleUpdateCategoryName(cat.id, e.target.value)}
                 placeholder={isPt ? "Nome da Categoria (ex: Backend, Design)" : "Category Name (e.g. Backend, Design)"}
-                className="font-bold text-stone-800 dark:text-stone-100 text-xs border-b border-dashed border-stone-300 dark:border-stone-700 bg-transparent px-1 py-0.5 focus:border-amber-500 focus:outline-hidden flex-1"
+                className="font-bold text-stone-800 dark:text-stone-100 text-xs border-b border-dashed border-stone-300 dark:border-stone-700 bg-transparent px-1 py-0.5 focus:border-amber-500 focus:outline-hidden flex-1 min-w-0"
               />
 
               <div className="flex items-center gap-1">
@@ -192,7 +192,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                     handleAddSkillTag(cat.id);
                   }
                 }}
-                className="flex-1 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2.5 py-1 text-xs focus:ring-1 focus:ring-amber-500"
+                className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2.5 py-1 text-xs focus:ring-1 focus:ring-amber-500"
               />
               <button
                 type="button"

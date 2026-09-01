@@ -77,7 +77,8 @@ export function LateralisTemplate({ cv, lang }: Props) {
                 <img
                   src={personalInfo.photoUrl}
                   alt={personalInfo.fullName}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover select-none pointer-events-none"
+                  draggable={false}
                 />
               </div>
             </div>

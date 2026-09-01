@@ -66,7 +66,7 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
 
       {/* Popover Dropdown Grid */}
       {isOpen && (
-        <div className="absolute left-0 mt-1.5 w-72 bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-3 z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute left-0 mt-1.5 w-72 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-3 z-50 animate-in fade-in zoom-in-95 duration-150">
           {/* Search bar */}
           <div className="relative mb-2">
             <Search size={13} className="absolute left-2.5 top-2.5 text-stone-400" />

@@ -307,7 +307,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                               ? "Descreva uma responsabilidade ou conquista mensurável..."
                               : "Describe a core achievement or measurable impact..."
                           }
-                          className="flex-1 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 resize-y"
+                          className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 resize-y"
                         />
                         {bullets.length > 1 && (
                           <button

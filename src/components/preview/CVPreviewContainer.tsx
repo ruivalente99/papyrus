@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { CVDocument, SupportedLanguage, TemplateId } from "@/types/cv";
 import { CVPage } from "./CVPage";
-import { exportToPdf, exportToPng, printCV, A4_H_PX } from "@/lib/pdfExport";
+import { exportToPdf, exportToPng, printCV, A4_H_PX, A4_W_PX } from "@/lib/pdfExport";
 import { tUI } from "@/lib/i18n";
 import {
   Download,
@@ -40,17 +40,56 @@ export function CVPreviewContainer({
   onUpdateTheme,
 }: Props) {
   const [zoom, setZoom] = useState<number>(0.85);
+  const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
+  const [docHeight, setDocHeight] = useState<number>(A4_H_PX);
   const [isExporting, setIsExporting] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number>(1);
   const pageRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
 
-  // Calculate live page count for indicator
+  // Calculate live page count & actual height for scaling container
   useEffect(() => {
     if (!pageRef.current) return;
     const height = pageRef.current.offsetHeight || A4_H_PX;
+    setDocHeight(height);
     const pages = height <= A4_H_PX + 70 ? 1 : Math.ceil(height / A4_H_PX);
     setPageCount(pages);
   }, [cv, lang]);
+
+  // Responsive Auto-Fit calculation based on screen and container size
+  useEffect(() => {
+    const container = viewportRef.current;
+    if (!container) return;
+
+    const calcAutoFit = () => {
+      if (!isAutoFit) return;
+      const width = container.clientWidth;
+      if (!width) return;
+      // Provide comfortable breathing room: 16px on mobile, 40px on tablet/desktop
+      const margin = width < 640 ? 16 : 40;
+      const availableWidth = width - margin;
+      const calculatedScale = Math.min(1.2, Math.max(0.32, availableWidth / A4_W_PX));
+      setZoom(Number(calculatedScale.toFixed(2)));
+    };
+
+    calcAutoFit();
+    const ro = new ResizeObserver(calcAutoFit);
+    ro.observe(container);
+    window.addEventListener("resize", calcAutoFit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", calcAutoFit);
+    };
+  }, [isAutoFit]);
+
+  const handleZoomChange = (delta: number) => {
+    setIsAutoFit(false);
+    setZoom((z) => Math.max(0.3, Math.min(1.5, Number((z + delta).toFixed(2)))));
+  };
+
+  const handleToggleAutoFit = () => {
+    setIsAutoFit(true);
+  };
 
   const handleDownloadPdf = async () => {
     if (!pageRef.current || isExporting) return;
@@ -80,14 +119,16 @@ export function CVPreviewContainer({
     }
   };
 
+  const actualDocHeight = Math.max(A4_H_PX, docHeight);
+
   return (
     <div className="flex flex-col h-full bg-stone-200/50 dark:bg-stone-950 text-stone-800 dark:text-stone-200 transition-colors">
       {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
-      <div className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2.5 shadow-2xs transition-colors">
-        {/* Template, Density & Color Selector */}
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 shadow-2xs transition-colors shrink-0">
+        {/* Template, Density & Color Selector (Smooth horizontal pill row on mobile) */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 shrink-0">
           {/* Template Selector (Pill Segmented) */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs">
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
             <button
               onClick={() => onSetTemplate("lateralis")}
               className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
@@ -121,7 +162,7 @@ export function CVPreviewContainer({
           </div>
 
           {/* Density Selector (Pill Segmented) */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs">
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
             <button
               onClick={() => onUpdateTheme({ fontSize: "compact" })}
               title="Compact spacing"
@@ -158,7 +199,7 @@ export function CVPreviewContainer({
           </div>
 
           {/* Accent Color Circles */}
-          <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-stone-700">
+          <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-stone-700 shrink-0">
             {ACCENT_COLORS.map((c) => (
               <button
                 key={c.hex}
@@ -176,35 +217,39 @@ export function CVPreviewContainer({
         </div>
 
         {/* Zoom & Export Actions */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-2 flex-wrap">
           {/* Page count pill */}
-          <span className="text-[11px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-3 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs">
+          <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
             {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
           </span>
 
-          {/* Zoom controls (Pill Shell) */}
-          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs">
+          {/* Zoom controls (Pill Shell) with Auto-Fit */}
+          <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs shrink-0">
             <button
-              onClick={() => setZoom((z) => Math.max(0.4, z - 0.1))}
+              onClick={() => handleZoomChange(-0.1)}
               title={tUI("zoomOut", lang)}
               className="p-1 hover:text-stone-900 dark:hover:text-white"
             >
               <ZoomOut size={13} />
             </button>
-            <span className="text-[11px] font-mono px-1.5 min-w-[36px] text-center font-bold">
+            <span className="text-[11px] font-mono px-1 min-w-[34px] text-center font-bold">
               {Math.round(zoom * 100)}%
             </span>
             <button
-              onClick={() => setZoom((z) => Math.min(1.4, z + 0.1))}
+              onClick={() => handleZoomChange(0.1)}
               title={tUI("zoomIn", lang)}
               className="p-1 hover:text-stone-900 dark:hover:text-white"
             >
               <ZoomIn size={13} />
             </button>
             <button
-              onClick={() => setZoom(0.85)}
-              title={tUI("resetZoom", lang)}
-              className="p-1 hover:text-stone-900 dark:hover:text-white border-l border-stone-200 dark:border-stone-700 pl-1.5"
+              onClick={handleToggleAutoFit}
+              title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
+              className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors ${
+                isAutoFit
+                  ? "text-amber-700 dark:text-amber-400 font-bold"
+                  : "hover:text-stone-900 dark:hover:text-white text-stone-400"
+              }`}
             >
               <Maximize2 size={12} />
             </button>
@@ -214,7 +259,7 @@ export function CVPreviewContainer({
           <button
             onClick={printCV}
             title="Native Print / PDF"
-            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs shrink-0"
           >
             <Printer size={13} />
             <span className="hidden sm:inline">{tUI("printBtn", lang)}</span>
@@ -223,7 +268,7 @@ export function CVPreviewContainer({
           <button
             onClick={handleDownloadPdf}
             disabled={isExporting !== null}
-            className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-4 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50"
+            className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0"
           >
             {isExporting === "pdf" ? (
               <Loader2 size={13} className="animate-spin" />
@@ -236,37 +281,51 @@ export function CVPreviewContainer({
           <button
             onClick={handleDownloadPng}
             disabled={isExporting !== null}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs disabled:opacity-50"
+            className="hidden sm:flex items-center gap-1 text-xs font-semibold bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs disabled:opacity-50 shrink-0"
           >
             <ImageIcon size={13} />
-            <span className="hidden sm:inline">{tUI("pngBtn", lang)}</span>
+            <span>{tUI("pngBtn", lang)}</span>
           </button>
         </div>
       </div>
 
-      {/* Page Canvas Viewport with Dynamic Warm Backdrop */}
-      <div className="flex-1 overflow-auto p-4 sm:p-8 flex justify-center items-start charm-bg-dynamic">
+      {/* Page Canvas Viewport with Dynamic Warm Backdrop and Box Containment */}
+      <div
+        ref={viewportRef}
+        className="flex-1 overflow-auto p-2 sm:p-5 flex justify-center items-start charm-bg-dynamic min-h-0 select-none"
+        style={{ touchAction: "pan-y" }}
+      >
         <div
           style={{
-            transform: `scale(${zoom})`,
-            transformOrigin: "top center",
-            transition: "transform 0.15s ease-out",
+            width: `${A4_W_PX * zoom}px`,
+            height: `${actualDocHeight * zoom}px`,
+            transition: "width 0.15s ease-out, height 0.15s ease-out",
           }}
-          className="relative"
+          className="relative shrink-0 flex justify-center"
         >
-          <CVPage ref={pageRef} cv={cv} lang={lang} />
+          <div
+            style={{
+              width: `${A4_W_PX}px`,
+              transform: `scale(${zoom})`,
+              transformOrigin: "top left",
+              transition: "transform 0.15s ease-out",
+            }}
+            className="relative"
+          >
+            <CVPage ref={pageRef} cv={cv} lang={lang} />
 
-          {/* Visual A4 Page Break Guide when document exceeds 1 page */}
-          {pageCount > 1 && (
-            <div
-              className="absolute left-0 right-0 border-b-2 border-dashed border-amber-600 pointer-events-none flex items-center justify-end px-3"
-              style={{ top: `${A4_H_PX}px` }}
-            >
-              <span className="bg-amber-700 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full -translate-y-1/2 shadow-xs">
-                {tUI("pageLimitGuide", lang)}
-              </span>
-            </div>
-          )}
+            {/* Visual A4 Page Break Guide when document exceeds 1 page */}
+            {pageCount > 1 && (
+              <div
+                className="absolute left-0 right-0 border-b-2 border-dashed border-amber-600 pointer-events-none flex items-center justify-end px-3"
+                style={{ top: `${A4_H_PX}px` }}
+              >
+                <span className="bg-amber-700 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full -translate-y-1/2 shadow-xs">
+                  {tUI("pageLimitGuide", lang)}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
