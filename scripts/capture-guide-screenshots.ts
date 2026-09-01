@@ -1,17 +1,7 @@
 import { chromium, devices } from "playwright";
 import fs from "fs";
 import path from "path";
-
-async function enterBuilder(page: any) {
-  if (await page.locator("#section-personal").isVisible()) {
-    return;
-  }
-  const demoBtn = page.getByRole("button", { name: /Demo/i });
-  if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await demoBtn.click();
-    await page.waitForSelector("#section-personal", { timeout: 5000 });
-  }
-}
+import { creativeSidebarSeed } from "../src/data/seeds/template-sidebar";
 
 async function main() {
   const outDir = path.resolve(process.cwd(), "public/guide");
@@ -21,7 +11,7 @@ async function main() {
 
   const browser = await chromium.launch({ headless: true });
   const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3000";
-  console.log(`📸 Capturing guide screenshots with fresh Lorem Ipsum & Dylan avatars from ${baseUrl}...`);
+  console.log(`📸 Capturing guide screenshots with ZERO upload screen from ${baseUrl}...`);
 
   // ==========================================
   // 1. DESKTOP (Web) CAPTURES (1280x820)
@@ -30,17 +20,25 @@ async function main() {
     viewport: { width: 1280, height: 820 },
     deviceScaleFactor: 2,
   });
+
+  await desktopContext.addInitScript((seedJson) => {
+    try {
+      localStorage.setItem("papyrus_setup_completed", "true");
+      localStorage.setItem("papyrus_cv_data", seedJson);
+    } catch (e) {}
+  }, JSON.stringify(creativeSidebarSeed));
+
   const deskPage = await desktopContext.newPage();
 
-  await deskPage.goto(baseUrl);
+  await deskPage.goto(`${baseUrl}/?skipSetup=1`);
   await deskPage.waitForLoadState("networkidle");
-  await enterBuilder(deskPage);
+  await deskPage.waitForSelector("#section-personal", { timeout: 10000 });
 
   const ptBtn = deskPage.getByRole("button", { name: /^PT$/i });
   if (await ptBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
     await ptBtn.click();
   }
-  await deskPage.waitForTimeout(500);
+  await deskPage.waitForTimeout(400);
 
   // Web Step 1: Templates & Design Selection
   await deskPage.screenshot({
@@ -103,11 +101,19 @@ async function main() {
     ...devices["iPhone 14"],
     deviceScaleFactor: 2,
   });
+
+  await mobileContext.addInitScript((seedJson) => {
+    try {
+      localStorage.setItem("papyrus_setup_completed", "true");
+      localStorage.setItem("papyrus_cv_data", seedJson);
+    } catch (e) {}
+  }, JSON.stringify(creativeSidebarSeed));
+
   const mobPage = await mobileContext.newPage();
 
-  await mobPage.goto(baseUrl);
+  await mobPage.goto(`${baseUrl}/?skipSetup=1`);
   await mobPage.waitForLoadState("networkidle");
-  await enterBuilder(mobPage);
+  await mobPage.waitForSelector("#section-personal", { timeout: 10000 });
   await mobPage.waitForTimeout(400);
 
   // Mobile Step 2: Mobile Editor
@@ -173,7 +179,7 @@ async function main() {
 
   await mobileContext.close();
   await browser.close();
-  console.log("🎉 All 10 guide screenshots successfully captured and saved in public/guide/!");
+  console.log("🎉 All 10 guide screenshots successfully captured without ANY upload screen!");
 }
 
 main().catch((err) => {

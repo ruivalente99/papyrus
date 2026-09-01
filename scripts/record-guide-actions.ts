@@ -1,6 +1,7 @@
 import { chromium, devices } from "playwright";
 import fs from "fs";
 import path from "path";
+import { creativeSidebarSeed } from "../src/data/seeds/template-sidebar";
 
 const outDir = path.resolve(process.cwd(), "public/guide/videos");
 if (!fs.existsSync(outDir)) {
@@ -9,29 +10,15 @@ if (!fs.existsSync(outDir)) {
 
 const baseUrl = process.env.PLAYWRIGHT_TEST_BASE_URL || "http://127.0.0.1:3000";
 
-async function enterBuilder(page: any) {
-  if (await page.locator("#section-personal").isVisible()) {
-    return;
-  }
-  const demoBtn = page.getByRole("button", { name: /Demo/i });
-  if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await demoBtn.click();
-    await page.waitForSelector("#section-personal", { timeout: 5000 });
-  }
-}
-
 async function recordAction(
   filename: string,
   options: { isMobile?: boolean; width?: number; height?: number },
   actionFn: (page: any) => Promise<void>
 ) {
   const finalPath = path.join(outDir, filename);
-  if (process.env.SKIP_EXISTING && fs.existsSync(finalPath) && fs.statSync(finalPath).mtimeMs > Date.now() - 30 * 60 * 1000) {
-    console.log(`- Skipping ${filename}, recorded in this session.`);
-    return;
-  }
 
   const browser = await chromium.launch({ headless: true });
+
   const contextOptions: any = {
     recordVideo: {
       dir: outDir,
@@ -49,17 +36,27 @@ async function recordAction(
   }
 
   const context = await browser.newContext(contextOptions);
+
+  // Inconditionally pre-populate localStorage so the upload / setup screen is NEVER rendered
+  await context.addInitScript((seedJson) => {
+    try {
+      localStorage.setItem("papyrus_setup_completed", "true");
+      localStorage.setItem("papyrus_cv_data", seedJson);
+    } catch (e) {}
+  }, JSON.stringify(creativeSidebarSeed));
+
   const page = await context.newPage();
 
   try {
-    await page.goto(baseUrl);
+    // Navigate straight into the builder with ?skipSetup=1
+    await page.goto(`${baseUrl}/?skipSetup=1`);
     await page.waitForLoadState("networkidle");
-    await enterBuilder(page);
-    await page.waitForTimeout(400);
+    await page.waitForSelector("#section-personal", { timeout: 10000 });
+    await page.waitForTimeout(300);
 
-    // Execute specific scenario
+    // Execute the action scenario cleanly
     await actionFn(page);
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(600);
   } finally {
     const video = page.video();
     await page.close();
@@ -72,17 +69,17 @@ async function recordAction(
         fs.unlinkSync(finalPath);
       }
       fs.renameSync(tempPath, finalPath);
-      console.log(`✓ Saved ${filename} (${fs.statSync(finalPath).size} bytes)`);
+      console.log(`✓ Saved ${filename} (${fs.statSync(finalPath).size} bytes) - [ZERO UPLOAD SCREEN]`);
     }
   }
 }
 
 async function main() {
-  console.log(`🎬 Recording dynamic action videos with Lorem Ipsum & Dylan avatars from ${baseUrl}...`);
+  console.log(`🎬 Recording dynamic action videos with ZERO upload screen from ${baseUrl}...`);
 
   // Web 1: Templates & Colors Live Transformation with Dylan Avatar
   await recordAction("web-action-1-templates.webm", { isMobile: false }, async (page) => {
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(400);
     const classicBtn = page.locator('button:has-text("Classic")').first();
     await classicBtn.click();
     await page.waitForTimeout(900);
@@ -273,7 +270,7 @@ async function main() {
     }
   });
 
-  console.log("🎉 All 10 live action videos recorded successfully with Lorem Ipsum & Dylan avatars!");
+  console.log("🎉 All 10 live action videos recorded with ZERO upload screen delay!");
 }
 
 main().catch((err) => {

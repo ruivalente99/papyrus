@@ -38,7 +38,18 @@ export function useCV() {
         localStorage.getItem("curricula_active_document") ||
         localStorage.getItem("cvana_active_document");
 
-      if (saved) {
+      const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const forceSkipSetup =
+        urlParams?.get("skipSetup") === "1" ||
+        urlParams?.get("demo") === "1" ||
+        urlParams?.get("builder") === "1";
+
+      if (forceSkipSetup) {
+        setIsSetupOpen(false);
+        try {
+          localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+        } catch (e) {}
+      } else if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id && parsed.sections) {
           setCv(parsed);
