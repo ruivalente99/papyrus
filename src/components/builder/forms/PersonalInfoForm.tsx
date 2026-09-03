@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef } from "react";
 import type { PersonalInfo, SupportedLanguage, SocialLink } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { IconPicker } from "../IconPicker";
 import { ICON_OPTIONS } from "@/lib/iconMap";
-import { User, Plus, Trash2, Dices, Sparkles } from "lucide-react";
+import { User, Plus, Trash2, Dices, Sparkles, Camera, Upload, RotateCcw } from "lucide-react";
 import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
 import { compressImageFile } from "@/lib/imageCompressor";
 import { useTranslation } from "@/hooks/useTranslation";
+import { ImageCropModal } from "./ImageCropModal";
 
 interface Props {
   data: PersonalInfo;
@@ -21,32 +22,57 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
   const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [rawImageToCrop, setRawImageToCrop] = useState<string | null>(null);
+  const [isDraggingOverAvatar, setIsDraggingOverAvatar] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  const processImageFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setRawImageToCrop(ev.target?.result as string);
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    processImageFile(file);
+    e.target.value = "";
+  };
+
+  const handleAvatarDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOverAvatar(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+  };
+
+  const handleCropConfirm = async (croppedDataUrl: string) => {
     try {
-      const optimizedUrl = await compressImageFile(file, 400, 0.85);
+      // Compress cropped image for storage optimization
       onChange({
-        photoUrl: optimizedUrl,
+        photoUrl: croppedDataUrl,
         isCustomPhoto: true,
         showPhoto: true,
       });
     } catch (err) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        onChange({
-          photoUrl: ev.target?.result as string,
-          isCustomPhoto: true,
-          showPhoto: true,
-        });
-      };
-      reader.readAsDataURL(file);
-    } finally {
-      e.target.value = "";
+      onChange({
+        photoUrl: croppedDataUrl,
+        isCustomPhoto: true,
+        showPhoto: true,
+      });
     }
   };
 
-  const handleRerollDylanAvatar = () => {
+  const handleRerollDylanAvatar = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const baseName = (data.fullName && data.fullName.trim()) || "Luna";
     const randomSuffix = Math.floor(Math.random() * 10000);
     const newSeed = `${baseName}-${randomSuffix}`;
@@ -91,36 +117,76 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
   return (
     <div className="space-y-4 text-xs">
-      {/* Profile Photo & Visibility */}
-      <div className="flex items-center gap-4 bg-stone-50 dark:bg-[#161b22] p-3 rounded-xl border border-stone-200 dark:border-[#30363d]">
-        <div className="relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-[#0d1117] border border-stone-300 dark:border-[#363d47] flex items-center justify-center shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={currentAvatarSrc}
-            alt="Avatar"
-            className="w-full h-full object-cover select-none pointer-events-none"
-            draggable={false}
+      {/* Profile Photo & Visibility with Drag & Drop + Crop/Rotate */}
+      <div className="flex items-center gap-4 bg-stone-50 dark:bg-[#161b22] p-3.5 rounded-2xl border border-stone-200 dark:border-[#30363d]">
+        {/* Interactive Avatar with Drag/Drop, Hover Upload & Dice Button */}
+        <div className="relative shrink-0">
+          <div
+            onClick={() => photoInputRef.current?.click()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDraggingOverAvatar(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDraggingOverAvatar(false);
+            }}
+            onDrop={handleAvatarDrop}
+            title={isPt ? "Clica ou arrasta uma foto para aqui" : "Click or drop photo here"}
+            className={`group relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-[#0d1117] border-2 transition-all cursor-pointer flex items-center justify-center ${
+              isDraggingOverAvatar
+                ? "border-amber-500 ring-4 ring-amber-500/30 scale-105"
+                : "border-stone-300 dark:border-[#363d47] hover:border-amber-500/80"
+            }`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={currentAvatarSrc}
+              alt="Avatar"
+              className="w-full h-full object-cover select-none pointer-events-none"
+              draggable={false}
+            />
+
+            {/* Hover overlay for instant photo upload */}
+            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-0.5">
+              <Camera size={16} className="text-amber-400" />
+              <span className="text-[9px] font-bold">{isPt ? "Mudar" : "Upload"}</span>
+            </div>
+          </div>
+
+          {/* Dylan Dice Button - Directly on Avatar */}
+          <button
+            type="button"
+            onClick={handleRerollDylanAvatar}
+            title={isPt ? "Gerar novo avatar Dylan aleatório" : "Reroll Dylan avatar"}
+            aria-label={isPt ? "Gerar novo avatar Dylan aleatório" : "Reroll Dylan avatar"}
+            className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 flex items-center justify-center shadow-md border-2 border-white dark:border-[#161b22] active:scale-90 transition-transform"
+          >
+            <Dices size={12} />
+          </button>
+
+          {/* Hidden File Input */}
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="hidden"
           />
         </div>
 
-        <div className="space-y-1.5 flex-1">
+        <div className="space-y-1.5 flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Re-roll Dylan Avatar Die Button */}
             <button
               type="button"
-              onClick={handleRerollDylanAvatar}
-              className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-300 font-bold px-3 py-1.5 rounded-full border border-amber-500/30 text-xs shadow-2xs transition-colors flex items-center gap-1.5 active:scale-95"
-              title={tr("builder.forms.personalInfo.rerollAvatar")}
+              onClick={() => photoInputRef.current?.click()}
+              className="cursor-pointer bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] font-bold px-3 py-1 rounded-full border border-stone-300 dark:border-[#363d47] text-xs shadow-2xs transition-colors flex items-center gap-1.5"
             >
-              <Dices size={14} className="text-amber-600 dark:text-amber-400" />
-              <span>{tr("builder.forms.personalInfo.rerollAvatar")}</span>
+              <Upload size={12} className="text-amber-600 dark:text-amber-400" />
+              <span>{tr("builder.forms.personalInfo.importPhoto")}</span>
             </button>
-
-            {/* Custom Photo Upload */}
-            <label className="cursor-pointer bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-[#363d47] text-xs shadow-2xs transition-colors">
-              {tr("builder.forms.personalInfo.importPhoto")}
-              <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-            </label>
 
             {data.isCustomPhoto && (
               <button
@@ -133,10 +199,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                     avatarSeed: undefined,
                   });
                 }}
-                className="text-stone-500 hover:text-amber-700 dark:hover:text-amber-400 text-xs font-semibold transition-colors px-2 py-1"
+                className="text-stone-500 hover:text-amber-700 dark:hover:text-amber-400 text-xs font-semibold transition-colors px-2 py-1 flex items-center gap-1"
                 title={tr("builder.forms.personalInfo.restoreAvatar")}
               >
-                {tr("builder.forms.personalInfo.restoreAvatar")}
+                <RotateCcw size={11} />
+                <span>{tr("builder.forms.personalInfo.restoreAvatar")}</span>
               </button>
             )}
           </div>
@@ -382,6 +449,21 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden resize-y"
         />
       </div>
+
+      {/* Image Crop & Rotate Modal */}
+      {rawImageToCrop && (
+        <ImageCropModal
+          isOpen={cropModalOpen}
+          imageSrc={rawImageToCrop}
+          shape={data.photoShape || "circle"}
+          isPt={isPt}
+          onClose={() => {
+            setCropModalOpen(false);
+            setRawImageToCrop(null);
+          }}
+          onConfirm={handleCropConfirm}
+        />
+      )}
     </div>
   );
 }

@@ -14,6 +14,7 @@ import type {
 } from "@/types/cv";
 import { t } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useToast } from "@/context/ToastContext";
 import {
   ChevronDown,
   Eye,
@@ -140,6 +141,7 @@ export function SectionCard({
   }, [isHighlighted, controlledExpanded]);
 
   const { t: tr } = useTranslation(lang);
+  const { confirmAction } = useToast();
 
   const getSectionIcon = () => {
     switch (section.type) {
@@ -235,8 +237,14 @@ export function SectionCard({
 
           <button
             type="button"
-            onClick={() => {
-              if (confirm(tr("builder.sections.confirmDelete"))) {
+            onClick={async () => {
+              const ok = await confirmAction({
+                title: tr("common.actions.delete"),
+                message: tr("builder.sections.confirmDelete"),
+                confirmText: tr("common.actions.delete"),
+                danger: true,
+              });
+              if (ok) {
                 onDelete();
               }
             }}

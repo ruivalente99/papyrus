@@ -23,6 +23,7 @@ import {
   Move,
 } from "lucide-react";
 import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
+import { useToast } from "@/context/ToastContext";
 
 interface Props {
   cv: CVDocument;
@@ -58,6 +59,7 @@ export function CVPreviewContainer({
   const pageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { t: tr } = useTranslation(lang);
+  const { showToast } = useToast();
 
   const dragStartRef = useRef<{ x: number; y: number; panX: number; panY: number }>({ x: 0, y: 0, panX: 0, panY: 0 });
   const dragMovedRef = useRef<number>(0);
@@ -393,7 +395,7 @@ export function CVPreviewContainer({
       await exportToPdf(pageRef.current, filename);
     } catch (e) {
       console.error("PDF export error:", e);
-      alert("Error generating PDF.");
+      showToast(lang === "pt" ? "Erro ao gerar PDF." : "Error generating PDF.", "error");
     } finally {
       setIsExporting(null);
     }
@@ -405,9 +407,10 @@ export function CVPreviewContainer({
     try {
       const filename = `${(cv.personalInfo.fullName || "curriculum").toLowerCase().replace(/\s+/g, "_")}_cv.png`;
       await exportToPng(pageRef.current, filename);
+      showToast(lang === "pt" ? "Imagem PNG descarregada com sucesso!" : "PNG image exported successfully!", "success");
     } catch (e) {
       console.error("PNG export error:", e);
-      alert("Error exporting PNG.");
+      showToast(lang === "pt" ? "Erro ao exportar PNG." : "Error exporting PNG.", "error");
     } finally {
       setIsExporting(null);
     }

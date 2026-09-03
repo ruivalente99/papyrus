@@ -8,6 +8,7 @@ import { importFromLatex } from "@/lib/latexEngine";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { HelpTooltip } from "@/components/common/HelpTooltip";
+import { useToast } from "@/context/ToastContext";
 import {
   Upload,
   FileCode,
@@ -53,6 +54,7 @@ export function SetupScreen({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { confirmAction } = useToast();
 
   const isPt = uiLang === "pt";
 
@@ -257,8 +259,14 @@ export function SetupScreen({
 
                 {onDelete && (
                   <button
-                    onClick={() => {
-                      if (confirm(isPt ? "Eliminar este CV e recomeçar?" : "Reset and clear this CV?")) {
+                    onClick={async () => {
+                      const ok = await confirmAction({
+                        title: isPt ? "Eliminar CV" : "Delete CV",
+                        message: isPt ? "Tens a certeza que desejas eliminar este CV e recomeçar?" : "Are you sure you want to reset and clear this CV?",
+                        confirmText: isPt ? "Eliminar" : "Delete",
+                        danger: true,
+                      });
+                      if (ok) {
                         onDelete();
                       }
                     }}
