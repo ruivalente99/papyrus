@@ -199,6 +199,20 @@
       "contact": "Contact",
       "other": "Other",
       "noIcons": "No icons found"
+    },
+    "codeEditor": {
+      "bidirectional": "Bidirectional",
+      "compilable": "Compilable",
+      "format": "Format",
+      "formatTitle": "Prettify JSON",
+      "apply": "Apply",
+      "applied": "Applied!",
+      "applyTitle": "Apply to live document",
+      "copyCode": "Copy code",
+      "downloadFile": "Download file",
+      "jsonHint": "Edits synchronize in real time to the A4 preview.",
+      "latexHint": "Compatible with TeX Live, MacTeX and Overleaf.",
+      "close": "Close code"
     }
   }
 }

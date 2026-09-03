@@ -199,6 +199,20 @@
       "contact": "Contacto",
       "other": "Outros",
       "noIcons": "Nenhum ícone encontrado"
+    },
+    "codeEditor": {
+      "bidirectional": "Modo Bidirecional",
+      "compilable": "Compilável",
+      "format": "Formatar",
+      "formatTitle": "Formatar / Indentar JSON",
+      "apply": "Aplicar",
+      "applied": "Aplicado!",
+      "applyTitle": "Aplicar ao documento em direto",
+      "copyCode": "Copiar código",
+      "downloadFile": "Descarregar ficheiro",
+      "jsonHint": "Edição com reflexo em tempo real na folha A4.",
+      "latexHint": "Compatível com TeX Live, MacTeX e Overleaf.",
+      "close": "Fechar código"
     }
   }
 }
