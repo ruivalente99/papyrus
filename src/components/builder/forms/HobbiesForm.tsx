@@ -3,6 +3,7 @@
 import React from "react";
 import type { HobbiesSection, HobbyItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 export function HobbiesForm({ section, lang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {
     const newItem: HobbyItem = {
@@ -57,7 +59,7 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Interesses & Voluntariado (${items.length})` : `Interests & Volunteering (${items.length})`}
+          {tr("builder.forms.hobbies.title")} ({items.length})
         </span>
         <button
           type="button"
@@ -65,7 +67,7 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Adicionar Atividade" : "+ Add Activity"}</span>
+          <span>+ {tr("builder.forms.hobbies.addHobby")}</span>
         </button>
       </div>
 
@@ -81,15 +83,16 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
           >
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-stone-800">
               <span className="font-bold text-stone-800 dark:text-stone-200 text-xs">
-                {item.name?.[lang] || (isPt ? "Novo Interesse" : "New Interest")}
+                {item.name?.[lang] || tr("builder.forms.hobbies.newHobby")}
               </span>
 
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleToggleVisibility(item.id)}
-                  title={item.visible ? (isPt ? "Ocultar do CV" : "Hide from CV") : (isPt ? "Mostrar no CV" : "Show on CV")}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800"
+                  title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                  aria-label={item.visible ? tr("a11y.forms.hideHobby") : tr("a11y.forms.showHobby")}
+                  className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   {item.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                 </button>
@@ -97,8 +100,9 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(item.id)}
-                  title={isPt ? "Remover" : "Remove"}
-                  className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                  title={tr("common.actions.remove")}
+                  aria-label={tr("a11y.forms.deleteHobby")}
+                  className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -109,11 +113,11 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Nome da Atividade / Interesse" : "Activity / Project Title"} ({lang.toUpperCase()}) *
+                    {tr("builder.forms.hobbies.name")} ({lang.toUpperCase()}) *
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Voluntariado Comunitário / Robótica" : "e.g. Community Volunteering / Robotics"}
+                    placeholder={tr("builder.forms.hobbies.namePlaceholder")}
                     value={item.name?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -126,7 +130,7 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Link / Website do Projeto (Opcional)" : "Project / Organization Link (Optional)"}
+                    {tr("builder.forms.hobbies.url")}
                   </label>
                   <input
                     type="url"
@@ -140,15 +144,11 @@ export function HobbiesForm({ section, lang, onChange }: Props) {
 
               <div>
                 <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Descrição ou Destaques (Opcional)" : "Description or Key Contributions (Optional)"} ({lang.toUpperCase()})
+                  {tr("builder.forms.hobbies.description")} ({lang.toUpperCase()})
                 </label>
                 <textarea
                   rows={2}
-                  placeholder={
-                    isPt
-                      ? "Ex: Organização de iniciativas solidárias e apoio a projetos locais..."
-                      : "e.g. Coordinated community workshops and solidarity fundraisers..."
-                  }
+                  placeholder={tr("builder.forms.hobbies.descriptionPlaceholder")}
                   value={item.description?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateItem(item.id, {

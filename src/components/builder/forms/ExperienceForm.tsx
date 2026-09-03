@@ -3,6 +3,7 @@
 import React from "react";
 import type { ExperienceSection, ExperienceItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {
     const newItem: ExperienceItem = {
@@ -117,7 +119,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Cargos e Experiências (${section.items.length})` : `Roles & Experience (${section.items.length})`}
+          {tr("builder.forms.experience.title")} ({section.items.length})
         </span>
         <button
           type="button"
@@ -125,7 +127,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Adicionar Cargo" : "+ Add Experience"}</span>
+          <span>+ {tr("builder.forms.experience.addRole")}</span>
         </button>
       </div>
 
@@ -146,15 +148,16 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
               {/* Item Top Bar */}
               <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-stone-800">
                 <span className="font-bold text-stone-700 dark:text-stone-200 text-xs">
-                  #{index + 1} {item.role?.[lang] || item.company || (isPt ? "Novo Cargo" : "New Role")}
+                  #{index + 1} {item.role?.[lang] || item.company || tr("builder.forms.experience.newRole")}
                 </span>
 
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => handleToggleItemVisibility(item.id)}
-                    title={item.visible ? (isPt ? "Ocultar do CV" : "Hide from CV") : (isPt ? "Mostrar no CV" : "Show on CV")}
-                    className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800"
+                    title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                    aria-label={item.visible ? tr("a11y.forms.hideRole") : tr("a11y.forms.showRole")}
+                    className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[24px] min-h-[24px] flex items-center justify-center"
                   >
                     {item.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                   </button>
@@ -162,8 +165,9 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                   <button
                     type="button"
                     onClick={() => handleDeleteItem(item.id)}
-                    title={isPt ? "Remover cargo" : "Remove role"}
-                    className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                    title={tr("common.actions.remove")}
+                    aria-label={tr("a11y.forms.deleteRole")}
+                    className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -175,11 +179,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                      {isPt ? "Cargo / Função" : "Role / Title"} ({lang.toUpperCase()}) *
+                      {tr("builder.forms.experience.role")} ({lang.toUpperCase()}) *
                     </label>
                     <input
                       type="text"
-                      placeholder={isPt ? "Ex: Engenheiro de Software" : "e.g. Senior Software Engineer"}
+                      placeholder={tr("builder.forms.experience.rolePlaceholder")}
                       value={item.role?.[lang] || ""}
                       onChange={(e) =>
                         handleUpdateItem(item.id, {
@@ -192,11 +196,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
 
                   <div>
                     <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                      {isPt ? "Empresa / Organização *" : "Company / Organization *"}
+                      {tr("builder.forms.experience.company")} *
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. Acme Corp"
+                      placeholder={tr("builder.forms.experience.companyPlaceholder")}
                       value={item.company}
                       onChange={(e) => handleUpdateItem(item.id, { company: e.target.value })}
                       className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
@@ -207,11 +211,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
                     <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                      {isPt ? "Localização" : "Location"} ({lang.toUpperCase()})
+                      {tr("builder.forms.experience.location")} ({lang.toUpperCase()})
                     </label>
                     <input
                       type="text"
-                      placeholder={isPt ? "Ex: Porto / Híbrido" : "e.g. London / Remote"}
+                      placeholder={tr("builder.forms.experience.locationPlaceholder")}
                       value={item.location?.[lang] || ""}
                       onChange={(e) =>
                         handleUpdateItem(item.id, {
@@ -224,7 +228,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
 
                   <div>
                     <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                      {isPt ? "Data Início" : "Start Date"} (YYYY-MM)
+                      {tr("builder.forms.experience.startDate")} (YYYY-MM)
                     </label>
                     <input
                       type="text"
@@ -238,7 +242,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                   <div>
                     <div className="flex justify-between items-center mb-0.5">
                       <label className="font-medium text-stone-600 dark:text-stone-400">
-                        {isPt ? "Data Fim" : "End Date"}
+                        {tr("builder.forms.experience.endDate")}
                       </label>
                       <label className="flex items-center gap-1 text-[10.5px] text-amber-700 dark:text-amber-400 cursor-pointer">
                         <input
@@ -252,7 +256,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                           }
                           className="rounded text-amber-700"
                         />
-                        <span>{isPt ? "Atual" : "Current"}</span>
+                        <span>{tr("builder.forms.experience.current")}</span>
                       </label>
                     </div>
                     <input
@@ -268,7 +272,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Website da Empresa (URL)" : "Company Website URL"}
+                    {tr("builder.forms.experience.url")}
                   </label>
                   <input
                     type="url"
@@ -283,14 +287,14 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                 <div className="pt-1">
                   <div className="flex justify-between items-center mb-1">
                     <label className="font-semibold text-stone-600 dark:text-stone-400">
-                      {isPt ? "Pontos-Chave & Responsabilidades" : "Key Highlights & Responsibilities"} ({lang.toUpperCase()})
+                      {tr("builder.forms.experience.highlights")} ({lang.toUpperCase()})
                     </label>
                     <button
                       type="button"
                       onClick={() => handleAddBullet(item.id)}
                       className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800"
                     >
-                      {isPt ? "+ Adicionar Ponto" : "+ Add Highlight"}
+                      + {tr("builder.forms.experience.addBullet")}
                     </button>
                   </div>
 
@@ -302,18 +306,16 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                           rows={2}
                           value={bullet}
                           onChange={(e) => handleUpdateBullet(item.id, bIdx, e.target.value)}
-                          placeholder={
-                            isPt
-                              ? "Descreva uma responsabilidade ou conquista mensurável..."
-                              : "Describe a core achievement or measurable impact..."
-                          }
+                          placeholder={tr("builder.forms.experience.bulletPlaceholder")}
                           className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 resize-y"
                         />
                         {bullets.length > 1 && (
                           <button
                             type="button"
                             onClick={() => handleDeleteBullet(item.id, bIdx)}
-                            className="text-stone-400 hover:text-red-500 mt-1 p-0.5"
+                            title={tr("a11y.forms.deleteBullet")}
+                            aria-label={tr("a11y.forms.deleteBullet")}
+                            className="text-stone-500 hover:text-red-500 mt-1 p-1 min-w-[24px] min-h-[24px] flex items-center justify-center rounded"
                           >
                             <Trash2 size={12} />
                           </button>

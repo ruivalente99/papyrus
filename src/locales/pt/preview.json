@@ -1,0 +1,43 @@
+{
+  "toolbar": {
+    "pageCountSingle": "Página A4",
+    "pageCountPlural": "Páginas A4",
+    "pageLimitGuide": "Limite da Página A4",
+    "density": "Espaçamento",
+    "densityCompact": "Compacto",
+    "densityNormal": "Equilibrado",
+    "densitySpacious": "Espaçoso",
+    "densityTooltip": "Densidade de espaçamento",
+    "style": "Estilo",
+    "print": "Imprimir",
+    "pdf": "PDF",
+    "png": "PNG",
+    "exportPdf": "Exportar PDF",
+    "generatingPdf": "A gerar PDF..."
+  },
+  "canvas": {
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Reduzir zoom",
+    "resetZoom": "Repor zoom a 100% (atual: {{current}})",
+    "fitToScreen": "Ajustar ao tamanho do ecrã",
+    "selectionMode": "Modo Seleção",
+    "panMode": "Modo Panorâmica",
+    "showGrid": "Mostrar grelha de alinhamento",
+    "hideGrid": "Ocultar grelha de alinhamento",
+    "resetView": "Repor posição original"
+  },
+  "colors": {
+    "accentColor": "Cor de Destaque",
+    "colorLabel": "Cor de destaque: {{name}}",
+    "customColor": "Outra cor personalizada",
+    "custom": "Outra",
+    "pickCustom": "Escolher cor personalizada"
+  },
+  "settingsSheet": {
+    "title": "Pré-visualização e Estilo",
+    "subtitle": "Personalize o modelo, densidade e cores",
+    "close": "Fechar definições de pré-visualização",
+    "templates": "Modelo de Layout",
+    "appearance": "Tema Visual"
+  }
+}

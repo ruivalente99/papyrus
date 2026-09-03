@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import type { SupportedLanguage, TemplateId, CVSection } from "@/types/cv";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   Search,
   Layers,
@@ -86,6 +87,7 @@ export function CommandPalette({
   const listRef = useRef<HTMLDivElement>(null);
 
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   useEffect(() => {
     setMounted(true);
@@ -395,14 +397,17 @@ export function CommandPalette({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={isPt ? "Digita um comando, modelo ou secção..." : "Type a command, template, or section..."}
+            placeholder={tr("builder.modals.commandPalette.placeholder")}
+            aria-label={tr("builder.modals.commandPalette.searchAria")}
             className="flex-1 bg-transparent border-none outline-hidden text-sm text-stone-900 dark:text-stone-100 placeholder-stone-400 font-sans"
           />
           {query && (
             <button
               type="button"
               onClick={() => setQuery("")}
-              className="text-[11px] font-mono text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"
+              title={tr("common.actions.clear")}
+              aria-label={tr("builder.modals.commandPalette.clearAria")}
+              className="text-[11px] font-mono text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 min-w-[24px] min-h-[24px] flex items-center justify-center rounded"
             >
               Esc
             </button>
@@ -416,7 +421,7 @@ export function CommandPalette({
         <div ref={listRef} className="flex-1 overflow-y-auto p-2 divide-y divide-transparent space-y-0.5">
           {filteredCommands.length === 0 ? (
             <div className="py-12 text-center text-stone-400 text-xs">
-              {isPt ? "Nenhum comando encontrado para esta pesquisa." : "No commands found matching your search."}
+              {tr("builder.modals.commandPalette.noResults")}
             </div>
           ) : (
             filteredCommands.map((cmd, idx) => {

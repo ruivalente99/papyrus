@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import type { SupportedLanguage } from "@/types/cv";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Check } from "lucide-react";
 
 interface Props {
@@ -20,6 +21,7 @@ export function LanguageSwitcher({
   const [showAdd, setShowAdd] = useState(false);
   const [newCode, setNewCode] = useState("");
   const [newLabel, setNewLabel] = useState("");
+  const { t: tr } = useTranslation(activeLang);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,8 +52,10 @@ export function LanguageSwitcher({
 
         <button
           onClick={() => setShowAdd(!showAdd)}
-          title="Adicionar novo idioma ao CV"
-          className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-stone-400 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 text-xs font-bold flex items-center gap-0.5 rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-700 transition-colors shrink-0"
+          title={tr("common.languages.addNewToCV")}
+          aria-label={tr("common.languages.addNewToCV")}
+          aria-expanded={showAdd}
+          className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 text-xs font-bold flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-700 transition-colors shrink-0 min-w-[24px] min-h-[24px]"
         >
           <Plus size={12} />
         </button>
@@ -64,7 +68,8 @@ export function LanguageSwitcher({
         >
           <input
             type="text"
-            placeholder="Code"
+            placeholder={tr("common.languages.codePlaceholder")}
+            aria-label={tr("common.languages.code")}
             value={newCode}
             onChange={(e) => setNewCode(e.target.value)}
             className="w-14 px-2 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-full text-xs text-center font-bold uppercase"
@@ -73,7 +78,8 @@ export function LanguageSwitcher({
           />
           <input
             type="text"
-            placeholder="Name (e.g. FR)"
+            placeholder={tr("common.languages.namePlaceholder")}
+            aria-label={tr("common.languages.name")}
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             className="w-24 px-2 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-full text-xs font-medium"
@@ -81,7 +87,9 @@ export function LanguageSwitcher({
           />
           <button
             type="submit"
-            className="bg-amber-700 text-white p-1 rounded-full hover:bg-amber-800 font-bold transition-colors"
+            title={tr("common.languages.confirmNew")}
+            aria-label={tr("common.languages.confirmNew")}
+            className="bg-amber-700 text-white p-1.5 rounded-full hover:bg-amber-800 font-bold transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
           >
             <Check size={12} />
           </button>

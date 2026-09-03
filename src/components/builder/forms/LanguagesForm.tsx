@@ -3,6 +3,7 @@
 import React from "react";
 import type { LanguagesSection, LanguageItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface Props {
@@ -14,12 +15,13 @@ interface Props {
 
 export function LanguagesForm({ section, lang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {
     const newItem: LanguageItem = {
       id: `lang-${generateId()}`,
       name: { [lang]: "" },
-      level: { [lang]: isPt ? "Intermédio" : "Intermediate" },
+      level: { [lang]: tr("builder.forms.languages.levelIntermediate") },
       cefr: "B2",
       visible: true,
     };
@@ -56,7 +58,7 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Idiomas & Proficiência (${items.length})` : `Languages & Proficiency (${items.length})`}
+          {tr("builder.forms.languages.title")} ({items.length})
         </span>
         <button
           type="button"
@@ -64,7 +66,7 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Adicionar Língua" : "+ Add Language"}</span>
+          <span>+ {tr("builder.forms.languages.addLanguage")}</span>
         </button>
       </div>
 
@@ -80,21 +82,25 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
           >
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-stone-800">
               <span className="font-bold text-stone-700 dark:text-stone-200 text-xs">
-                {item.name?.[lang] || (isPt ? "Novo Idioma" : "New Language")}
+                {item.name?.[lang] || tr("builder.forms.languages.newLanguage")}
               </span>
 
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleToggleVisibility(item.id)}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded"
+                  title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                  aria-label={item.visible ? tr("a11y.forms.hideLanguage") : tr("a11y.forms.showLanguage")}
+                  className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   {item.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(item.id)}
-                  className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                  title={tr("common.actions.remove")}
+                  aria-label={tr("a11y.forms.deleteLanguage")}
+                  className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -104,11 +110,11 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div>
                 <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Língua / Idioma" : "Language Name"} ({lang.toUpperCase()}) *
+                  {tr("builder.forms.languages.name")} ({lang.toUpperCase()}) *
                 </label>
                 <input
                   type="text"
-                  placeholder={isPt ? "Ex: Inglês, Francês" : "e.g. English, German"}
+                  placeholder={tr("builder.forms.languages.namePlaceholder")}
                   value={item.name?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateItem(item.id, {
@@ -121,11 +127,11 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
 
               <div>
                 <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Nível Descritivo" : "Proficiency"} ({lang.toUpperCase()})
+                  {tr("builder.forms.languages.level")} ({lang.toUpperCase()})
                 </label>
                 <input
                   type="text"
-                  placeholder={isPt ? "Ex: Língua materna, Fluente" : "e.g. Native, Fluent"}
+                  placeholder={tr("builder.forms.languages.levelPlaceholder")}
                   value={item.level?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateItem(item.id, {
@@ -137,10 +143,12 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
               </div>
 
               <div>
-                <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Quadro CEFR" : "CEFR Matrix"}
+                <label htmlFor={`cefr-select-${item.id}`} className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
+                  {tr("builder.forms.languages.cefr")}
                 </label>
                 <select
+                  id={`cefr-select-${item.id}`}
+                  aria-label={tr("a11y.forms.cefrSelect")}
                   value={item.cefr || "B2"}
                   onChange={(e) => handleUpdateItem(item.id, { cefr: e.target.value })}
                   className="w-full border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs"

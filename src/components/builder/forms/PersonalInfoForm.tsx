@@ -8,6 +8,7 @@ import { ICON_OPTIONS } from "@/lib/iconMap";
 import { User, Plus, Trash2, Dices, Sparkles } from "lucide-react";
 import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
 import { compressImageFile } from "@/lib/imageCompressor";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface Props {
   data: PersonalInfo;
@@ -18,6 +19,7 @@ interface Props {
 
 export function PersonalInfoForm({ data, lang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -108,15 +110,15 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               type="button"
               onClick={handleRerollDylanAvatar}
               className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-300 font-bold px-3 py-1.5 rounded-full border border-amber-500/30 text-xs shadow-2xs transition-colors flex items-center gap-1.5 active:scale-95"
-              title={isPt ? "Re-roll Avatar Dylan (DiceBear)" : "Re-roll Dylan Avatar (DiceBear)"}
+              title={tr("builder.forms.personalInfo.rerollAvatar")}
             >
               <Dices size={14} className="text-amber-600 dark:text-amber-400" />
-              <span>{isPt ? "Re-roll Dylan" : "Re-roll Dylan"}</span>
+              <span>{tr("builder.forms.personalInfo.rerollAvatar")}</span>
             </button>
 
             {/* Custom Photo Upload */}
             <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
-              {isPt ? "Importar Foto" : "Import Photo"}
+              {tr("builder.forms.personalInfo.importPhoto")}
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             </label>
 
@@ -132,9 +134,9 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                   });
                 }}
                 className="text-stone-500 hover:text-amber-700 dark:hover:text-amber-400 text-xs font-semibold transition-colors px-2 py-1"
-                title={isPt ? "Voltar ao avatar Dylan automático" : "Restore automatic Dylan avatar"}
+                title={tr("builder.forms.personalInfo.restoreAvatar")}
               >
-                {isPt ? "Restaurar Dylan" : "Restore Dylan"}
+                {tr("builder.forms.personalInfo.restoreAvatar")}
               </button>
             )}
           </div>
@@ -147,18 +149,20 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 onChange={(e) => onChange({ showPhoto: e.target.checked })}
                 className="rounded text-amber-700"
               />
-              <span>{isPt ? "Mostrar foto no CV" : "Show photo on CV"}</span>
+              <span>{tr("common.actions.showOnCV")}</span>
             </label>
 
             {data.showPhoto && (
               <select
+                id="photo-shape-select"
+                aria-label={tr("a11y.forms.photoShapeSelect")}
                 value={data.photoShape || "circle"}
                 onChange={(e) => onChange({ photoShape: e.target.value as any })}
                 className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
               >
-                <option value="circle">{isPt ? "Circular" : "Circle"}</option>
-                <option value="rounded">{isPt ? "Arredondada" : "Rounded"}</option>
-                <option value="square">{isPt ? "Quadrada" : "Square"}</option>
+                <option value="circle">{tr("builder.forms.personalInfo.photoShapes.circle")}</option>
+                <option value="rounded">{tr("builder.forms.personalInfo.photoShapes.rounded")}</option>
+                <option value="square">{tr("builder.forms.personalInfo.photoShapes.square")}</option>
               </select>
             )}
           </div>
@@ -169,7 +173,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-            {isPt ? "Nome Completo *" : "Full Name *"}
+            {tr("builder.forms.personalInfo.fullName")} *
           </label>
           <input
             type="text"
@@ -182,14 +186,14 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               }
               onChange(updates);
             }}
-            placeholder={isPt ? "Ex: Luna Silva" : "e.g. Luna Silva"}
+            placeholder={tr("builder.forms.personalInfo.fullNamePlaceholder")}
             className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
 
         <div>
           <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-            {isPt ? "Título Profissional" : "Professional Title"} ({lang.toUpperCase()})
+            {tr("builder.forms.personalInfo.headline")} ({lang.toUpperCase()})
           </label>
           <input
             type="text"
@@ -203,7 +207,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 },
               }))
             }
-            placeholder={isPt ? "Ex: Engenheiro de Software Sénior" : "e.g. Lead Software Engineer"}
+            placeholder={tr("builder.forms.personalInfo.headlinePlaceholder")}
             className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
@@ -213,7 +217,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-            Email *
+            {tr("builder.forms.personalInfo.email")} *
           </label>
           <input
             type="email"
@@ -226,7 +230,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
         <div>
           <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-            {isPt ? "Telefone" : "Phone"}
+            {tr("builder.forms.personalInfo.phone")}
           </label>
           <input
             type="tel"
@@ -239,7 +243,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
         <div>
           <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-            {isPt ? "Localização" : "Location"} ({lang.toUpperCase()})
+            {tr("builder.forms.personalInfo.location")} ({lang.toUpperCase()})
           </label>
           <input
             type="text"
@@ -253,14 +257,14 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 },
               }))
             }
-            placeholder={isPt ? "Ex: Lisboa / Porto, Portugal" : "e.g. London, UK"}
+            placeholder={tr("builder.forms.personalInfo.locationPlaceholder")}
             className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
           />
         </div>
 
         <div>
           <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-            {isPt ? "Website / Portfólio" : "Website / Portfolio"}
+            {tr("builder.forms.personalInfo.website")}
           </label>
           <input
             type="url"
@@ -276,7 +280,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="font-semibold text-stone-700 dark:text-stone-300">
-            {isPt ? "Links & Redes Sociais" : "Links & Social"}
+            {tr("builder.forms.personalInfo.socialLinks")}
           </label>
           <button
             type="button"
@@ -284,7 +288,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             className="flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-0.5 rounded-full transition-all active:scale-95 shadow-2xs"
           >
             <Plus size={12} />
-            <span>{isPt ? "Adicionar Link" : "Add Link"}</span>
+            <span>{tr("builder.forms.personalInfo.addSocialLink")}</span>
           </button>
         </div>
 
@@ -306,7 +310,8 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
                 <input
                   type="text"
-                  placeholder={isPt ? "Rótulo (ex: LinkedIn)" : "Label (e.g. LinkedIn)"}
+                  placeholder={tr("builder.forms.personalInfo.username")}
+                  aria-label={tr("builder.forms.personalInfo.username")}
                   value={link.label?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateLink(link.id, {
@@ -322,8 +327,9 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleRemoveLink(link.id)}
-                  className="sm:hidden text-stone-400 hover:text-red-500 p-1.5 rounded-lg transition-colors shrink-0"
-                  title={isPt ? "Remover link" : "Remove link"}
+                  className="sm:hidden text-stone-500 hover:text-red-500 p-1.5 rounded-lg transition-colors shrink-0 min-w-[24px] min-h-[24px] flex items-center justify-center"
+                  title={tr("a11y.forms.deleteSocialLink")}
+                  aria-label={tr("a11y.forms.deleteSocialLink")}
                 >
                   <Trash2 size={13} />
                 </button>
@@ -333,7 +339,8 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               <div className="flex items-center gap-2 w-full sm:flex-1 min-w-0">
                 <input
                   type="url"
-                  placeholder={isPt ? "URL (https://...)" : "URL (https://...)"}
+                  placeholder={tr("builder.forms.personalInfo.url")}
+                  aria-label={tr("builder.forms.personalInfo.url")}
                   value={link.url || ""}
                   onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
                   className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
@@ -342,8 +349,9 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleRemoveLink(link.id)}
-                  className="hidden sm:block text-stone-400 hover:text-red-500 p-1 rounded-lg transition-colors shrink-0"
-                  title={isPt ? "Remover link" : "Remove link"}
+                  className="hidden sm:flex text-stone-500 hover:text-red-500 p-1.5 rounded-lg transition-colors shrink-0 min-w-[24px] min-h-[24px] items-center justify-center"
+                  title={tr("a11y.forms.deleteSocialLink")}
+                  aria-label={tr("a11y.forms.deleteSocialLink")}
                 >
                   <Trash2 size={13} />
                 </button>
@@ -356,7 +364,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       {/* Summary / About */}
       <div>
         <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
-          {isPt ? "Resumo / Perfil Profissional" : "Profile Summary"} ({lang.toUpperCase()})
+          {tr("builder.forms.personalInfo.summary")} ({lang.toUpperCase()})
         </label>
         <textarea
           rows={3}
@@ -370,11 +378,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               },
             }))
           }
-          placeholder={
-            isPt
-              ? "Breve resumo da sua experiência profissional, conquistas e competências de destaque..."
-              : "Concise summary outlining your core strengths, professional trajectory, and key achievements..."
-          }
+          placeholder={tr("builder.forms.personalInfo.summaryPlaceholder")}
           className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden resize-y"
         />
       </div>

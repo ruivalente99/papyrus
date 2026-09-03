@@ -145,3 +145,11 @@ npm run cv -- export lateralis --out=backup.json
 - **Interactive Hyperlinks**: Scans all `<a>` tags in the DOM, translates positions into millimeter page coordinates, and embeds native PDF link annotations using `jsPDF.link(x, y, w, h, { url })`.
 - **Smart Page Break Detection**: Evaluates child bounding boxes (`data-page-break-avoid="true"`) to break cleanly between blocks instead of slicing through text.
 - **Density Controls**: Supports `compact`, `normal`, and `spacious` font and spacing presets.
+
+---
+
+## 🔄 Development Workflow & Iterative Commits
+
+- **Frequent Iterative Commits**: Make atomic git commits at every convenient iteration (e.g. after completing a refactor step, fixing an accessibility issue, adding new translation catalogs, or validating a feature). Never leave accumulated work uncommitted across session turns.
+- **Commit Format**: Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`).
+- **Verification Before Commit**: Always run `npm run build` and `npm run test:e2e` to ensure 0 TypeScript or runtime regressions.

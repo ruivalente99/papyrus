@@ -16,6 +16,7 @@ import { t, tArray } from "@/lib/i18n";
 import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
 import { resolveAvatarUrl } from "@/lib/avatar";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 
 interface Props {
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
+  const { t: tr } = useTranslation(lang);
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#005555";
   const secondaryColor = theme.secondaryColor || "#007777";
@@ -69,7 +71,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
           <div
             onClick={(e) => handleSectionClick("personal", e)}
             className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
-            title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
+            title={tr("a11y.templates.clickToEditPersonal")}
           >
             {/* Avatar / Photo */}
             {personalInfo.showPhoto && (
@@ -197,7 +199,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
               data-page-break-avoid="true"
               onClick={(e) => handleSectionClick(langSection.id, e)}
               className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(langSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(langSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(langSection.title, lang, cv.defaultLanguage) })}
             >
               <h3
                 className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b-2"
@@ -228,7 +230,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
               data-page-break-avoid="true"
               onClick={(e) => handleSectionClick(skillsSection.id, e)}
               className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(skillsSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(skillsSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(skillsSection.title, lang, cv.defaultLanguage) })}
             >
               <h3
                 className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b-2"
@@ -268,7 +270,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
               data-page-break-avoid="true"
               onClick={(e) => handleSectionClick(hobbiesSection.id, e)}
               className="cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/30 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(hobbiesSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(hobbiesSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(hobbiesSection.title, lang, cv.defaultLanguage) })}
             >
               <h3
                 className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b-2"
@@ -309,7 +311,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
           onClick={(e) => handleSectionClick("personal", e)}
           className="border-b-2 pb-2 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
           style={{ borderColor: primaryColor }}
-          title={lang === "pt" ? "Clique para editar perfil pessoal" : "Click to edit profile"}
+          title={tr("a11y.templates.clickToEditProfile")}
         >
           <h1
             className="text-2xl font-black tracking-wider uppercase leading-none break-words"
@@ -334,7 +336,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
           <div
             onClick={(e) => handleSectionClick(expSection.id, e)}
             className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-            title={lang === "pt" ? `Clique para editar ${t(expSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(expSection.title, lang, cv.defaultLanguage)}`}
+            title={tr("a11y.templates.clickToEdit", { name: t(expSection.title, lang, cv.defaultLanguage) })}
           >
             <h2
               data-page-break-avoid="true"
@@ -415,7 +417,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
           <div
             onClick={(e) => handleSectionClick(eduSection.id, e)}
             className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-            title={lang === "pt" ? `Clique para editar ${t(eduSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(eduSection.title, lang, cv.defaultLanguage)}`}
+            title={tr("a11y.templates.clickToEdit", { name: t(eduSection.title, lang, cv.defaultLanguage) })}
           >
             <h2
               data-page-break-avoid="true"
@@ -493,7 +495,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
           <div
             onClick={(e) => handleSectionClick(certSection.id, e)}
             className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-            title={lang === "pt" ? `Clique para editar ${t(certSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(certSection.title, lang, cv.defaultLanguage)}`}
+            title={tr("a11y.templates.clickToEdit", { name: t(certSection.title, lang, cv.defaultLanguage) })}
           >
             <h2
               data-page-break-avoid="true"
@@ -542,7 +544,7 @@ export function LateralisTemplate({ cv, lang, onSelectSection }: Props) {
           <div
             onClick={(e) => handleSectionClick(customSection.id, e)}
             className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-            title={lang === "pt" ? `Clique para editar ${t(customSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(customSection.title, lang, cv.defaultLanguage)}`}
+            title={tr("a11y.templates.clickToEdit", { name: t(customSection.title, lang, cv.defaultLanguage) })}
           >
             <h2
               data-page-break-avoid="true"

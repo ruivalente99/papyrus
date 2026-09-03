@@ -1,0 +1,204 @@
+{
+  "sections": {
+    "title": "Sections Builder",
+    "counter": "{{count}} sections",
+    "add": "Add Section",
+    "personalInfo": "Personal Details",
+    "experience": "Work Experience",
+    "education": "Education & Qualifications",
+    "skills": "Skills",
+    "languages": "Languages",
+    "certifications": "Certifications",
+    "hobbies": "Interests & Activities",
+    "custom": "Custom Section",
+    "titleField": "Section Title",
+    "confirmDelete": "Permanently delete this section?",
+    "summaries": {
+      "role_one": "1 role",
+      "role_other": "{{count}} roles",
+      "degree_one": "1 degree",
+      "degree_other": "{{count}} degrees",
+      "skill": "{{count}} skills",
+      "language_one": "1 language",
+      "language_other": "{{count}} languages",
+      "certification_one": "1 certification",
+      "certification_other": "{{count}} certifications",
+      "hobby_one": "1 hobby",
+      "hobby_other": "{{count}} hobbies",
+      "item_one": "1 item",
+      "item_other": "{{count}} items"
+    }
+  },
+  "modes": {
+    "form": "Form",
+    "json": "JSON",
+    "latex": "LaTeX"
+  },
+  "forms": {
+    "personalInfo": {
+      "title": "Personal Details",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "e.g. Luna Silva",
+      "headline": "Professional Title",
+      "headlinePlaceholder": "e.g. Senior Software Engineer",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Lisbon, Portugal",
+      "website": "Website / Portfolio",
+      "summary": "Professional Summary",
+      "summaryPlaceholder": "Brief overview of your career trajectory and key strengths...",
+      "photo": "Profile Photo",
+      "photoShape": "Photo Shape",
+      "photoShapes": {
+        "circle": "Circle",
+        "rounded": "Rounded",
+        "square": "Square"
+      },
+      "rerollAvatar": "Re-roll Avatar",
+      "importPhoto": "Import Photo",
+      "restoreAvatar": "Restore Dylan",
+      "socialLinks": "Social Profiles & Links",
+      "addSocialLink": "Add link",
+      "network": "Network",
+      "username": "Username",
+      "url": "URL"
+    },
+    "experience": {
+      "title": "Work Experience",
+      "newRole": "New Role",
+      "addRole": "Add Experience",
+      "role": "Role / Job Title",
+      "rolePlaceholder": "e.g. Senior Frontend Engineer",
+      "company": "Company / Organization",
+      "companyPlaceholder": "e.g. Acme Corp",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Porto, Portugal",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "current": "I currently work here",
+      "url": "Company Website",
+      "highlights": "Key Achievements & Responsibilities",
+      "addBullet": "Add bullet point",
+      "bulletPlaceholder": "Describe an achievement or responsibility...",
+      "deleteBullet": "Delete bullet point"
+    },
+    "education": {
+      "title": "Education & Qualifications",
+      "newDegree": "New Degree / Course",
+      "addDegree": "Add Education",
+      "degree": "Degree / Field of Study",
+      "degreePlaceholder": "e.g. B.Sc. in Computer Science",
+      "institution": "Institution",
+      "institutionPlaceholder": "e.g. University of Porto",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Porto, Portugal",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "current": "Currently studying here",
+      "qeq": "EQF / QEQ Level",
+      "qeqPlaceholder": "e.g. Level 6 (BSc) / Level 7 (MSc)",
+      "details": "Details / Thesis / Honors",
+      "detailsPlaceholder": "Relevant coursework, thesis, achievements...",
+      "url": "Institution Website"
+    },
+    "skills": {
+      "title": "Skills",
+      "newCategory": "New Category",
+      "addCategory": "Add Skill Category",
+      "categoryName": "Category Name",
+      "categoryPlaceholder": "e.g. Frontend Development, DevOps",
+      "addSkill": "Add skill",
+      "skillPlaceholder": "Type skill & press Enter",
+      "removeSkill": "Remove {{skill}}"
+    },
+    "languages": {
+      "title": "Languages",
+      "newLanguage": "New Language",
+      "addLanguage": "Add Language",
+      "name": "Language",
+      "namePlaceholder": "e.g. English, French",
+      "proficiency": "Proficiency Level",
+      "proficiencyPlaceholder": "e.g. Native, Fluent, Intermediate",
+      "cefr": "Official CEFR Level",
+      "cefrPlaceholder": "Select CEFR level..."
+    },
+    "custom": {
+      "title": "Custom Section",
+      "newItem": "New Item",
+      "addItem": "Add Item",
+      "itemTitle": "Title",
+      "itemTitlePlaceholder": "e.g. Research Publication or Volunteer Project",
+      "subtitle": "Subtitle / Role",
+      "subtitlePlaceholder": "e.g. Lead Author, Contributor",
+      "date": "Date / Period",
+      "datePlaceholder": "e.g. 2023 - Present",
+      "description": "Description",
+      "descriptionPlaceholder": "Detailed summary...",
+      "url": "Link / Reference"
+    },
+    "certifications": {
+      "title": "Certifications",
+      "newCertification": "New Certification",
+      "addCertification": "Add Certification",
+      "name": "Certificate Name",
+      "namePlaceholder": "e.g. AWS Certified Solutions Architect",
+      "issuer": "Issuing Entity",
+      "issuerPlaceholder": "e.g. Amazon Web Services",
+      "issueDate": "Issue Date",
+      "expiryDate": "Expiry Date",
+      "url": "Credential URL"
+    },
+    "hobbies": {
+      "title": "Interests & Activities",
+      "newHobby": "New Interest",
+      "addHobby": "Add Interest",
+      "name": "Interest / Activity",
+      "namePlaceholder": "e.g. Open Source, Photography, Hiking",
+      "description": "Description / Details",
+      "descriptionPlaceholder": "Brief note or favorite activities..."
+    }
+  },
+  "linter": {
+    "badgeTitle": "Quality audit and dynamic linter",
+    "qualityScore": "Quality score: {{score}}%",
+    "modalTitle": "Quality Audit & Linter",
+    "summary": "Auditing {{count}} rule checks",
+    "allClear": "All checks passed. Perfect score!",
+    "fixAction": "Fix",
+    "scoreLabel": "Quality Score"
+  },
+  "modals": {
+    "addSection": {
+      "title": "Add Section",
+      "subtitle": "Choose a section type to add to your CV",
+      "alreadyAdded": "Already added"
+    },
+    "latex": {
+      "title": "TeX Management",
+      "exportTab": "Export TeX",
+      "importTab": "Import TeX",
+      "copy": "Copy TeX Code",
+      "download": "Download .tex File",
+      "importPrompt": "Paste LaTeX content or drop a .tex file",
+      "importSubmit": "Import TeX into Editor"
+    },
+    "commandPalette": {
+      "title": "Command Palette",
+      "placeholder": "Type a command, template, or section...",
+      "searchAria": "Search commands or actions",
+      "clearAria": "Clear search",
+      "noResults": "No results found."
+    },
+    "iconPicker": {
+      "title": "Pick Icon",
+      "search": "Search icons...",
+      "clear": "Clear search",
+      "sectionIcon": "Section icon: {{name}}",
+      "all": "All",
+      "contact": "Contact",
+      "other": "Other",
+      "noIcons": "No icons found"
+    }
+  }
+}

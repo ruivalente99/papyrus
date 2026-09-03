@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import type { SupportedLanguage, TemplateId, CVDocument } from "@/types/cv";
 import { tUI } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   X,
   Columns,
@@ -46,6 +47,7 @@ export function PreviewSettingsSheet({
   onUpdateTheme,
 }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   // Handle ESC key to close
   useEffect(() => {
@@ -128,8 +130,9 @@ export function PreviewSettingsSheet({
           </div>
           <button
             onClick={onClose}
-            aria-label="Fechar"
-            className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={tr("common.actions.close")}
+            aria-label={tr("preview.settingsSheet.close")}
+            className="p-1.5 rounded-full text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <X size={18} />
           </button>
@@ -234,6 +237,7 @@ export function PreviewSettingsSheet({
                     key={c.hex}
                     onClick={() => onUpdateTheme({ primaryColor: c.hex })}
                     title={c.name}
+                    aria-label={tr("preview.colors.colorLabel", { name: c.name })}
                     className={`w-9 h-9 rounded-full transition-transform flex items-center justify-center shrink-0 active:scale-90 ${
                       isSelected
                         ? "scale-110 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 shadow-md"
@@ -248,7 +252,7 @@ export function PreviewSettingsSheet({
 
               {/* Custom "Outra" Color Picker Button */}
               <label
-                title={isPt ? "Outra cor personalizada" : "Custom color"}
+                title={tr("preview.colors.customColor")}
                 className={`h-9 px-3 rounded-full flex items-center gap-1.5 cursor-pointer transition-all border shrink-0 text-xs font-bold active:scale-90 ${
                   !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())
                     ? "scale-105 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 shadow-md bg-stone-100 dark:bg-stone-700 text-stone-900 dark:text-stone-100"
@@ -265,12 +269,13 @@ export function PreviewSettingsSheet({
                 />
                 <input
                   type="color"
+                  aria-label={tr("preview.colors.pickCustom")}
                   value={currentColor || "#005555"}
                   onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
                   className="opacity-0 absolute w-0 h-0"
                 />
                 <Pipette size={13} className="text-stone-500" />
-                <span>{isPt ? "Outra" : "Custom"}</span>
+                <span>{tr("preview.colors.custom")}</span>
               </label>
             </div>
           </div>
@@ -283,7 +288,7 @@ export function PreviewSettingsSheet({
             className="w-full py-3 bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-bold text-sm rounded-2xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2"
           >
             <Sparkles size={16} />
-            <span>{tUI("done", lang)}</span>
+            <span>{tr("common.actions.done")}</span>
           </button>
         </div>
       </div>

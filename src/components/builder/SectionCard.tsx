@@ -13,6 +13,7 @@ import type {
   CustomSection,
 } from "@/types/cv";
 import { t } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   ChevronDown,
   Eye,
@@ -52,53 +53,54 @@ interface Props {
   onDelete: () => void;
 }
 
-function getSectionSummary(section: CVSection, lang: SupportedLanguage): string {
-  const isPt = lang === "pt";
+function getSectionSummary(section: CVSection, tr: (key: string, params?: any) => string): string {
   switch (section.type) {
     case "experience": {
       const exp = section as ExperienceSection;
       const count = exp.items?.length || 0;
       return count === 1
-        ? (isPt ? "1 cargo profissional" : "1 role")
-        : `${count} ${isPt ? "cargos profissionais" : "roles"}`;
+        ? tr("builder.sections.summaries.role_one")
+        : tr("builder.sections.summaries.role_other", { count });
     }
     case "education": {
       const edu = section as EducationSection;
       const count = edu.items?.length || 0;
       return count === 1
-        ? (isPt ? "1 formação académica" : "1 degree")
-        : `${count} ${isPt ? "formações académicas" : "degrees"}`;
+        ? tr("builder.sections.summaries.degree_one")
+        : tr("builder.sections.summaries.degree_other", { count });
     }
     case "skills": {
       const sk = section as SkillsSection;
       const total = sk.categories?.reduce((acc, c) => acc + (c.skills?.length || 0), 0) || 0;
-      return `${total} ${isPt ? "competências" : "skills"}`;
+      return tr("builder.sections.summaries.skill", { count: total });
     }
     case "languages": {
       const lng = section as LanguagesSection;
       const count = lng.items?.length || 0;
       return count === 1
-        ? (isPt ? "1 idioma" : "1 language")
-        : `${count} ${isPt ? "idiomas" : "languages"}`;
+        ? tr("builder.sections.summaries.language_one")
+        : tr("builder.sections.summaries.language_other", { count });
     }
     case "certifications": {
       const cert = section as CertificationsSection;
       const count = cert.items?.length || 0;
       return count === 1
-        ? (isPt ? "1 certificação" : "1 certification")
-        : `${count} ${isPt ? "certificações" : "certifications"}`;
+        ? tr("builder.sections.summaries.certification_one")
+        : tr("builder.sections.summaries.certification_other", { count });
     }
     case "hobbies": {
       const hb = section as HobbiesSection;
       const count = hb.items?.length || 0;
       return count === 1
-        ? (isPt ? "1 interesse" : "1 hobby")
-        : `${count} ${isPt ? "interesses" : "hobbies"}`;
+        ? tr("builder.sections.summaries.hobby_one")
+        : tr("builder.sections.summaries.hobby_other", { count });
     }
     case "custom": {
       const cs = section as CustomSection;
       const count = cs.items?.length || 0;
-      return `${count} ${count === 1 ? (isPt ? "item" : "item") : (isPt ? "itens" : "items")}`;
+      return count === 1
+        ? tr("builder.sections.summaries.item_one")
+        : tr("builder.sections.summaries.item_other", { count });
     }
     default:
       return "";
@@ -137,6 +139,8 @@ export function SectionCard({
     }
   }, [isHighlighted, controlledExpanded]);
 
+  const { t: tr } = useTranslation(lang);
+
   const getSectionIcon = () => {
     switch (section.type) {
       case "experience":
@@ -161,20 +165,22 @@ export function SectionCard({
 
   return (
     <div
-      id={`section-${section.id}`}
+      data-testid={`section-card-${section.id}`}
       className={`bg-white dark:bg-stone-900 rounded-2xl border transition-all duration-300 shadow-xs ${
-        isHighlighted
-          ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 border-amber-500 dark:border-amber-500 shadow-md scale-[1.01]"
-          : section.visible
-          ? "border-stone-200 dark:border-stone-800"
+        isExpanded
+          ? "border-amber-400/80 dark:border-amber-600/70 shadow-md ring-1 ring-amber-400/20"
+          : "border-stone-200/90 dark:border-stone-800/80 hover:border-stone-300 dark:hover:border-stone-700"
+      } ${
+        section.visible
+          ? ""
           : "border-stone-200/60 dark:border-stone-800/60 bg-stone-50/70 dark:bg-stone-950/40 opacity-70"
       }`}
     >
-      {/* Header */}
-      <div className="p-4 flex items-center justify-between gap-2 select-none">
+      {/* Header bar (Click to toggle expand) */}
+      <div className="flex items-center justify-between p-3.5 sm:p-4 select-none">
         <div
           onClick={handleToggle}
-          className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
+          className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
         >
           <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center shrink-0">
             {getSectionIcon()}
@@ -184,12 +190,12 @@ export function SectionCard({
               <span className="truncate">{sectionTitle}</span>
               {!section.visible && (
                 <span className="text-[10px] bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-400 px-1.5 py-0.5 rounded font-medium shrink-0">
-                  {lang === "pt" ? "Oculta" : "Hidden"}
+                  {tr("common.actions.hide")}
                 </span>
               )}
             </h3>
             <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
-              {getSectionSummary(section, lang) || `${section.type} • #${section.order}`}
+              {getSectionSummary(section, tr) || `${section.type} • #${section.order}`}
             </p>
           </div>
         </div>
@@ -200,8 +206,9 @@ export function SectionCard({
             type="button"
             onClick={onMoveUp}
             disabled={isFirst}
-            title={lang === "pt" ? "Subir secção" : "Move up"}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed"
+            title={tr("common.actions.moveUp")}
+            aria-label={tr("a11y.sectionCard.moveUp", { name: sectionTitle })}
+            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ArrowUp size={14} />
           </button>
@@ -209,8 +216,9 @@ export function SectionCard({
             type="button"
             onClick={onMoveDown}
             disabled={isLast}
-            title={lang === "pt" ? "Descer secção" : "Move down"}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed"
+            title={tr("common.actions.moveDown")}
+            aria-label={tr("a11y.sectionCard.moveDown", { name: sectionTitle })}
+            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ArrowDown size={14} />
           </button>
@@ -218,8 +226,9 @@ export function SectionCard({
           <button
             type="button"
             onClick={onToggleVisibility}
-            title={section.visible ? (lang === "pt" ? "Ocultar secção" : "Hide section") : (lang === "pt" ? "Mostrar secção" : "Show section")}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
+            title={section.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+            aria-label={section.visible ? tr("a11y.sectionCard.hide", { name: sectionTitle }) : tr("a11y.sectionCard.show", { name: sectionTitle })}
+            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             {section.visible ? <Eye size={14} /> : <EyeOff size={14} />}
           </button>
@@ -227,12 +236,13 @@ export function SectionCard({
           <button
             type="button"
             onClick={() => {
-              if (confirm(lang === "pt" ? "Eliminar esta secção permanentemente?" : "Permanently delete this section?")) {
+              if (confirm(tr("builder.sections.confirmDelete"))) {
                 onDelete();
               }
             }}
-            title={lang === "pt" ? "Eliminar secção" : "Delete section"}
-            className="text-stone-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={tr("common.actions.delete")}
+            aria-label={tr("a11y.sectionCard.delete", { name: sectionTitle })}
+            className="text-stone-500 hover:text-red-500 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <Trash2 size={14} />
           </button>
@@ -240,7 +250,10 @@ export function SectionCard({
           <button
             type="button"
             onClick={handleToggle}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 ml-1"
+            title={isExpanded ? tr("common.actions.collapse") : tr("common.actions.expand")}
+            aria-label={isExpanded ? tr("a11y.sectionCard.collapse", { name: sectionTitle }) : tr("a11y.sectionCard.expand", { name: sectionTitle })}
+            aria-expanded={isExpanded}
+            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 ml-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ChevronDown
               size={16}
@@ -258,7 +271,7 @@ export function SectionCard({
           {/* Custom Section Title Input */}
           <div className="mb-4 pt-2">
             <label className="block text-[11px] font-bold text-stone-500 dark:text-stone-400 mb-1 font-mono uppercase tracking-wider">
-              {lang === "pt" ? "Título da Secção" : "Section Title"} ({lang.toUpperCase()})
+              {tr("builder.sections.titleField")} ({lang.toUpperCase()})
             </label>
             <input
               type="text"

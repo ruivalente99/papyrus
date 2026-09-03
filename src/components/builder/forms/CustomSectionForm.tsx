@@ -3,6 +3,7 @@
 import React from "react";
 import type { CustomSection, CustomSectionItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 export function CustomSectionForm({ section, lang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {
     const newItem: CustomSectionItem = {
@@ -59,7 +61,7 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Itens Personalizados (${items.length})` : `Custom Items (${items.length})`}
+          {tr("builder.forms.custom.title")} ({items.length})
         </span>
         <button
           type="button"
@@ -67,7 +69,7 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Adicionar Item" : "+ Add Item"}</span>
+          <span>+ {tr("builder.forms.custom.addItem")}</span>
         </button>
       </div>
 
@@ -83,15 +85,16 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
           >
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-stone-800">
               <span className="font-bold text-stone-800 dark:text-stone-200 text-xs">
-                {item.title?.[lang] || (isPt ? "Novo Item" : "New Item")}
+                {item.title?.[lang] || tr("builder.forms.custom.newItem")}
               </span>
 
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleToggleVisibility(item.id)}
-                  title={item.visible ? (isPt ? "Ocultar do CV" : "Hide from CV") : (isPt ? "Mostrar no CV" : "Show on CV")}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800"
+                  title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                  aria-label={item.visible ? tr("a11y.forms.hideItem") : tr("a11y.forms.showItem")}
+                  className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   {item.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                 </button>
@@ -99,8 +102,9 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(item.id)}
-                  title={isPt ? "Remover item" : "Remove item"}
-                  className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                  title={tr("common.actions.remove")}
+                  aria-label={tr("a11y.forms.deleteItem")}
+                  className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -111,11 +115,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div className="sm:col-span-2">
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Título do Item" : "Item Title"} ({lang.toUpperCase()}) *
+                    {tr("builder.forms.custom.itemTitle")} ({lang.toUpperCase()}) *
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Orador Convidado na Conferência X" : "e.g. Keynote Speaker / Project Lead"}
+                    placeholder={tr("builder.forms.custom.itemTitlePlaceholder")}
                     value={item.title?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -128,7 +132,7 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Data / Ano (Opcional)" : "Date / Year (Optional)"}
+                    {tr("builder.forms.custom.date")}
                   </label>
                   <input
                     type="text"
@@ -143,11 +147,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Subtítulo / Entidade (Opcional)" : "Subtitle / Organization (Optional)"} ({lang.toUpperCase()})
+                    {tr("builder.forms.custom.subtitle")} ({lang.toUpperCase()})
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Universidade do Porto" : "e.g. University of Oxford"}
+                    placeholder={tr("builder.forms.custom.subtitlePlaceholder")}
                     value={item.subtitle?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -160,7 +164,7 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Link / URL (Opcional)" : "Link / URL (Optional)"}
+                    {tr("builder.forms.custom.url")}
                   </label>
                   <input
                     type="url"
@@ -174,15 +178,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
 
               <div>
                 <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Descrição / Conteúdo (Opcional)" : "Description / Content (Optional)"} ({lang.toUpperCase()})
+                  {tr("builder.forms.custom.description")} ({lang.toUpperCase()})
                 </label>
                 <textarea
                   rows={2}
-                  placeholder={
-                    isPt
-                      ? "Descreva este item com detalhes e conquistas..."
-                      : "Describe this custom item in detail with notable highlights..."
-                  }
+                  placeholder={tr("builder.forms.custom.descriptionPlaceholder")}
                   value={item.description?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateItem(item.id, {

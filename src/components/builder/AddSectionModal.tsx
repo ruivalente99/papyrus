@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import type { SectionType, SupportedLanguage } from "@/types/cv";
+import { useTranslation } from "@/hooks/useTranslation";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import {
   X,
@@ -100,13 +101,14 @@ const AVAILABLE_SECTIONS: SectionOption[] = [
 export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) {
   const [selectedType, setSelectedType] = useState<SectionType>("experience");
   const [customTitle, setCustomTitle] = useState("");
+  const { t: tr } = useTranslation(lang);
 
   if (!isOpen) return null;
 
   const isPt = lang === "pt";
 
   const handleConfirm = () => {
-    onAddSection(selectedType, selectedType === "custom" && customTitle.trim() ? customTitle.trim() : undefined);
+    onAddSection(selectedType, customTitle ? customTitle.trim() : undefined);
     setCustomTitle("");
     onClose();
   };
@@ -117,18 +119,25 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
-      <div className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-lg overflow-hidden flex flex-col max-h-[88vh]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-section-modal-title"
+        className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-lg overflow-hidden flex flex-col max-h-[88vh]"
+      >
         {/* Header - Charm Minimalist */}
         <div className="px-5 py-3.5 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
           <div className="flex items-center gap-2.5">
             <NanoBananaLogo size="sm" />
-            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
-              {isPt ? "Adicionar Secção" : "Add Section"}
+            <h3 id="add-section-modal-title" className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+              {tr("builder.sections.add")}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors"
+            title={tr("common.actions.close")}
+            aria-label={tr("a11y.modals.closeModal")}
+            className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <X size={16} />
           </button>
@@ -212,7 +221,7 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
             onClick={onClose}
             className="px-5 py-2 bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold rounded-full transition-colors shadow-2xs"
           >
-            {isPt ? "Cancelar" : "Cancel"}
+            {tr("common.actions.cancel")}
           </button>
 
           <button
@@ -221,7 +230,7 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
             className="flex items-center gap-1.5 px-5 py-2 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-full transition-colors shadow-xs"
           >
             <Plus size={14} />
-            <span>{isPt ? "Adicionar Secção" : "Add Section"}</span>
+            <span>{tr("builder.sections.add")}</span>
           </button>
         </div>
       </div>

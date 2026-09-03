@@ -15,6 +15,7 @@ import { t, tArray } from "@/lib/i18n";
 import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
 import { resolveAvatarUrl } from "@/lib/avatar";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Mail, Phone, MapPin, Globe, Briefcase, GraduationCap, Languages } from "lucide-react";
 
 interface Props {
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
+  const { t: tr } = useTranslation(lang);
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#1e3a8a";
   const isCompact = theme.fontSize === "compact";
@@ -60,7 +62,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
         data-page-break-avoid="true"
         onClick={(e) => handleSectionClick("personal", e)}
         className="flex gap-5 items-center pb-3 border-b border-stone-200 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-        title={lang === "pt" ? "Clique para editar dados pessoais" : "Click to edit personal info"}
+        title={tr("a11y.templates.clickToEditPersonal")}
       >
         {personalInfo.showPhoto && (
           <div
@@ -165,7 +167,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               onClick={(e) => handleSectionClick(expSection.id, e)}
               className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(expSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(expSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(expSection.title, lang, cv.defaultLanguage) })}
             >
               <div
                 data-page-break-avoid="true"
@@ -178,51 +180,52 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
                 </h2>
               </div>
 
-              <div className={isCompact ? "space-y-2" : "space-y-2.5"}>
+              <div className={isCompact ? "space-y-2.5" : "space-y-3.5"}>
                 {(Array.isArray(expSection.items) ? expSection.items : [])
                   .filter((i) => i && i.visible)
                   .map((item) => {
-                    const role = t(item.role, lang, cv.defaultLanguage);
-                    const loc = t(item.location, lang, cv.defaultLanguage);
                     const bullets = tArray(item.highlights, lang, cv.defaultLanguage);
-
                     return (
                       <div
                         key={item.id}
                         data-page-break-avoid="true"
-                        className="text-xs min-w-0 cv-item break-inside-avoid"
+                        className="text-xs text-stone-800 cv-item break-inside-avoid"
                       >
-                        <div className="flex justify-between items-baseline gap-2">
-                          <span className="font-bold text-stone-900 text-[11px] break-words flex-1">
-                            {role}
-                          </span>
-                          <span className="text-[9.5px] text-stone-500 font-medium italic shrink-0">
+                        <div className="flex justify-between items-baseline font-bold text-stone-900">
+                          <span className="text-xs">{t(item.role, lang, cv.defaultLanguage)}</span>
+                          <span className="text-[10px] text-stone-500 font-mono font-normal">
                             {formatDateRange(item.startDate, item.endDate, item.isCurrent, lang)}
                           </span>
                         </div>
-                        <div className="text-[10.5px] text-stone-600 font-medium break-words">
+                        <div className="text-[11px] text-stone-600 font-medium flex items-center gap-1.5">
                           {item.url ? (
                             <a
                               href={item.url}
                               target="_blank"
                               rel="noreferrer"
-                              className="hover:underline"
+                              className="hover:underline flex items-center gap-0.5"
+                              style={{ color: primaryColor }}
                             >
-                              {item.company}
+                              <span>{item.company}</span>
                             </a>
                           ) : (
-                            item.company
-                          )}{" "}
-                          {loc ? `| ${loc}` : ""}
+                            <span style={{ color: primaryColor }}>{item.company}</span>
+                          )}
+                          {item.location && (
+                            <span className="text-stone-400">
+                              • {t(item.location, lang, cv.defaultLanguage)}
+                            </span>
+                          )}
                         </div>
+
                         {bullets.length > 0 && (
-                          <div className="mt-0.5 space-y-0.5 text-[10px] text-stone-700 text-justify">
-                            {bullets.map((b, idx) => (
-                              <p key={idx} className="leading-snug break-words">
-                                • {b}
-                              </p>
+                          <ul className="mt-1 space-y-0.5 text-[10.5px] text-stone-700 list-disc list-inside">
+                            {bullets.map((b, bIdx) => (
+                              <li key={bIdx} className="leading-relaxed">
+                                {b}
+                              </li>
                             ))}
-                          </div>
+                          </ul>
                         )}
                       </div>
                     );
@@ -236,7 +239,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               onClick={(e) => handleSectionClick(eduSection.id, e)}
               className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(eduSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(eduSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(eduSection.title, lang, cv.defaultLanguage) })}
             >
               <div
                 data-page-break-avoid="true"
@@ -253,45 +256,51 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
                 {(Array.isArray(eduSection.items) ? eduSection.items : [])
                   .filter((i) => i && i.visible)
                   .map((item) => {
-                    const degree = t(item.degree, lang, cv.defaultLanguage);
-                    const loc = t(item.location, lang, cv.defaultLanguage);
                     const details = t(item.details, lang, cv.defaultLanguage);
-
                     return (
                       <div
                         key={item.id}
                         data-page-break-avoid="true"
-                        className="text-xs min-w-0 cv-item break-inside-avoid"
+                        className="text-xs text-stone-800 cv-item break-inside-avoid"
                       >
-                        <div className="flex justify-between items-baseline gap-2">
-                          <span className="font-bold text-stone-900 text-[11px] break-words flex-1">
-                            {degree}
-                          </span>
-                          <span className="text-[9.5px] text-stone-500 font-medium italic shrink-0">
+                        <div className="flex justify-between items-baseline font-bold text-stone-900">
+                          <span className="text-xs">{t(item.degree, lang, cv.defaultLanguage)}</span>
+                          <span className="text-[10px] text-stone-500 font-mono font-normal">
                             {formatDateRange(item.startDate, item.endDate, item.isCurrent, lang)}
                           </span>
                         </div>
-                        <div className="text-[10px] text-stone-600 break-words">
+                        <div className="text-[11px] text-stone-600 font-medium">
                           {item.url ? (
                             <a
                               href={item.url}
                               target="_blank"
                               rel="noreferrer"
                               className="hover:underline"
+                              style={{ color: primaryColor }}
                             >
                               {item.institution}
                             </a>
                           ) : (
-                            item.institution
-                          )}{" "}
-                          {loc ? `| ${loc}` : ""}
+                            <span style={{ color: primaryColor }}>{item.institution}</span>
+                          )}
+                          {item.location && (
+                            <span className="text-stone-400">
+                              {" "}
+                              • {t(item.location, lang, cv.defaultLanguage)}
+                            </span>
+                          )}
+                          {item.qeq && (
+                            <span className="text-stone-500 italic text-[10px]">
+                              {" "}
+                              • {item.qeq}
+                            </span>
+                          )}
                         </div>
-                        {item.qeq && (
-                          <span className="inline-block mt-0.5 text-[9px] text-blue-900 bg-blue-50 px-1.5 py-0.2 rounded font-mono">
-                            {item.qeq}
-                          </span>
+                        {details && (
+                          <p className="mt-0.5 text-[10.5px] text-stone-600 leading-relaxed">
+                            {details}
+                          </p>
                         )}
-                        {details && <p className="text-[9.5px] text-stone-600 mt-0.5 break-words">{details}</p>}
                       </div>
                     );
                   })}
@@ -307,7 +316,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               onClick={(e) => handleSectionClick(langSection.id, e)}
               className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(langSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(langSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(langSection.title, lang, cv.defaultLanguage) })}
             >
               <div
                 data-page-break-avoid="true"
@@ -356,7 +365,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               onClick={(e) => handleSectionClick(skillsSection.id, e)}
               className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(skillsSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(skillsSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(skillsSection.title, lang, cv.defaultLanguage) })}
             >
               <h2
                 data-page-break-avoid="true"
@@ -367,21 +376,19 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
               </h2>
               <div className="space-y-1.5">
                 {(Array.isArray(skillsSection.categories) ? skillsSection.categories : [])
-                  .filter((c) => c && c.visible)
+                  .filter((cat) => cat && cat.visible)
                   .map((cat) => (
                     <div key={cat.id} data-page-break-avoid="true" className="cv-item">
-                      {cat.name && (
-                        <p className="text-[9.5px] font-semibold text-stone-600 mb-0.5">
-                          {t(cat.name, lang, cv.defaultLanguage)}
-                        </p>
-                      )}
+                      <span className="text-[10px] font-bold text-stone-700 block mb-0.5">
+                        {t(cat.name, lang, cv.defaultLanguage)}
+                      </span>
                       <div className="flex flex-wrap gap-1">
-                        {(Array.isArray(cat.skills) ? cat.skills : []).map((sk, sIdx) => (
+                        {(Array.isArray(cat.skills) ? cat.skills : []).map((skill, sIdx) => (
                           <span
                             key={sIdx}
-                            className="text-[9px] bg-stone-100 border border-stone-200 text-stone-800 px-1.5 py-0.2 rounded"
+                            className="bg-stone-100 text-stone-800 px-1.5 py-0.5 rounded text-[9.5px] border border-stone-200"
                           >
-                            {sk}
+                            {skill}
                           </span>
                         ))}
                       </div>
@@ -396,7 +403,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               onClick={(e) => handleSectionClick(certSection.id, e)}
               className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(certSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(certSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(certSection.title, lang, cv.defaultLanguage) })}
             >
               <h2
                 data-page-break-avoid="true"
@@ -443,7 +450,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               onClick={(e) => handleSectionClick(hobbiesSection.id, e)}
               className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
-              title={lang === "pt" ? `Clique para editar ${t(hobbiesSection.title, lang, cv.defaultLanguage)}` : `Click to edit ${t(hobbiesSection.title, lang, cv.defaultLanguage)}`}
+              title={tr("a11y.templates.clickToEdit", { name: t(hobbiesSection.title, lang, cv.defaultLanguage) })}
             >
               <h2
                 data-page-break-avoid="true"

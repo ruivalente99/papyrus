@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { translate } from "@/locales";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,7 +18,7 @@ export function formatDateRange(
 ): string {
   if (!startDate && !endDate && !isCurrent) return "";
 
-  const presentLabel = lang === "pt" ? "Atual" : "Present";
+  const presentLabel = translate("common.misc.present", lang as any);
 
   const formatSingle = (d?: string): string => {
     if (!d || typeof d !== "string") return "";

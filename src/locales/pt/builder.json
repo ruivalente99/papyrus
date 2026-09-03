@@ -1,0 +1,204 @@
+{
+  "sections": {
+    "title": "Construtor de Secções",
+    "counter": "{{count}} secções",
+    "add": "Adicionar Secção",
+    "personalInfo": "Dados Pessoais",
+    "experience": "Experiência Profissional",
+    "education": "Habilitações e Formação",
+    "skills": "Competências",
+    "languages": "Competências Linguísticas",
+    "certifications": "Certificações",
+    "hobbies": "Interesses & Atividades",
+    "custom": "Secção Personalizada",
+    "titleField": "Título da Secção",
+    "confirmDelete": "Eliminar esta secção permanentemente?",
+    "summaries": {
+      "role_one": "1 cargo profissional",
+      "role_other": "{{count}} cargos profissionais",
+      "degree_one": "1 formação académica",
+      "degree_other": "{{count}} formações académicas",
+      "skill": "{{count}} competências",
+      "language_one": "1 idioma",
+      "language_other": "{{count}} idiomas",
+      "certification_one": "1 certificação",
+      "certification_other": "{{count}} certificações",
+      "hobby_one": "1 interesse",
+      "hobby_other": "{{count}} interesses",
+      "item_one": "1 item",
+      "item_other": "{{count}} itens"
+    }
+  },
+  "modes": {
+    "form": "Formulário",
+    "json": "JSON",
+    "latex": "LaTeX"
+  },
+  "forms": {
+    "personalInfo": {
+      "title": "Dados Pessoais",
+      "fullName": "Nome Completo",
+      "fullNamePlaceholder": "ex: Luna Silva",
+      "headline": "Título Profissional",
+      "headlinePlaceholder": "ex: Engenheiro de Software Sénior",
+      "email": "Email",
+      "phone": "Telefone",
+      "location": "Localização",
+      "locationPlaceholder": "ex: Lisboa, Portugal",
+      "website": "Website / Portfólio",
+      "summary": "Resumo Profissional",
+      "summaryPlaceholder": "Breve síntese da sua trajetória profissional e principais pontos fortes...",
+      "photo": "Fotografia de Perfil",
+      "photoShape": "Formato da Fotografia",
+      "photoShapes": {
+        "circle": "Circular",
+        "rounded": "Arredondado",
+        "square": "Quadrado"
+      },
+      "rerollAvatar": "Novo Avatar Dylan",
+      "importPhoto": "Importar Foto",
+      "restoreAvatar": "Restaurar Dylan",
+      "socialLinks": "Perfis Sociais e Ligações",
+      "addSocialLink": "Adicionar ligação",
+      "network": "Rede",
+      "username": "Nome de utilizador",
+      "url": "URL"
+    },
+    "experience": {
+      "title": "Experiência Profissional",
+      "newRole": "Novo Cargo",
+      "addRole": "Adicionar Experiência",
+      "role": "Função / Cargo",
+      "rolePlaceholder": "ex: Engenheiro Frontend Sénior",
+      "company": "Empresa / Organização",
+      "companyPlaceholder": "ex: Acme Corp",
+      "location": "Localização",
+      "locationPlaceholder": "ex: Porto, Portugal",
+      "startDate": "Data de Início",
+      "endDate": "Data de Fim",
+      "current": "Trabalho aqui atualmente",
+      "url": "Website da Empresa",
+      "highlights": "Principais Conquistas e Responsabilidades",
+      "addBullet": "Adicionar ponto",
+      "bulletPlaceholder": "Descreva uma conquista ou responsabilidade...",
+      "deleteBullet": "Eliminar ponto"
+    },
+    "education": {
+      "title": "Habilitações e Formação",
+      "newDegree": "Novo Grau / Curso",
+      "addDegree": "Adicionar Formação",
+      "degree": "Grau / Área de Estudo",
+      "degreePlaceholder": "ex: Licenciatura em Engenharia Informática",
+      "institution": "Instituição de Ensino",
+      "institutionPlaceholder": "ex: Universidade do Porto",
+      "location": "Localização",
+      "locationPlaceholder": "ex: Porto, Portugal",
+      "startDate": "Data de Início",
+      "endDate": "Data de Fim",
+      "current": "A frequentar atualmente",
+      "qeq": "Nível QEQ / EQF",
+      "qeqPlaceholder": "ex: Nível 6 (Licenciatura) / Nível 7 (Mestrado)",
+      "details": "Detalhes / Tese / Menções",
+      "detailsPlaceholder": "Unidades curriculares relevantes, tese, distinções...",
+      "url": "Website da Instituição"
+    },
+    "skills": {
+      "title": "Competências",
+      "newCategory": "Nova Categoria",
+      "addCategory": "Adicionar Categoria de Competências",
+      "categoryName": "Nome da Categoria",
+      "categoryPlaceholder": "ex: Desenvolvimento Frontend, DevOps",
+      "addSkill": "Adicionar competência",
+      "skillPlaceholder": "Escreva a competência e prima Enter",
+      "removeSkill": "Remover {{skill}}"
+    },
+    "languages": {
+      "title": "Competências Linguísticas",
+      "newLanguage": "Novo Idioma",
+      "addLanguage": "Adicionar Idioma",
+      "name": "Idioma",
+      "namePlaceholder": "ex: Inglês, Francês",
+      "proficiency": "Nível de Proficiência",
+      "proficiencyPlaceholder": "ex: Nativo, Fluente, Intermédio",
+      "cefr": "Nível Oficial QECR / CEFR",
+      "cefrPlaceholder": "Selecionar nível QECR..."
+    },
+    "custom": {
+      "title": "Secção Personalizada",
+      "newItem": "Novo Item",
+      "addItem": "Adicionar Item",
+      "itemTitle": "Título",
+      "itemTitlePlaceholder": "ex: Publicação Científica ou Projeto de Voluntariado",
+      "subtitle": "Subtítulo / Função",
+      "subtitlePlaceholder": "ex: Autor Principal, Colaborador",
+      "date": "Data / Período",
+      "datePlaceholder": "ex: 2023 - Presente",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Resumo detalhado...",
+      "url": "Ligação / Referência"
+    },
+    "certifications": {
+      "title": "Certificações",
+      "newCertification": "Nova Certificação",
+      "addCertification": "Adicionar Certificação",
+      "name": "Nome do Certificado",
+      "namePlaceholder": "ex: AWS Certified Solutions Architect",
+      "issuer": "Entidade Emissora",
+      "issuerPlaceholder": "ex: Amazon Web Services",
+      "issueDate": "Data de Emissão",
+      "expiryDate": "Data de Expiração",
+      "url": "URL da Credencial"
+    },
+    "hobbies": {
+      "title": "Interesses & Atividades",
+      "newHobby": "Novo Interesse",
+      "addHobby": "Adicionar Interesse",
+      "name": "Interesse / Atividade",
+      "namePlaceholder": "ex: Open Source, Fotografia, Caminhadas",
+      "description": "Descrição / Detalhes",
+      "descriptionPlaceholder": "Breve nota ou atividades favoritas..."
+    }
+  },
+  "linter": {
+    "badgeTitle": "Auditoria de qualidade e linter dinâmico",
+    "qualityScore": "Qualidade: {{score}}%",
+    "modalTitle": "Auditoria de Qualidade e Linter",
+    "summary": "A auditar {{count}} regras de conformidade",
+    "allClear": "Todas as regras foram validadas. Pontuação perfeita!",
+    "fixAction": "Corrigir",
+    "scoreLabel": "Pontuação de Qualidade"
+  },
+  "modals": {
+    "addSection": {
+      "title": "Adicionar Secção",
+      "subtitle": "Escolha um tipo de secção para adicionar ao seu CV",
+      "alreadyAdded": "Já adicionada"
+    },
+    "latex": {
+      "title": "Gestão TeX",
+      "exportTab": "Exportar TeX",
+      "importTab": "Importar TeX",
+      "copy": "Copiar Código TeX",
+      "download": "Descarregar Ficheiro .tex",
+      "importPrompt": "Cole o conteúdo LaTeX ou arraste um ficheiro .tex",
+      "importSubmit": "Importar TeX para o Editor"
+    },
+    "commandPalette": {
+      "title": "Paleta de Comandos",
+      "placeholder": "Digita um comando, modelo ou secção...",
+      "searchAria": "Pesquisar comandos ou ações",
+      "clearAria": "Limpar pesquisa",
+      "noResults": "Nenhum resultado encontrado."
+    },
+    "iconPicker": {
+      "title": "Escolher Ícone",
+      "search": "Pesquisar ícones...",
+      "clear": "Limpar pesquisa",
+      "sectionIcon": "Ícone da secção: {{name}}",
+      "all": "Todos",
+      "contact": "Contacto",
+      "other": "Outros",
+      "noIcons": "Nenhum ícone encontrado"
+    }
+  }
+}

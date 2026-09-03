@@ -3,6 +3,7 @@
 import React from "react";
 import type { EducationSection, EducationItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 export function EducationForm({ section, lang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {
     const newItem: EducationItem = {
@@ -60,7 +62,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Habilitações & Cursos (${section.items.length})` : `Education & Qualifications (${section.items.length})`}
+          {tr("builder.forms.education.title")} ({section.items.length})
         </span>
         <button
           type="button"
@@ -68,7 +70,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Adicionar Formação" : "+ Add Education"}</span>
+          <span>+ {tr("builder.forms.education.addEducation")}</span>
         </button>
       </div>
 
@@ -84,15 +86,16 @@ export function EducationForm({ section, lang, onChange }: Props) {
           >
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-stone-800">
               <span className="font-bold text-stone-700 dark:text-stone-200 text-xs">
-                #{index + 1} {item.degree?.[lang] || item.institution || (isPt ? "Nova Formação" : "New Degree")}
+                #{index + 1} {item.degree?.[lang] || item.institution || tr("builder.forms.education.newDegree")}
               </span>
 
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleToggleVisibility(item.id)}
-                  title={item.visible ? (isPt ? "Ocultar do CV" : "Hide from CV") : (isPt ? "Mostrar no CV" : "Show on CV")}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800"
+                  title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                  aria-label={item.visible ? tr("a11y.forms.hideEducation") : tr("a11y.forms.showEducation")}
+                  className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   {item.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                 </button>
@@ -100,8 +103,9 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(item.id)}
-                  title={isPt ? "Remover" : "Remove"}
-                  className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                  title={tr("common.actions.remove")}
+                  aria-label={tr("a11y.forms.deleteEducation")}
+                  className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -112,11 +116,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Grau / Curso" : "Degree / Qualification"} ({lang.toUpperCase()}) *
+                    {tr("builder.forms.education.degree")} ({lang.toUpperCase()}) *
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Licenciatura em Engenharia Informática" : "e.g. Bachelor's in Computer Science"}
+                    placeholder={tr("builder.forms.education.degreePlaceholder")}
                     value={item.degree?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -129,11 +133,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Instituição de Ensino *" : "Institution / University *"}
+                    {tr("builder.forms.education.institution")} *
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Universidade do Porto" : "e.g. University of Oxford"}
+                    placeholder={tr("builder.forms.education.institutionPlaceholder")}
                     value={item.institution}
                     onChange={(e) => handleUpdateItem(item.id, { institution: e.target.value })}
                     className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
@@ -144,11 +148,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                 <div className="sm:col-span-2">
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Localização (Opcional)" : "Location (Optional)"} ({lang.toUpperCase()})
+                    {tr("builder.forms.education.location")} ({lang.toUpperCase()})
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: Porto, Portugal" : "e.g. London, UK"}
+                    placeholder={tr("builder.forms.education.locationPlaceholder")}
                     value={item.location?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -161,7 +165,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Início" : "Start"} (YYYY)
+                    {tr("builder.forms.education.startDate")} (YYYY)
                   </label>
                   <input
                     type="text"
@@ -175,7 +179,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
                     <label className="font-medium text-stone-600 dark:text-stone-400">
-                      {isPt ? "Fim" : "End"}
+                      {tr("builder.forms.education.endDate")}
                     </label>
                     <label className="flex items-center gap-1 text-[10.5px] text-amber-700 dark:text-amber-400 cursor-pointer">
                       <input
@@ -189,7 +193,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
                         }
                         className="rounded text-amber-700"
                       />
-                      <span>{isPt ? "Atual" : "Present"}</span>
+                      <span>{tr("builder.forms.education.current")}</span>
                     </label>
                   </div>
                   <input
@@ -206,7 +210,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Website / Link da Instituição (Opcional)" : "Institution / Course URL (Optional)"}
+                    {tr("builder.forms.education.url")}
                   </label>
                   <input
                     type="url"
@@ -219,7 +223,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Nível QEQ / Distinção (Opcional)" : "EQF Level / Distinction (Optional)"}
+                    {tr("builder.forms.education.qeq")}
                   </label>
                   <input
                     type="text"
@@ -233,15 +237,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
               <div>
                 <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Detalhes / Média / Tese (Opcional)" : "Coursework / Thesis / Honors (Optional)"} ({lang.toUpperCase()})
+                  {tr("builder.forms.education.details")} ({lang.toUpperCase()})
                 </label>
                 <textarea
                   rows={2}
-                  placeholder={
-                    isPt
-                      ? "Ex: Módulos de especialização, tese sobre redes neuronais, média final 18/20..."
-                      : "e.g. Specialization coursework, master thesis, GPA 3.9/4.0..."
-                  }
+                  placeholder={tr("builder.forms.education.detailsPlaceholder")}
                   value={item.details?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateItem(item.id, {

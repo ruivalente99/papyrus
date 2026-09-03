@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 import { exportToLatex, importFromLatex } from "@/lib/latexEngine";
+import { useTranslation } from "@/hooks/useTranslation";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { Download, Copy, Check, Upload, FileCode, X } from "lucide-react";
 
@@ -19,6 +20,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
   const [copied, setCopied] = useState(false);
   const [importText, setImportText] = useState("");
   const [importStatus, setImportStatus] = useState<string | null>(null);
+  const { t: tr } = useTranslation(lang);
 
   if (!open) return null;
 
@@ -90,18 +92,23 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
     >
-      <div className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]">
+      <div
+        aria-labelledby="latex-modal-title"
+        className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]"
+      >
         {/* Header - Charm Minimalist */}
         <div className="px-5 py-3.5 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
           <div className="flex items-center gap-2.5">
             <NanoBananaLogo size="sm" />
-            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
-              {isPt ? "Gestão TeX" : "TeX Management"}
+            <h3 id="latex-modal-title" className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+              {tr("builder.modals.latex.title")}
             </h3>
           </div>
           <button
             onClick={() => onOpenChange(false)}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors"
+            title={tr("common.actions.close")}
+            aria-label={tr("a11y.modals.closeLatex")}
+            className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <X size={16} />
           </button>
@@ -118,7 +125,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
               }`}
             >
-              {isPt ? "Exportar TeX (.tex)" : "Export TeX (.tex)"}
+              {tr("builder.modals.latex.exportTab")}
             </button>
             <button
               onClick={() => setActiveTab("import")}
@@ -128,7 +135,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                   : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
               }`}
             >
-              {isPt ? "Importar TeX (.tex)" : "Import TeX (.tex)"}
+              {tr("builder.modals.latex.importTab")}
             </button>
           </div>
         </div>
@@ -139,7 +146,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
             <div className="flex-1 flex flex-col min-h-0 space-y-3">
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <span className="text-xs text-stone-500 dark:text-stone-400 font-mono">
-                  {isPt ? "Idioma:" : "Language:"} <b>{lang.toUpperCase()}</b> • UTF-8 TeX
+                  {tr("common.languages.title")}: <b>{lang.toUpperCase()}</b> • UTF-8 TeX
                 </span>
                 <div className="flex items-center gap-2">
                   <button
@@ -147,14 +154,14 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                     className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3.5 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-colors shadow-2xs"
                   >
                     {copied ? <Check size={13} className="text-green-600 dark:text-green-400" /> : <Copy size={13} />}
-                    <span>{copied ? (isPt ? "Copiado!" : "Copied!") : isPt ? "Copiar Código" : "Copy Source"}</span>
+                    <span>{copied ? tr("common.actions.copied") : tr("builder.modals.latex.copy")}</span>
                   </button>
                   <button
                     onClick={handleDownload}
                     className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-4 py-1.5 rounded-full transition-colors shadow-xs"
                   >
                     <Download size={13} />
-                    <span>{isPt ? "Descarregar .tex" : "Download .tex"}</span>
+                    <span>{tr("builder.modals.latex.download")}</span>
                   </button>
                 </div>
               </div>
@@ -212,7 +219,7 @@ export function LatexModal({ open, onOpenChange, cv, lang, onImportCV }: Props) 
                   className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-5 py-2 rounded-full transition-colors disabled:opacity-50 shadow-xs"
                 >
                   <Upload size={13} />
-                  <span>{isPt ? "Processar e Importar" : "Parse & Import"}</span>
+                  <span>{tr("builder.modals.latex.importSubmit")}</span>
                 </button>
               </div>
             </div>

@@ -1,0 +1,71 @@
+{
+  "brand": "papyrus",
+  "tagline": "Dynamic Multilingual Resume & CV Engine",
+  "architecturaVitae": "architectura vitae",
+  "actions": {
+    "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "remove": "Remove",
+    "edit": "Edit",
+    "close": "Close",
+    "add": "Add",
+    "undo": "Undo",
+    "redo": "Redo",
+    "undoWithShortcut": "Undo (⌘Z / Ctrl+Z)",
+    "redoWithShortcut": "Redo (⌘⇧Z / Ctrl+Y)",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "import": "Import",
+    "export": "Export",
+    "clear": "Clear",
+    "search": "Search",
+    "reset": "Reset",
+    "done": "Done",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "expandAll": "Expand All",
+    "collapseAll": "Collapse All",
+    "moveUp": "Move Up",
+    "moveDown": "Move Down",
+    "hide": "Hide",
+    "show": "Show",
+    "hideFromCV": "Hide from CV",
+    "showOnCV": "Show on CV"
+  },
+  "theme": {
+    "title": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "select": "Select theme",
+    "current": "Theme: {{label}}"
+  },
+  "languages": {
+    "title": "Languages",
+    "code": "Code",
+    "name": "Language Name",
+    "add": "Add language",
+    "addNewToCV": "Add new language to CV",
+    "codePlaceholder": "e.g. FR",
+    "namePlaceholder": "e.g. French",
+    "confirmNew": "Confirm new language",
+    "currentEditing": "Editing in: {{lang}}"
+  },
+  "shortcuts": {
+    "commandPalette": "Command Palette (⌘K)",
+    "esc": "Esc"
+  },
+  "status": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "misc": {
+    "present": "Present"
+  }
+}

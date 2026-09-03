@@ -1,0 +1,68 @@
+{
+  "mainContent": "Editor e pré-visualização do CV",
+  "splitResizer": "Ajustar divisão entre editor e pré-visualização",
+  "helpInfo": "Informação de ajuda: {{content}}",
+  "sectionCard": {
+    "moveUp": "Mover secção {{name}} para cima",
+    "moveDown": "Mover secção {{name}} para baixo",
+    "hide": "Ocultar secção {{name}} do CV",
+    "show": "Mostrar secção {{name}} no CV",
+    "delete": "Eliminar secção {{name}}",
+    "collapse": "Recolher secção {{name}}",
+    "expand": "Expandir secção {{name}}"
+  },
+  "sectionList": {
+    "scrollLeft": "Deslocar secções para a esquerda",
+    "scrollRight": "Deslocar secções para a direita",
+    "wrapCarousel": "Mudar para modo carrossel em linha",
+    "wrapAll": "Ver todas as secções",
+    "collapseAll": "Recolher todas as secções",
+    "expandAll": "Expandir todas as secções"
+  },
+  "actions": {
+    "undo": "Desfazer alterações",
+    "redo": "Refazer alterações",
+    "commandPalette": "Abrir Paleta de Comandos (⌘K)",
+    "texManagement": "Gestão TeX",
+    "importJson": "Importar CV a partir de backup JSON",
+    "exportJson": "Exportar CV para backup JSON"
+  },
+  "forms": {
+    "deleteItem": "Remover item",
+    "hideItem": "Ocultar item do CV",
+    "showItem": "Mostrar item no CV",
+    "deleteRole": "Remover cargo",
+    "hideRole": "Ocultar cargo do CV",
+    "showRole": "Mostrar cargo no CV",
+    "deleteBullet": "Eliminar ponto",
+    "deleteEducation": "Remover formação",
+    "hideEducation": "Ocultar formação do CV",
+    "showEducation": "Mostrar formação no CV",
+    "deleteCategory": "Remover categoria",
+    "hideCategory": "Ocultar categoria do CV",
+    "showCategory": "Mostrar categoria no CV",
+    "deleteSkill": "Remover competência {{name}}",
+    "deleteLanguage": "Remover idioma",
+    "hideLanguage": "Ocultar idioma do CV",
+    "showLanguage": "Mostrar idioma no CV",
+    "cefrSelect": "Nível oficial QECR / CEFR para {{name}}",
+    "photoShapeSelect": "Selecionar formato de recorte da fotografia",
+    "socialLinkInput": "URL do perfil {{network}}",
+    "deleteSocialLink": "Remover ligação social",
+    "deleteCertification": "Remover certificação",
+    "hideCertification": "Ocultar certificação do CV",
+    "showCertification": "Mostrar certificação no CV",
+    "deleteHobby": "Remover interesse",
+    "hideHobby": "Ocultar interesse do CV",
+    "showHobby": "Mostrar interesse no CV"
+  },
+  "modals": {
+    "closeModal": "Fechar modal",
+    "closeLatex": "Fechar modal TeX"
+  },
+  "templates": {
+    "clickToEdit": "Clique para editar {{name}}",
+    "clickToEditPersonal": "Clique para editar dados pessoais",
+    "clickToEditProfile": "Clique para editar perfil pessoal"
+  }
+}

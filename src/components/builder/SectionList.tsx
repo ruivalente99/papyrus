@@ -16,6 +16,7 @@ import { PersonalInfoForm } from "./forms/PersonalInfoForm";
 import { SectionCard } from "./SectionCard";
 import { AddSectionModal } from "./AddSectionModal";
 import { t, tUI } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   User,
   Plus,
@@ -60,7 +61,7 @@ export function SectionList({
     personal: true,
   });
 
-  const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   // Auto-expand when highlighted from preview click
   React.useEffect(() => {
@@ -233,8 +234,9 @@ export function SectionList({
           <button
             type="button"
             onClick={() => scrollPills("left")}
-            title={isPt ? "Deslocar para a esquerda" : "Scroll left"}
-            className="hidden sm:flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
+            title={tr("a11y.sectionList.scrollLeft")}
+            aria-label={tr("a11y.sectionList.scrollLeft")}
+            className="hidden sm:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
           >
             <ChevronLeft size={13} />
           </button>
@@ -262,7 +264,7 @@ export function SectionList({
             className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700/80 transition-all shadow-2xs shrink-0 active:scale-95"
           >
             <User size={12} className="text-amber-600 dark:text-amber-400" />
-            <span>{isPt ? "Pessoal" : "Personal"}</span>
+            <span>{tr("builder.sections.personalInfo")}</span>
           </button>
 
           {cv.sections.map((section) => {
@@ -294,7 +296,7 @@ export function SectionList({
             className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95"
           >
             <Plus size={12} />
-            <span>{isPt ? "Secção" : "Section"}</span>
+            <span>{tr("builder.sections.add")}</span>
           </button>
         </div>
 
@@ -303,8 +305,9 @@ export function SectionList({
           <button
             type="button"
             onClick={() => scrollPills("right")}
-            title={isPt ? "Deslocar para a direita" : "Scroll right"}
-            className="hidden sm:flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
+            title={tr("a11y.sectionList.scrollRight")}
+            aria-label={tr("a11y.sectionList.scrollRight")}
+            className="hidden sm:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
           >
             <ChevronRight size={13} />
           </button>
@@ -316,11 +319,12 @@ export function SectionList({
           <button
             type="button"
             onClick={() => setIsWrapMode(!isWrapMode)}
-            title={isWrapMode ? (isPt ? "Modo Carrossel em Linha" : "Single Row Carousel") : (isPt ? "Ver Todas as Secções" : "Wrap All Sections")}
-            className={`hidden md:flex items-center justify-center w-6 h-6 rounded-full border text-[11px] font-mono font-bold transition-all shadow-2xs ${
+            title={isWrapMode ? tr("a11y.sectionList.wrapCarousel") : tr("a11y.sectionList.wrapAll")}
+            aria-label={isWrapMode ? tr("a11y.sectionList.wrapCarousel") : tr("a11y.sectionList.wrapAll")}
+            className={`hidden md:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full border text-[11px] font-mono font-bold transition-all shadow-2xs ${
               isWrapMode
                 ? "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400 border-amber-400 dark:border-amber-700"
-                : "bg-white dark:bg-stone-800 text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100 border-stone-200/80 dark:border-stone-700/80"
+                : "bg-white dark:bg-stone-800 text-stone-600 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100 border-stone-200/80 dark:border-stone-700/80"
             }`}
           >
             {isWrapMode ? "⇄" : "⊞"}
@@ -330,12 +334,13 @@ export function SectionList({
           <button
             type="button"
             onClick={toggleExpandAll}
-            title={areAllExpanded ? (isPt ? "Recolher tudo" : "Collapse all") : (isPt ? "Expandir tudo" : "Expand all")}
-            className="flex items-center gap-1 text-[11px] font-bold text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200 bg-white dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80 px-2 py-1 rounded-full shadow-2xs shrink-0 active:scale-95"
+            title={areAllExpanded ? tr("a11y.sectionList.collapseAll") : tr("a11y.sectionList.expandAll")}
+            aria-label={areAllExpanded ? tr("a11y.sectionList.collapseAll") : tr("a11y.sectionList.expandAll")}
+            className="flex items-center gap-1 text-[11px] font-bold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 bg-white dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80 px-2 py-1 rounded-full shadow-2xs shrink-0 active:scale-95 min-h-[24px]"
           >
             <ChevronsUpDown size={12} />
             <span className="hidden sm:inline">
-              {areAllExpanded ? (isPt ? "Recolher" : "Collapse") : (isPt ? "Expandir" : "Expand")}
+              {areAllExpanded ? tr("common.actions.collapse") : tr("common.actions.expand")}
             </span>
           </button>
         </div>
@@ -365,7 +370,7 @@ export function SectionList({
               <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
                 {cv.personalInfo.fullName
                   ? `${cv.personalInfo.fullName} ${cv.personalInfo.headline ? `• ${t(cv.personalInfo.headline, lang, cv.defaultLanguage)}` : ""}`
-                  : (isPt ? "Dados pessoais e contactos" : "Personal info and contact")}
+                  : tr("builder.sections.summaries.personalDefault")}
               </p>
             </div>
           </div>
@@ -417,7 +422,7 @@ export function SectionList({
           className="w-full py-3.5 px-4 border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-amber-700 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 rounded-2xl text-stone-600 dark:text-stone-300 hover:text-amber-800 dark:hover:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-[0.99]"
         >
           <Plus size={16} />
-          <span>{tUI("addSection", lang)}</span>
+          <span>{tr("builder.sections.add")}</span>
         </button>
       </div>
 

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import type { SkillsSection, SkillCategory, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, X, Eye, EyeOff } from "lucide-react";
 
 interface Props {
@@ -15,11 +16,12 @@ interface Props {
 export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
   const [newSkillInput, setNewSkillInput] = useState<{ [catId: string]: string }>({});
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddCategory = () => {
     const newCat: SkillCategory = {
       id: `cat-${generateId()}`,
-      name: { [lang]: isPt ? "Nova Categoria" : "New Skill Category" },
+      name: { [lang]: tr("builder.forms.skills.newCategory") },
       skills: [],
       visible: true,
     };
@@ -102,7 +104,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Categorias de Competências (${categories.length})` : `Skill Groups (${categories.length})`}
+          {tr("builder.forms.skills.title")} ({categories.length})
         </span>
         <button
           type="button"
@@ -110,7 +112,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Nova Categoria" : "+ Add Category"}</span>
+          <span>+ {tr("builder.forms.skills.addCategory")}</span>
         </button>
       </div>
 
@@ -130,7 +132,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                 type="text"
                 value={cat.name?.[lang] || cat.name?.[defaultLang] || ""}
                 onChange={(e) => handleUpdateCategoryName(cat.id, e.target.value)}
-                placeholder={isPt ? "Nome da Categoria (ex: Backend, Design)" : "Category Name (e.g. Backend, Design)"}
+                placeholder={tr("builder.forms.skills.categoryPlaceholder")}
                 className="font-bold text-stone-800 dark:text-stone-100 text-xs border-b border-dashed border-stone-300 dark:border-stone-700 bg-transparent px-1 py-0.5 focus:border-amber-500 focus:outline-hidden flex-1 min-w-0"
               />
 
@@ -138,14 +140,18 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleToggleCategory(cat.id)}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded"
+                  title={cat.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                  aria-label={cat.visible ? tr("a11y.forms.hideCategory") : tr("a11y.forms.showCategory")}
+                  className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   {cat.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDeleteCategory(cat.id)}
-                  className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                  title={tr("common.actions.remove")}
+                  aria-label={tr("a11y.forms.deleteCategory")}
+                  className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -163,7 +169,9 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                   <button
                     type="button"
                     onClick={() => handleRemoveSkillTag(cat.id, sIdx)}
-                    className="text-amber-700 dark:text-amber-400 hover:text-red-600 dark:hover:text-red-400 p-0.5 rounded-full"
+                    title={tr("a11y.forms.deleteSkill", { skill })}
+                    aria-label={tr("a11y.forms.deleteSkill", { skill })}
+                    className="text-amber-700 dark:text-amber-400 hover:text-red-600 dark:hover:text-red-400 p-1 rounded-full min-w-[24px] min-h-[24px] flex items-center justify-center"
                   >
                     <X size={11} />
                   </button>
@@ -172,7 +180,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
 
               {cat.skills.length === 0 && (
                 <span className="text-[11px] text-stone-400 italic">
-                  {isPt ? "Nenhuma competência adicionada" : "No skills added"}
+                  {tr("builder.forms.skills.noSkills")}
                 </span>
               )}
             </div>
@@ -181,7 +189,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
             <div className="flex items-center gap-1.5">
               <input
                 type="text"
-                placeholder={isPt ? "Adicionar competência (ex: Next.js, Figma, SQL)..." : "Add skill (e.g. Next.js, Figma, SQL)..."}
+                placeholder={tr("builder.forms.skills.skillPlaceholder")}
                 value={newSkillInput[cat.id] || ""}
                 onChange={(e) =>
                   setNewSkillInput((prev) => ({ ...prev, [cat.id]: e.target.value }))
@@ -199,7 +207,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                 onClick={() => handleAddSkillTag(cat.id)}
                 className="bg-stone-800 dark:bg-stone-700 hover:bg-stone-900 dark:hover:bg-stone-600 text-white px-2.5 py-1 rounded text-xs font-semibold"
               >
-                {isPt ? "Adicionar" : "Add"}
+                {tr("builder.forms.skills.addSkill")}
               </button>
             </div>
           </div>

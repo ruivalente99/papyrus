@@ -3,6 +3,7 @@
 import React from "react";
 import type { CertificationsSection, CertificationItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Plus, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 export function CertificationsForm({ section, lang, onChange }: Props) {
   const isPt = lang === "pt";
+  const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {
     const newItem: CertificationItem = {
@@ -58,7 +60,7 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
     <div className="space-y-4 text-xs">
       <div className="flex justify-between items-center">
         <span className="font-semibold text-stone-600 dark:text-stone-400">
-          {isPt ? `Certificações & Licenças (${items.length})` : `Certifications & Credentials (${items.length})`}
+          {tr("builder.forms.certifications.title")} ({items.length})
         </span>
         <button
           type="button"
@@ -66,7 +68,7 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
           className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
-          <span>{isPt ? "+ Adicionar Certificação" : "+ Add Certification"}</span>
+          <span>+ {tr("builder.forms.certifications.addCertification")}</span>
         </button>
       </div>
 
@@ -82,15 +84,16 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
           >
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-stone-800">
               <span className="font-bold text-stone-800 dark:text-stone-200 text-xs">
-                {item.name?.[lang] || item.issuer || (isPt ? "Nova Certificação" : "New Certification")}
+                {item.name?.[lang] || item.issuer || tr("builder.forms.certifications.newCertification")}
               </span>
 
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleToggleVisibility(item.id)}
-                  title={item.visible ? (isPt ? "Ocultar do CV" : "Hide from CV") : (isPt ? "Mostrar no CV" : "Show on CV")}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800"
+                  title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
+                  aria-label={item.visible ? tr("a11y.forms.hideCertification") : tr("a11y.forms.showCertification")}
+                  className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1 rounded hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   {item.visible ? <Eye size={13} /> : <EyeOff size={13} />}
                 </button>
@@ -98,8 +101,9 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(item.id)}
-                  title={isPt ? "Remover certificação" : "Remove certification"}
-                  className="text-stone-400 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40"
+                  title={tr("common.actions.remove")}
+                  aria-label={tr("a11y.forms.deleteCertification")}
+                  className="text-stone-500 hover:text-red-600 p-1 rounded hover:bg-red-50 dark:hover:bg-red-950/40 min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -110,11 +114,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Nome da Certificação / Formação" : "Certification / Course Title"} ({lang.toUpperCase()}) *
+                    {tr("builder.forms.certifications.name")} ({lang.toUpperCase()}) *
                   </label>
                   <input
                     type="text"
-                    placeholder={isPt ? "Ex: AWS Certified Solutions Architect" : "e.g. AWS Solutions Architect"}
+                    placeholder={tr("builder.forms.certifications.namePlaceholder")}
                     value={item.name?.[lang] || ""}
                     onChange={(e) =>
                       handleUpdateItem(item.id, {
@@ -127,11 +131,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Entidade Emissora *" : "Issuing Organization *"}
+                    {tr("builder.forms.certifications.issuer")} *
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Amazon Web Services / Harvard"
+                    placeholder={tr("builder.forms.certifications.issuerPlaceholder")}
                     value={item.issuer}
                     onChange={(e) => handleUpdateItem(item.id, { issuer: e.target.value })}
                     className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-amber-500"
@@ -142,7 +146,7 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Data / Ano (Opcional)" : "Date / Year (Optional)"}
+                    {tr("builder.forms.certifications.date")}
                   </label>
                   <input
                     type="text"
@@ -155,7 +159,7 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
 
                 <div className="sm:col-span-2">
                   <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                    {isPt ? "Link / Credencial Online (Opcional)" : "Credential URL / Verification Link (Optional)"}
+                    {tr("builder.forms.certifications.url")}
                   </label>
                   <input
                     type="url"
@@ -169,11 +173,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
 
               <div>
                 <label className="block font-medium text-stone-600 dark:text-stone-400 mb-0.5">
-                  {isPt ? "Notas / Nota Final / Horas (Opcional)" : "Notes / Grade / Hours / Details (Optional)"}
+                  {tr("builder.forms.certifications.notes")}
                 </label>
                 <input
                   type="text"
-                  placeholder={isPt ? "Ex: 120 horas letivas, Nota: 18/20, Com distinção" : "e.g. 120 hours, Grade: 98%, Distinction"}
+                  placeholder={tr("builder.forms.certifications.notesPlaceholder")}
                   value={item.notes?.[lang] || ""}
                   onChange={(e) =>
                     handleUpdateItem(item.id, {

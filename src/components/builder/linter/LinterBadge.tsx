@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { LinterReport } from "@/types/cv";
+import { useTranslation } from "@/hooks/useTranslation";
 import { AlertCircle, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 
 export function LinterBadge({ report, onClick }: Props) {
   const { score, issues } = report;
+  const { t: tr } = useTranslation();
 
   const errorCount = issues.filter((i) => i.level === "error").length;
   const warningCount = issues.filter((i) => i.level === "warning").length;
@@ -30,9 +32,9 @@ export function LinterBadge({ report, onClick }: Props) {
     <button
       onClick={onClick}
       data-testid="linter-badge"
-      aria-label="Quality score"
-      className={`flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border text-[11px] sm:text-xs font-bold shadow-2xs transition-all shrink-0 ${colorClasses}`}
-      title="Auditoria de qualidade e linter dinâmico"
+      aria-label={tr("builder.linter.qualityScore", { score })}
+      className={`flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border text-[11px] sm:text-xs font-bold shadow-2xs transition-all shrink-0 min-w-[24px] min-h-[24px] ${colorClasses}`}
+      title={tr("builder.linter.badgeTitle")}
     >
       <Icon size={12} className="shrink-0" />
       <span className="font-mono">{score}%</span>

@@ -1,0 +1,43 @@
+{
+  "toolbar": {
+    "pageCountSingle": "A4 Page",
+    "pageCountPlural": "A4 Pages",
+    "pageLimitGuide": "A4 Page Limit",
+    "density": "Spacing",
+    "densityCompact": "Compact",
+    "densityNormal": "Balanced",
+    "densitySpacious": "Spacious",
+    "densityTooltip": "Spacing density",
+    "style": "Style",
+    "print": "Print",
+    "pdf": "PDF",
+    "png": "PNG",
+    "exportPdf": "Export PDF",
+    "generatingPdf": "Generating PDF..."
+  },
+  "canvas": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetZoom": "Reset zoom to 100% (current: {{current}})",
+    "fitToScreen": "Fit to screen size",
+    "selectionMode": "Selection mode",
+    "panMode": "Pan mode",
+    "showGrid": "Show alignment grid",
+    "hideGrid": "Hide alignment grid",
+    "resetView": "Reset view"
+  },
+  "colors": {
+    "accentColor": "Accent Color",
+    "colorLabel": "Accent color: {{name}}",
+    "customColor": "Custom color",
+    "custom": "Custom",
+    "pickCustom": "Pick custom accent color"
+  },
+  "settingsSheet": {
+    "title": "Preview & Style",
+    "subtitle": "Customize layout, spacing, and typography",
+    "close": "Close preview settings",
+    "templates": "Layout Template",
+    "appearance": "Visual Theme"
+  }
+}

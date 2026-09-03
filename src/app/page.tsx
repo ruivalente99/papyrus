@@ -11,6 +11,8 @@ import { CommandPalette } from "@/components/builder/CommandPalette";
 import { CodeEditorPane } from "@/components/builder/code/CodeEditorPane";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { tUI } from "@/lib/i18n";
+import { I18nProvider } from "@/context/I18nContext";
+import { translate } from "@/locales";
 import { Pencil, Eye, Loader2, FileText, FileJson, Code2 } from "lucide-react";
 
 export default function BuilderPage() {
@@ -20,7 +22,7 @@ export default function BuilderPage() {
   const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
   const [splitRatio, setSplitRatio] = useState<number>(50);
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
-  const splitContainerRef = useRef<HTMLDivElement>(null);
+  const splitContainerRef = useRef<HTMLElement>(null);
 
   const { toggleTheme } = useTheme();
 
@@ -172,97 +174,101 @@ export default function BuilderPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
-      {/* Top Application Header */}
-      <BuilderHeader
-        cv={cv}
-        activeLang={activeLang}
-        onSwitchLanguage={switchLanguage}
-        onAddLanguage={addLanguage}
-        onLoadPreset={loadPreset}
-        onOpenSetup={openSetup}
-        onImportJson={importJson}
-        onExportJson={exportJson}
-        linterReport={linterReport}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        onUndo={undo}
-        onRedo={redo}
-        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
-        saveStatus={saveStatus}
-      />
+    <I18nProvider lang={activeLang} onLanguageChange={switchLanguage}>
+      <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
+        {/* Top Application Header */}
+        <BuilderHeader
+          cv={cv}
+          activeLang={activeLang}
+          onSwitchLanguage={switchLanguage}
+          onAddLanguage={addLanguage}
+          onLoadPreset={loadPreset}
+          onOpenSetup={openSetup}
+          onImportJson={importJson}
+          onExportJson={exportJson}
+          linterReport={linterReport}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={undo}
+          onRedo={redo}
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+          saveStatus={saveStatus}
+        />
 
-      {/* Split-Pane Main Body */}
-      <div
-        ref={splitContainerRef}
-        style={
-          {
-            "--split-ratio": `${splitRatio}%`,
-            "--split-inv": `${100 - splitRatio}%`,
-          } as React.CSSProperties
-        }
-        className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-x-hidden ${
-          isDraggingSplit ? "select-none cursor-col-resize" : ""
-        }`}
-      >
-        {/* Left Column: Form / Code Editor Pane */}
-        <div
-          className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
-            mobileTab === "edit" ? "block" : "hidden md:block"
+        {/* Split-Pane Main Body */}
+        <main
+          id="main-content"
+          role="main"
+          aria-label={translate("a11y.mainContent", activeLang)}
+          ref={splitContainerRef}
+          style={
+            {
+              "--split-ratio": `${splitRatio}%`,
+              "--split-inv": `${100 - splitRatio}%`,
+            } as React.CSSProperties
+          }
+          className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-x-hidden ${
+            isDraggingSplit ? "select-none cursor-col-resize" : ""
           }`}
         >
-          <div className="max-w-2xl mx-auto space-y-3.5 pb-28 sm:pb-8">
-            {/* Left Column Header Bar: Mode Switcher & Counter */}
-            <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
-                  {tUI("sectionsBuilder", activeLang)}
-                </span>
-                <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full">
-                  {cv.sections.length + 1} {activeLang === "pt" ? "secções" : "sections"}
-                </span>
-              </div>
+          {/* Left Column: Form / Code Editor Pane */}
+          <div
+            className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
+              mobileTab === "edit" ? "block" : "hidden md:block"
+            }`}
+          >
+            <div className="max-w-2xl mx-auto space-y-3.5 pb-28 sm:pb-8">
+              {/* Left Column Header Bar: Mode Switcher & Counter */}
+              <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400">
+                    {translate("builder.sections.title", activeLang)}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2 py-0.5 rounded-full">
+                    {translate("builder.sections.counter", activeLang, { count: cv.sections.length + 1 })}
+                  </span>
+                </div>
 
-              {/* Editor Mode Selector: [ Form ] | [ JSON ] | [ LaTeX ] */}
-              <div className="flex items-center bg-stone-200/80 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-300/70 dark:border-stone-700/70 text-[11px] font-mono">
-                <button
-                  type="button"
-                  onClick={() => setEditorMode("form")}
-                  className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
-                    editorMode === "form"
-                      ? "bg-white dark:bg-stone-700 text-stone-950 dark:text-stone-50 shadow-xs"
-                      : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-200"
-                  }`}
-                >
-                  <FileText size={12} />
-                  <span>{activeLang === "pt" ? "Formulário" : "Form"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditorMode("json")}
-                  className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
-                    editorMode === "json"
-                      ? "bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-400 shadow-xs"
-                      : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-200"
-                  }`}
-                >
-                  <FileJson size={12} />
-                  <span>JSON</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditorMode("latex")}
-                  className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
-                    editorMode === "latex"
-                      ? "bg-white dark:bg-stone-700 text-cyan-700 dark:text-cyan-400 shadow-xs"
-                      : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-200"
-                  }`}
-                >
-                  <Code2 size={12} />
-                  <span>LaTeX</span>
-                </button>
+                {/* Editor Mode Selector: [ Form ] | [ JSON ] | [ LaTeX ] */}
+                <div className="flex items-center bg-stone-200/80 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-300/70 dark:border-stone-700/70 text-[11px] font-mono">
+                  <button
+                    type="button"
+                    onClick={() => setEditorMode("form")}
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
+                      editorMode === "form"
+                        ? "bg-white dark:bg-stone-700 text-stone-950 dark:text-stone-50 shadow-xs"
+                        : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
+                    }`}
+                  >
+                    <FileText size={12} />
+                    <span>{translate("builder.modes.form", activeLang)}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditorMode("json")}
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
+                      editorMode === "json"
+                        ? "bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-400 shadow-xs"
+                        : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
+                    }`}
+                  >
+                    <FileJson size={12} />
+                    <span>{translate("builder.modes.json", activeLang)}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditorMode("latex")}
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
+                      editorMode === "latex"
+                        ? "bg-white dark:bg-stone-700 text-cyan-700 dark:text-cyan-400 shadow-xs"
+                        : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
+                    }`}
+                  >
+                    <Code2 size={12} />
+                    <span>{translate("builder.modes.latex", activeLang)}</span>
+                  </button>
+                </div>
               </div>
-            </div>
 
             {/* Content: Form View or Split Code Editor */}
             {editorMode === "form" ? (
@@ -295,7 +301,7 @@ export default function BuilderPage() {
         <div
           role="separator"
           data-testid="split-resizer"
-          aria-label="Redimensionar editor e pré-visualização"
+          aria-label={translate("a11y.splitResizer", activeLang)}
           aria-orientation="vertical"
           aria-valuenow={Math.round(splitRatio)}
           aria-valuemin={25}
@@ -305,15 +311,11 @@ export default function BuilderPage() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onDoubleClick={handleResetSplit}
-          title={
-            activeLang === "pt"
-              ? "Arrastar para redimensionar (Duplo-clique para 50/50)"
-              : "Drag to resize (Double-click for 50/50)"
-          }
-          className={`hidden md:flex items-center justify-center w-2.5 hover:w-3.5 -mx-1.5 cursor-col-resize z-20 transition-all select-none group relative shrink-0 ${
+          title={translate("a11y.splitResizer", activeLang)}
+          className={`hidden md:flex w-1.5 hover:w-2 -ml-0.5 -mr-0.5 z-20 cursor-col-resize items-center justify-center transition-all group ${
             isDraggingSplit
-              ? "bg-amber-500 w-3.5 cursor-col-resize"
-              : "bg-transparent hover:bg-stone-300 dark:hover:bg-stone-700"
+              ? "bg-amber-500 w-2"
+              : "bg-transparent hover:bg-amber-500/30 active:bg-amber-500"
           }`}
         >
           {/* Grip pill indicator */}
@@ -351,7 +353,7 @@ export default function BuilderPage() {
             mobileTab={mobileTab}
           />
         </div>
-      </div>
+      </main>
 
       {/* Mobile Floating Bottom Bar (iOS Native Style) */}
       <div className="fixed md:hidden bottom-0 left-0 right-0 z-30 pb-safe px-4 py-2.5 bg-white/85 dark:bg-stone-900/85 backdrop-blur-lg border-t border-stone-200/70 dark:border-stone-800/70 shadow-lg flex justify-center">
@@ -425,5 +427,6 @@ export default function BuilderPage() {
         sections={cv.sections}
       />
     </div>
-  );
+  </I18nProvider>
+);
 }

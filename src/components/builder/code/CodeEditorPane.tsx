@@ -168,7 +168,8 @@ export function CodeEditorPane({
             type="button"
             onClick={handleCopy}
             title={isPt ? "Copiar código" : "Copy code"}
-            className="p-1.5 rounded-md bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
+            aria-label={isPt ? "Copiar código" : "Copy code"}
+            className="p-1.5 rounded-md bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
           >
             {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
           </button>
@@ -177,7 +178,8 @@ export function CodeEditorPane({
             type="button"
             onClick={handleDownload}
             title={isPt ? "Descarregar ficheiro" : "Download file"}
-            className="p-1.5 rounded-md bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
+            aria-label={isPt ? "Descarregar ficheiro" : "Download file"}
+            className="p-1.5 rounded-md bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
           >
             <Download size={13} />
           </button>

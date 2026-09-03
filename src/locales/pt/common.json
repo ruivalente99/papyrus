@@ -1,0 +1,71 @@
+{
+  "brand": "papyrus",
+  "tagline": "Motor Dinâmico e Multilíngue de Criação de Currículos",
+  "architecturaVitae": "architectura vitae",
+  "actions": {
+    "save": "Guardar",
+    "saved": "Guardado",
+    "saving": "A guardar...",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "remove": "Remover",
+    "edit": "Editar",
+    "close": "Fechar",
+    "add": "Adicionar",
+    "undo": "Desfazer",
+    "redo": "Refazer",
+    "undoWithShortcut": "Desfazer (⌘Z / Ctrl+Z)",
+    "redoWithShortcut": "Refazer (⌘⇧Z / Ctrl+Y)",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "download": "Descarregar",
+    "import": "Importar",
+    "export": "Exportar",
+    "clear": "Limpar",
+    "search": "Pesquisar",
+    "reset": "Repor",
+    "done": "Concluído",
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "expandAll": "Expandir Tudo",
+    "collapseAll": "Recolher Tudo",
+    "moveUp": "Subir",
+    "moveDown": "Descer",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "hideFromCV": "Ocultar do CV",
+    "showOnCV": "Mostrar no CV"
+  },
+  "theme": {
+    "title": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema",
+    "select": "Selecionar tema",
+    "current": "Tema: {{label}}"
+  },
+  "languages": {
+    "title": "Idiomas",
+    "code": "Código",
+    "name": "Nome do Idioma",
+    "add": "Adicionar idioma",
+    "addNewToCV": "Adicionar novo idioma ao CV",
+    "codePlaceholder": "ex: FR",
+    "namePlaceholder": "ex: Francês",
+    "confirmNew": "Confirmar novo idioma",
+    "currentEditing": "A editar em: {{lang}}"
+  },
+  "shortcuts": {
+    "commandPalette": "Paleta de Comandos (⌘K)",
+    "esc": "Esc"
+  },
+  "status": {
+    "loading": "A carregar...",
+    "error": "Erro",
+    "success": "Sucesso"
+  },
+  "misc": {
+    "present": "Atual"
+  }
+}

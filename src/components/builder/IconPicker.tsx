@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { ICON_OPTIONS, IconOption, getIconComponent } from "@/lib/iconMap";
+import { useTranslation } from "@/hooks/useTranslation";
 import { ChevronDown, Search, X } from "lucide-react";
 
 interface Props {
@@ -15,6 +16,7 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const popoverRef = useRef<HTMLDivElement>(null);
+  const { t: tr } = useTranslation(lang as any);
 
   const CurrentIcon = getIconComponent(value);
   const currentOption = ICON_OPTIONS.find((o) => o.id === value);
@@ -42,12 +44,12 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
   });
 
   const categories = [
-    { id: "all", label: lang === "pt" ? "Todos" : "All" },
+    { id: "all", label: tr("builder.iconPicker.all") },
     { id: "dev", label: "Dev & Code" },
-    { id: "contact", label: lang === "pt" ? "Contacto" : "Contact" },
+    { id: "contact", label: tr("builder.iconPicker.contact") },
     { id: "social", label: "Social" },
     { id: "design", label: "Design" },
-    { id: "other", label: lang === "pt" ? "Outros" : "Other" },
+    { id: "other", label: tr("builder.iconPicker.other") },
   ];
 
   return (
@@ -56,8 +58,10 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold shadow-2xs transition-all active:scale-98"
-        title="Escolher Ícone / Pick Icon"
+        aria-label={tr("builder.iconPicker.sectionIcon", { name: currentOption?.name || value || "Icon" })}
+        aria-expanded={isOpen}
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold shadow-2xs transition-all active:scale-98 min-h-[28px]"
+        title={tr("builder.iconPicker.title")}
       >
         <CurrentIcon size={14} className="text-amber-700 dark:text-amber-400 shrink-0" />
         <span className="truncate max-w-[85px]">{currentOption?.name || value || "Icon"}</span>
@@ -74,7 +78,8 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={lang === "pt" ? "Pesquisar ícones..." : "Search icons..."}
+              placeholder={tr("builder.iconPicker.search")}
+              aria-label={tr("builder.iconPicker.search")}
               className="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
               autoFocus
             />
@@ -82,7 +87,9 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-2 top-2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"
+                title={tr("builder.iconPicker.clear")}
+                aria-label={tr("builder.iconPicker.clear")}
+                className="absolute right-1.5 top-1.5 text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 min-w-[24px] min-h-[24px] flex items-center justify-center rounded-full"
               >
                 <X size={13} />
               </button>
@@ -143,7 +150,7 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
 
           {filteredIcons.length === 0 && (
             <p className="text-center py-4 text-xs text-stone-400">
-              {lang === "pt" ? "Nenhum ícone encontrado" : "No icons found"}
+              {tr("builder.iconPicker.noIcons")}
             </p>
           )}
         </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useTheme, ThemeMode } from "@/context/ThemeContext";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Sun, Moon, Laptop, ChevronDown } from "lucide-react";
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 export function ThemeSelector({ lang = "en" }: Props) {
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const { t: tr } = useTranslation(lang as any);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -26,20 +28,23 @@ export function ThemeSelector({ lang = "en" }: Props) {
   }, [isOpen]);
 
   const options: Array<{ id: ThemeMode; label: string; icon: any }> = [
-    { id: "light", label: lang === "pt" ? "Modo Claro" : "Light Mode", icon: Sun },
-    { id: "dark", label: lang === "pt" ? "Modo Escuro" : "Dark Mode", icon: Moon },
-    { id: "system", label: lang === "pt" ? "Sistema" : "System", icon: Laptop },
+    { id: "light", label: tr("common.theme.light"), icon: Sun },
+    { id: "dark", label: tr("common.theme.dark"), icon: Moon },
+    { id: "system", label: tr("common.theme.system"), icon: Laptop },
   ];
 
   const CurrentIcon = resolvedTheme === "dark" ? Moon : Sun;
+  const currentLabel = options.find((o) => o.id === theme)?.label || theme;
 
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 sm:gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold shadow-2xs transition-all shrink-0"
-        title="Tema / Theme"
+        aria-label={tr("common.theme.current", { label: currentLabel })}
+        aria-expanded={isOpen}
+        className="flex items-center gap-1 sm:gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold shadow-2xs transition-all shrink-0 min-w-[28px] min-h-[28px] justify-center"
+        title={tr("common.theme.title")}
       >
         <CurrentIcon size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
         <span className="hidden sm:inline capitalize font-mono text-[11.5px]">

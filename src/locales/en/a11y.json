@@ -1,0 +1,68 @@
+{
+  "mainContent": "CV Editor and Preview",
+  "splitResizer": "Adjust split between editor and preview",
+  "helpInfo": "Help information: {{content}}",
+  "sectionCard": {
+    "moveUp": "Move section {{name}} up",
+    "moveDown": "Move section {{name}} down",
+    "hide": "Hide section {{name}} from CV",
+    "show": "Show section {{name}} on CV",
+    "delete": "Delete section {{name}}",
+    "collapse": "Collapse section {{name}}",
+    "expand": "Expand section {{name}}"
+  },
+  "sectionList": {
+    "scrollLeft": "Scroll sections left",
+    "scrollRight": "Scroll sections right",
+    "wrapCarousel": "Switch to single row carousel",
+    "wrapAll": "Wrap all sections",
+    "collapseAll": "Collapse all sections",
+    "expandAll": "Expand all sections"
+  },
+  "actions": {
+    "undo": "Undo changes",
+    "redo": "Redo changes",
+    "commandPalette": "Open Command Palette (⌘K)",
+    "texManagement": "TeX Management",
+    "importJson": "Import CV from JSON backup",
+    "exportJson": "Export CV to JSON backup"
+  },
+  "forms": {
+    "deleteItem": "Remove item",
+    "hideItem": "Hide item from CV",
+    "showItem": "Show item on CV",
+    "deleteRole": "Remove role",
+    "hideRole": "Hide role from CV",
+    "showRole": "Show role on CV",
+    "deleteBullet": "Delete bullet point",
+    "deleteEducation": "Remove education",
+    "hideEducation": "Hide education from CV",
+    "showEducation": "Show education on CV",
+    "deleteCategory": "Remove category",
+    "hideCategory": "Hide category from CV",
+    "showCategory": "Show category on CV",
+    "deleteSkill": "Remove skill {{name}}",
+    "deleteLanguage": "Remove language",
+    "hideLanguage": "Hide language from CV",
+    "showLanguage": "Show language on CV",
+    "cefrSelect": "Official CEFR language proficiency level for {{name}}",
+    "photoShapeSelect": "Select photo crop shape",
+    "socialLinkInput": "{{network}} profile URL",
+    "deleteSocialLink": "Remove social link",
+    "deleteCertification": "Remove certification",
+    "hideCertification": "Hide certification from CV",
+    "showCertification": "Show certification on CV",
+    "deleteHobby": "Remove interest",
+    "hideHobby": "Hide interest from CV",
+    "showHobby": "Show interest on CV"
+  },
+  "modals": {
+    "closeModal": "Close modal",
+    "closeLatex": "Close TeX modal"
+  },
+  "templates": {
+    "clickToEdit": "Click to edit {{name}}",
+    "clickToEditPersonal": "Click to edit personal info",
+    "clickToEditProfile": "Click to edit profile"
+  }
+}

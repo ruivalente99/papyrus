@@ -5,6 +5,7 @@ import type { CVDocument, SupportedLanguage, TemplateId } from "@/types/cv";
 import { CVPage } from "./CVPage";
 import { exportToPdf, exportToPng, A4_H_PX, A4_W_PX } from "@/lib/pdfExport";
 import { tUI } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   Download,
   Image as ImageIcon,
@@ -52,6 +53,7 @@ export function CVPreviewContainer({
   const [pageCount, setPageCount] = useState<number>(1);
   const pageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const { t: tr } = useTranslation(lang);
 
   const dragStartRef = useRef<{ x: number; y: number; panX: number; panY: number }>({ x: 0, y: 0, panX: 0, panY: 0 });
   const dragMovedRef = useRef<number>(0);
@@ -377,11 +379,12 @@ export function CVPreviewContainer({
               {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
             </span>
 
-            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-0.5 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs shrink-0">
+            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-0.5 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 shadow-2xs shrink-0">
               <button
                 onClick={() => handleZoomChange(-0.1)}
-                title={tUI("zoomOut", lang)}
-                className="p-1 hover:text-stone-900 dark:hover:text-white"
+                title={tr("preview.canvas.zoomOut")}
+                aria-label={tr("preview.canvas.zoomOut")}
+                className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
               >
                 <ZoomOut size={12} />
               </button>
@@ -390,18 +393,20 @@ export function CVPreviewContainer({
               </span>
               <button
                 onClick={() => handleZoomChange(0.1)}
-                title={tUI("zoomIn", lang)}
-                className="p-1 hover:text-stone-900 dark:hover:text-white"
+                title={tr("preview.canvas.zoomIn")}
+                aria-label={tr("preview.canvas.zoomIn")}
+                className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
               >
                 <ZoomIn size={12} />
               </button>
               <button
                 onClick={handleToggleAutoFit}
-                title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
-                className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1 transition-colors ${
+                title={tr("preview.canvas.fitToScreen")}
+                aria-label={tr("preview.canvas.fitToScreen")}
+                className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                   isAutoFit
                     ? "text-amber-700 dark:text-amber-400 font-bold"
-                    : "hover:text-stone-900 dark:hover:text-white text-stone-400"
+                    : "hover:text-stone-900 dark:hover:text-white text-stone-600 dark:text-stone-400"
                 }`}
               >
                 <Maximize2 size={11} />
@@ -525,10 +530,11 @@ export function CVPreviewContainer({
                     key={c.hex}
                     onClick={() => onUpdateTheme({ primaryColor: c.hex })}
                     title={c.name}
-                    className={`w-4.5 h-4.5 rounded-full transition-transform ${
+                    aria-label={tr("preview.colors.colorLabel", { name: c.name })}
+                    className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full transition-transform flex items-center justify-center ${
                       cv.theme.primaryColor?.toLowerCase() === c.hex.toLowerCase()
-                        ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
-                        : "hover:scale-110 opacity-85 hover:opacity-100"
+                        ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
+                        : "hover:scale-105 opacity-85 hover:opacity-100"
                     }`}
                     style={{ backgroundColor: c.hex }}
                   />
@@ -536,11 +542,11 @@ export function CVPreviewContainer({
 
                 {/* Custom Color "Outra" Picker */}
                 <label
-                  title={lang === "pt" ? "Outra cor personalizada" : "Custom color"}
-                  className={`w-4.5 h-4.5 rounded-full cursor-pointer relative flex items-center justify-center transition-transform ${
+                  title={tr("preview.colors.customColor")}
+                  className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full cursor-pointer relative flex items-center justify-center transition-transform ${
                     !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
-                      ? "scale-125 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
-                      : "hover:scale-110 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-stone-600 bg-stone-100 dark:bg-stone-800"
+                      ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
+                      : "hover:scale-105 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-stone-600 bg-stone-100 dark:bg-stone-800"
                   }`}
                   style={{
                     backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
@@ -550,12 +556,13 @@ export function CVPreviewContainer({
                 >
                   <input
                     type="color"
+                    aria-label={tr("preview.colors.pickCustom")}
                     value={cv.theme.primaryColor || "#005555"}
                     onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
                     className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
                   />
                   {ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase()) && (
-                    <Pipette size={9} className="text-stone-500 dark:text-stone-400 pointer-events-none" />
+                    <Pipette size={11} className="text-stone-500 dark:text-stone-400 pointer-events-none" />
                   )}
                 </label>
               </div>
@@ -567,14 +574,15 @@ export function CVPreviewContainer({
             {/* Left: Page count badge & Zoom controls with Auto-Fit & Grid */}
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
-                {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
+                {pageCount} {pageCount === 1 ? tr("preview.toolbar.pageCountSingle") : tr("preview.toolbar.pageCountPlural")}
               </span>
 
-              <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 shadow-2xs shrink-0">
+              <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 shadow-2xs shrink-0">
                 <button
                   onClick={() => handleZoomChange(-0.1)}
-                  title={tUI("zoomOut", lang)}
-                  className="p-1 hover:text-stone-900 dark:hover:text-white"
+                  title={tr("preview.canvas.zoomOut")}
+                  aria-label={tr("preview.canvas.zoomOut")}
+                  className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <ZoomOut size={13} />
                 </button>
@@ -583,29 +591,32 @@ export function CVPreviewContainer({
                 </span>
                 <button
                   onClick={() => handleZoomChange(0.1)}
-                  title={tUI("zoomIn", lang)}
-                  className="p-1 hover:text-stone-900 dark:hover:text-white"
+                  title={tr("preview.canvas.zoomIn")}
+                  aria-label={tr("preview.canvas.zoomIn")}
+                  className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <ZoomIn size={13} />
                 </button>
                 <button
                   onClick={handleToggleAutoFit}
-                  title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
-                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors ${
+                  title={tr("preview.canvas.fitToScreen")}
+                  aria-label={tr("preview.canvas.fitToScreen")}
+                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                     isAutoFit
                       ? "text-amber-700 dark:text-amber-400 font-bold"
-                      : "hover:text-stone-900 dark:hover:text-white text-stone-400"
+                      : "hover:text-stone-900 dark:hover:text-white text-stone-600 dark:text-stone-400"
                   }`}
                 >
                   <Maximize2 size={12} />
                 </button>
                 <button
                   onClick={toggleGrid}
-                  title={lang === "pt" ? (showGrid ? "Ocultar grelha de alinhamento" : "Mostrar grelha de alinhamento") : (showGrid ? "Hide alignment grid" : "Show alignment grid")}
-                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors ${
+                  title={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
+                  aria-label={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
+                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                     showGrid
                       ? "text-amber-700 dark:text-amber-400 font-bold"
-                      : "hover:text-stone-900 dark:hover:text-white text-stone-400"
+                      : "hover:text-stone-900 dark:hover:text-white text-stone-600 dark:text-stone-400"
                   }`}
                 >
                   <Grid size={12} />
@@ -738,22 +749,24 @@ export function CVPreviewContainer({
           <div className="hidden sm:flex items-center pr-1 border-r border-stone-200 dark:border-stone-700">
             <button
               onClick={() => handleSetToolMode("pointer")}
-              title={lang === "pt" ? "Modo Seleção / Interagir" : "Selection mode"}
-              className={`p-1.5 rounded-full transition-all ${
+              title={tr("preview.canvas.selectionMode")}
+              aria-label={tr("preview.canvas.selectionMode")}
+              className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
                 toolMode === "pointer"
                   ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
-                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
               }`}
             >
               <MousePointer size={13} />
             </button>
             <button
               onClick={() => handleSetToolMode("hand")}
-              title={lang === "pt" ? "Modo Mão / Arrastar Canvas (Miro)" : "Hand tool / Pan canvas (Miro)"}
-              className={`p-1.5 rounded-full transition-all ${
+              title={tr("preview.canvas.panMode")}
+              aria-label={tr("preview.canvas.panMode")}
+              className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
                 toolMode === "hand"
                   ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
-                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
               }`}
             >
               <Hand size={13} />
@@ -763,11 +776,12 @@ export function CVPreviewContainer({
           {/* Alignment Grid Toggle Button */}
           <button
             onClick={toggleGrid}
-            title={lang === "pt" ? (showGrid ? "Ocultar grelha de alinhamento" : "Mostrar grelha de alinhamento") : (showGrid ? "Hide alignment grid" : "Show alignment grid")}
-            className={`p-1.5 rounded-full transition-colors ${
+            title={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
+            aria-label={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
+            className={`p-1.5 rounded-full transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
               showGrid
                 ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold"
-                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
             }`}
           >
             <Grid size={13} />
@@ -776,8 +790,9 @@ export function CVPreviewContainer({
           {/* Zoom Out */}
           <button
             onClick={() => handleZoomChange(-0.1)}
-            title={tUI("zoomOut", lang)}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={tr("preview.canvas.zoomOut")}
+            aria-label={tr("preview.canvas.zoomOut")}
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-stone-400"
           >
             <ZoomOut size={13} />
           </button>
@@ -788,8 +803,9 @@ export function CVPreviewContainer({
               setIsAutoFit(false);
               setZoom(1.0);
             }}
-            title={lang === "pt" ? "Zoom a 100%" : "Zoom 100%"}
-            className="px-2 py-0.5 text-[11px] font-mono font-bold hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors min-w-[42px] text-center"
+            title="100%"
+            aria-label={tr("preview.canvas.resetZoom", { current: `${Math.round(zoom * 100)}%` })}
+            className="px-2 py-0.5 text-[11px] font-mono font-bold hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors min-w-[42px] min-h-[28px] text-center text-stone-700 dark:text-stone-300 flex items-center justify-center"
           >
             {Math.round(zoom * 100)}%
           </button>
@@ -797,8 +813,9 @@ export function CVPreviewContainer({
           {/* Zoom In */}
           <button
             onClick={() => handleZoomChange(0.1)}
-            title={tUI("zoomIn", lang)}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={tr("preview.canvas.zoomIn")}
+            aria-label={tr("preview.canvas.zoomIn")}
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-stone-400"
           >
             <ZoomIn size={13} />
           </button>
@@ -806,11 +823,12 @@ export function CVPreviewContainer({
           {/* Auto-Fit */}
           <button
             onClick={handleToggleAutoFit}
-            title={lang === "pt" ? "Ajustar ao tamanho do ecrã" : "Fit to screen size"}
-            className={`p-1.5 rounded-full transition-colors ${
+            title={tr("preview.canvas.fitToScreen")}
+            aria-label={tr("preview.canvas.fitToScreen")}
+            className={`p-1.5 rounded-full transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
               isAutoFit
                 ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
-                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
+                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
             }`}
           >
             <Maximize2 size={13} />
@@ -819,8 +837,9 @@ export function CVPreviewContainer({
           {/* Reset Viewport Position */}
           <button
             onClick={handleResetCanvas}
-            title={lang === "pt" ? "Repor posição original" : "Reset view"}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+            title={tr("preview.canvas.resetView")}
+            aria-label={tr("preview.canvas.resetView")}
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <RotateCcw size={12} />
           </button>

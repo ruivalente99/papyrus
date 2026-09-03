@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslation } from "@/hooks/useTranslation";
 import { HelpCircle } from "lucide-react";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 
 export function HelpTooltip({ content, className = "", side = "top" }: Props) {
   const [isVisible, setIsVisible] = useState(false);
+  const { t: tr } = useTranslation();
 
   const sideClasses = {
     top: "bottom-full mb-1.5 left-1/2 -translate-x-1/2",
@@ -31,8 +33,8 @@ export function HelpTooltip({ content, className = "", side = "top" }: Props) {
           e.preventDefault();
           setIsVisible((v) => !v);
         }}
-        aria-label="Help information"
-        className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors p-0.5 rounded-full focus:outline-hidden"
+        aria-label={tr("a11y.helpInfo", { content })}
+        className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 transition-colors p-1.5 min-w-[24px] min-h-[24px] flex items-center justify-center rounded-full focus:outline-hidden"
       >
         <HelpCircle size={13} />
       </button>

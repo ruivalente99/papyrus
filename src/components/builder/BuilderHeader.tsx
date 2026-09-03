@@ -11,6 +11,7 @@ import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { PRESET_SEEDS } from "@/data/seeds";
 import { tUI } from "@/lib/i18n";
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   FileUp,
   FileDown,
@@ -63,6 +64,7 @@ export function BuilderHeader({
   const [showLinterModal, setShowLinterModal] = useState(false);
   const [showLatexModal, setShowLatexModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t: tr } = useTranslation(activeLang);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -103,8 +105,9 @@ export function BuilderHeader({
               type="button"
               onClick={onUndo}
               disabled={!canUndo}
-              title={activeLang === "pt" ? "Desfazer (⌘Z / Ctrl+Z)" : "Undo (⌘Z / Ctrl+Z)"}
-              className="p-1 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              title={tr("common.actions.undoWithShortcut")}
+              aria-label={tr("a11y.actions.undo")}
+              className="p-1.5 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
             >
               <Undo2 size={13} />
             </button>
@@ -112,8 +115,9 @@ export function BuilderHeader({
               type="button"
               onClick={onRedo}
               disabled={!canRedo}
-              title={activeLang === "pt" ? "Refazer (⌘⇧Z / Ctrl+Y)" : "Redo (⌘⇧Z / Ctrl+Y)"}
-              className="p-1 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              title={tr("common.actions.redoWithShortcut")}
+              aria-label={tr("a11y.actions.redo")}
+              className="p-1.5 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
             >
               <Redo2 size={13} />
             </button>
@@ -125,8 +129,9 @@ export function BuilderHeader({
           <button
             type="button"
             onClick={onOpenCommandPalette}
-            title={activeLang === "pt" ? "Abrir Paleta de Comandos (⌘K)" : "Open Command Palette (⌘K)"}
-            className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono font-bold rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 border border-stone-200 dark:border-stone-700 hover:border-amber-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors shadow-2xs active:scale-95"
+            title={tr("common.shortcuts.commandPalette")}
+            aria-label={tr("a11y.actions.commandPalette")}
+            className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono font-bold rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border border-stone-200 dark:border-stone-700 hover:border-amber-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors shadow-2xs active:scale-95"
           >
             <Command size={11} className="text-amber-600 dark:text-amber-400" />
             <span>⌘K</span>
@@ -285,8 +290,9 @@ export function BuilderHeader({
         {/* TeX Modal Button (Desktop / Tablet) */}
         <button
           onClick={() => setShowLatexModal(true)}
-          title="TeX Management"
-          className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-700/60 px-3 py-1.5 rounded-full transition-all shadow-2xs"
+          title={tr("a11y.actions.texManagement")}
+          aria-label={tr("a11y.actions.texManagement")}
+          className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-700/60 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px]"
         >
           <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
           <span className="hidden lg:inline">TeX</span>
@@ -295,8 +301,9 @@ export function BuilderHeader({
         {/* Import JSON (Desktop / Tablet) */}
         <button
           onClick={() => fileInputRef.current?.click()}
-          title={tUI("importAction", activeLang)}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
+          title={tr("common.actions.import")}
+          aria-label={tr("a11y.actions.importJson")}
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
         >
           <FileUp size={13} />
         </button>
@@ -311,8 +318,9 @@ export function BuilderHeader({
         {/* Export JSON (Desktop / Tablet) */}
         <button
           onClick={onExportJson}
-          title={tUI("jsonBackup", activeLang)}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs"
+          title={tr("common.actions.export")}
+          aria-label={tr("a11y.actions.exportJson")}
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
         >
           <FileDown size={13} />
         </button>
