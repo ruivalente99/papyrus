@@ -62,7 +62,46 @@ export function LanguageSwitcher({
     return () => document.removeEventListener("mousedown", handleOutside);
   }, [isOpen]);
 
-  const activeMeta = GLOBAL_LANGUAGES.find((l) => l.code === activeLang) || {
+  const allLanguages = useMemo(() => {
+    const list: LanguageMeta[] = [];
+    const seenCodes = new Set<string>();
+
+    // 1. First, include all availableLanguages that this CV document currently has
+    availableLanguages.forEach((al) => {
+      const globalMatch = GLOBAL_LANGUAGES.find(
+        (gl) => gl.code.toLowerCase() === al.code.toLowerCase()
+      );
+      if (globalMatch) {
+        list.push({
+          ...globalMatch,
+          namePt: globalMatch.namePt || al.label,
+          nameEn: globalMatch.nameEn || al.label,
+          isAvailable: true,
+        });
+      } else {
+        list.push({
+          code: al.code.toLowerCase(),
+          namePt: al.label,
+          nameEn: al.label,
+          flag: "🌐",
+          isAvailable: true,
+        });
+      }
+      seenCodes.add(al.code.toLowerCase());
+    });
+
+    // 2. Append the remaining catalog languages
+    GLOBAL_LANGUAGES.forEach((gl) => {
+      if (!seenCodes.has(gl.code.toLowerCase())) {
+        list.push(gl);
+        seenCodes.add(gl.code.toLowerCase());
+      }
+    });
+
+    return list;
+  }, [availableLanguages]);
+
+  const activeMeta = allLanguages.find((l) => l.code === activeLang) || {
     code: activeLang,
     flag: "🌐",
     namePt: activeLang.toUpperCase(),
@@ -72,14 +111,14 @@ export function LanguageSwitcher({
 
   const filteredLanguages = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (!q) return GLOBAL_LANGUAGES;
-    return GLOBAL_LANGUAGES.filter(
+    if (!q) return allLanguages;
+    return allLanguages.filter(
       (l) =>
         l.namePt.toLowerCase().includes(q) ||
         l.nameEn.toLowerCase().includes(q) ||
         l.code.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, allLanguages]);
 
   const handleAddCustom = (e: React.FormEvent) => {
     e.preventDefault();

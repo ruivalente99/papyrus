@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from "react";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
 
 export type ToastType = "success" | "error" | "info";
@@ -51,10 +51,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const confirmAction = useCallback((options: ConfirmDialogOptions): Promise<boolean> => {
     return new Promise((resolve) => {
-      setConfirmState({
-        isOpen: true,
-        options,
-        resolve,
+      setConfirmState((prev) => {
+        if (prev) {
+          prev.resolve(false);
+        }
+        return {
+          isOpen: true,
+          options,
+          resolve,
+        };
       });
     });
   }, []);
@@ -72,6 +77,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       setConfirmState(null);
     }
   };
+
+  useEffect(() => {
+    if (!confirmState) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCancel();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [confirmState]);
 
   return (
     <ToastContext.Provider value={{ showToast, confirmAction }}>
@@ -126,9 +142,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         <div
           role="dialog"
           aria-modal="true"
+          onClick={handleCancel}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
         >
-          <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-5 max-w-md w-full space-y-4 animate-in zoom-in-95 duration-150">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-5 max-w-md w-full space-y-4 animate-in zoom-in-95 duration-150"
+          >
             {confirmState.options.title && (
               <h3 className="text-sm font-bold text-stone-900 dark:text-[#f0f3f6]">
                 {confirmState.options.title}

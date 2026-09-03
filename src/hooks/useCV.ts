@@ -43,6 +43,9 @@ export function useCV() {
   const cvRef = useRef(cv);
   cvRef.current = cv;
 
+  const activeLangRef = useRef(activeLang);
+  activeLangRef.current = activeLang;
+
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const burstBaseStateRef = useRef<CVDocument | null>(null);
   const isUndoRedoActionRef = useRef(false);
@@ -54,11 +57,14 @@ export function useCV() {
     });
     setFuture([]);
 
+    const fallbackLabel =
+      activeLangRef.current === "pt" ? "Edição no documento" : "Document edit";
+
     setHistory((prev) => {
       const entry: HistoryEntry = {
         id: `hist-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         timestamp: Date.now(),
-        label: actionLabel || "Edição no documento",
+        label: actionLabel || fallbackLabel,
         snapshot,
       };
       return [entry, ...prev.slice(0, 4)];
@@ -165,10 +171,20 @@ export function useCV() {
     const target = history.find((h) => h.id === id);
     if (!target) return;
     if (cvRef.current) {
-      commitSnapshot(cvRef.current, "Antes de restaurar histórico");
+      const preLabel =
+        activeLangRef.current === "pt"
+          ? "Antes de restaurar versão"
+          : "Before restoring version";
+      commitSnapshot(cvRef.current, preLabel);
     }
     isUndoRedoActionRef.current = true;
     setCvState(target.snapshot);
+
+    const targetLang = (target.snapshot.currentLanguage || target.snapshot.defaultLanguage) as SupportedLanguage;
+    if (targetLang) {
+      setActiveLang(targetLang);
+    }
+
     setTimeout(() => {
       isUndoRedoActionRef.current = false;
     }, 0);

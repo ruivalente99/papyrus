@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { RotateCw, ZoomIn, ZoomOut, Check, X, Move } from "lucide-react";
-import { compressImageFile } from "@/lib/imageCompressor";
 
 interface Props {
   isOpen: boolean;
@@ -44,6 +43,17 @@ export function ImageCropModal({
       setIsProcessing(false);
     }
   }, [isOpen, imageSrc]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

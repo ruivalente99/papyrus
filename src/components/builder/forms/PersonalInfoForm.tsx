@@ -7,7 +7,6 @@ import { IconPicker } from "../IconPicker";
 import { ICON_OPTIONS } from "@/lib/iconMap";
 import { User, Plus, Trash2, Dices, Sparkles, Camera, Upload, RotateCcw } from "lucide-react";
 import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
-import { compressImageFile } from "@/lib/imageCompressor";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ImageCropModal } from "./ImageCropModal";
 
@@ -54,21 +53,12 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
     }
   };
 
-  const handleCropConfirm = async (croppedDataUrl: string) => {
-    try {
-      // Compress cropped image for storage optimization
-      onChange({
-        photoUrl: croppedDataUrl,
-        isCustomPhoto: true,
-        showPhoto: true,
-      });
-    } catch (err) {
-      onChange({
-        photoUrl: croppedDataUrl,
-        isCustomPhoto: true,
-        showPhoto: true,
-      });
-    }
+  const handleCropConfirm = (croppedDataUrl: string) => {
+    onChange({
+      photoUrl: croppedDataUrl,
+      isCustomPhoto: true,
+      showPhoto: true,
+    });
   };
 
   const handleRerollDylanAvatar = (e: React.MouseEvent) => {
