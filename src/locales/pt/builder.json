@@ -185,10 +185,17 @@
     },
     "commandPalette": {
       "title": "Paleta de Comandos",
-      "placeholder": "Digita um comando, modelo ou secção...",
+      "placeholder": "Pesquisa comando, modelo, secção ou ferramenta...",
       "searchAria": "Pesquisar comandos ou ações",
       "clearAria": "Limpar pesquisa",
-      "noResults": "Nenhum resultado encontrado."
+      "noResults": "Nenhum comando encontrado.",
+      "categories": {
+        "all": "Todos",
+        "templates": "Modelos & Estilo",
+        "sections": "Secções do CV",
+        "actions": "Ações & Exportação",
+        "preferences": "Preferências"
+      }
     },
     "iconPicker": {
       "title": "Escolher Ícone",

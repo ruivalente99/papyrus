@@ -355,14 +355,15 @@ export default function BuilderPage() {
         </div>
       </main>
 
-      {/* Mobile Floating Bottom Bar (iOS Native Style) */}
-      <div className="fixed md:hidden bottom-0 left-0 right-0 z-30 pb-safe px-4 py-2.5 bg-white/85 dark:bg-[#161b22]/95 backdrop-blur-lg border-t border-stone-200/70 dark:border-[#30363d] shadow-lg flex justify-center">
-        <div className="flex bg-stone-100 dark:bg-[#0d1117] p-1 rounded-full border border-stone-200 dark:border-[#363d47] w-full max-w-xs shadow-2xs">
+      {/* Mobile Floating Bottom Bar - Centered Floating Capsule */}
+      <div className="fixed md:hidden bottom-3 left-0 right-0 z-30 flex items-center justify-center pointer-events-none px-4 pb-safe">
+        <div className="pointer-events-auto flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl p-1 rounded-full border border-stone-200/90 dark:border-[#363d47] shadow-xl w-[270px] max-w-[90vw]">
           <button
+            type="button"
             onClick={() => setMobileTab("edit")}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+            className={`w-1/2 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
               mobileTab === "edit"
-                ? "bg-white dark:bg-[#21262d] dark:border dark:border-[#484f58] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                ? "bg-stone-100 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200 dark:border-[#484f58]"
                 : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
@@ -370,10 +371,11 @@ export default function BuilderPage() {
             <span>{tUI("editTab", activeLang)}</span>
           </button>
           <button
+            type="button"
             onClick={() => setMobileTab("preview")}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+            className={`w-1/2 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
               mobileTab === "preview"
-                ? "bg-white dark:bg-[#21262d] dark:border dark:border-[#484f58] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                ? "bg-stone-100 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200 dark:border-[#484f58]"
                 : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >

@@ -185,10 +185,17 @@
     },
     "commandPalette": {
       "title": "Command Palette",
-      "placeholder": "Type a command, template, or section...",
+      "placeholder": "Search command, template, section, or tool...",
       "searchAria": "Search commands or actions",
       "clearAria": "Clear search",
-      "noResults": "No results found."
+      "noResults": "No matching commands found.",
+      "categories": {
+        "all": "All",
+        "templates": "Templates & Style",
+        "sections": "CV Sections",
+        "actions": "Actions & Export",
+        "preferences": "Preferences"
+      }
     },
     "iconPicker": {
       "title": "Pick Icon",

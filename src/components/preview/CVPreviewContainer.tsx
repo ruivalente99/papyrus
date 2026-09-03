@@ -19,6 +19,8 @@ import {
   RotateCcw,
   Grid,
   Pipette,
+  GripVertical,
+  Move,
 } from "lucide-react";
 import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 
@@ -51,6 +53,8 @@ export function CVPreviewContainer({
   const [docHeight, setDocHeight] = useState<number>(A4_H_PX);
   const [isExporting, setIsExporting] = useState<string | null>(null);
   const [pageCount, setPageCount] = useState<number>(1);
+  const [dockEdge, setDockEdge] = useState<"bottom" | "top" | "left" | "right">("bottom");
+  const [isDraggingToolbar, setIsDraggingToolbar] = useState<boolean>(false);
   const pageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { t: tr } = useTranslation(lang);
@@ -59,6 +63,51 @@ export function CVPreviewContainer({
   const dragMovedRef = useRef<number>(0);
   const pinchStartRef = useRef<{ distance: number; initialZoom: number } | null>(null);
   const lastTapRef = useRef<number>(0);
+
+  const cycleDockEdge = () => {
+    setDockEdge((prev) => {
+      if (prev === "bottom") return "right";
+      if (prev === "right") return "top";
+      if (prev === "top") return "left";
+      return "bottom";
+    });
+  };
+
+  const handleToolbarGripPointerDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setIsDraggingToolbar(true);
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
+
+  const handleToolbarGripPointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingToolbar) return;
+    e.stopPropagation();
+    const rect = viewportRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const distLeft = x;
+    const distRight = rect.width - x;
+    const distTop = y;
+    const distBottom = rect.height - y;
+
+    const minDist = Math.min(distLeft, distRight, distTop, distBottom);
+    if (minDist === distLeft && dockEdge !== "left") setDockEdge("left");
+    else if (minDist === distRight && dockEdge !== "right") setDockEdge("right");
+    else if (minDist === distTop && dockEdge !== "top") setDockEdge("top");
+    else if (minDist === distBottom && dockEdge !== "bottom") setDockEdge("bottom");
+  };
+
+  const handleToolbarGripPointerUp = (e: React.PointerEvent) => {
+    if (isDraggingToolbar) {
+      setIsDraggingToolbar(false);
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
+      } catch {}
+    }
+  };
 
   // Load alignment grid preference
   useEffect(() => {
@@ -735,24 +784,71 @@ export function CVPreviewContainer({
           </div>
         </div>
 
-        {/* Floating Miro-Style Canvas Control Bar */}
+        {/* Floating 4-Edge Dockable & Draggable Canvas Control Bar */}
         <div
           data-testid="canvas-floating-toolbar"
           onPointerDown={(e) => e.stopPropagation()}
           onPointerUp={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="absolute bottom-4 right-4 z-20 flex items-center gap-1 bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl"
+          className={`absolute z-20 flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl select-none ${
+            dockEdge === "bottom"
+              ? "bottom-16 sm:bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1"
+              : dockEdge === "top"
+              ? "top-14 sm:top-20 left-1/2 -translate-x-1/2 flex-row gap-1"
+              : dockEdge === "left"
+              ? "left-3 top-1/2 -translate-y-1/2 flex-col gap-1"
+              : "right-3 top-1/2 -translate-y-1/2 flex-col gap-1"
+          }`}
         >
-          {/* Hand / Pointer Mode Toggle (Desktop only) */}
-          <div className="hidden sm:flex items-center pr-1 border-r border-stone-200 dark:border-[#363d47]">
+          {/* Grip Handle for Dragging or Cycling Edges */}
+          <button
+            type="button"
+            onPointerDown={handleToolbarGripPointerDown}
+            onPointerMove={handleToolbarGripPointerMove}
+            onPointerUp={handleToolbarGripPointerUp}
+            onPointerCancel={handleToolbarGripPointerUp}
+            onClick={cycleDockEdge}
+            title={tr("preview.canvas.dockPosition")}
+            aria-label={tr("preview.canvas.dockPosition")}
+            className={`p-1.5 rounded-full cursor-grab active:cursor-grabbing hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
+              isDraggingToolbar
+                ? "bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400"
+                : "text-stone-400 dark:text-[#8b949e] hover:text-stone-700 dark:hover:text-[#f0f3f6]"
+            }`}
+          >
+            {isDraggingToolbar ? (
+              <Move size={13} className="animate-spin" />
+            ) : (
+              <GripVertical
+                size={13}
+                className={dockEdge === "left" || dockEdge === "right" ? "rotate-90" : ""}
+              />
+            )}
+          </button>
+
+          {/* Divider */}
+          <div
+            className={
+              dockEdge === "left" || dockEdge === "right"
+                ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5"
+                : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"
+            }
+          />
+
+          {/* Selection (Pointer) vs Pan / Hand (Click & Drag) Mode - Visible on BOTH Mobile and Desktop */}
+          <div
+            className={`flex items-center ${
+              dockEdge === "left" || dockEdge === "right" ? "flex-col gap-1" : "gap-1"
+            }`}
+          >
             <button
               onClick={() => handleSetToolMode("pointer")}
               title={tr("preview.canvas.selectionMode")}
               aria-label={tr("preview.canvas.selectionMode")}
               className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
                 toolMode === "pointer"
-                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
+                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold shadow-2xs"
                   : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
               }`}
             >
@@ -764,13 +860,22 @@ export function CVPreviewContainer({
               aria-label={tr("preview.canvas.panMode")}
               className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
                 toolMode === "hand"
-                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
+                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold shadow-2xs"
                   : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
               }`}
             >
               <Hand size={13} />
             </button>
           </div>
+
+          {/* Divider */}
+          <div
+            className={
+              dockEdge === "left" || dockEdge === "right"
+                ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5"
+                : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"
+            }
+          />
 
           {/* Alignment Grid Toggle Button */}
           <button
@@ -784,39 +889,6 @@ export function CVPreviewContainer({
             }`}
           >
             <Grid size={13} />
-          </button>
-
-          {/* Zoom Out */}
-          <button
-            onClick={() => handleZoomChange(-0.1)}
-            title={tr("preview.canvas.zoomOut")}
-            aria-label={tr("preview.canvas.zoomOut")}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-          >
-            <ZoomOut size={13} />
-          </button>
-
-          {/* Percentage badge (click to 100%) */}
-          <button
-            onClick={() => {
-              setIsAutoFit(false);
-              setZoom(1.0);
-            }}
-            title="100%"
-            aria-label={tr("preview.canvas.resetZoom", { current: `${Math.round(zoom * 100)}%` })}
-            className="px-2 py-0.5 text-[11px] font-mono font-bold hover:bg-stone-100 dark:hover:bg-[#21262d] rounded-md transition-colors min-w-[42px] min-h-[28px] text-center text-stone-700 dark:text-[#c9d1d9] flex items-center justify-center"
-          >
-            {Math.round(zoom * 100)}%
-          </button>
-
-          {/* Zoom In */}
-          <button
-            onClick={() => handleZoomChange(0.1)}
-            title={tr("preview.canvas.zoomIn")}
-            aria-label={tr("preview.canvas.zoomIn")}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-          >
-            <ZoomIn size={13} />
           </button>
 
           {/* Auto-Fit */}

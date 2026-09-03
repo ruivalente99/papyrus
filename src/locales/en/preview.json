@@ -21,10 +21,16 @@
     "resetZoom": "Reset zoom to 100% (current: {{current}})",
     "fitToScreen": "Fit to screen size",
     "selectionMode": "Selection mode",
-    "panMode": "Pan mode",
+    "panMode": "Pan mode (click & drag canvas)",
     "showGrid": "Show alignment grid",
     "hideGrid": "Hide alignment grid",
-    "resetView": "Reset view"
+    "resetView": "Reset view",
+    "dockPosition": "Dock position (click to cycle edges, or drag)",
+    "dockBottom": "Dock at bottom",
+    "dockTop": "Dock at top",
+    "dockLeft": "Dock at left sidebar",
+    "dockRight": "Dock at right sidebar",
+    "dragGrip": "Drag to move or dock to any edge"
   },
   "colors": {
     "accentColor": "Accent Color",

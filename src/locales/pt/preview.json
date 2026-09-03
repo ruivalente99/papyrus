@@ -21,10 +21,16 @@
     "resetZoom": "Repor zoom a 100% (atual: {{current}})",
     "fitToScreen": "Ajustar ao tamanho do ecrã",
     "selectionMode": "Modo Seleção",
-    "panMode": "Modo Panorâmica",
+    "panMode": "Modo Panorâmica (arrastar folha)",
     "showGrid": "Mostrar grelha de alinhamento",
     "hideGrid": "Ocultar grelha de alinhamento",
-    "resetView": "Repor posição original"
+    "resetView": "Repor posição original",
+    "dockPosition": "Posição da barra (clica para alternar arestas ou arrasta)",
+    "dockBottom": "Fixar em baixo",
+    "dockTop": "Fixar no topo",
+    "dockLeft": "Fixar na lateral esquerda",
+    "dockRight": "Fixar na lateral direita",
+    "dragGrip": "Arrasta para mover ou fixar em qualquer aresta"
   },
   "colors": {
     "accentColor": "Cor de Destaque",
