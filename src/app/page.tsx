@@ -123,6 +123,8 @@ export default function BuilderPage() {
     redo,
     canUndo,
     canRedo,
+    history,
+    restoreHistoryEntry,
     saveStatus,
     linterReport,
     isLoaded,
@@ -191,8 +193,9 @@ export default function BuilderPage() {
           canRedo={canRedo}
           onUndo={undo}
           onRedo={redo}
+          history={history}
+          onRestoreHistory={restoreHistoryEntry}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
-          saveStatus={saveStatus}
         />
 
         {/* Split-Pane Main Body */}
