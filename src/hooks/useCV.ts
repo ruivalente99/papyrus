@@ -22,6 +22,13 @@ import { generateId } from "@/lib/utils";
 const STORAGE_KEY = "papyrus_active_document";
 const SETUP_COMPLETED_KEY = "papyrus_setup_completed";
 
+export interface HistoryEntry {
+  id: string;
+  timestamp: number;
+  label: string;
+  snapshot: CVDocument;
+}
+
 export function useCV() {
   const [cv, setCvState] = useState<CVDocument>(technicalLatexSeed);
   const [activeLang, setActiveLang] = useState<SupportedLanguage>("en");
@@ -30,6 +37,7 @@ export function useCV() {
   const [hasCachedDoc, setHasCachedDoc] = useState(false);
   const [past, setPast] = useState<CVDocument[]>([]);
   const [future, setFuture] = useState<CVDocument[]>([]);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving">("saved");
 
   const cvRef = useRef(cv);
@@ -39,12 +47,22 @@ export function useCV() {
   const burstBaseStateRef = useRef<CVDocument | null>(null);
   const isUndoRedoActionRef = useRef(false);
 
-  const commitSnapshot = useCallback((snapshot: CVDocument) => {
+  const commitSnapshot = useCallback((snapshot: CVDocument, actionLabel?: string) => {
     setPast((prev) => {
       const nextPast = [...prev, snapshot];
       return nextPast.length > 30 ? nextPast.slice(nextPast.length - 30) : nextPast;
     });
     setFuture([]);
+
+    setHistory((prev) => {
+      const entry: HistoryEntry = {
+        id: `hist-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        timestamp: Date.now(),
+        label: actionLabel || "Edição no documento",
+        snapshot,
+      };
+      return [entry, ...prev.slice(0, 4)];
+    });
   }, []);
 
   const setCv = useCallback(
@@ -142,6 +160,19 @@ export function useCV() {
 
   const canUndo = past.length > 0 || (burstBaseStateRef.current !== null && burstBaseStateRef.current !== cv);
   const canRedo = future.length > 0;
+
+  const restoreHistoryEntry = useCallback((id: string) => {
+    const target = history.find((h) => h.id === id);
+    if (!target) return;
+    if (cvRef.current) {
+      commitSnapshot(cvRef.current, "Antes de restaurar histórico");
+    }
+    isUndoRedoActionRef.current = true;
+    setCvState(target.snapshot);
+    setTimeout(() => {
+      isUndoRedoActionRef.current = false;
+    }, 0);
+  }, [history, commitSnapshot]);
 
   // Load from LocalStorage on mount
   useEffect(() => {
@@ -563,6 +594,8 @@ export function useCV() {
     redo,
     canUndo,
     canRedo,
+    history,
+    restoreHistoryEntry,
     saveStatus,
     linterReport,
     isLoaded,

@@ -3,15 +3,17 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import type { CVDocument, SupportedLanguage, LinterReport } from "@/types/cv";
+import type { HistoryEntry } from "@/hooks/useCV";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { LinterBadge } from "./linter/LinterBadge";
 import { LinterModal } from "./linter/LinterModal";
-import { LatexModal } from "./latex/LatexModal";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { PRESET_SEEDS } from "@/data/seeds";
 import { tUI } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useToast } from "@/context/ToastContext";
+import { exportToLatex } from "@/lib/latexEngine";
 import {
   FileUp,
   FileDown,
@@ -23,6 +25,9 @@ import {
   Undo2,
   Redo2,
   Command,
+  History,
+  Clock,
+  Download,
 } from "lucide-react";
 
 interface Props {
@@ -39,6 +44,8 @@ interface Props {
   canRedo?: boolean;
   onUndo?: () => void;
   onRedo?: () => void;
+  history?: HistoryEntry[];
+  onRestoreHistory?: (id: string) => void;
   onOpenCommandPalette?: () => void;
   saveStatus?: "saved" | "saving";
 }
@@ -57,14 +64,45 @@ export function BuilderHeader({
   canRedo = false,
   onUndo,
   onRedo,
+  history = [],
+  onRestoreHistory,
   onOpenCommandPalette,
-  saveStatus = "saved",
 }: Props) {
   const [showPresets, setShowPresets] = useState(false);
   const [showLinterModal, setShowLinterModal] = useState(false);
-  const [showLatexModal, setShowLatexModal] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t: tr } = useTranslation(activeLang);
+  const { showToast } = useToast();
+
+  const handleDownloadTex = () => {
+    try {
+      const texContent = exportToLatex(cv, activeLang);
+      const blob = new Blob([texContent], { type: "application/x-tex;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const safeName = (cv.personalInfo?.fullName || "curriculum_vitae")
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, "_");
+      a.href = url;
+      a.download = `${safeName}_resume.tex`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(
+        activeLang === "pt"
+          ? "Ficheiro TeX (.tex) descarregado com sucesso!"
+          : "TeX file (.tex) downloaded successfully!",
+        "success"
+      );
+    } catch (err) {
+      showToast(
+        activeLang === "pt" ? "Erro ao gerar código TeX." : "Error exporting TeX code.",
+        "error"
+      );
+    }
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,8 +113,15 @@ export function BuilderHeader({
       try {
         const parsed = JSON.parse(event.target?.result as string);
         onImportJson(parsed);
+        showToast(
+          activeLang === "pt" ? "Documento JSON importado com sucesso!" : "JSON document imported!",
+          "success"
+        );
       } catch (err) {
-        alert("Invalid JSON file.");
+        showToast(
+          activeLang === "pt" ? "Ficheiro JSON inválido." : "Invalid JSON file.",
+          "error"
+        );
       }
     };
     reader.readAsText(file);
@@ -98,9 +143,9 @@ export function BuilderHeader({
           </span>
         </Link>
 
-        {/* Undo / Redo Controls (Desktop / Tablet) */}
+        {/* Undo / Redo / History Controls (Desktop / Tablet) */}
         {onUndo && onRedo && (
-          <div className="hidden lg:flex items-center gap-0.5 bg-stone-100 dark:bg-[#21262d] p-0.5 rounded-lg border border-stone-200 dark:border-[#363d47]">
+          <div className="hidden lg:flex items-center gap-0.5 bg-stone-100 dark:bg-[#21262d] p-0.5 rounded-lg border border-stone-200 dark:border-[#363d47] relative">
             <button
               type="button"
               onClick={onUndo}
@@ -121,6 +166,85 @@ export function BuilderHeader({
             >
               <Redo2 size={13} />
             </button>
+
+            {/* History Tracker Popover */}
+            {history.length > 0 && onRestoreHistory && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowHistory(!showHistory)}
+                  title={activeLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
+                  aria-label={activeLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
+                  className={`p-1.5 rounded transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
+                    showHistory
+                      ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold"
+                      : "text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] dark:hover:bg-[#30363d]"
+                  }`}
+                >
+                  <History size={13} />
+                </button>
+
+                {showHistory && (
+                  <div
+                    className="absolute left-0 mt-2 w-64 bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-xl p-2 z-50 text-xs animate-in fade-in zoom-in-95 duration-100"
+                    onMouseLeave={() => setShowHistory(false)}
+                  >
+                    <div className="px-2 py-1 font-bold text-stone-500 dark:text-[#8b949e] uppercase text-[10px] tracking-wider border-b border-stone-100 dark:border-[#30363d] mb-1 flex items-center justify-between">
+                      <span>{activeLang === "pt" ? "Últimas Edições" : "Recent Edits"}</span>
+                      <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">{history.length}</span>
+                    </div>
+                    <div className="space-y-1">
+                      {history.slice(0, 5).map((entry, idx) => {
+                        const elapsedMin = Math.max(0, Math.round((Date.now() - entry.timestamp) / 60000));
+                        const timeText =
+                          elapsedMin === 0
+                            ? activeLang === "pt"
+                              ? "Agora"
+                              : "Just now"
+                            : activeLang === "pt"
+                            ? `há ${elapsedMin} min`
+                            : `${elapsedMin}m ago`;
+
+                        return (
+                          <button
+                            key={entry.id}
+                            type="button"
+                            onClick={() => {
+                              onRestoreHistory(entry.id);
+                              setShowHistory(false);
+                              showToast(
+                                activeLang === "pt"
+                                  ? "Versão anterior restaurada!"
+                                  : "Previous version restored!",
+                                "success"
+                              );
+                            }}
+                            className="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] transition-colors flex items-center justify-between gap-2 group"
+                          >
+                            <div className="min-w-0">
+                              <p className="text-xs font-medium truncate group-hover:text-amber-700 dark:group-hover:text-amber-400">
+                                {idx === 0
+                                  ? activeLang === "pt"
+                                    ? "Versão Anterior"
+                                    : "Previous Version"
+                                  : entry.label}
+                              </p>
+                              <p className="text-[10px] text-stone-400 dark:text-[#8b949e] flex items-center gap-1">
+                                <Clock size={10} />
+                                <span>{timeText}</span>
+                              </p>
+                            </div>
+                            <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                              {activeLang === "pt" ? "Reverter" : "Restore"}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -137,35 +261,6 @@ export function BuilderHeader({
             <span>⌘K</span>
           </button>
         )}
-
-        {/* Save Status Indicator */}
-        <div
-          title={
-            saveStatus === "saving"
-              ? activeLang === "pt"
-                ? "A guardar alterações..."
-                : "Saving changes..."
-              : activeLang === "pt"
-              ? "Todas as alterações guardadas localmente"
-              : "All changes saved locally"
-          }
-          className="hidden 2xl:flex items-center gap-1 text-[10px] font-mono text-stone-400 dark:text-[#8b949e] select-none"
-        >
-          <span
-            className={`w-1.5 h-1.5 rounded-full ${
-              saveStatus === "saving" ? "bg-amber-500 animate-ping" : "bg-emerald-500"
-            }`}
-          />
-          <span>
-            {saveStatus === "saving"
-              ? activeLang === "pt"
-                ? "A guardar..."
-                : "Saving..."
-              : activeLang === "pt"
-              ? "Guardado"
-              : "Saved"}
-          </span>
-        </div>
       </div>
 
       {/* Center Controls: Language Switcher, Theme Selector, Linter Badge */}
@@ -254,13 +349,13 @@ export function BuilderHeader({
                 )}
                 <button
                   onClick={() => {
-                    setShowLatexModal(true);
+                    handleDownloadTex();
                     setShowPresets(false);
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
-                  <span>TeX Import / Export</span>
+                  <span>{activeLang === "pt" ? "Descarregar TeX (.tex)" : "Download TeX (.tex)"}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -287,15 +382,16 @@ export function BuilderHeader({
           )}
         </div>
 
-        {/* TeX Modal Button (Desktop / Tablet) */}
+        {/* Direct TeX Download Button (Desktop / Tablet) */}
         <button
-          onClick={() => setShowLatexModal(true)}
-          title={tr("a11y.actions.texManagement")}
-          aria-label={tr("a11y.actions.texManagement")}
-          className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px]"
+          type="button"
+          onClick={handleDownloadTex}
+          title={activeLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
+          aria-label={activeLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
+          className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95"
         >
-          <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
-          <span className="hidden lg:inline">TeX</span>
+          <Download size={13} className="text-amber-700 dark:text-amber-400" />
+          <span className="hidden lg:inline">.tex</span>
         </button>
 
         {/* Import JSON (Desktop / Tablet) */}
@@ -333,14 +429,6 @@ export function BuilderHeader({
         onClose={() => setShowLinterModal(false)}
         lang={activeLang}
         cv={cv}
-      />
-
-      <LatexModal
-        open={showLatexModal}
-        onOpenChange={setShowLatexModal}
-        cv={cv}
-        lang={activeLang}
-        onImportCV={onImportJson}
       />
     </header>
   );

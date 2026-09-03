@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { ToastProvider } from "@/context/ToastContext";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -54,7 +55,9 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased font-sans min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 selection:bg-amber-700 selection:text-white transition-colors duration-300">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
