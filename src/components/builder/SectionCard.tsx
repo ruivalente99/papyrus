@@ -166,14 +166,14 @@ export function SectionCard({
   return (
     <div
       data-testid={`section-card-${section.id}`}
-      className={`bg-white dark:bg-stone-900 rounded-2xl border transition-all duration-300 shadow-xs ${
+      className={`bg-white dark:bg-[#21262d] dark-elevation-card rounded-2xl border transition-all duration-300 shadow-xs ${
         isExpanded
-          ? "border-amber-400/80 dark:border-amber-600/70 shadow-md ring-1 ring-amber-400/20"
-          : "border-stone-200/90 dark:border-stone-800/80 hover:border-stone-300 dark:hover:border-stone-700"
+          ? "border-amber-400/80 dark:border-amber-500 shadow-md ring-1 ring-amber-400/20 dark:ring-amber-500/30"
+          : "border-stone-200/90 dark:border-[#363d47] hover:border-stone-300 dark:hover:border-[#484f58]"
       } ${
         section.visible
           ? ""
-          : "border-stone-200/60 dark:border-stone-800/60 bg-stone-50/70 dark:bg-stone-950/40 opacity-70"
+          : "border-stone-200/60 dark:border-[#30363d] bg-stone-50/70 dark:bg-[#161b22]/70 opacity-70"
       }`}
     >
       {/* Header bar (Click to toggle expand) */}
@@ -182,19 +182,19 @@ export function SectionCard({
           onClick={handleToggle}
           className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
         >
-          <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-[#161b22] dark:border dark:border-[#30363d] flex items-center justify-center shrink-0">
             {getSectionIcon()}
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm flex items-center gap-2 truncate">
+            <h3 className="font-bold text-stone-900 dark:text-[#f0f3f6] text-sm flex items-center gap-2 truncate">
               <span className="truncate">{sectionTitle}</span>
               {!section.visible && (
-                <span className="text-[10px] bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-400 px-1.5 py-0.5 rounded font-medium shrink-0">
+                <span className="text-[10px] bg-stone-200 dark:bg-[#161b22] dark:border dark:border-[#363d47] text-stone-600 dark:text-[#8b949e] px-1.5 py-0.5 rounded font-medium shrink-0">
                   {tr("common.actions.hide")}
                 </span>
               )}
             </h3>
-            <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
+            <p className="text-[11px] text-stone-500 dark:text-[#8b949e] truncate">
               {getSectionSummary(section, tr) || `${section.type} • #${section.order}`}
             </p>
           </div>
@@ -208,7 +208,7 @@ export function SectionCard({
             disabled={isFirst}
             title={tr("common.actions.moveUp")}
             aria-label={tr("a11y.sectionCard.moveUp", { name: sectionTitle })}
-            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-[#30363d] disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ArrowUp size={14} />
           </button>
@@ -218,7 +218,7 @@ export function SectionCard({
             disabled={isLast}
             title={tr("common.actions.moveDown")}
             aria-label={tr("a11y.sectionCard.moveDown", { name: sectionTitle })}
-            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-[#30363d] disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ArrowDown size={14} />
           </button>
@@ -228,7 +228,7 @@ export function SectionCard({
             onClick={onToggleVisibility}
             title={section.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
             aria-label={section.visible ? tr("a11y.sectionCard.hide", { name: sectionTitle }) : tr("a11y.sectionCard.show", { name: sectionTitle })}
-            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-[#30363d] min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             {section.visible ? <Eye size={14} /> : <EyeOff size={14} />}
           </button>
@@ -242,7 +242,7 @@ export function SectionCard({
             }}
             title={tr("common.actions.delete")}
             aria-label={tr("a11y.sectionCard.delete", { name: sectionTitle })}
-            className="text-stone-500 hover:text-red-500 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="text-stone-500 dark:text-[#8b949e] hover:text-red-500 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-red-950/40 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <Trash2 size={14} />
           </button>
@@ -253,7 +253,7 @@ export function SectionCard({
             title={isExpanded ? tr("common.actions.collapse") : tr("common.actions.expand")}
             aria-label={isExpanded ? tr("a11y.sectionCard.collapse", { name: sectionTitle }) : tr("a11y.sectionCard.expand", { name: sectionTitle })}
             aria-expanded={isExpanded}
-            className="text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 ml-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-[#30363d] ml-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ChevronDown
               size={16}
@@ -267,10 +267,10 @@ export function SectionCard({
 
       {/* Expanded form content */}
       {isExpanded && (
-        <div className="px-5 pb-5 pt-1 border-t border-stone-100 dark:border-stone-800">
+        <div className="px-5 pb-5 pt-1 border-t border-stone-100 dark:border-[#30363d]">
           {/* Custom Section Title Input */}
           <div className="mb-4 pt-2">
-            <label className="block text-[11px] font-bold text-stone-500 dark:text-stone-400 mb-1 font-mono uppercase tracking-wider">
+            <label className="block text-[11px] font-bold text-stone-500 dark:text-[#8b949e] mb-1 font-mono uppercase tracking-wider">
               {tr("builder.sections.titleField")} ({lang.toUpperCase()})
             </label>
             <input
@@ -283,7 +283,7 @@ export function SectionCard({
                 }))
               }
               placeholder="e.g. Work Experience / Experiência Profissional"
-              className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-full px-3.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+              className="w-full border border-stone-300 dark:border-[#363d47] bg-white dark:bg-[#0d1117] text-stone-900 dark:text-[#f0f3f6] dark:placeholder-[#6e7681] rounded-full px-3.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
             />
           </div>
 

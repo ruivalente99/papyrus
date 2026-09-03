@@ -156,10 +156,10 @@ export function SetupScreen({
   return (
     <div className="min-h-screen charm-bg-dynamic text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-amber-700 selection:text-white transition-colors duration-300">
       {/* Top Header - Minimalist */}
-      <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/70 dark:bg-stone-900/70 backdrop-blur-md px-4 sm:px-6 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+      <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/70 dark:bg-[#161b22]/90 backdrop-blur-md px-4 sm:px-6 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-3 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <NanoBananaLogo size="md" glow />
-          <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-stone-100">
+          <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-[#f0f3f6]">
             papyrus
           </span>
         </div>
@@ -168,13 +168,13 @@ export function SetupScreen({
         <div className="flex items-center gap-2">
           <ThemeSelector lang={uiLang} />
 
-          <div className="flex items-center gap-0.5 bg-stone-100 dark:bg-stone-800 p-0.5 rounded-full border border-stone-200 dark:border-stone-700">
+          <div className="flex items-center gap-0.5 bg-stone-100 dark:bg-[#0d1117] p-0.5 rounded-full border border-stone-200 dark:border-[#363d47]">
             <button
               onClick={() => handleLanguageToggle("en")}
               className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
                 uiLang === "en"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-2xs"
-                  : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-100"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
+                  : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
               }`}
             >
               EN
@@ -183,8 +183,8 @@ export function SetupScreen({
               onClick={() => handleLanguageToggle("pt")}
               className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
                 uiLang === "pt"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-2xs"
-                  : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-100"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
+                  : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
               }`}
             >
               PT
@@ -212,7 +212,7 @@ export function SetupScreen({
 
         {/* 1. Resume Active Document Card (if cached document exists) */}
         {hasCachedDoc && onResume && (
-          <div className="p-4 sm:p-5 rounded-3xl bg-white/90 dark:bg-stone-900/90 border border-amber-300/80 dark:border-amber-700/60 shadow-md shadow-amber-500/5 space-y-3">
+          <div className="p-4 sm:p-5 rounded-3xl bg-white/90 dark:bg-[#161b22] border border-amber-300/80 dark:border-amber-500/40 shadow-md shadow-amber-500/5 space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="p-2.5 rounded-2xl bg-amber-500/10 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400">
@@ -222,7 +222,7 @@ export function SetupScreen({
                   <span className="text-[10px] font-mono uppercase tracking-wider text-amber-700 dark:text-amber-400 font-bold">
                     {isPt ? "Em Edição" : "Active Session"}
                   </span>
-                  <h3 className="text-sm font-bold truncate text-stone-900 dark:text-stone-100">
+                  <h3 className="text-sm font-bold truncate text-stone-900 dark:text-[#f0f3f6]">
                     {activeName}
                   </h3>
                 </div>
@@ -239,8 +239,8 @@ export function SetupScreen({
             </div>
 
             {/* Sub-actions: Duplicate & Delete */}
-            <div className="flex items-center justify-between pt-2 border-t border-stone-100 dark:border-stone-800/80 text-xs">
-              <span className="text-[11px] text-stone-500 dark:text-stone-400 font-mono">
+            <div className="flex items-center justify-between pt-2 border-t border-stone-100 dark:border-[#30363d] text-xs">
+              <span className="text-[11px] text-stone-500 dark:text-[#8b949e] font-mono">
                 {activeCv?.template} • {activeCv?.sections?.length || 0} {isPt ? "secções" : "sections"}
               </span>
 
@@ -248,7 +248,7 @@ export function SetupScreen({
                 {onDuplicate && (
                   <button
                     onClick={onDuplicate}
-                    className="flex items-center gap-1 text-[11px] font-bold text-stone-600 dark:text-stone-300 hover:text-amber-700 dark:hover:text-amber-400 px-2.5 py-1 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-bold text-stone-600 dark:text-[#c9d1d9] hover:text-amber-700 dark:hover:text-amber-400 px-2.5 py-1 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors"
                   >
                     <Copy size={12} />
                     <span>{isPt ? "Duplicar" : "Duplicate"}</span>
@@ -282,7 +282,7 @@ export function SetupScreen({
           className={`relative border-2 border-dashed rounded-3xl p-6 sm:p-8 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center group ${
             isDragging
               ? "border-amber-500 bg-amber-500/10 scale-[1.01] shadow-lg shadow-amber-500/10 ring-2 ring-amber-500/20"
-              : "border-stone-300 dark:border-stone-700 bg-white/70 dark:bg-stone-900/50 hover:border-amber-500 hover:bg-white dark:hover:bg-stone-900/80 shadow-xs"
+              : "border-stone-300 dark:border-[#363d47] bg-white/70 dark:bg-[#161b22]/60 hover:border-amber-500 hover:bg-white dark:hover:bg-[#161b22] shadow-xs"
           }`}
         >
           <input
@@ -303,7 +303,7 @@ export function SetupScreen({
             <Upload size={22} />
           </div>
 
-          <div className="flex items-center gap-1.5 font-bold text-xs text-stone-900 dark:text-stone-100 group-hover:text-amber-700 dark:group-hover:text-amber-400">
+          <div className="flex items-center gap-1.5 font-bold text-xs text-stone-900 dark:text-[#f0f3f6] group-hover:text-amber-700 dark:group-hover:text-amber-400">
             <span>{isPt ? "Arraste ou carregue .json / .tex" : "Drop or upload .json / .tex"}</span>
             <HelpTooltip
               content={
@@ -314,7 +314,7 @@ export function SetupScreen({
             />
           </div>
 
-          <div className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-stone-100 dark:bg-stone-800 group-hover:bg-amber-700 text-[11px] font-bold text-stone-700 dark:text-stone-200 group-hover:text-white transition-all shadow-2xs border border-stone-200 dark:border-stone-700">
+          <div className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-stone-100 dark:bg-[#21262d] group-hover:bg-amber-700 text-[11px] font-bold text-stone-700 dark:text-[#c9d1d9] group-hover:text-white transition-all shadow-2xs border border-stone-200 dark:border-[#363d47]">
             <FileCode size={13} />
             <span>{isPt ? "Procurar Ficheiro" : "Browse File"}</span>
           </div>
@@ -327,16 +327,16 @@ export function SetupScreen({
             <button
               type="button"
               onClick={() => handleStartManual(false)}
-              className="p-3.5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white/70 dark:bg-stone-900/40 hover:border-amber-500 hover:bg-white dark:hover:bg-stone-900/80 text-left transition-all group flex items-center gap-3 shadow-2xs"
+              className="p-3.5 rounded-2xl border border-stone-200 dark:border-[#363d47] bg-white/70 dark:bg-[#161b22]/60 hover:border-amber-500 hover:bg-white dark:hover:bg-[#21262d] text-left transition-all group flex items-center gap-3 shadow-2xs"
             >
-              <div className="p-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 group-hover:bg-amber-700 group-hover:text-white transition-colors">
+              <div className="p-2 rounded-xl bg-stone-100 dark:bg-[#0d1117] text-stone-700 dark:text-[#c9d1d9] group-hover:bg-amber-700 group-hover:text-white transition-colors">
                 <PlusCircle size={16} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 group-hover:text-amber-700 dark:group-hover:text-amber-400">
+                <h4 className="text-xs font-bold text-stone-900 dark:text-[#f0f3f6] group-hover:text-amber-700 dark:group-hover:text-amber-400">
                   {isPt ? "Em Branco" : "Blank"}
                 </h4>
-                <p className="text-[10.5px] text-stone-500 dark:text-stone-400">
+                <p className="text-[10.5px] text-stone-500 dark:text-[#8b949e]">
                   {isPt ? "Sem dados" : "Clean canvas"}
                 </p>
               </div>
@@ -346,16 +346,16 @@ export function SetupScreen({
             <button
               type="button"
               onClick={() => handleStartManual(true)}
-              className="p-3.5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white/70 dark:bg-stone-900/40 hover:border-amber-500 hover:bg-white dark:hover:bg-stone-900/80 text-left transition-all group flex items-center gap-3 shadow-2xs"
+              className="p-3.5 rounded-2xl border border-stone-200 dark:border-[#363d47] bg-white/70 dark:bg-[#161b22]/60 hover:border-amber-500 hover:bg-white dark:hover:bg-[#21262d] text-left transition-all group flex items-center gap-3 shadow-2xs"
             >
-              <div className="p-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 group-hover:bg-amber-700 group-hover:text-white transition-colors">
+              <div className="p-2 rounded-xl bg-stone-100 dark:bg-[#0d1117] text-stone-700 dark:text-[#c9d1d9] group-hover:bg-amber-700 group-hover:text-white transition-colors">
                 <Layers size={16} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 group-hover:text-amber-700 dark:group-hover:text-amber-400">
+                <h4 className="text-xs font-bold text-stone-900 dark:text-[#f0f3f6] group-hover:text-amber-700 dark:group-hover:text-amber-400">
                   {isPt ? "Exemplo" : "Demo"}
                 </h4>
-                <p className="text-[10.5px] text-stone-500 dark:text-stone-400">
+                <p className="text-[10.5px] text-stone-500 dark:text-[#8b949e]">
                   {isPt ? "Com mock data" : "With mock data"}
                 </p>
               </div>
@@ -375,13 +375,13 @@ export function SetupScreen({
 
           {/* Boilerplate downloads (Minimalist) */}
           <div className="flex items-center justify-center gap-2 pt-1">
-            <span className="text-[11px] text-stone-400 font-mono">
+            <span className="text-[11px] text-stone-400 dark:text-[#8b949e] font-mono">
               {isPt ? "Modelos locais:" : "Local templates:"}
             </span>
             <a
               href="/template.json"
               download="template.json"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-stone-700 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#c9d1d9] hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-[#363d47] transition-colors"
             >
               <FileText size={11} />
               <span>.json</span>
@@ -389,7 +389,7 @@ export function SetupScreen({
             <a
               href="/template.tex"
               download="template.tex"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-stone-700 transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#c9d1d9] hover:text-amber-700 text-[10.5px] font-mono font-bold border border-stone-200 dark:border-[#363d47] transition-colors"
             >
               <Code2 size={11} />
               <span>.tex</span>
@@ -399,8 +399,8 @@ export function SetupScreen({
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-stone-200/70 dark:border-stone-800/70 bg-white/60 dark:bg-stone-950/60 py-3 px-6 text-center text-[11px] text-stone-400 font-mono lowercase pb-safe">
-        papyrus • offline-ready
+      <footer className="border-t border-stone-200/70 dark:border-[#30363d] bg-white/60 dark:bg-[#0d1117]/80 py-3 px-6 text-center text-[11px] text-stone-400 dark:text-[#8b949e] font-mono lowercase pb-safe">
+        papyrus • offline-first dynamic multilingual cv engine
       </footer>
     </div>
   );

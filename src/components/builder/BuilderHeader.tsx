@@ -84,7 +84,7 @@ export function BuilderHeader({
   };
 
   return (
-    <header className="border-b border-stone-200/70 dark:border-stone-800/70 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md px-2.5 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1.5 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors">
+    <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/80 dark:bg-[#161b22]/95 backdrop-blur-md px-2.5 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1.5 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors">
       {/* Brand: Minimalist Logo + lowercase papyrus */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <Link
@@ -93,21 +93,21 @@ export function BuilderHeader({
           className="group cursor-pointer focus:outline-hidden flex items-center gap-1.5 sm:gap-2"
         >
           <NanoBananaLogo size="sm" glow />
-          <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-stone-100 hidden sm:inline">
+          <span className="font-mono text-sm font-bold tracking-tight lowercase text-stone-900 dark:text-[#f0f3f6] hidden sm:inline">
             papyrus
           </span>
         </Link>
 
         {/* Undo / Redo Controls (Desktop / Tablet) */}
         {onUndo && onRedo && (
-          <div className="hidden lg:flex items-center gap-0.5 bg-stone-100 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-200 dark:border-stone-700">
+          <div className="hidden lg:flex items-center gap-0.5 bg-stone-100 dark:bg-[#21262d] p-0.5 rounded-lg border border-stone-200 dark:border-[#363d47]">
             <button
               type="button"
               onClick={onUndo}
               disabled={!canUndo}
               title={tr("common.actions.undoWithShortcut")}
               aria-label={tr("a11y.actions.undo")}
-              className="p-1.5 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
+              className="p-1.5 rounded text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] dark:hover:bg-[#30363d] disabled:opacity-30 disabled:pointer-events-none transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
             >
               <Undo2 size={13} />
             </button>
@@ -117,7 +117,7 @@ export function BuilderHeader({
               disabled={!canRedo}
               title={tr("common.actions.redoWithShortcut")}
               aria-label={tr("a11y.actions.redo")}
-              className="p-1.5 rounded text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
+              className="p-1.5 rounded text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] dark:hover:bg-[#30363d] disabled:opacity-30 disabled:pointer-events-none transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
             >
               <Redo2 size={13} />
             </button>
@@ -131,7 +131,7 @@ export function BuilderHeader({
             onClick={onOpenCommandPalette}
             title={tr("common.shortcuts.commandPalette")}
             aria-label={tr("a11y.actions.commandPalette")}
-            className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono font-bold rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border border-stone-200 dark:border-stone-700 hover:border-amber-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors shadow-2xs active:scale-95"
+            className="hidden xl:flex items-center gap-1.5 px-2 py-1 text-[11px] font-mono font-bold rounded-lg bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#c9d1d9] border border-stone-200 dark:border-[#363d47] hover:border-amber-500 hover:text-stone-900 dark:hover:text-[#f0f3f6] transition-colors shadow-2xs active:scale-95"
           >
             <Command size={11} className="text-amber-600 dark:text-amber-400" />
             <span>⌘K</span>
@@ -149,7 +149,7 @@ export function BuilderHeader({
               ? "Todas as alterações guardadas localmente"
               : "All changes saved locally"
           }
-          className="hidden 2xl:flex items-center gap-1 text-[10px] font-mono text-stone-400 dark:text-stone-500 select-none"
+          className="hidden 2xl:flex items-center gap-1 text-[10px] font-mono text-stone-400 dark:text-[#8b949e] select-none"
         >
           <span
             className={`w-1.5 h-1.5 rounded-full ${
@@ -202,7 +202,7 @@ export function BuilderHeader({
           <button
             onClick={onOpenSetup}
             title={tUI("newDoc", activeLang)}
-            className="hidden sm:flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="hidden sm:flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
           >
             <Plus size={13} className="text-amber-700 dark:text-amber-400" />
             <span className="hidden md:inline">{tUI("newDoc", activeLang)}</span>
@@ -213,7 +213,7 @@ export function BuilderHeader({
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-2.5 sm:px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs"
+            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-2.5 sm:px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
           >
             <Layers size={13} />
             <span className="hidden md:inline">{tUI("templates", activeLang)}</span>
@@ -221,8 +221,8 @@ export function BuilderHeader({
           </button>
 
           {showPresets && (
-            <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-stone-900 rounded-2xl shadow-xl border border-stone-200 dark:border-stone-800 p-1.5 z-50 animate-in fade-in duration-100">
-              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 px-2 py-1">
+            <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100">
+              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
                 {activeLang === "pt" ? "Modelos" : "Presets"}
               </p>
               {PRESET_SEEDS.map((p) => (
@@ -232,21 +232,21 @@ export function BuilderHeader({
                     onLoadPreset(p.id);
                     setShowPresets(false);
                   }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs"
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs"
                 >
-                  <p className="font-bold text-stone-800 dark:text-stone-200">{p.name}</p>
+                  <p className="font-bold text-stone-800 dark:text-[#f0f3f6]">{p.name}</p>
                 </button>
               ))}
 
               {/* Mobile Extended Actions inside Dropdown */}
-              <div className="sm:hidden border-t border-stone-150 dark:border-stone-800 my-1 pt-1 space-y-0.5">
+              <div className="sm:hidden border-t border-stone-150 dark:border-[#363d47] my-1 pt-1 space-y-0.5">
                 {onOpenSetup && (
                   <button
                     onClick={() => {
                       onOpenSetup();
                       setShowPresets(false);
                     }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
                     <Plus size={13} className="text-amber-700 dark:text-amber-400" />
                     <span>{tUI("newDoc", activeLang)}</span>
@@ -257,7 +257,7 @@ export function BuilderHeader({
                     setShowLatexModal(true);
                     setShowPresets(false);
                   }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
                   <span>TeX Import / Export</span>
@@ -267,7 +267,7 @@ export function BuilderHeader({
                     fileInputRef.current?.click();
                     setShowPresets(false);
                   }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <FileUp size={13} />
                   <span>{tUI("importAction", activeLang)}</span>
@@ -277,7 +277,7 @@ export function BuilderHeader({
                     onExportJson();
                     setShowPresets(false);
                   }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-stone-200 font-semibold"
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <FileDown size={13} />
                   <span>{tUI("jsonBackup", activeLang)}</span>
@@ -292,7 +292,7 @@ export function BuilderHeader({
           onClick={() => setShowLatexModal(true)}
           title={tr("a11y.actions.texManagement")}
           aria-label={tr("a11y.actions.texManagement")}
-          className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-700/60 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px]"
+          className="hidden sm:flex items-center gap-1 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px]"
         >
           <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
           <span className="hidden lg:inline">TeX</span>
@@ -303,7 +303,7 @@ export function BuilderHeader({
           onClick={() => fileInputRef.current?.click()}
           title={tr("common.actions.import")}
           aria-label={tr("a11y.actions.importJson")}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
         >
           <FileUp size={13} />
         </button>
@@ -320,7 +320,7 @@ export function BuilderHeader({
           onClick={onExportJson}
           title={tr("common.actions.export")}
           aria-label={tr("a11y.actions.exportJson")}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
+          className="hidden sm:flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
         >
           <FileDown size={13} />
         </button>

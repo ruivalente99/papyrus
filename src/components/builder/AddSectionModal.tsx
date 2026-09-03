@@ -123,13 +123,13 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-section-modal-title"
-        className="bg-white dark:bg-stone-900 rounded-3xl shadow-2xl border border-stone-200/80 dark:border-stone-800 w-full max-w-lg overflow-hidden flex flex-col max-h-[88vh]"
+        className="bg-white dark:bg-[#161b22] rounded-3xl shadow-2xl border border-stone-200/80 dark:border-[#30363d] w-full max-w-lg overflow-hidden flex flex-col max-h-[88vh]"
       >
         {/* Header - Charm Minimalist */}
-        <div className="px-5 py-3.5 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80">
+        <div className="px-5 py-3.5 border-b border-stone-200/70 dark:border-[#30363d] flex items-center justify-between bg-stone-50/70 dark:bg-[#161b22]">
           <div className="flex items-center gap-2.5">
             <NanoBananaLogo size="sm" />
-            <h3 id="add-section-modal-title" className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+            <h3 id="add-section-modal-title" className="font-bold text-stone-900 dark:text-[#f0f3f6] text-sm">
               {tr("builder.sections.add")}
             </h3>
           </div>
@@ -137,7 +137,7 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
             onClick={onClose}
             title={tr("common.actions.close")}
             aria-label={tr("a11y.modals.closeModal")}
-            className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="text-stone-500 hover:text-stone-700 dark:text-[#8b949e] dark:hover:text-[#f0f3f6] p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <X size={16} />
           </button>
@@ -158,14 +158,14 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
                   className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-start gap-3.5 ${
                     isSelected
                       ? "bg-amber-50/80 dark:bg-amber-950/40 border-amber-500 dark:border-amber-600 shadow-xs ring-1 ring-amber-500/30"
-                      : "bg-white dark:bg-stone-800/60 border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800 hover:border-stone-300 dark:hover:border-stone-700"
+                      : "bg-white dark:bg-[#21262d] border-stone-200 dark:border-[#363d47] hover:bg-stone-50 dark:hover:bg-[#30363d] hover:border-stone-300 dark:hover:border-[#484f58]"
                   }`}
                 >
                   <div
                     className={`p-2 rounded-xl transition-colors shrink-0 mt-0.5 ${
                       isSelected
                         ? "bg-amber-700 text-white"
-                        : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300"
+                        : "bg-stone-100 dark:bg-[#161b22] text-stone-600 dark:text-[#c9d1d9]"
                     }`}
                   >
                     <Icon size={18} />
@@ -177,18 +177,18 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
                         className={`text-xs font-bold ${
                           isSelected
                             ? "text-amber-950 dark:text-amber-200"
-                            : "text-stone-800 dark:text-stone-200"
+                            : "text-stone-800 dark:text-[#f0f3f6]"
                         }`}
                       >
                         {sec.title[lang as "en" | "pt"] || sec.title.en}
                       </h4>
                       {sec.badge && (
-                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300">
+                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-stone-200 dark:bg-[#161b22] text-stone-700 dark:text-[#c9d1d9]">
                           {sec.badge[lang as "en" | "pt"] || sec.badge.en}
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5 leading-relaxed">
+                    <p className="text-[11px] text-stone-500 dark:text-[#8b949e] mt-0.5 leading-relaxed">
                       {sec.desc[lang as "en" | "pt"] || sec.desc.en}
                     </p>
                   </div>
@@ -200,7 +200,7 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
           {/* Custom Section Title Input */}
           {selectedType === "custom" && (
             <div className="pt-2 animate-in fade-in duration-100">
-              <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
+              <label className="block text-xs font-bold text-stone-700 dark:text-[#c9d1d9] mb-1">
                 {isPt ? "Título Personalizado da Secção (Opcional)" : "Custom Section Title (Optional)"}
               </label>
               <input
@@ -208,18 +208,18 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
                 placeholder={isPt ? "Ex: Publicações, Projetos Open-Source, Bolsas" : "e.g. Publications, Open Source, Awards"}
                 value={customTitle}
                 onChange={(e) => setCustomTitle(e.target.value)}
-                className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-full px-4 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
+                className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-full px-4 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"
               />
             </div>
           )}
         </div>
 
         {/* Footer Actions - Charm Pills */}
-        <div className="px-6 py-3.5 border-t border-stone-200/80 dark:border-stone-800/80 bg-stone-50/70 dark:bg-stone-900/80 flex items-center justify-between">
+        <div className="px-6 py-3.5 border-t border-stone-200/80 dark:border-[#30363d] bg-stone-50/70 dark:bg-[#161b22] flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold rounded-full transition-colors shadow-2xs"
+            className="px-5 py-2 bg-stone-200 dark:bg-[#21262d] hover:bg-stone-300 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#c9d1d9] text-xs font-bold rounded-full transition-colors shadow-2xs"
           >
             {tr("common.actions.cancel")}
           </button>

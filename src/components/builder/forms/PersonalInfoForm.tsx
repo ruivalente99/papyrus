@@ -92,8 +92,8 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
   return (
     <div className="space-y-4 text-xs">
       {/* Profile Photo & Visibility */}
-      <div className="flex items-center gap-4 bg-stone-50 dark:bg-stone-900/60 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
-        <div className="relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 flex items-center justify-center shrink-0">
+      <div className="flex items-center gap-4 bg-stone-50 dark:bg-[#161b22] p-3 rounded-xl border border-stone-200 dark:border-[#30363d]">
+        <div className="relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-[#0d1117] border border-stone-300 dark:border-[#363d47] flex items-center justify-center shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={currentAvatarSrc}
@@ -117,7 +117,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             </button>
 
             {/* Custom Photo Upload */}
-            <label className="cursor-pointer bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-stone-700 text-xs shadow-2xs transition-colors">
+            <label className="cursor-pointer bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] font-bold px-3.5 py-1.5 rounded-full border border-stone-300 dark:border-[#363d47] text-xs shadow-2xs transition-colors">
               {tr("builder.forms.personalInfo.importPhoto")}
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
             </label>
@@ -141,7 +141,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             )}
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3 pt-0.5 text-stone-600 dark:text-stone-400 flex-wrap">
+          <div className="flex items-center gap-2.5 sm:gap-3 pt-0.5 text-stone-600 dark:text-[#8b949e] flex-wrap">
             <label className="flex items-center gap-1.5 cursor-pointer">
               <input
                 type="checkbox"
@@ -158,7 +158,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                 aria-label={tr("a11y.forms.photoShapeSelect")}
                 value={data.photoShape || "circle"}
                 onChange={(e) => onChange({ photoShape: e.target.value as any })}
-                className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                className="bg-white dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] text-stone-800 dark:text-[#f0f3f6] rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
               >
                 <option value="circle">{tr("builder.forms.personalInfo.photoShapes.circle")}</option>
                 <option value="rounded">{tr("builder.forms.personalInfo.photoShapes.rounded")}</option>
@@ -172,7 +172,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       {/* Name & Professional Headline */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.fullName")} *
           </label>
           <input
@@ -187,12 +187,12 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               onChange(updates);
             }}
             placeholder={tr("builder.forms.personalInfo.fullNamePlaceholder")}
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-[#f0f3f6]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.headline")} ({lang.toUpperCase()})
           </label>
           <input
@@ -208,7 +208,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               }))
             }
             placeholder={tr("builder.forms.personalInfo.headlinePlaceholder")}
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-[#f0f3f6]"
           />
         </div>
       </div>
@@ -216,7 +216,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       {/* Contact info: Email, Phone, Location, Website */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.email")} *
           </label>
           <input
@@ -224,12 +224,12 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.email || ""}
             onChange={(e) => onChange({ email: e.target.value })}
             placeholder="email@example.com"
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-[#f0f3f6]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.phone")}
           </label>
           <input
@@ -237,12 +237,12 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.phone || ""}
             onChange={(e) => onChange({ phone: e.target.value })}
             placeholder="(+123) 456 789 000"
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-[#f0f3f6]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.location")} ({lang.toUpperCase()})
           </label>
           <input
@@ -258,12 +258,12 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               }))
             }
             placeholder={tr("builder.forms.personalInfo.locationPlaceholder")}
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-[#f0f3f6]"
           />
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.website")}
           </label>
           <input
@@ -271,7 +271,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             value={data.website || ""}
             onChange={(e) => onChange({ website: e.target.value })}
             placeholder="https://example.com"
-            className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-stone-100"
+            className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden text-stone-900 dark:text-[#f0f3f6]"
           />
         </div>
       </div>
@@ -279,7 +279,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       {/* Social / Professional Links with Rich Icon Picker */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <label className="font-semibold text-stone-700 dark:text-stone-300">
+          <label className="font-semibold text-stone-700 dark:text-[#c9d1d9]">
             {tr("builder.forms.personalInfo.socialLinks")}
           </label>
           <button
@@ -296,7 +296,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           {data.links?.map((link) => (
             <div
               key={link.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-2 bg-stone-50 dark:bg-stone-900/50 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800"
+              className="flex flex-col sm:flex-row sm:items-center gap-2 bg-stone-50 dark:bg-[#161b22] p-2.5 rounded-xl border border-stone-200 dark:border-[#30363d]"
             >
               {/* Row 1 on mobile: Icon Picker + Label + Delete button */}
               <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -321,13 +321,13 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                       },
                     })
                   }
-                  className="flex-1 sm:w-28 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                  className="flex-1 sm:w-28 min-w-0 border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
                 />
 
                 <button
                   type="button"
                   onClick={() => handleRemoveLink(link.id)}
-                  className="sm:hidden text-stone-500 hover:text-red-500 p-1.5 rounded-lg transition-colors shrink-0 min-w-[24px] min-h-[24px] flex items-center justify-center"
+                  className="sm:hidden text-stone-500 dark:text-[#8b949e] hover:text-red-500 dark:hover:text-red-400 p-1.5 rounded-lg transition-colors shrink-0 min-w-[24px] min-h-[24px] flex items-center justify-center"
                   title={tr("a11y.forms.deleteSocialLink")}
                   aria-label={tr("a11y.forms.deleteSocialLink")}
                 >
@@ -343,13 +343,13 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                   aria-label={tr("builder.forms.personalInfo.url")}
                   value={link.url || ""}
                   onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
-                  className="flex-1 min-w-0 border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                  className="flex-1 min-w-0 border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
                 />
 
                 <button
                   type="button"
                   onClick={() => handleRemoveLink(link.id)}
-                  className="hidden sm:flex text-stone-500 hover:text-red-500 p-1.5 rounded-lg transition-colors shrink-0 min-w-[24px] min-h-[24px] items-center justify-center"
+                  className="hidden sm:flex text-stone-500 dark:text-[#8b949e] hover:text-red-500 dark:hover:text-red-400 p-1.5 rounded-lg transition-colors shrink-0 min-w-[24px] min-h-[24px] items-center justify-center"
                   title={tr("a11y.forms.deleteSocialLink")}
                   aria-label={tr("a11y.forms.deleteSocialLink")}
                 >
@@ -363,7 +363,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
       {/* Summary / About */}
       <div>
-        <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+        <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
           {tr("builder.forms.personalInfo.summary")} ({lang.toUpperCase()})
         </label>
         <textarea
@@ -379,7 +379,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             }))
           }
           placeholder={tr("builder.forms.personalInfo.summaryPlaceholder")}
-          className="w-full border border-stone-300 dark:border-stone-700 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden resize-y"
+          className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden resize-y"
         />
       </div>
     </div>

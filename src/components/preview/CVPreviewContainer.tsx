@@ -367,24 +367,23 @@ export function CVPreviewContainer({
   const actualDocHeight = Math.max(A4_H_PX, docHeight);
 
   return (
-    <div className="flex flex-col h-full bg-stone-200/50 dark:bg-stone-950 text-stone-800 dark:text-stone-200 transition-colors">
+    <div className="flex flex-col h-full bg-stone-200/50 dark:bg-[#0d1117] text-stone-800 dark:text-[#c9d1d9] transition-colors">
       {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
-      {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
-      <div className="bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-3 sm:px-4 py-2 shadow-2xs transition-colors shrink-0">
+      <div className="bg-white/90 dark:bg-[#161b22]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-[#30363d] px-3 sm:px-4 py-2 shadow-2xs transition-colors shrink-0">
         {/* MOBILE TOOLBAR: Clean Single 44px Row */}
         <div className="flex sm:hidden items-center justify-between gap-2">
           {/* Left: Page Count Badge & Compact Zoom Pill */}
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+            <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
               {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
             </span>
 
-            <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-0.5 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 shadow-2xs shrink-0">
+            <div className="flex items-center bg-stone-100 dark:bg-[#21262d] rounded-full p-0.5 border border-stone-200 dark:border-[#363d47] text-stone-700 dark:text-[#c9d1d9] shadow-2xs shrink-0">
               <button
                 onClick={() => handleZoomChange(-0.1)}
                 title={tr("preview.canvas.zoomOut")}
                 aria-label={tr("preview.canvas.zoomOut")}
-                className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
+                className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
               >
                 <ZoomOut size={12} />
               </button>
@@ -395,7 +394,7 @@ export function CVPreviewContainer({
                 onClick={() => handleZoomChange(0.1)}
                 title={tr("preview.canvas.zoomIn")}
                 aria-label={tr("preview.canvas.zoomIn")}
-                className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
+                className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
               >
                 <ZoomIn size={12} />
               </button>
@@ -403,10 +402,10 @@ export function CVPreviewContainer({
                 onClick={handleToggleAutoFit}
                 title={tr("preview.canvas.fitToScreen")}
                 aria-label={tr("preview.canvas.fitToScreen")}
-                className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
+                className={`p-1 border-l border-stone-200 dark:border-[#363d47] pl-1 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                   isAutoFit
                     ? "text-amber-700 dark:text-amber-400 font-bold"
-                    : "hover:text-stone-900 dark:hover:text-white text-stone-600 dark:text-stone-400"
+                    : "hover:text-stone-900 dark:hover:text-[#f0f3f6] text-stone-600 dark:text-[#8b949e]"
                 }`}
               >
                 <Maximize2 size={11} />
@@ -419,7 +418,7 @@ export function CVPreviewContainer({
             <button
               onClick={() => setIsSettingsOpen(true)}
               aria-label={tUI("customizeStyle", lang)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-stone-200/80 dark:bg-stone-800 dark:hover:bg-stone-700/80 text-stone-800 dark:text-stone-200 rounded-full text-xs font-bold border border-stone-200/80 dark:border-stone-700 shadow-2xs transition-all active:scale-95 shrink-0"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-stone-200/80 dark:bg-[#21262d] dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] rounded-full text-xs font-bold border border-stone-200/80 dark:border-[#363d47] shadow-2xs transition-all active:scale-95 shrink-0"
             >
               <span
                 className="w-2.5 h-2.5 rounded-full ring-1 ring-black/10 shrink-0"
@@ -447,16 +446,16 @@ export function CVPreviewContainer({
         {/* DESKTOP TOOLBAR: Structured Two-Row Layout */}
         <div className="hidden sm:flex flex-col gap-2">
           {/* Row 1: Document Style & Appearance */}
-          <div className="flex items-center justify-between gap-3 pb-1 border-b border-stone-200/50 dark:border-stone-800/50">
+          <div className="flex items-center justify-between gap-3 pb-1 border-b border-stone-200/50 dark:border-[#30363d]">
             {/* Template Selector */}
             <div className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
                 <button
                   onClick={() => onSetTemplate("lateralis")}
                   className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                     cv.template === "lateralis" || cv.template === "canva"
-                      ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                      : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
                   }`}
                 >
                   {tUI("templateLateralis", lang)}
@@ -465,8 +464,8 @@ export function CVPreviewContainer({
                   onClick={() => onSetTemplate("classic")}
                   className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                     cv.template === "classic" || cv.template === "latex"
-                      ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                      : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
                   }`}
                 >
                   {tUI("templateClassic", lang)}
@@ -475,8 +474,8 @@ export function CVPreviewContainer({
                   onClick={() => onSetTemplate("matrix")}
                   className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                     cv.template === "matrix" || cv.template === "europass"
-                      ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                      : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
                   }`}
                 >
                   {tUI("templateMatrix", lang)}
@@ -487,14 +486,14 @@ export function CVPreviewContainer({
             {/* Right: Spacing Density & Accent Colors */}
             <div className="flex items-center gap-2.5 shrink-0">
               {/* Density Selector */}
-              <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
                 <button
                   onClick={() => onUpdateTheme({ fontSize: "compact" })}
                   title="Compact spacing"
                   className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                     cv.theme.fontSize === "compact"
-                      ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
-                      : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                   }`}
                 >
                   {tUI("densityCompact", lang)}
@@ -504,8 +503,8 @@ export function CVPreviewContainer({
                   title="Balanced spacing"
                   className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                     cv.theme.fontSize === "normal" || !cv.theme.fontSize
-                      ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
-                      : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                   }`}
                 >
                   {tUI("densityNormal", lang)}
@@ -515,8 +514,8 @@ export function CVPreviewContainer({
                   title="Spacious breathing room"
                   className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                     cv.theme.fontSize === "spacious"
-                      ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 font-bold shadow-xs"
-                      : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                   }`}
                 >
                   {tUI("densitySpacious", lang)}
@@ -524,7 +523,7 @@ export function CVPreviewContainer({
               </div>
 
               {/* Accent Color Circles */}
-              <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-stone-700 shrink-0">
+              <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-[#363d47] shrink-0">
                 {ACCENT_COLORS.map((c) => (
                   <button
                     key={c.hex}
@@ -533,7 +532,7 @@ export function CVPreviewContainer({
                     aria-label={tr("preview.colors.colorLabel", { name: c.name })}
                     className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full transition-transform flex items-center justify-center ${
                       cv.theme.primaryColor?.toLowerCase() === c.hex.toLowerCase()
-                        ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
+                        ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-[#161b22] shadow-xs"
                         : "hover:scale-105 opacity-85 hover:opacity-100"
                     }`}
                     style={{ backgroundColor: c.hex }}
@@ -545,8 +544,8 @@ export function CVPreviewContainer({
                   title={tr("preview.colors.customColor")}
                   className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full cursor-pointer relative flex items-center justify-center transition-transform ${
                     !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
-                      ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-stone-900 shadow-xs"
-                      : "hover:scale-105 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-stone-600 bg-stone-100 dark:bg-stone-800"
+                      ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-[#161b22] shadow-xs"
+                      : "hover:scale-105 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-[#363d47] bg-stone-100 dark:bg-[#21262d]"
                   }`}
                   style={{
                     backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
@@ -562,7 +561,7 @@ export function CVPreviewContainer({
                     className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
                   />
                   {ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase()) && (
-                    <Pipette size={11} className="text-stone-500 dark:text-stone-400 pointer-events-none" />
+                    <Pipette size={11} className="text-stone-500 dark:text-[#8b949e] pointer-events-none" />
                   )}
                 </label>
               </div>
@@ -573,16 +572,16 @@ export function CVPreviewContainer({
           <div className="flex items-center justify-between gap-2 pt-0.5">
             {/* Left: Page count badge & Zoom controls with Auto-Fit & Grid */}
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+              <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
                 {pageCount} {pageCount === 1 ? tr("preview.toolbar.pageCountSingle") : tr("preview.toolbar.pageCountPlural")}
               </span>
 
-              <div className="flex items-center bg-stone-100 dark:bg-stone-800 rounded-full p-1 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 shadow-2xs shrink-0">
+              <div className="flex items-center bg-stone-100 dark:bg-[#21262d] rounded-full p-1 border border-stone-200 dark:border-[#363d47] text-stone-700 dark:text-[#c9d1d9] shadow-2xs shrink-0">
                 <button
                   onClick={() => handleZoomChange(-0.1)}
                   title={tr("preview.canvas.zoomOut")}
                   aria-label={tr("preview.canvas.zoomOut")}
-                  className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
+                  className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <ZoomOut size={13} />
                 </button>
@@ -593,7 +592,7 @@ export function CVPreviewContainer({
                   onClick={() => handleZoomChange(0.1)}
                   title={tr("preview.canvas.zoomIn")}
                   aria-label={tr("preview.canvas.zoomIn")}
-                  className="p-1 hover:text-stone-900 dark:hover:text-white min-w-[24px] min-h-[24px] flex items-center justify-center"
+                  className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
                 >
                   <ZoomIn size={13} />
                 </button>
@@ -601,10 +600,10 @@ export function CVPreviewContainer({
                   onClick={handleToggleAutoFit}
                   title={tr("preview.canvas.fitToScreen")}
                   aria-label={tr("preview.canvas.fitToScreen")}
-                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
+                  className={`p-1 border-l border-stone-200 dark:border-[#363d47] pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                     isAutoFit
                       ? "text-amber-700 dark:text-amber-400 font-bold"
-                      : "hover:text-stone-900 dark:hover:text-white text-stone-600 dark:text-stone-400"
+                      : "hover:text-stone-900 dark:hover:text-[#f0f3f6] text-stone-600 dark:text-[#8b949e]"
                   }`}
                 >
                   <Maximize2 size={12} />
@@ -613,10 +612,10 @@ export function CVPreviewContainer({
                   onClick={toggleGrid}
                   title={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
                   aria-label={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
-                  className={`p-1 border-l border-stone-200 dark:border-stone-700 pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
+                  className={`p-1 border-l border-stone-200 dark:border-[#363d47] pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                     showGrid
                       ? "text-amber-700 dark:text-amber-400 font-bold"
-                      : "hover:text-stone-900 dark:hover:text-white text-stone-600 dark:text-stone-400"
+                      : "hover:text-stone-900 dark:hover:text-[#f0f3f6] text-stone-600 dark:text-[#8b949e]"
                   }`}
                 >
                   <Grid size={12} />
@@ -642,7 +641,7 @@ export function CVPreviewContainer({
               <button
                 onClick={handleDownloadPng}
                 disabled={isExporting !== null}
-                className="hidden sm:flex items-center gap-1 text-xs font-semibold bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 px-3 py-1.5 rounded-full border border-stone-200 dark:border-stone-700 transition-all shadow-2xs disabled:opacity-50 shrink-0"
+                className="hidden sm:flex items-center gap-1 text-xs font-semibold bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs disabled:opacity-50 shrink-0"
               >
                 <ImageIcon size={13} />
                 <span>{tUI("pngBtn", lang)}</span>
@@ -706,7 +705,7 @@ export function CVPreviewContainer({
               transformOrigin: "center top",
               transition: isPanning ? "none" : "transform 0.15s ease-out",
             }}
-            className="relative shadow-2xl rounded-xs bg-white dark:bg-stone-900"
+            className="relative shadow-2xl rounded-xs bg-white dark:bg-[#161b22] dark:shadow-[0_12px_44px_rgba(0,0,0,0.8)] dark:ring-1 dark:ring-white/10"
           >
             <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={handleSectionSelect} />
 
@@ -743,18 +742,18 @@ export function CVPreviewContainer({
           onPointerUp={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="absolute bottom-4 right-4 z-20 flex items-center gap-1 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md border border-stone-200/80 dark:border-stone-800/80 shadow-lg rounded-full p-1 text-stone-700 dark:text-stone-300 transition-all duration-200 hover:shadow-xl"
+          className="absolute bottom-4 right-4 z-20 flex items-center gap-1 bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl"
         >
           {/* Hand / Pointer Mode Toggle (Desktop only) */}
-          <div className="hidden sm:flex items-center pr-1 border-r border-stone-200 dark:border-stone-700">
+          <div className="hidden sm:flex items-center pr-1 border-r border-stone-200 dark:border-[#363d47]">
             <button
               onClick={() => handleSetToolMode("pointer")}
               title={tr("preview.canvas.selectionMode")}
               aria-label={tr("preview.canvas.selectionMode")}
               className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
                 toolMode === "pointer"
-                  ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
-                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
+                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
+                  : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
               }`}
             >
               <MousePointer size={13} />
@@ -765,8 +764,8 @@ export function CVPreviewContainer({
               aria-label={tr("preview.canvas.panMode")}
               className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
                 toolMode === "hand"
-                  ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
-                  : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
+                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
+                  : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
               }`}
             >
               <Hand size={13} />
@@ -781,7 +780,7 @@ export function CVPreviewContainer({
             className={`p-1.5 rounded-full transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
               showGrid
                 ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold"
-                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
+                : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
             }`}
           >
             <Grid size={13} />
@@ -792,7 +791,7 @@ export function CVPreviewContainer({
             onClick={() => handleZoomChange(-0.1)}
             title={tr("preview.canvas.zoomOut")}
             aria-label={tr("preview.canvas.zoomOut")}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-stone-400"
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
           >
             <ZoomOut size={13} />
           </button>
@@ -805,7 +804,7 @@ export function CVPreviewContainer({
             }}
             title="100%"
             aria-label={tr("preview.canvas.resetZoom", { current: `${Math.round(zoom * 100)}%` })}
-            className="px-2 py-0.5 text-[11px] font-mono font-bold hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md transition-colors min-w-[42px] min-h-[28px] text-center text-stone-700 dark:text-stone-300 flex items-center justify-center"
+            className="px-2 py-0.5 text-[11px] font-mono font-bold hover:bg-stone-100 dark:hover:bg-[#21262d] rounded-md transition-colors min-w-[42px] min-h-[28px] text-center text-stone-700 dark:text-[#c9d1d9] flex items-center justify-center"
           >
             {Math.round(zoom * 100)}%
           </button>
@@ -815,7 +814,7 @@ export function CVPreviewContainer({
             onClick={() => handleZoomChange(0.1)}
             title={tr("preview.canvas.zoomIn")}
             aria-label={tr("preview.canvas.zoomIn")}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-stone-400"
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center text-stone-600 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
           >
             <ZoomIn size={13} />
           </button>
@@ -827,8 +826,8 @@ export function CVPreviewContainer({
             aria-label={tr("preview.canvas.fitToScreen")}
             className={`p-1.5 rounded-full transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
               isAutoFit
-                ? "bg-stone-200/80 dark:bg-stone-800 text-amber-700 dark:text-amber-400 font-bold"
-                : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
+                ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
+                : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
             }`}
           >
             <Maximize2 size={13} />
@@ -839,7 +838,7 @@ export function CVPreviewContainer({
             onClick={handleResetCanvas}
             title={tr("preview.canvas.resetView")}
             aria-label={tr("preview.canvas.resetView")}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <RotateCcw size={12} />
           </button>

@@ -34,7 +34,7 @@ export function HelpTooltip({ content, className = "", side = "top" }: Props) {
           setIsVisible((v) => !v);
         }}
         aria-label={tr("a11y.helpInfo", { content })}
-        className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 transition-colors p-1.5 min-w-[24px] min-h-[24px] flex items-center justify-center rounded-full focus:outline-hidden"
+        className="text-stone-500 hover:text-stone-700 dark:text-[#8b949e] dark:hover:text-[#f0f3f6] transition-colors p-1.5 min-w-[24px] min-h-[24px] flex items-center justify-center rounded-full focus:outline-hidden"
       >
         <HelpCircle size={13} />
       </button>
@@ -42,7 +42,7 @@ export function HelpTooltip({ content, className = "", side = "top" }: Props) {
       {isVisible && (
         <div
           role="tooltip"
-          className={`absolute z-50 px-2.5 py-1.5 text-[11px] font-normal text-white bg-stone-900/95 dark:bg-stone-800/95 backdrop-blur-md rounded-xl shadow-lg border border-stone-700/50 min-w-[140px] max-w-[220px] text-center leading-snug animate-in fade-in duration-150 pointer-events-none ${sideClasses[side]}`}
+          className={`absolute z-50 px-2.5 py-1.5 text-[11px] font-normal text-white bg-stone-900/95 dark:bg-[#161b22]/95 backdrop-blur-md rounded-xl shadow-lg border border-stone-700/50 dark:border-[#363d47] min-w-[140px] max-w-[220px] text-center leading-snug animate-in fade-in duration-150 pointer-events-none ${sideClasses[side]}`}
         >
           {content}
         </div>

@@ -213,7 +213,7 @@ export default function BuilderPage() {
         >
           {/* Left Column: Form / Code Editor Pane */}
           <div
-            className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-stone-900/30 border-r border-stone-200/70 dark:border-stone-800/70 overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
+            className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-[#161b22] border-r border-stone-200/70 dark:border-[#30363d] overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
               mobileTab === "edit" ? "block" : "hidden md:block"
             }`}
           >
@@ -221,23 +221,23 @@ export default function BuilderPage() {
               {/* Left Column Header Bar: Mode Switcher & Counter */}
               <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 dark:text-[#c9d1d9]">
                     {translate("builder.sections.title", activeLang)}
                   </span>
-                  <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-stone-800 text-stone-700 dark:text-stone-300 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-[#21262d] dark:border dark:border-[#363d47] text-stone-700 dark:text-[#f0f3f6] px-2 py-0.5 rounded-full">
                     {translate("builder.sections.counter", activeLang, { count: cv.sections.length + 1 })}
                   </span>
                 </div>
 
                 {/* Editor Mode Selector: [ Form ] | [ JSON ] | [ LaTeX ] */}
-                <div className="flex items-center bg-stone-200/80 dark:bg-stone-800 p-0.5 rounded-lg border border-stone-300/70 dark:border-stone-700/70 text-[11px] font-mono">
+                <div className="flex items-center bg-stone-200/80 dark:bg-[#0d1117] p-0.5 rounded-lg border border-stone-300/70 dark:border-[#363d47] text-[11px] font-mono">
                   <button
                     type="button"
                     onClick={() => setEditorMode("form")}
                     className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
                       editorMode === "form"
-                        ? "bg-white dark:bg-stone-700 text-stone-950 dark:text-stone-50 shadow-xs"
-                        : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
+                        ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-[#f0f3f6] shadow-xs dark:border dark:border-[#484f58]"
+                        : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
                     }`}
                   >
                     <FileText size={12} />
@@ -248,8 +248,8 @@ export default function BuilderPage() {
                     onClick={() => setEditorMode("json")}
                     className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
                       editorMode === "json"
-                        ? "bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-400 shadow-xs"
-                        : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
+                        ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs dark:border dark:border-[#484f58]"
+                        : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
                     }`}
                   >
                     <FileJson size={12} />
@@ -260,8 +260,8 @@ export default function BuilderPage() {
                     onClick={() => setEditorMode("latex")}
                     className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
                       editorMode === "latex"
-                        ? "bg-white dark:bg-stone-700 text-cyan-700 dark:text-cyan-400 shadow-xs"
-                        : "text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
+                        ? "bg-white dark:bg-[#21262d] text-cyan-700 dark:text-cyan-400 shadow-xs dark:border dark:border-[#484f58]"
+                        : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
                     }`}
                   >
                     <Code2 size={12} />
@@ -323,13 +323,13 @@ export default function BuilderPage() {
             className={`w-1 h-8 rounded-full transition-all flex items-center justify-center ${
               isDraggingSplit
                 ? "bg-white shadow-sm"
-                : "bg-stone-300 dark:bg-stone-700 group-hover:bg-amber-600 dark:group-hover:bg-amber-500"
+                : "bg-stone-300 dark:bg-[#363d47] group-hover:bg-amber-600 dark:group-hover:bg-amber-500"
             }`}
           />
 
           {/* Floating badge showing percentage on drag or hover */}
           <div
-            className={`absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-stone-900/90 dark:bg-stone-800/90 text-white text-[10px] font-mono font-bold whitespace-nowrap pointer-events-none shadow-md transition-opacity duration-150 ${
+            className={`absolute top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-stone-900/90 dark:bg-[#21262d] dark:border dark:border-[#363d47] text-white dark:text-[#f0f3f6] text-[10px] font-mono font-bold whitespace-nowrap pointer-events-none shadow-md transition-opacity duration-150 ${
               isDraggingSplit ? "opacity-100 scale-100" : "opacity-0 group-hover:opacity-100 scale-95"
             }`}
           >
@@ -356,14 +356,14 @@ export default function BuilderPage() {
       </main>
 
       {/* Mobile Floating Bottom Bar (iOS Native Style) */}
-      <div className="fixed md:hidden bottom-0 left-0 right-0 z-30 pb-safe px-4 py-2.5 bg-white/85 dark:bg-stone-900/85 backdrop-blur-lg border-t border-stone-200/70 dark:border-stone-800/70 shadow-lg flex justify-center">
-        <div className="flex bg-stone-100 dark:bg-stone-800 p-1 rounded-full border border-stone-200 dark:border-stone-700 w-full max-w-xs shadow-2xs">
+      <div className="fixed md:hidden bottom-0 left-0 right-0 z-30 pb-safe px-4 py-2.5 bg-white/85 dark:bg-[#161b22]/95 backdrop-blur-lg border-t border-stone-200/70 dark:border-[#30363d] shadow-lg flex justify-center">
+        <div className="flex bg-stone-100 dark:bg-[#0d1117] p-1 rounded-full border border-stone-200 dark:border-[#363d47] w-full max-w-xs shadow-2xs">
           <button
             onClick={() => setMobileTab("edit")}
             className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
               mobileTab === "edit"
-                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+                ? "bg-white dark:bg-[#21262d] dark:border dark:border-[#484f58] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
             <Pencil size={13} />
@@ -373,8 +373,8 @@ export default function BuilderPage() {
             onClick={() => setMobileTab("preview")}
             className={`flex-1 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
               mobileTab === "preview"
-                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+                ? "bg-white dark:bg-[#21262d] dark:border dark:border-[#484f58] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
             <Eye size={13} />

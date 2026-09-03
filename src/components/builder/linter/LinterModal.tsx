@@ -236,22 +236,22 @@ export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props)
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-stone-200/80 dark:border-stone-800 w-full sm:max-w-xl max-h-[90dvh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200 mx-auto"
+        className="bg-white dark:bg-[#161b22] rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-stone-200/80 dark:border-[#30363d] w-full sm:max-w-xl max-h-[90dvh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200 mx-auto"
       >
         {/* iOS Drag handle on mobile */}
         <div className="sm:hidden pt-3 pb-1 flex justify-center shrink-0">
-          <div className="w-10 h-1 rounded-full bg-stone-300 dark:bg-stone-700" />
+          <div className="w-10 h-1 rounded-full bg-stone-300 dark:bg-[#363d47]" />
         </div>
 
         {/* Pinned Header */}
-        <div className="px-5 py-3 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between bg-stone-50/70 dark:bg-stone-900/80 shrink-0">
+        <div className="px-5 py-3 border-b border-stone-200/70 dark:border-[#30363d] flex items-center justify-between bg-stone-50/70 dark:bg-[#161b22] shrink-0">
           <div className="flex items-center gap-2.5">
             <NanoBananaLogo size="sm" />
             <div>
-              <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm leading-tight">
+              <h3 className="font-bold text-stone-900 dark:text-[#f0f3f6] text-sm leading-tight">
                 {isPt ? "Auditoria de Qualidade ATS" : "ATS Quality Audit"}
               </h3>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400 font-mono">
+              <p className="text-[11px] text-stone-500 dark:text-[#8b949e] font-mono">
                 {passedChecks} / {totalChecks} {isPt ? "critérios cumpridos" : "criteria met"}
               </p>
             </div>
@@ -259,21 +259,21 @@ export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props)
           <button
             onClick={onClose}
             aria-label={isPt ? "Fechar" : "Close"}
-            className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-stone-800 transition-colors"
+            className="text-stone-400 hover:text-stone-700 dark:text-[#8b949e] dark:hover:text-[#f0f3f6] p-1.5 rounded-full hover:bg-stone-200/80 dark:hover:bg-[#21262d] transition-colors"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* View Switcher Tabs */}
-        <div className="flex items-center gap-1.5 px-5 py-2 bg-stone-100/70 dark:bg-stone-850 border-b border-stone-200/70 dark:border-stone-800/70 shrink-0">
+        <div className="flex items-center gap-1.5 px-5 py-2 bg-stone-100/70 dark:bg-[#0d1117] border-b border-stone-200/70 dark:border-[#30363d] shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab("report")}
             className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
               activeTab === "report"
-                ? "bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-2xs"
-                : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-300"
+                ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
+                : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
             }`}
           >
             <ShieldCheck size={13} className="text-amber-600 dark:text-amber-400" />
@@ -284,8 +284,8 @@ export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props)
             onClick={() => setActiveTab("ats")}
             className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
               activeTab === "ats"
-                ? "bg-white dark:bg-stone-800 text-amber-800 dark:text-amber-300 shadow-2xs"
-                : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-300"
+                ? "bg-white dark:bg-[#21262d] text-amber-800 dark:text-amber-300 shadow-2xs"
+                : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
             }`}
           >
             <Terminal size={13} className="text-emerald-600 dark:text-emerald-400" />
@@ -296,14 +296,14 @@ export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props)
         {activeTab === "report" ? (
           <>
             {/* Score Card Banner */}
-            <div className="px-5 py-3.5 bg-stone-50/50 dark:bg-stone-800/40 border-b border-stone-200/70 dark:border-stone-800/70 flex items-center gap-3.5 shrink-0">
+            <div className="px-5 py-3.5 bg-stone-50/50 dark:bg-[#161b22] border-b border-stone-200/70 dark:border-[#30363d] flex items-center gap-3.5 shrink-0">
               <div
                 className={`w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex flex-col items-center justify-center border shrink-0 ${scoreConfig.bg} ${scoreConfig.border}`}
               >
                 <span className={`text-xl font-black font-mono leading-none ${scoreConfig.color}`}>
                   {score}%
                 </span>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400 mt-0.5">
+                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e] mt-0.5">
                   Score
                 </span>
               </div>
@@ -314,14 +314,14 @@ export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props)
                     {scoreConfig.label}
                   </span>
                 </div>
-                <p className="text-xs text-stone-600 dark:text-stone-400 mt-0.5 leading-relaxed line-clamp-2">
+                <p className="text-xs text-stone-600 dark:text-[#c9d1d9] mt-0.5 leading-relaxed line-clamp-2">
                   {scoreConfig.desc}
                 </p>
               </div>
             </div>
 
             {/* Filter Pills */}
-            <div className="px-5 py-2.5 bg-white dark:bg-stone-900 border-b border-stone-200/50 dark:border-stone-800/50 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
+            <div className="px-5 py-2.5 bg-white dark:bg-[#161b22] border-b border-stone-200/50 dark:border-[#30363d] flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none">
               <FilterPill
                 label={isPt ? "Todos" : "All"}
                 count={issues.length}
@@ -473,13 +473,13 @@ export function LinterModal({ report, isOpen, onClose, lang = "en", cv }: Props)
         )}
 
         {/* Pinned Footer */}
-        <div className="px-5 py-3 border-t border-stone-200/70 dark:border-stone-800/70 bg-stone-50/70 dark:bg-stone-900/80 flex items-center justify-between shrink-0">
-          <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400">
+        <div className="px-5 py-3 border-t border-stone-200/70 dark:border-[#30363d] bg-stone-50/70 dark:bg-[#161b22] flex items-center justify-between shrink-0">
+          <span className="text-[11px] font-mono text-stone-500 dark:text-[#8b949e]">
             PAPYRUS ATS Engine v1.0
           </span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-full text-xs font-bold bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-white transition-colors"
+            className="px-4 py-1.5 rounded-full text-xs font-bold bg-stone-900 dark:bg-amber-700 text-white hover:bg-stone-800 dark:hover:bg-amber-800 transition-colors"
           >
             {isPt ? "Concluído" : "Done"}
           </button>
@@ -508,16 +508,16 @@ function FilterPill({
       onClick={onClick}
       className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
         active
-          ? "bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 shadow-2xs"
-          : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
+          ? "bg-stone-900 dark:bg-amber-700 text-white shadow-2xs"
+          : "bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#c9d1d9] hover:bg-stone-200 dark:hover:bg-[#30363d]"
       }`}
     >
       <span>{label}</span>
       <span
         className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
           active
-            ? "bg-white/20 dark:bg-stone-900/20 text-current"
-            : badgeColor || "text-stone-500 dark:text-stone-400 bg-stone-200/80 dark:bg-stone-700/80"
+            ? "bg-white/20 dark:bg-black/20 text-current"
+            : badgeColor || "text-stone-500 dark:text-[#8b949e] bg-stone-200/80 dark:bg-[#161b22]"
         }`}
       >
         {count}
@@ -576,19 +576,19 @@ function IssueCard({ issue, isPt }: { issue: LinterIssue; isPt: boolean }) {
             <span>{theme.badgeText}</span>
           </span>
 
-          <span className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
+          <span className="text-xs font-bold text-stone-900 dark:text-[#f0f3f6] truncate">
             {cleanTitle}
           </span>
         </div>
 
         {targetTag && (
-          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-white/80 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700/80 shrink-0 max-w-[160px] truncate">
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-white/80 dark:bg-[#21262d] text-stone-600 dark:text-[#c9d1d9] border border-stone-200/80 dark:border-[#363d47] shrink-0 max-w-[160px] truncate">
             {targetTag}
           </span>
         )}
       </div>
 
-      <p className="text-[11.5px] text-stone-600 dark:text-stone-400 leading-relaxed pl-0.5">
+      <p className="text-[11.5px] text-stone-600 dark:text-[#c9d1d9] leading-relaxed pl-0.5">
         {issue.message}
       </p>
     </div>

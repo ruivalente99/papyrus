@@ -35,15 +35,15 @@ export function LanguageSwitcher({
   return (
     <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
       {/* Pill Language Group */}
-      <div className="flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 sm:p-1 rounded-full border border-stone-200 dark:border-stone-700 shadow-2xs shrink-0">
+      <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] p-0.5 sm:p-1 rounded-full border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
         {availableLanguages.map((l) => (
           <button
             key={l.code}
             onClick={() => onSwitchLanguage(l.code)}
             className={`flex items-center gap-0.5 sm:gap-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold uppercase transition-all ${
               activeLang === l.code
-                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                : "text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
             <span>{l.code}</span>
@@ -55,7 +55,7 @@ export function LanguageSwitcher({
           title={tr("common.languages.addNewToCV")}
           aria-label={tr("common.languages.addNewToCV")}
           aria-expanded={showAdd}
-          className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 text-xs font-bold flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-700 transition-colors shrink-0 min-w-[24px] min-h-[24px]"
+          className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-stone-600 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] text-xs font-bold flex items-center justify-center rounded-full hover:bg-stone-200/60 dark:hover:bg-[#21262d] transition-colors shrink-0 min-w-[24px] min-h-[24px]"
         >
           <Plus size={12} />
         </button>
@@ -64,7 +64,7 @@ export function LanguageSwitcher({
       {showAdd && (
         <form
           onSubmit={handleAdd}
-          className="flex items-center gap-1.5 bg-white dark:bg-stone-800 p-1.5 rounded-full border border-stone-300 dark:border-stone-700 shadow-md text-xs animate-in fade-in duration-100"
+          className="flex items-center gap-1.5 bg-white dark:bg-[#161b22] p-1.5 rounded-full border border-stone-300 dark:border-[#30363d] shadow-md text-xs animate-in fade-in duration-100"
         >
           <input
             type="text"
@@ -72,7 +72,7 @@ export function LanguageSwitcher({
             aria-label={tr("common.languages.code")}
             value={newCode}
             onChange={(e) => setNewCode(e.target.value)}
-            className="w-14 px-2 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-full text-xs text-center font-bold uppercase"
+            className="w-14 px-2 py-1 border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-stone-900 dark:text-[#f0f3f6] rounded-full text-xs text-center font-bold uppercase"
             maxLength={3}
             required
           />
@@ -82,7 +82,7 @@ export function LanguageSwitcher({
             aria-label={tr("common.languages.name")}
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
-            className="w-24 px-2 py-1 border border-stone-200 dark:border-stone-700 dark:bg-stone-900 text-stone-900 dark:text-stone-100 rounded-full text-xs font-medium"
+            className="w-24 px-2 py-1 border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-stone-900 dark:text-[#f0f3f6] rounded-full text-xs font-medium"
             required
           />
           <button

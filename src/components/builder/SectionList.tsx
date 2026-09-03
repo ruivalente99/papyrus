@@ -228,7 +228,7 @@ export function SectionList({
   return (
     <div className="space-y-3.5 pb-12">
       {/* Quick Jump Pills & View Controls (Sticky Toolbar with Web Horizontal Scroll & Wrap) */}
-      <div className="sticky top-0 z-20 -mx-3 sm:-mx-5 px-3 sm:px-5 py-2 bg-stone-50/95 dark:bg-stone-900/95 backdrop-blur-md border-b border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between gap-1.5 shadow-2xs">
+      <div className="sticky top-0 z-20 -mx-3 sm:-mx-5 px-3 sm:px-5 py-2 bg-stone-50/95 dark:bg-[#161b22]/95 backdrop-blur-md border-b border-stone-200/70 dark:border-[#30363d] flex items-center justify-between gap-1.5 shadow-2xs">
         {/* Left Scroll Arrow (Desktop/Web) */}
         {!isWrapMode && canScrollLeft && (
           <button
@@ -236,7 +236,7 @@ export function SectionList({
             onClick={() => scrollPills("left")}
             title={tr("a11y.sectionList.scrollLeft")}
             aria-label={tr("a11y.sectionList.scrollLeft")}
-            className="hidden sm:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
+            className="hidden sm:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] border border-stone-300/80 dark:border-[#363d47] shadow-2xs shrink-0 transition-transform active:scale-90"
           >
             <ChevronLeft size={13} />
           </button>
@@ -261,7 +261,7 @@ export function SectionList({
             onClick={() => {
               if (!hasDragged.current) handleJumpTo("personal");
             }}
-            className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700/80 transition-all shadow-2xs shrink-0 active:scale-95"
+            className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] border border-stone-200/80 dark:border-[#363d47] transition-all shadow-2xs shrink-0 active:scale-95"
           >
             <User size={12} className="text-amber-600 dark:text-amber-400" />
             <span>{tr("builder.sections.personalInfo")}</span>
@@ -277,12 +277,12 @@ export function SectionList({
                 onClick={() => {
                   if (!hasDragged.current) handleJumpTo(section.id);
                 }}
-                className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200/80 dark:border-stone-700/80 transition-all shadow-2xs shrink-0 active:scale-95"
+                className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] border border-stone-200/80 dark:border-[#363d47] transition-all shadow-2xs shrink-0 active:scale-95"
               >
                 {getSectionIcon(section.type)}
                 <span className="truncate max-w-[130px]">{title}</span>
                 {count > 0 && (
-                  <span className="text-[9.5px] font-mono font-black bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 px-1.5 py-0.2 rounded-full ml-0.5">
+                  <span className="text-[9.5px] font-mono font-black bg-stone-100 dark:bg-[#161b22] text-stone-600 dark:text-[#c9d1d9] px-1.5 py-0.2 rounded-full ml-0.5">
                     {count}
                   </span>
                 )}
@@ -293,7 +293,7 @@ export function SectionList({
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95"
+            className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/20 dark:border-amber-500/40 transition-all shadow-2xs shrink-0 active:scale-95"
           >
             <Plus size={12} />
             <span>{tr("builder.sections.add")}</span>
@@ -307,7 +307,7 @@ export function SectionList({
             onClick={() => scrollPills("right")}
             title={tr("a11y.sectionList.scrollRight")}
             aria-label={tr("a11y.sectionList.scrollRight")}
-            className="hidden sm:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-stone-700/80 shadow-2xs shrink-0 transition-transform active:scale-90"
+            className="hidden sm:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] border border-stone-300/80 dark:border-[#363d47] shadow-2xs shrink-0 transition-transform active:scale-90"
           >
             <ChevronRight size={13} />
           </button>
@@ -323,8 +323,8 @@ export function SectionList({
             aria-label={isWrapMode ? tr("a11y.sectionList.wrapCarousel") : tr("a11y.sectionList.wrapAll")}
             className={`hidden md:flex items-center justify-center w-6 h-6 min-w-[24px] min-h-[24px] rounded-full border text-[11px] font-mono font-bold transition-all shadow-2xs ${
               isWrapMode
-                ? "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400 border-amber-400 dark:border-amber-700"
-                : "bg-white dark:bg-stone-800 text-stone-600 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-100 border-stone-200/80 dark:border-stone-700/80"
+                ? "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400 border-amber-400 dark:border-amber-500"
+                : "bg-white dark:bg-[#21262d] text-stone-600 hover:text-stone-800 dark:text-[#c9d1d9] dark:hover:text-[#f0f3f6] border-stone-200/80 dark:border-[#363d47]"
             }`}
           >
             {isWrapMode ? "⇄" : "⊞"}
@@ -336,7 +336,7 @@ export function SectionList({
             onClick={toggleExpandAll}
             title={areAllExpanded ? tr("a11y.sectionList.collapseAll") : tr("a11y.sectionList.expandAll")}
             aria-label={areAllExpanded ? tr("a11y.sectionList.collapseAll") : tr("a11y.sectionList.expandAll")}
-            className="flex items-center gap-1 text-[11px] font-bold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 bg-white dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80 px-2 py-1 rounded-full shadow-2xs shrink-0 active:scale-95 min-h-[24px]"
+            className="flex items-center gap-1 text-[11px] font-bold text-stone-600 hover:text-stone-900 dark:text-[#c9d1d9] dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] border border-stone-200/80 dark:border-[#363d47] px-2 py-1 rounded-full shadow-2xs shrink-0 active:scale-95 min-h-[24px]"
           >
             <ChevronsUpDown size={12} />
             <span className="hidden sm:inline">
@@ -349,10 +349,10 @@ export function SectionList({
       {/* 1. Personal Info Card */}
       <div
         id="section-personal"
-        className={`bg-white dark:bg-stone-900 rounded-2xl border shadow-xs transition-all duration-300 ${
+        className={`bg-white dark:bg-[#21262d] dark-elevation-card rounded-2xl border shadow-xs transition-all duration-300 ${
           isPersonalHighlighted
-            ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 border-amber-500 dark:border-amber-500 shadow-md scale-[1.01]"
-            : "border-stone-200 dark:border-stone-800"
+            ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-[#161b22] border-amber-500 dark:border-amber-500 shadow-md scale-[1.01]"
+            : "border-stone-200 dark:border-[#363d47]"
         }`}
       >
         <div
@@ -360,14 +360,14 @@ export function SectionList({
           className="p-4 flex items-center justify-between gap-2 cursor-pointer select-none"
         >
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-400 flex items-center justify-center font-bold shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-400 dark:border dark:border-amber-500/30 flex items-center justify-center font-bold shrink-0">
               <User size={16} />
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm truncate">
+              <h3 className="font-bold text-stone-900 dark:text-[#f0f3f6] text-sm truncate">
                 {tUI("personalInfo", lang)}
               </h3>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400 truncate">
+              <p className="text-[11px] text-stone-500 dark:text-[#8b949e] truncate">
                 {cv.personalInfo.fullName
                   ? `${cv.personalInfo.fullName} ${cv.personalInfo.headline ? `• ${t(cv.personalInfo.headline, lang, cv.defaultLanguage)}` : ""}`
                   : tr("builder.sections.summaries.personalDefault")}
@@ -376,14 +376,14 @@ export function SectionList({
           </div>
           <ChevronDown
             size={16}
-            className={`text-stone-400 transition-transform duration-200 shrink-0 ${
+            className={`text-stone-400 dark:text-[#8b949e] transition-transform duration-200 shrink-0 ${
               isPersonalExpanded ? "rotate-180" : ""
             }`}
           />
         </div>
 
         {isPersonalExpanded && (
-          <div className="px-5 pb-5 pt-1 border-t border-stone-100 dark:border-stone-800 animate-in fade-in duration-150">
+          <div className="px-5 pb-5 pt-1 border-t border-stone-100 dark:border-[#30363d] animate-in fade-in duration-150">
             <PersonalInfoForm
               data={cv.personalInfo}
               lang={lang}
@@ -419,7 +419,7 @@ export function SectionList({
         <button
           type="button"
           onClick={() => setIsAddModalOpen(true)}
-          className="w-full py-3.5 px-4 border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-amber-700 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 rounded-2xl text-stone-600 dark:text-stone-300 hover:text-amber-800 dark:hover:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-[0.99]"
+          className="w-full py-3.5 px-4 border-2 border-dashed border-stone-300 dark:border-[#363d47] hover:border-amber-700 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-[#21262d] rounded-2xl text-stone-600 dark:text-[#c9d1d9] hover:text-amber-800 dark:hover:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-[0.99]"
         >
           <Plus size={16} />
           <span>{tr("builder.sections.add")}</span>

@@ -160,13 +160,13 @@ export default function GuidePage() {
   ];
 
   return (
-    <div className="w-full min-h-screen overflow-x-clip bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 selection:bg-amber-500/20 touch-pan-y">
+    <div className="w-full min-h-screen overflow-x-clip bg-stone-50 dark:bg-[#0d1117] text-stone-900 dark:text-[#f0f3f6] selection:bg-amber-500/20 touch-pan-y">
       {/* Sticky Top Navbar */}
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 px-4 sm:px-8 py-3 transition-colors">
+      <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#161b22]/90 backdrop-blur-md border-b border-stone-200/80 dark:border-[#30363d] px-4 sm:px-8 py-3 transition-colors">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
           <Link
             href="/"
-            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white transition-colors group"
+            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] transition-colors group"
           >
             <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
             <span>{isPt ? "Voltar ao Editor" : "Back to Editor"}</span>
@@ -183,13 +183,13 @@ export default function GuidePage() {
           </div>
 
           {/* Language Toggle */}
-          <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-stone-800 p-1 rounded-full border border-stone-200 dark:border-stone-700">
+          <div className="flex items-center gap-1.5 bg-stone-100 dark:bg-[#0d1117] p-1 rounded-full border border-stone-200 dark:border-[#363d47]">
             <button
               onClick={() => setLang("pt")}
               className={`px-2.5 py-0.5 rounded-full text-xs font-bold transition-all ${
                 lang === "pt"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                  : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-200"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                  : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
               }`}
             >
               PT
@@ -198,8 +198,8 @@ export default function GuidePage() {
               onClick={() => setLang("en")}
               className={`px-2.5 py-0.5 rounded-full text-xs font-bold transition-all ${
                 lang === "en"
-                  ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                  : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-200"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                  : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
               }`}
             >
               EN
@@ -215,25 +215,25 @@ export default function GuidePage() {
           <span>{isPt ? "Demonstrações em Ação Real" : "Real Live Action Demos"}</span>
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-stone-950 dark:text-stone-50 mb-3 font-serif">
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-stone-950 dark:text-[#f0f3f6] mb-3 font-serif">
           {isPt ? "Como Construir o Teu CV no PAPYRUS" : "How to Build Your CV with PAPYRUS"}
         </h1>
 
-        <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed mb-6 max-w-2xl mx-auto">
+        <p className="text-stone-600 dark:text-[#c9d1d9] text-sm sm:text-base leading-relaxed mb-6 max-w-2xl mx-auto">
           {isPt
             ? "Vê exatamente como cada funcionalidade funciona em tempo real. Escolhe entre o modo Computador ou Telemóvel e acompanha as ações animadas."
             : "See exactly how each feature works in real time. Switch between Desktop and Mobile and watch the live action demos."}
         </p>
 
         {/* Device Switcher (Segmented Control) */}
-        <div className="inline-flex items-center p-1.5 bg-stone-200/80 dark:bg-stone-800/80 rounded-2xl border border-stone-300/70 dark:border-stone-700/70 shadow-xs gap-1.5 mb-6">
+        <div className="inline-flex items-center p-1.5 bg-stone-200/80 dark:bg-[#0d1117] rounded-2xl border border-stone-300/70 dark:border-[#363d47] shadow-xs gap-1.5 mb-6">
           <button
             type="button"
             onClick={() => setDeviceMode("web")}
             className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               deviceMode === "web"
-                ? "bg-white dark:bg-stone-700 text-stone-950 dark:text-stone-50 shadow-md scale-100"
-                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-[#f0f3f6] shadow-md scale-100"
+                : "text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
             <Monitor size={16} className={deviceMode === "web" ? "text-amber-600 dark:text-amber-400" : ""} />
@@ -245,8 +245,8 @@ export default function GuidePage() {
             onClick={() => setDeviceMode("mobile")}
             className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
               deviceMode === "mobile"
-                ? "bg-white dark:bg-stone-700 text-stone-950 dark:text-stone-50 shadow-md scale-100"
-                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-[#f0f3f6] shadow-md scale-100"
+                : "text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
             <Smartphone size={16} className={deviceMode === "mobile" ? "text-amber-600 dark:text-amber-400" : ""} />
@@ -263,8 +263,8 @@ export default function GuidePage() {
               onClick={() => setActiveStep(s.step)}
               className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${
                 activeStep === s.step
-                  ? "bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 border-transparent shadow-sm"
-                  : "bg-white/80 dark:bg-stone-900/80 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-800 hover:border-amber-500"
+                  ? "bg-stone-900 dark:bg-amber-700 text-white dark:text-white border-transparent shadow-sm"
+                  : "bg-white/80 dark:bg-[#161b22] text-stone-600 dark:text-[#c9d1d9] border-stone-200 dark:border-[#363d47] hover:border-amber-500"
               }`}
             >
               <span>{s.step}. {s.badge}</span>
@@ -286,7 +286,7 @@ export default function GuidePage() {
             <article
               key={item.step}
               id={`passo-${item.step}`}
-              className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-md overflow-hidden transition-all hover:shadow-xl scroll-mt-20"
+              className="bg-white dark:bg-[#161b22] rounded-3xl border border-stone-200 dark:border-[#30363d] shadow-md overflow-hidden transition-all hover:shadow-xl scroll-mt-20"
             >
               {/* Header Details */}
               <div className="p-6 sm:p-8 pb-4">
@@ -301,17 +301,17 @@ export default function GuidePage() {
                     </span>
                   </div>
 
-                  <span className="text-xs font-mono font-bold text-stone-400">
+                  <span className="text-xs font-mono font-bold text-stone-400 dark:text-[#8b949e]">
                     {item.step} / {steps.length}
                   </span>
                 </div>
 
-                <h2 className="text-xl sm:text-2xl font-bold text-stone-950 dark:text-stone-50 mb-2.5 flex items-center gap-2.5">
+                <h2 className="text-xl sm:text-2xl font-bold text-stone-950 dark:text-[#f0f3f6] mb-2.5 flex items-center gap-2.5">
                   <item.icon size={22} className="text-amber-600 dark:text-amber-400 shrink-0" />
                   <span>{item.title}</span>
                 </h2>
 
-                <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
+                <p className="text-stone-600 dark:text-[#c9d1d9] text-sm sm:text-base leading-relaxed">
                   {currentDesc}
                 </p>
 
@@ -320,7 +320,7 @@ export default function GuidePage() {
                   {item.tips.map((tip, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] border border-stone-200 dark:border-[#363d47]"
                     >
                       <CheckCircle2 size={12} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                       <span>{tip}</span>
@@ -333,16 +333,16 @@ export default function GuidePage() {
               <div className="px-4 sm:px-8 pb-8 pt-2">
                 {isWeb ? (
                   /* macOS Browser Mockup Frame for Web */
-                  <div className="rounded-2xl overflow-hidden border border-stone-300/80 dark:border-stone-700/80 bg-stone-100 dark:bg-stone-950 shadow-lg">
+                  <div className="rounded-2xl overflow-hidden border border-stone-300/80 dark:border-[#363d47] bg-stone-100 dark:bg-[#0d1117] shadow-lg">
                     {/* macOS Window Header */}
-                    <div className="flex items-center justify-between px-4 py-2.5 bg-stone-200/80 dark:bg-stone-800/80 border-b border-stone-300/70 dark:border-stone-700/70">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-stone-200/80 dark:bg-[#161b22] border-b border-stone-300/70 dark:border-[#30363d]">
                       <div className="flex items-center gap-1.5">
                         <div className="w-3 h-3 rounded-full bg-rose-500/90" />
                         <div className="w-3 h-3 rounded-full bg-amber-500/90" />
                         <div className="w-3 h-3 rounded-full bg-emerald-500/90" />
                       </div>
 
-                      <div className="flex items-center gap-1.5 px-4 py-0.5 rounded-md bg-white/70 dark:bg-stone-900/70 text-[11px] font-mono text-stone-500 dark:text-stone-400 border border-stone-300/50 dark:border-stone-700/50 max-w-xs truncate">
+                      <div className="flex items-center gap-1.5 px-4 py-0.5 rounded-md bg-white/70 dark:bg-[#0d1117] text-[11px] font-mono text-stone-500 dark:text-[#8b949e] border border-stone-300/50 dark:border-[#363d47] max-w-xs truncate">
                         <span>papyrus.app/editor</span>
                         <span className="text-stone-300 dark:text-stone-600">•</span>
                         <span className="text-amber-700 dark:text-amber-400 font-bold">{item.badge}</span>
@@ -384,12 +384,12 @@ export default function GuidePage() {
                   </div>
                 ) : (
                   /* Clean, Modern Mobile Action Card (No artificial notches or double phone bezels) */
-                  <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-stone-300/80 dark:border-stone-700/80 bg-stone-100 dark:bg-stone-900 shadow-lg">
+                  <div className="max-w-md mx-auto rounded-2xl overflow-hidden border border-stone-300/80 dark:border-[#363d47] bg-stone-100 dark:bg-[#0d1117] shadow-lg">
                     {/* Clean Header Bar */}
-                    <div className="flex items-center justify-between px-4 py-2 bg-stone-200/80 dark:bg-stone-800/80 border-b border-stone-300/70 dark:border-stone-700/70">
+                    <div className="flex items-center justify-between px-4 py-2 bg-stone-200/80 dark:bg-[#161b22] border-b border-stone-300/70 dark:border-[#30363d]">
                       <div className="flex items-center gap-2">
                         <Smartphone size={14} className="text-amber-600 dark:text-amber-400" />
-                        <span className="text-[11px] font-mono font-bold text-stone-700 dark:text-stone-300">
+                        <span className="text-[11px] font-mono font-bold text-stone-700 dark:text-[#c9d1d9]">
                           {isPt ? "Ecrã Mobile" : "Mobile View"}
                         </span>
                         <span className="text-stone-300 dark:text-stone-600">•</span>

@@ -22,20 +22,21 @@
 }
 
 .dark {
-  /* TypeUI Charm Palette (Dark Mode Foundation) */
-  --page: #0c0a09;
-  --card: #1c1917;
-  --card-soft: #171514;
-  --control-fill: #292524;
-  --band: #1c1917;
-  --heading: #fafaf9;
-  --body: #d6d3d1;
-  --body-subtle: #a8a29e;
+  /* TypeUI Charm Palette (High-Contrast Obsidian & Warm Slate) */
+  --page: #0d1117;
+  --surface-1: #161b22;
+  --card: #21262d;
+  --card-soft: #1c2128;
+  --control-fill: #0d1117;
+  --band: #161b22;
+  --heading: #f0f3f6;
+  --body: #c9d1d9;
+  --body-subtle: #8b949e;
   --brand: #f59e0b;
   --brand-light: #fbbf24;
-  --brand-soft: #451a03;
-  --border: #292524;
-  --border-subtle: #1f1d1b;
+  --brand-soft: rgba(245, 158, 11, 0.15);
+  --border: #363d47;
+  --border-subtle: #2d333b;
 }
 
 @layer base {
@@ -90,6 +91,18 @@
     border-color: #d97706;
     box-shadow: 0 0 0 1px #d97706;
   }
+
+  .dark input[type="text"]:focus,
+  .dark input[type="email"]:focus,
+  .dark input[type="tel"]:focus,
+  .dark input[type="url"]:focus,
+  .dark input[type="date"]:focus,
+  .dark select:focus,
+  .dark textarea:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 1.5px #f59e0b;
+  }
 }
 
 /* Hide scrollbars for clean horizontal pill bars */
@@ -127,8 +140,8 @@
 .dark .charm-bg-dynamic {
   background-color: var(--page);
   background-image: 
-    radial-gradient(at 15% 15%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
-    radial-gradient(at 85% 85%, rgba(217, 119, 6, 0.03) 0px, transparent 50%);
+    radial-gradient(at 15% 15%, rgba(245, 158, 11, 0.06) 0px, transparent 55%),
+    radial-gradient(at 85% 85%, rgba(56, 189, 248, 0.03) 0px, transparent 55%);
   background-attachment: fixed;
 }
 
@@ -145,13 +158,18 @@
   border-radius: 9999px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #44403c;
+  background: #363d47;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a29e;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #78716c;
+  background: #484f58;
+}
+
+/* Dark elevation card helper */
+.dark .dark-elevation-card {
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset, 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 /* Micro animations */

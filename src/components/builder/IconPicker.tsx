@@ -60,27 +60,27 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label={tr("builder.iconPicker.sectionIcon", { name: currentOption?.name || value || "Icon" })}
         aria-expanded={isOpen}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold shadow-2xs transition-all active:scale-98 min-h-[28px]"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-300 dark:border-[#363d47] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] text-xs font-semibold shadow-2xs transition-all active:scale-98 min-h-[28px]"
         title={tr("builder.iconPicker.title")}
       >
         <CurrentIcon size={14} className="text-amber-700 dark:text-amber-400 shrink-0" />
         <span className="truncate max-w-[85px]">{currentOption?.name || value || "Icon"}</span>
-        <ChevronDown size={12} className="text-stone-400" />
+        <ChevronDown size={12} className="text-stone-400 dark:text-[#8b949e]" />
       </button>
 
       {/* Popover Dropdown Grid */}
       {isOpen && (
-        <div className="absolute left-0 mt-1.5 w-72 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-stone-900 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-800 p-3 z-50 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute left-0 mt-1.5 w-72 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-[#161b22] rounded-2xl shadow-2xl border border-stone-200 dark:border-[#30363d] p-3 z-50 animate-in fade-in zoom-in-95 duration-150">
           {/* Search bar */}
           <div className="relative mb-2">
-            <Search size={13} className="absolute left-2.5 top-2.5 text-stone-400" />
+            <Search size={13} className="absolute left-2.5 top-2.5 text-stone-400 dark:text-[#8b949e]" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={tr("builder.iconPicker.search")}
               aria-label={tr("builder.iconPicker.search")}
-              className="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-stone-200 dark:border-[#363d47] bg-stone-50 dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] focus:outline-none focus:ring-2 focus:ring-amber-500"
               autoFocus
             />
             {search && (
@@ -89,7 +89,7 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
                 onClick={() => setSearch("")}
                 title={tr("builder.iconPicker.clear")}
                 aria-label={tr("builder.iconPicker.clear")}
-                className="absolute right-1.5 top-1.5 text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 min-w-[24px] min-h-[24px] flex items-center justify-center rounded-full"
+                className="absolute right-1.5 top-1.5 text-stone-500 hover:text-stone-700 dark:text-[#8b949e] dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center rounded-full"
               >
                 <X size={13} />
               </button>
@@ -97,7 +97,7 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
           </div>
 
           {/* Category Tabs */}
-          <div className="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-stone-100 dark:border-stone-800 text-[10.5px]">
+          <div className="flex gap-1 overflow-x-auto no-scrollbar pb-2 mb-2 border-b border-stone-100 dark:border-[#30363d] text-[10.5px]">
             {categories.map((c) => (
               <button
                 key={c.id}
@@ -106,7 +106,7 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
                 className={`px-2.5 py-0.5 rounded-full whitespace-nowrap font-bold transition-all ${
                   selectedCategory === c.id
                     ? "bg-amber-700 text-white shadow-2xs"
-                    : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
+                    : "bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#c9d1d9] hover:bg-stone-200 dark:hover:bg-[#30363d]"
                 }`}
               >
                 {c.label}
@@ -130,14 +130,14 @@ export function IconPicker({ value, onChange, lang = "en" }: Props) {
                   className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all text-center group ${
                     isSelected
                       ? "border-amber-700 dark:border-amber-500 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 shadow-xs"
-                      : "border-stone-100 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300"
+                      : "border-stone-100 dark:border-[#30363d] hover:border-stone-300 dark:hover:border-[#363d47] hover:bg-stone-50 dark:hover:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9]"
                   }`}
                   title={item.name}
                 >
                   <IconComp
                     size={16}
                     className={`transition-transform group-hover:scale-115 ${
-                      isSelected ? "text-amber-700 dark:text-amber-400" : "text-stone-600 dark:text-stone-400"
+                      isSelected ? "text-amber-700 dark:text-amber-400" : "text-stone-600 dark:text-[#8b949e]"
                     }`}
                   />
                   <span className="text-[9px] mt-1 line-clamp-1 w-full font-medium">

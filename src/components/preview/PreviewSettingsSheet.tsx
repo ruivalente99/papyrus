@@ -111,20 +111,20 @@ export function PreviewSettingsSheet({
       {/* Bottom Sheet Modal Container */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-stone-900 rounded-t-3xl border-t border-stone-200/80 dark:border-stone-800 shadow-2xl w-full max-h-[88vh] overflow-y-auto pb-safe animate-in slide-in-from-bottom-6 duration-200"
+        className="bg-white dark:bg-[#161b22] rounded-t-3xl border-t border-stone-200/80 dark:border-[#30363d] shadow-2xl w-full max-h-[88vh] overflow-y-auto pb-safe animate-in slide-in-from-bottom-6 duration-200"
       >
         {/* iOS Pull Indicator */}
         <div className="pt-3 pb-1 flex justify-center">
-          <div className="w-10 h-1 rounded-full bg-stone-300 dark:bg-stone-700" />
+          <div className="w-10 h-1 rounded-full bg-stone-300 dark:bg-[#363d47]" />
         </div>
 
         {/* Sheet Header */}
-        <div className="px-5 py-3 flex items-center justify-between border-b border-stone-100 dark:border-stone-800/80">
+        <div className="px-5 py-3 flex items-center justify-between border-b border-stone-100 dark:border-[#30363d]">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center">
               <Palette size={15} />
             </div>
-            <h2 id="preview-settings-title" className="text-base font-bold text-stone-900 dark:text-stone-100">
+            <h2 id="preview-settings-title" className="text-base font-bold text-stone-900 dark:text-[#f0f3f6]">
               {tUI("customizeModalTitle", lang)}
             </h2>
           </div>
@@ -132,7 +132,7 @@ export function PreviewSettingsSheet({
             onClick={onClose}
             title={tr("common.actions.close")}
             aria-label={tr("preview.settingsSheet.close")}
-            className="p-1.5 rounded-full text-stone-500 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
+            className="p-1.5 rounded-full text-stone-500 hover:text-stone-700 dark:text-[#8b949e] dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <X size={18} />
           </button>
@@ -143,7 +143,7 @@ export function PreviewSettingsSheet({
           {/* 1. Template Selection */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
                 {tUI("layoutTemplate", lang)}
               </span>
               <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold font-mono">
@@ -166,21 +166,21 @@ export function PreviewSettingsSheet({
                     onClick={() => onSetTemplate(tmpl.id)}
                     className={`flex flex-col items-center justify-center text-center p-3 rounded-2xl border transition-all active:scale-95 ${
                       isSelected
-                        ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-600 dark:border-amber-500 text-stone-900 dark:text-stone-100 shadow-xs ring-1 ring-amber-500/30"
-                        : "bg-stone-50/80 dark:bg-stone-800/60 border-stone-200/80 dark:border-stone-700/80 text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                        ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-600 dark:border-amber-500 text-stone-900 dark:text-[#f0f3f6] shadow-xs ring-1 ring-amber-500/30"
+                        : "bg-stone-50/80 dark:bg-[#21262d] border-stone-200/80 dark:border-[#363d47] text-stone-600 dark:text-[#c9d1d9] hover:bg-stone-100 dark:hover:bg-[#30363d]"
                     }`}
                   >
                     <div
                       className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2 transition-colors ${
                         isSelected
                           ? "bg-amber-600 text-white shadow-xs"
-                          : "bg-stone-200/70 dark:bg-stone-700/70 text-stone-600 dark:text-stone-300"
+                          : "bg-stone-200/70 dark:bg-[#161b22] text-stone-600 dark:text-[#c9d1d9]"
                       }`}
                     >
                       <Icon size={18} />
                     </div>
                     <span className="text-xs font-bold leading-tight">{tmpl.name}</span>
-                    <span className="text-[10px] text-stone-400 dark:text-stone-500 leading-tight mt-0.5 line-clamp-1">
+                    <span className="text-[10px] text-stone-400 dark:text-[#8b949e] leading-tight mt-0.5 line-clamp-1">
                       {tmpl.subtitle}
                     </span>
                   </button>
@@ -192,12 +192,12 @@ export function PreviewSettingsSheet({
           {/* 2. Spacing / Density Selection */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
                 {tUI("densitySpacing", lang)}
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 bg-stone-100/90 dark:bg-stone-800/80 p-1.5 rounded-2xl border border-stone-200/80 dark:border-stone-700/80">
+            <div className="grid grid-cols-3 gap-2 bg-stone-100/90 dark:bg-[#0d1117] p-1.5 rounded-2xl border border-stone-200/80 dark:border-[#363d47]">
               {DENSITIES.map((d) => {
                 const isSelected = currentDensity === d.id;
                 return (
@@ -206,8 +206,8 @@ export function PreviewSettingsSheet({
                     onClick={() => onUpdateTheme({ fontSize: d.id })}
                     className={`py-2 px-2 rounded-xl text-xs font-bold transition-all text-center flex flex-col items-center justify-center ${
                       isSelected
-                        ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-xs"
-                        : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200"
+                        ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                        : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                     }`}
                   >
                     <span>{d.label}</span>
@@ -221,15 +221,15 @@ export function PreviewSettingsSheet({
           {/* 3. Accent Color Palette */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
                 {tUI("accentColor", lang)}
               </span>
-              <span className="text-[11px] font-mono text-stone-400">
+              <span className="text-[11px] font-mono text-stone-400 dark:text-[#8b949e]">
                 {ACCENT_COLORS.find((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())?.name || currentColor}
               </span>
             </div>
 
-            <div className="flex items-center justify-between gap-2 p-3 bg-stone-50/80 dark:bg-stone-800/50 rounded-2xl border border-stone-200/80 dark:border-stone-700/80 overflow-x-auto no-scrollbar">
+            <div className="flex items-center justify-between gap-2 p-3 bg-stone-50/80 dark:bg-[#0d1117] rounded-2xl border border-stone-200/80 dark:border-[#363d47] overflow-x-auto no-scrollbar">
               {ACCENT_COLORS.map((c) => {
                 const isSelected = currentColor?.toLowerCase() === c.hex.toLowerCase();
                 return (
@@ -240,7 +240,7 @@ export function PreviewSettingsSheet({
                     aria-label={tr("preview.colors.colorLabel", { name: c.name })}
                     className={`w-9 h-9 rounded-full transition-transform flex items-center justify-center shrink-0 active:scale-90 ${
                       isSelected
-                        ? "scale-110 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 shadow-md"
+                        ? "scale-110 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-[#161b22] shadow-md"
                         : "hover:scale-105 opacity-90 hover:opacity-100"
                     }`}
                     style={{ backgroundColor: c.hex }}
@@ -255,12 +255,12 @@ export function PreviewSettingsSheet({
                 title={tr("preview.colors.customColor")}
                 className={`h-9 px-3 rounded-full flex items-center gap-1.5 cursor-pointer transition-all border shrink-0 text-xs font-bold active:scale-90 ${
                   !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())
-                    ? "scale-105 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-stone-900 shadow-md bg-stone-100 dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                    : "hover:scale-105 opacity-90 hover:opacity-100 border-dashed border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-300"
+                    ? "scale-105 ring-3 ring-amber-500 ring-offset-2 dark:ring-offset-[#161b22] shadow-md bg-stone-100 dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] border-[#363d47]"
+                    : "hover:scale-105 opacity-90 hover:opacity-100 border-dashed border-stone-300 dark:border-[#363d47] text-stone-600 dark:text-[#c9d1d9]"
                 }`}
               >
                 <div
-                  className="w-4 h-4 rounded-full border border-stone-300 dark:border-stone-600 shrink-0"
+                  className="w-4 h-4 rounded-full border border-stone-300 dark:border-[#363d47] shrink-0"
                   style={{
                     backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())
                       ? currentColor
@@ -274,7 +274,7 @@ export function PreviewSettingsSheet({
                   onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
                   className="opacity-0 absolute w-0 h-0"
                 />
-                <Pipette size={13} className="text-stone-500" />
+                <Pipette size={13} className="text-stone-500 dark:text-[#8b949e]" />
                 <span>{tr("preview.colors.custom")}</span>
               </label>
             </div>
@@ -282,10 +282,10 @@ export function PreviewSettingsSheet({
         </div>
 
         {/* Sheet Footer */}
-        <div className="px-5 pt-2 pb-5 border-t border-stone-100 dark:border-stone-800 flex justify-end">
+        <div className="px-5 pt-2 pb-5 border-t border-stone-100 dark:border-[#30363d] flex justify-end">
           <button
             onClick={onClose}
-            className="w-full py-3 bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-bold text-sm rounded-2xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            className="w-full py-3 bg-amber-700 hover:bg-amber-800 text-white font-bold text-sm rounded-2xl shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2"
           >
             <Sparkles size={16} />
             <span>{tr("common.actions.done")}</span>

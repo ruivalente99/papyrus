@@ -22,7 +22,7 @@ export function NanoBananaLogo({ size = "md", className = "", glow = false }: Pr
     <div
       className={`relative flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-active:scale-95 ${
         current.box
-      } bg-amber-500/10 dark:bg-stone-900 border border-amber-300/70 dark:border-stone-800 text-amber-600 dark:text-amber-400 ${
+      } bg-amber-500/10 dark:bg-[#161b22] border border-amber-300/70 dark:border-[#363d47] text-amber-600 dark:text-amber-400 ${
         glow
           ? "shadow-sm shadow-amber-500/20 dark:shadow-amber-500/10"
           : "shadow-2xs"
