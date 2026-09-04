@@ -61,7 +61,7 @@ export function SectionList({
     personal: true,
   });
 
-  const { t: tr } = useTranslation(lang);
+  const { t: tr } = useTranslation();
 
   // Auto-expand when highlighted from preview click
   React.useEffect(() => {

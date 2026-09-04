@@ -104,9 +104,11 @@ export default function BuilderPage() {
 
   const {
     cv,
-    activeLang,
-    switchLanguage,
-    addLanguage,
+    uiLang,
+    setUiLang,
+    cvLang,
+    switchCvLanguage,
+    addCvLanguage,
     updatePersonalInfo,
     setTemplate,
     updateTheme,
@@ -168,21 +170,25 @@ export default function BuilderPage() {
         activeCv={cv}
         hasCachedDoc={hasCachedDoc}
         onImportJson={importJson}
-        lang={activeLang}
-        onSwitchLang={switchLanguage}
+        uiLang={uiLang}
+        cvLang={cvLang}
+        onSwitchUiLang={setUiLang}
+        onSwitchLang={switchCvLanguage}
       />
     );
   }
 
   return (
-    <I18nProvider lang={activeLang} onLanguageChange={switchLanguage}>
+    <I18nProvider lang={uiLang} onLanguageChange={setUiLang}>
       <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
         {/* Top Application Header */}
         <BuilderHeader
           cv={cv}
-          activeLang={activeLang}
-          onSwitchLanguage={switchLanguage}
-          onAddLanguage={addLanguage}
+          uiLang={uiLang}
+          cvLang={cvLang}
+          onSwitchUiLang={setUiLang}
+          onSwitchCvLang={switchCvLanguage}
+          onAddCvLanguage={addCvLanguage}
           onLoadPreset={loadPreset}
           onOpenSetup={openSetup}
           onImportJson={importJson}
@@ -201,7 +207,7 @@ export default function BuilderPage() {
         <main
           id="main-content"
           role="main"
-          aria-label={translate("a11y.mainContent", activeLang)}
+          aria-label={translate("a11y.mainContent", uiLang)}
           ref={splitContainerRef}
           style={
             {
@@ -224,10 +230,10 @@ export default function BuilderPage() {
               <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 dark:text-[#c9d1d9]">
-                    {translate("builder.sections.title", activeLang)}
+                    {translate("builder.sections.title", uiLang)}
                   </span>
                   <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-[#21262d] dark:border dark:border-[#363d47] text-stone-700 dark:text-[#f0f3f6] px-2 py-0.5 rounded-full">
-                    {translate("builder.sections.counter", activeLang, { count: cv.sections.length + 1 })}
+                    {translate("builder.sections.counter", uiLang, { count: cv.sections.length + 1 })}
                   </span>
                 </div>
 
@@ -243,7 +249,7 @@ export default function BuilderPage() {
                     }`}
                   >
                     <FileText size={12} />
-                    <span>{translate("builder.modes.form", activeLang)}</span>
+                    <span>{translate("builder.modes.form", uiLang)}</span>
                   </button>
                   <button
                     type="button"
@@ -255,7 +261,7 @@ export default function BuilderPage() {
                     }`}
                   >
                     <FileJson size={12} />
-                    <span>{translate("builder.modes.json", activeLang)}</span>
+                    <span>{translate("builder.modes.json", uiLang)}</span>
                   </button>
                   <button
                     type="button"
@@ -267,7 +273,7 @@ export default function BuilderPage() {
                     }`}
                   >
                     <Code2 size={12} />
-                    <span>{translate("builder.modes.latex", activeLang)}</span>
+                    <span>{translate("builder.modes.latex", uiLang)}</span>
                   </button>
                 </div>
               </div>
@@ -276,7 +282,7 @@ export default function BuilderPage() {
             {editorMode === "form" ? (
               <SectionList
                 cv={cv}
-                lang={activeLang}
+                lang={cvLang}
                 highlightedSectionId={highlightedSectionId}
                 onUpdatePersonalInfo={updatePersonalInfo}
                 onUpdateSection={updateSection}
@@ -289,7 +295,7 @@ export default function BuilderPage() {
               <div className="h-[calc(100dvh-175px)] md:h-[calc(100vh-145px)]">
                 <CodeEditorPane
                   cv={cv}
-                  lang={activeLang}
+                  lang={cvLang}
                   mode={editorMode}
                   onUpdateFromJson={updateFromJson}
                   onClose={() => setEditorMode("form")}
@@ -303,7 +309,7 @@ export default function BuilderPage() {
         <div
           role="separator"
           data-testid="split-resizer"
-          aria-label={translate("a11y.splitResizer", activeLang)}
+          aria-label={translate("a11y.splitResizer", uiLang)}
           aria-orientation="vertical"
           aria-valuenow={Math.round(splitRatio)}
           aria-valuemin={25}
@@ -313,7 +319,7 @@ export default function BuilderPage() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onDoubleClick={handleResetSplit}
-          title={translate("a11y.splitResizer", activeLang)}
+          title={translate("a11y.splitResizer", uiLang)}
           className={`hidden md:flex w-1.5 hover:w-2 -ml-0.5 -mr-0.5 z-20 cursor-col-resize items-center justify-center transition-all group ${
             isDraggingSplit
               ? "bg-amber-500 w-2"
@@ -347,7 +353,7 @@ export default function BuilderPage() {
         >
           <CVPreviewContainer
             cv={cv}
-            lang={activeLang}
+            lang={cvLang}
             onSetTemplate={setTemplate}
             onUpdateTheme={updateTheme}
             onExportJson={exportJson}
@@ -370,7 +376,7 @@ export default function BuilderPage() {
             }`}
           >
             <Pencil size={13} />
-            <span>{tUI("editTab", activeLang)}</span>
+            <span>{tUI("editTab", uiLang)}</span>
           </button>
           <button
             type="button"
@@ -382,7 +388,7 @@ export default function BuilderPage() {
             }`}
           >
             <Eye size={13} />
-            <span>{tUI("previewTab", activeLang)}</span>
+            <span>{tUI("previewTab", uiLang)}</span>
           </button>
         </div>
       </div>
@@ -391,10 +397,10 @@ export default function BuilderPage() {
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
-        lang={activeLang}
+        lang={uiLang}
         onSelectTemplate={setTemplate}
         onSetDensity={(d) => updateTheme({ fontSize: d })}
-        onSwitchLanguage={switchLanguage}
+        onSwitchLanguage={setUiLang}
         onToggleTheme={toggleTheme}
         onToggleGrid={() => {
           const gridBtn = document.querySelector(

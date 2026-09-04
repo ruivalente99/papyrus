@@ -35,6 +35,9 @@ interface Props {
   activeCv?: CVDocument;
   hasCachedDoc?: boolean;
   onImportJson: (cv: CVDocument) => void;
+  uiLang?: SupportedLanguage;
+  cvLang?: SupportedLanguage;
+  onSwitchUiLang?: (lang: SupportedLanguage) => void;
   lang?: SupportedLanguage;
   onSwitchLang?: (lang: SupportedLanguage) => void;
 }
@@ -47,17 +50,25 @@ export function SetupScreen({
   activeCv,
   hasCachedDoc = false,
   onImportJson,
-  lang = "en",
+  uiLang: initialUiLang,
+  cvLang: initialCvLang,
+  onSwitchUiLang,
+  lang = "pt",
   onSwitchLang,
 }: Props) {
-  const [uiLang, setUiLang] = useState<SupportedLanguage>(lang);
+  const [currentUiLang, setCurrentUiLang] = useState<SupportedLanguage>(
+    initialUiLang || (lang === "pt" || lang === "en" ? lang : "pt")
+  );
+  const [cvTargetLang, setCvTargetLang] = useState<SupportedLanguage>(
+    initialCvLang || activeCv?.currentLanguage || "en"
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { confirmAction } = useToast();
 
-  const isPt = uiLang === "pt";
+  const isPt = currentUiLang === "pt";
 
   // Drag & drop handlers
   const handleDragOver = (e: React.DragEvent) => {
@@ -139,12 +150,10 @@ export function SetupScreen({
     }
   };
 
-  const [cvTargetLang, setCvTargetLang] = useState<SupportedLanguage>(lang);
-
-  const handleLanguageToggle = (newLang: SupportedLanguage) => {
-    setUiLang(newLang);
-    setCvTargetLang(newLang);
-    if (onSwitchLang) onSwitchLang(newLang);
+  const handleUiLanguageToggle = (newLang: SupportedLanguage) => {
+    setCurrentUiLang(newLang);
+    if (onSwitchUiLang) onSwitchUiLang(newLang);
+    else if (onSwitchLang) onSwitchLang(newLang);
   };
 
   const handleStartManual = (isDemo: boolean = false) => {
@@ -178,12 +187,12 @@ export function SetupScreen({
 
         {/* Controls: Theme & Language */}
         <div className="flex items-center gap-2">
-          <ThemeSelector lang={uiLang} />
+          <ThemeSelector lang={currentUiLang} />
 
           <LanguageSwitcher
-            activeLang={uiLang}
-            availableLanguages={activeCv?.availableLanguages}
-            onSwitchLanguage={handleLanguageToggle}
+            variant="ui"
+            activeLang={currentUiLang}
+            onSwitchLanguage={handleUiLanguageToggle}
           />
         </div>
       </header>
@@ -332,8 +341,10 @@ export function SetupScreen({
               </span>
             </div>
             <LanguageSwitcher
+              variant="cv"
               activeLang={cvTargetLang}
               allowAll={true}
+              uiLang={currentUiLang}
               onSwitchLanguage={(newLang) => setCvTargetLang(newLang)}
             />
           </div>

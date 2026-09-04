@@ -15,7 +15,7 @@ interface Props {
 
 export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
   const [newSkillInput, setNewSkillInput] = useState<{ [catId: string]: string }>({});
-  const { t: tr } = useTranslation(lang);
+  const { t: tr } = useTranslation();
 
   const handleAddCategory = () => {
     const newCat: SkillCategory = {

@@ -21,6 +21,7 @@ import { generateId } from "@/lib/utils";
 
 const STORAGE_KEY = "papyrus_active_document";
 const SETUP_COMPLETED_KEY = "papyrus_setup_completed";
+const UI_LANG_STORAGE_KEY = "papyrus_ui_lang";
 
 export interface HistoryEntry {
   id: string;
@@ -31,7 +32,7 @@ export interface HistoryEntry {
 
 export function useCV() {
   const [cv, setCvState] = useState<CVDocument>(technicalLatexSeed);
-  const [activeLang, setActiveLang] = useState<SupportedLanguage>("en");
+  const [uiLang, setUiLangState] = useState<SupportedLanguage>("pt");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSetupOpen, setIsSetupOpen] = useState(false);
   const [hasCachedDoc, setHasCachedDoc] = useState(false);
@@ -43,8 +44,11 @@ export function useCV() {
   const cvRef = useRef(cv);
   cvRef.current = cv;
 
-  const activeLangRef = useRef(activeLang);
-  activeLangRef.current = activeLang;
+  const cvLang: SupportedLanguage = cv.currentLanguage || cv.defaultLanguage || "en";
+  const activeLang = cvLang;
+
+  const uiLangRef = useRef(uiLang);
+  uiLangRef.current = uiLang;
 
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const burstBaseStateRef = useRef<CVDocument | null>(null);
@@ -58,7 +62,7 @@ export function useCV() {
     setFuture([]);
 
     const fallbackLabel =
-      activeLangRef.current === "pt" ? "Edição no documento" : "Document edit";
+      uiLangRef.current === "pt" ? "Edição no documento" : "Document edit";
 
     setHistory((prev) => {
       const entry: HistoryEntry = {
@@ -172,18 +176,13 @@ export function useCV() {
     if (!target) return;
     if (cvRef.current) {
       const preLabel =
-        activeLangRef.current === "pt"
+        uiLangRef.current === "pt"
           ? "Antes de restaurar versão"
           : "Before restoring version";
       commitSnapshot(cvRef.current, preLabel);
     }
     isUndoRedoActionRef.current = true;
     setCvState(target.snapshot);
-
-    const targetLang = (target.snapshot.currentLanguage || target.snapshot.defaultLanguage) as SupportedLanguage;
-    if (targetLang) {
-      setActiveLang(targetLang);
-    }
 
     setTimeout(() => {
       isUndoRedoActionRef.current = false;
@@ -193,6 +192,11 @@ export function useCV() {
   // Load from LocalStorage on mount
   useEffect(() => {
     try {
+      const savedUiLang = localStorage.getItem(UI_LANG_STORAGE_KEY);
+      if (savedUiLang) {
+        setUiLangState(savedUiLang);
+      }
+
       const isCompleted = localStorage.getItem(SETUP_COMPLETED_KEY);
       const saved =
         localStorage.getItem(STORAGE_KEY) ||
@@ -214,7 +218,6 @@ export function useCV() {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id && parsed.sections) {
           setCv(parsed);
-          setActiveLang(parsed.currentLanguage || parsed.defaultLanguage || "en");
           setHasCachedDoc(true);
           setIsSetupOpen(false);
           try {
@@ -237,38 +240,51 @@ export function useCV() {
     } finally {
       setIsLoaded(true);
     }
-  }, []);
+  }, [setCv]);
 
   // Auto-save to LocalStorage on update
   useEffect(() => {
     if (!isLoaded || isSetupOpen) return;
     try {
-      const updatedCv = { ...cv, currentLanguage: activeLang, updatedAt: new Date().toISOString() };
+      const updatedCv = { ...cv, currentLanguage: cvLang, updatedAt: new Date().toISOString() };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCv));
       localStorage.setItem(SETUP_COMPLETED_KEY, "true");
       setHasCachedDoc(true);
     } catch (e) {
       console.warn("Failed to save CV to localStorage:", e);
     }
-  }, [cv, activeLang, isLoaded, isSetupOpen]);
+  }, [cv, cvLang, isLoaded, isSetupOpen]);
 
-  // Set active language
-  const switchLanguage = useCallback((lang: SupportedLanguage) => {
-    setActiveLang(lang);
-    setCv((prev) => ({ ...prev, currentLanguage: lang }));
+  // Set UI / application interface language (does not alter CV content)
+  const setUiLang = useCallback((lang: SupportedLanguage) => {
+    setUiLangState(lang);
+    try {
+      localStorage.setItem(UI_LANG_STORAGE_KEY, lang);
+    } catch {}
   }, []);
 
-  // Add new language to document
-  const addLanguage = useCallback((code: string, label: string) => {
+  // Set active CV document content language (never mutates uiLang)
+  const switchCvLanguage = useCallback((lang: SupportedLanguage) => {
+    setCv((prev) => ({ ...prev, currentLanguage: lang }));
+  }, [setCv]);
+
+  // Add new language to CV document (never mutates uiLang)
+  const addCvLanguage = useCallback((code: string, label: string) => {
     setCv((prev) => {
-      if (prev.availableLanguages.some((l) => l.code === code)) return prev;
+      const exists = prev.availableLanguages.some((l) => l.code === code);
       return {
         ...prev,
-        availableLanguages: [...prev.availableLanguages, { code, label }],
+        currentLanguage: code,
+        availableLanguages: exists
+          ? prev.availableLanguages
+          : [...prev.availableLanguages, { code, label }],
       };
     });
-    setActiveLang(code);
-  }, []);
+  }, [setCv]);
+
+  // Compatibility aliases
+  const switchLanguage = switchCvLanguage;
+  const addLanguage = addCvLanguage;
 
   // Update Personal Info
   const updatePersonalInfo = useCallback(
@@ -462,13 +478,12 @@ export function useCV() {
     const found = PRESET_SEEDS.find((p) => p.id === presetId);
     if (found) {
       setCv(found.cv);
-      setActiveLang(found.cv.defaultLanguage || "en");
       setIsSetupOpen(false);
       localStorage.setItem(SETUP_COMPLETED_KEY, "true");
       localStorage.setItem(STORAGE_KEY, JSON.stringify(found.cv));
       setHasCachedDoc(true);
     }
-  }, []);
+  }, [setCv]);
 
   // Import / Export JSON
   const importJson = useCallback((jsonData: CVDocument) => {
@@ -476,12 +491,11 @@ export function useCV() {
       throw new Error("Invalid JSON CV Document structure");
     }
     setCv(jsonData);
-    setActiveLang(jsonData.currentLanguage || jsonData.defaultLanguage || "en");
     setIsSetupOpen(false);
     localStorage.setItem(SETUP_COMPLETED_KEY, "true");
     localStorage.setItem(STORAGE_KEY, JSON.stringify(jsonData));
     setHasCachedDoc(true);
-  }, []);
+  }, [setCv]);
 
   const exportJson = useCallback(() => {
     const jsonStr = JSON.stringify(cv, null, 2);
@@ -530,12 +544,11 @@ export function useCV() {
 
   const completeSetup = useCallback((newCv: CVDocument) => {
     setCv(newCv);
-    setActiveLang(newCv.defaultLanguage || "en");
     setIsSetupOpen(false);
     localStorage.setItem(SETUP_COMPLETED_KEY, "true");
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newCv));
     setHasCachedDoc(true);
-  }, []);
+  }, [setCv]);
 
   const updateFromJson = useCallback(
     (jsonString: string): { success: boolean; error?: string } => {
@@ -591,6 +604,11 @@ export function useCV() {
   return {
     cv,
     setCv,
+    uiLang,
+    setUiLang,
+    cvLang,
+    switchCvLanguage,
+    addCvLanguage,
     activeLang,
     switchLanguage,
     addLanguage,

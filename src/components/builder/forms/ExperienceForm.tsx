@@ -14,8 +14,8 @@ interface Props {
 }
 
 export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) {
-  const isPt = lang === "pt";
-  const { t: tr } = useTranslation(lang);
+  const { t: tr, lang: uiLang } = useTranslation();
+  const isPt = uiLang === "pt";
 
   const handleAddItem = () => {
     const newItem: ExperienceItem = {

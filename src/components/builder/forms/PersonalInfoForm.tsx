@@ -17,8 +17,8 @@ interface Props {
 }
 
 export function PersonalInfoForm({ data, lang, onChange }: Props) {
-  const isPt = lang === "pt";
-  const { t: tr } = useTranslation(lang);
+  const { t: tr, lang: uiLang } = useTranslation();
+  const isPt = uiLang === "pt";
 
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [rawImageToCrop, setRawImageToCrop] = useState<string | null>(null);

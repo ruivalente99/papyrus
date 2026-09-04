@@ -101,11 +101,11 @@ const AVAILABLE_SECTIONS: SectionOption[] = [
 export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) {
   const [selectedType, setSelectedType] = useState<SectionType>("experience");
   const [customTitle, setCustomTitle] = useState("");
-  const { t: tr } = useTranslation(lang);
+  const { t: tr, lang: uiLang } = useTranslation();
 
   if (!isOpen) return null;
 
-  const isPt = lang === "pt";
+  const isPt = uiLang === "pt";
 
   const handleConfirm = () => {
     onAddSection(selectedType, customTitle ? customTitle.trim() : undefined);
