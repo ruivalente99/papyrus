@@ -15,7 +15,6 @@ interface Props {
 
 export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
   const [newSkillInput, setNewSkillInput] = useState<{ [catId: string]: string }>({});
-  const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
   const handleAddCategory = () => {
@@ -132,6 +131,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                 type="text"
                 value={cat.name?.[lang] || cat.name?.[defaultLang] || ""}
                 onChange={(e) => handleUpdateCategoryName(cat.id, e.target.value)}
+                aria-label={tr("builder.forms.skills.categoryPlaceholder")}
                 placeholder={tr("builder.forms.skills.categoryPlaceholder")}
                 className="font-bold text-stone-800 dark:text-[#f0f3f6] text-xs border-b border-dashed border-stone-300 dark:border-[#363d47] bg-transparent px-1 py-0.5 focus:border-amber-500 focus:outline-hidden flex-1 min-w-0"
               />
@@ -189,6 +189,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
             <div className="flex items-center gap-1.5">
               <input
                 type="text"
+                aria-label={tr("builder.forms.skills.skillPlaceholder")}
                 placeholder={tr("builder.forms.skills.skillPlaceholder")}
                 value={newSkillInput[cat.id] || ""}
                 onChange={(e) =>

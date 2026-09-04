@@ -4,7 +4,7 @@ import React from "react";
 import type { ExperienceSection, ExperienceItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
-import { Plus, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface Props {
   section: ExperienceSection;

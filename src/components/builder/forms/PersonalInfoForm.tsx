@@ -4,8 +4,7 @@ import React, { useState, useRef } from "react";
 import type { PersonalInfo, SupportedLanguage, SocialLink } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { IconPicker } from "../IconPicker";
-import { ICON_OPTIONS } from "@/lib/iconMap";
-import { User, Plus, Trash2, Dices, Sparkles, Camera, Upload, RotateCcw } from "lucide-react";
+import { Plus, Trash2, Dices, Camera, Upload, RotateCcw } from "lucide-react";
 import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ImageCropModal } from "./ImageCropModal";
@@ -76,7 +75,6 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
   };
 
   const handleAddLink = () => {
-    const defaultOption = ICON_OPTIONS[0];
     const newLink: SocialLink = {
       id: generateId(),
       platform: "linkedin",

@@ -1,13 +1,8 @@
 import type {
   CVDocument,
   SupportedLanguage,
-  PersonalInfo,
   ExperienceItem,
-  EducationItem,
-  LanguageItem,
   LinterReport,
-  SectionType,
-  CVSection,
 } from "@/types/cv";
 import { analyzeCV } from "@/data/linterRules";
 import { generateId } from "@/lib/utils";

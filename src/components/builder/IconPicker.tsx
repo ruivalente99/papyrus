@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ICON_OPTIONS, IconOption, getIconComponent } from "@/lib/iconMap";
+import { ICON_OPTIONS, getIconComponent } from "@/lib/iconMap";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ChevronDown, Search, X } from "lucide-react";
 

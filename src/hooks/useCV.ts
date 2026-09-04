@@ -209,7 +209,7 @@ export function useCV() {
         setIsSetupOpen(false);
         try {
           localStorage.setItem(SETUP_COMPLETED_KEY, "true");
-        } catch (e) {}
+        } catch {}
       } else if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id && parsed.sections) {
@@ -219,7 +219,7 @@ export function useCV() {
           setIsSetupOpen(false);
           try {
             localStorage.setItem(SETUP_COMPLETED_KEY, "true");
-          } catch (e) {}
+          } catch {}
         } else if (!isCompleted) {
           setIsSetupOpen(true);
         } else {
@@ -523,7 +523,7 @@ export function useCV() {
       localStorage.removeItem(SETUP_COMPLETED_KEY);
       localStorage.removeItem("curricula_active_document");
       localStorage.removeItem("cvana_active_document");
-    } catch (e) {}
+    } catch {}
     setCv(emptySeed);
     setHasCachedDoc(false);
   }, []);

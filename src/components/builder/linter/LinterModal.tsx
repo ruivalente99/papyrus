@@ -12,10 +12,8 @@ import {
   CheckCircle2,
   Check,
   Terminal,
-  FileText,
   Copy,
   ShieldCheck,
-  Calendar,
   Layers,
 } from "lucide-react";
 

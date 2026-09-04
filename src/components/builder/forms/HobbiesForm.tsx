@@ -14,7 +14,6 @@ interface Props {
 }
 
 export function HobbiesForm({ section, lang, onChange }: Props) {
-  const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {

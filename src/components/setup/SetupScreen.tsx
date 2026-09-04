@@ -9,21 +9,22 @@ import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { HelpTooltip } from "@/components/common/HelpTooltip";
 import { useToast } from "@/context/ToastContext";
+import { LanguageSwitcher } from "@/components/builder/LanguageSwitcher";
 import {
   Upload,
   FileCode,
-  FileDown,
   PlusCircle,
   CheckCircle2,
-  FileText,
   AlertCircle,
-  Code2,
   Layers,
-  ArrowRight,
   Copy,
   Trash2,
-  Play,
   BookOpen,
+  Globe,
+  Play,
+  ArrowRight,
+  FileText,
+  Code2,
 } from "lucide-react";
 
 interface Props {
@@ -57,11 +58,6 @@ export function SetupScreen({
   const { confirmAction } = useToast();
 
   const isPt = uiLang === "pt";
-
-  const handleLanguageToggle = (newLang: SupportedLanguage) => {
-    setUiLang(newLang);
-    if (onSwitchLang) onSwitchLang(newLang);
-  };
 
   // Drag & drop handlers
   const handleDragOver = (e: React.DragEvent) => {
@@ -110,7 +106,7 @@ export function SetupScreen({
           }
           setSuccessMessage(isPt ? `"${file.name}" carregado!` : `"${file.name}" loaded!`);
           setTimeout(() => onImportJson(parsed), 500);
-        } catch (err: any) {
+        } catch (_err: any) {
           setErrorMessage(isPt ? "JSON inválido." : "Invalid JSON file.");
         }
       };
@@ -133,7 +129,7 @@ export function SetupScreen({
           };
           setSuccessMessage(isPt ? `"${file.name}" importado!` : `"${file.name}" imported!`);
           setTimeout(() => onComplete(merged), 500);
-        } catch (err: any) {
+        } catch (_err: any) {
           setErrorMessage(isPt ? "Erro ao ler TeX." : "Failed to parse TeX.");
         }
       };
@@ -143,13 +139,27 @@ export function SetupScreen({
     }
   };
 
+  const [cvTargetLang, setCvTargetLang] = useState<SupportedLanguage>(lang);
+
+  const handleLanguageToggle = (newLang: SupportedLanguage) => {
+    setUiLang(newLang);
+    setCvTargetLang(newLang);
+    if (onSwitchLang) onSwitchLang(newLang);
+  };
+
   const handleStartManual = (isDemo: boolean = false) => {
     const baseDoc: CVDocument = isDemo
       ? JSON.parse(JSON.stringify(PRESET_SEEDS[0].cv))
       : JSON.parse(JSON.stringify(emptySeed));
 
-    baseDoc.defaultLanguage = uiLang;
-    baseDoc.currentLanguage = uiLang;
+    baseDoc.defaultLanguage = cvTargetLang;
+    baseDoc.currentLanguage = cvTargetLang;
+    if (!baseDoc.availableLanguages.some((al) => al.code === cvTargetLang)) {
+      baseDoc.availableLanguages.push({
+        code: cvTargetLang,
+        label: cvTargetLang.toUpperCase(),
+      });
+    }
     onComplete(baseDoc);
   };
 
@@ -170,28 +180,11 @@ export function SetupScreen({
         <div className="flex items-center gap-2">
           <ThemeSelector lang={uiLang} />
 
-          <div className="flex items-center gap-0.5 bg-stone-100 dark:bg-[#0d1117] p-0.5 rounded-full border border-stone-200 dark:border-[#363d47]">
-            <button
-              onClick={() => handleLanguageToggle("en")}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
-                uiLang === "en"
-                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
-                  : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-              }`}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => handleLanguageToggle("pt")}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
-                uiLang === "pt"
-                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
-                  : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-              }`}
-            >
-              PT
-            </button>
-          </div>
+          <LanguageSwitcher
+            activeLang={uiLang}
+            availableLanguages={activeCv?.availableLanguages}
+            onSwitchLanguage={handleLanguageToggle}
+          />
         </div>
       </header>
 
@@ -330,6 +323,21 @@ export function SetupScreen({
 
         {/* 3. Starter Templates & Manual Options */}
         <div className="space-y-3">
+          {/* Target Language / Nationality for the new CV */}
+          <div className="flex items-center justify-between bg-white/70 dark:bg-[#161b22]/70 px-4 py-2.5 rounded-2xl border border-stone-200 dark:border-[#30363d] shadow-2xs">
+            <div className="flex items-center gap-2">
+              <Globe size={15} className="text-amber-600 dark:text-amber-400" />
+              <span className="text-xs font-semibold text-stone-700 dark:text-[#c9d1d9]">
+                {isPt ? "Nacionalidade / Idioma do novo CV:" : "New CV Nationality / Language:"}
+              </span>
+            </div>
+            <LanguageSwitcher
+              activeLang={cvTargetLang}
+              allowAll={true}
+              onSwitchLanguage={(newLang) => setCvTargetLang(newLang)}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-2.5">
             {/* Blank Canvas */}
             <button

@@ -33,7 +33,6 @@ function applyTheme(target: "light" | "dark") {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>("light");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     try {
@@ -44,10 +43,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         setThemeState(prefersDark ? "dark" : "light");
       }
-    } catch (e) {
+    } catch {
       setThemeState("light");
     }
-    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch (e) {
+    } catch {
       // Ignore
     }
   }, [theme]);

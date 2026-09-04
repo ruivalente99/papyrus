@@ -11,7 +11,6 @@ import {
   Copy,
   Download,
   AlertTriangle,
-  RotateCcw,
   Sparkles,
   ArrowRight,
 } from "lucide-react";
@@ -46,7 +45,7 @@ export function CodeEditorPane({
       if (JSON.stringify(JSON.parse(jsonContent)) === JSON.stringify(cv)) {
         return;
       }
-    } catch (e) {}
+    } catch {}
     setJsonContent(JSON.stringify(cv, null, 2));
     setJsonError(null);
   }, [cv]);

@@ -96,7 +96,7 @@ export function BuilderHeader({
           : "TeX file (.tex) downloaded successfully!",
         "success"
       );
-    } catch (err) {
+    } catch {
       showToast(
         activeLang === "pt" ? "Erro ao gerar código TeX." : "Error exporting TeX code.",
         "error"
@@ -117,7 +117,7 @@ export function BuilderHeader({
           activeLang === "pt" ? "Documento JSON importado com sucesso!" : "JSON document imported!",
           "success"
         );
-      } catch (err) {
+      } catch {
         showToast(
           activeLang === "pt" ? "Ficheiro JSON inválido." : "Invalid JSON file.",
           "error"

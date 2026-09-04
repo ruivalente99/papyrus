@@ -60,7 +60,7 @@ export async function compressImageFile(
           }
 
           resolve(dataUrl);
-        } catch (err) {
+        } catch {
           resolve(e.target?.result as string);
         }
       };

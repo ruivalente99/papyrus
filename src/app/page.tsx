@@ -35,7 +35,7 @@ export default function BuilderPage() {
           setSplitRatio(val);
         }
       }
-    } catch (e) {}
+    } catch {}
   }, []);
 
   // Global shortcut for Command Palette: Cmd+K / Ctrl+K
@@ -69,11 +69,11 @@ export default function BuilderPage() {
     if (isDraggingSplit) {
       try {
         (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch (err) {}
+      } catch {}
       setIsDraggingSplit(false);
       try {
         localStorage.setItem("papyrus_split_ratio", splitRatio.toString());
-      } catch (err) {}
+      } catch {}
     }
   };
 
@@ -81,7 +81,7 @@ export default function BuilderPage() {
     setSplitRatio(50);
     try {
       localStorage.setItem("papyrus_split_ratio", "50");
-    } catch (err) {}
+    } catch {}
   };
 
   const handleSelectSection = (sectionId: string) => {
@@ -125,7 +125,6 @@ export default function BuilderPage() {
     canRedo,
     history,
     restoreHistoryEntry,
-    saveStatus,
     linterReport,
     isLoaded,
     isSetupOpen,
