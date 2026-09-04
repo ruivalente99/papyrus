@@ -2,14 +2,14 @@
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import type { SupportedLanguage } from "@/types/cv";
-import { useTranslation } from "@/hooks/useTranslation";
 import { Globe, Plus, Check, ChevronDown, Search, Lock, X } from "lucide-react";
 
 interface Props {
   activeLang: SupportedLanguage;
-  availableLanguages: Array<{ code: string; label: string }>;
+  availableLanguages?: Array<{ code: string; label: string }>;
   onSwitchLanguage: (lang: SupportedLanguage) => void;
-  onAddLanguage: (code: string, label: string) => void;
+  onAddLanguage?: (code: string, label: string) => void;
+  allowAll?: boolean;
 }
 
 interface LanguageMeta {
@@ -35,9 +35,10 @@ const GLOBAL_LANGUAGES: LanguageMeta[] = [
 
 export function LanguageSwitcher({
   activeLang,
-  availableLanguages,
+  availableLanguages = [],
   onSwitchLanguage,
   onAddLanguage,
+  allowAll = false,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -47,7 +48,6 @@ export function LanguageSwitcher({
 
   const popoverRef = useRef<HTMLDivElement>(null);
   const isPt = activeLang === "pt";
-  const { t: tr } = useTranslation(activeLang);
 
   // Close on outside click
   useEffect(() => {
@@ -98,8 +98,12 @@ export function LanguageSwitcher({
       }
     });
 
+    if (allowAll) {
+      return list.map((item) => ({ ...item, isAvailable: true }));
+    }
+
     return list;
-  }, [availableLanguages]);
+  }, [availableLanguages, allowAll]);
 
   const activeMeta = allLanguages.find((l) => l.code === activeLang) || {
     code: activeLang,
@@ -123,7 +127,9 @@ export function LanguageSwitcher({
   const handleAddCustom = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customCode.trim() || !customLabel.trim()) return;
-    onAddLanguage(customCode.toLowerCase().trim(), customLabel.trim());
+    if (onAddLanguage) {
+      onAddLanguage(customCode.toLowerCase().trim(), customLabel.trim());
+    }
     setCustomCode("");
     setCustomLabel("");
     setShowCustomAdd(false);
@@ -160,6 +166,7 @@ export function LanguageSwitcher({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              aria-label={isPt ? "Pesquisar país ou idioma" : "Search country or language"}
               placeholder={isPt ? "Pesquisar país ou idioma..." : "Search country or language..."}
               className="w-full bg-transparent border-0 outline-none text-xs text-stone-900 dark:text-[#f0f3f6] placeholder-stone-400 dark:placeholder-[#6e7681]"
               autoFocus
@@ -228,46 +235,51 @@ export function LanguageSwitcher({
           </div>
 
           {/* Add Custom Language Expandable */}
-          <div className="pt-2 mt-2 border-t border-stone-100 dark:border-[#30363d]">
-            {!showCustomAdd ? (
-              <button
-                type="button"
-                onClick={() => setShowCustomAdd(true)}
-                className="w-full text-left px-2 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800 flex items-center gap-1.5 transition-colors"
-              >
-                <Plus size={12} />
-                <span>{isPt ? "Adicionar outro código ao CV" : "Add custom language to CV"}</span>
-              </button>
-            ) : (
-              <form onSubmit={handleAddCustom} className="space-y-1.5 pt-1">
-                <div className="flex items-center gap-1.5">
-                  <input
-                    type="text"
-                    value={customCode}
-                    onChange={(e) => setCustomCode(e.target.value)}
-                    placeholder="Código (ex: es)"
-                    maxLength={3}
-                    required
-                    className="w-20 px-2 py-1 rounded-lg border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-xs font-mono uppercase text-center"
-                  />
-                  <input
-                    type="text"
-                    value={customLabel}
-                    onChange={(e) => setCustomLabel(e.target.value)}
-                    placeholder="Nome (ex: Español)"
-                    required
-                    className="flex-1 px-2 py-1 rounded-lg border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-xs"
-                  />
-                  <button
-                    type="submit"
-                    className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs"
-                  >
-                    <Check size={12} />
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+          {onAddLanguage && (
+            <div className="pt-2 mt-2 border-t border-stone-100 dark:border-[#30363d]">
+              {!showCustomAdd ? (
+                <button
+                  type="button"
+                  onClick={() => setShowCustomAdd(true)}
+                  className="w-full text-left px-2 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800 flex items-center gap-1.5 transition-colors"
+                >
+                  <Plus size={12} />
+                  <span>{isPt ? "Adicionar outro código ao CV" : "Add custom language to CV"}</span>
+                </button>
+              ) : (
+                <form onSubmit={handleAddCustom} className="space-y-1.5 pt-1">
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={customCode}
+                      onChange={(e) => setCustomCode(e.target.value)}
+                      aria-label={isPt ? "Código do idioma (ex: es)" : "Language code (e.g. es)"}
+                      placeholder="Código (ex: es)"
+                      maxLength={3}
+                      required
+                      className="w-20 px-2 py-1 rounded-lg border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-xs font-mono uppercase text-center"
+                    />
+                    <input
+                      type="text"
+                      value={customLabel}
+                      onChange={(e) => setCustomLabel(e.target.value)}
+                      aria-label={isPt ? "Nome do idioma (ex: Español)" : "Language name (e.g. Spanish)"}
+                      placeholder="Nome (ex: Español)"
+                      required
+                      className="flex-1 px-2 py-1 rounded-lg border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-xs"
+                    />
+                    <button
+                      type="submit"
+                      aria-label={isPt ? "Confirmar novo idioma" : "Confirm new language"}
+                      className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs"
+                    >
+                      <Check size={12} />
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

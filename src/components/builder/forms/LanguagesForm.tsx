@@ -14,7 +14,6 @@ interface Props {
 }
 
 export function LanguagesForm({ section, lang, onChange }: Props) {
-  const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {

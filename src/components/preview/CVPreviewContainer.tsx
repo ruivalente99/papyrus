@@ -116,7 +116,7 @@ export function CVPreviewContainer({
     try {
       const saved = localStorage.getItem("papyrus_preview_grid");
       if (saved === "true") setShowGrid(true);
-    } catch (e) {}
+    } catch {}
   }, []);
 
   const toggleGrid = () => {
@@ -124,7 +124,7 @@ export function CVPreviewContainer({
       const next = !prev;
       try {
         localStorage.setItem("papyrus_preview_grid", String(next));
-      } catch (e) {}
+      } catch {}
       return next;
     });
   };
@@ -258,7 +258,7 @@ export function CVPreviewContainer({
       };
       try {
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-      } catch (err) {}
+      } catch {}
     } else {
       dragMovedRef.current = 0;
     }
@@ -281,7 +281,7 @@ export function CVPreviewContainer({
     if (isPanning) {
       try {
         (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch (err) {}
+      } catch {}
       setIsPanning(false);
     }
   };
@@ -422,50 +422,43 @@ export function CVPreviewContainer({
     <div className="flex flex-col h-full bg-stone-200/50 dark:bg-[#0d1117] text-stone-800 dark:text-[#c9d1d9] transition-colors">
       {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
       <div className="bg-white/90 dark:bg-[#161b22]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-[#30363d] px-3 sm:px-4 py-2 shadow-2xs transition-colors shrink-0">
-        {/* MOBILE TOOLBAR: Clean Single 44px Row */}
+        {/* MOBILE TOOLBAR: Style & Template Selection Only */}
         <div className="flex sm:hidden items-center justify-between gap-2">
-          {/* Left: Page Count Badge & Compact Zoom Pill */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-              {pageCount} {pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}
-            </span>
-
-            <div className="flex items-center bg-stone-100 dark:bg-[#21262d] rounded-full p-0.5 border border-stone-200 dark:border-[#363d47] text-stone-700 dark:text-[#c9d1d9] shadow-2xs shrink-0">
-              <button
-                onClick={() => handleZoomChange(-0.1)}
-                title={tr("preview.canvas.zoomOut")}
-                aria-label={tr("preview.canvas.zoomOut")}
-                className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
-              >
-                <ZoomOut size={12} />
-              </button>
-              <span className="text-[10px] font-mono px-1 min-w-[28px] text-center font-bold">
-                {Math.round(zoom * 100)}%
-              </span>
-              <button
-                onClick={() => handleZoomChange(0.1)}
-                title={tr("preview.canvas.zoomIn")}
-                aria-label={tr("preview.canvas.zoomIn")}
-                className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
-              >
-                <ZoomIn size={12} />
-              </button>
-              <button
-                onClick={handleToggleAutoFit}
-                title={tr("preview.canvas.fitToScreen")}
-                aria-label={tr("preview.canvas.fitToScreen")}
-                className={`p-1 border-l border-stone-200 dark:border-[#363d47] pl-1 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
-                  isAutoFit
-                    ? "text-amber-700 dark:text-amber-400 font-bold"
-                    : "hover:text-stone-900 dark:hover:text-[#f0f3f6] text-stone-600 dark:text-[#8b949e]"
-                }`}
-              >
-                <Maximize2 size={11} />
-              </button>
-            </div>
+          {/* Left: Template Selector */}
+          <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-0.5 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
+            <button
+              onClick={() => onSetTemplate("lateralis")}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+                cv.template === "lateralis" || cv.template === "canva"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                  : "text-stone-500 dark:text-[#8b949e]"
+              }`}
+            >
+              Lateralis
+            </button>
+            <button
+              onClick={() => onSetTemplate("classic")}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+                cv.template === "classic" || cv.template === "latex"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                  : "text-stone-500 dark:text-[#8b949e]"
+              }`}
+            >
+              Clássico
+            </button>
+            <button
+              onClick={() => onSetTemplate("matrix")}
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+                cv.template === "matrix" || cv.template === "europass"
+                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                  : "text-stone-500 dark:text-[#8b949e]"
+              }`}
+            >
+              Matrix
+            </button>
           </div>
 
-          {/* Right: Estilo/Style Drawer Trigger & PDF Download Action */}
+          {/* Right: Estilo/Style Drawer Trigger */}
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -479,226 +472,141 @@ export function CVPreviewContainer({
               <Palette size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
               <span>{tUI("customizeStyle", lang)}</span>
             </button>
-
-            <button
-              onClick={handleDownloadPdf}
-              disabled={isExporting !== null}
-              className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0"
-            >
-              {isExporting === "pdf" ? (
-                <Loader2 size={13} className="animate-spin" />
-              ) : (
-                <Download size={13} />
-              )}
-              <span>{tUI("pdfBtn", lang)}</span>
-            </button>
           </div>
         </div>
 
-        {/* DESKTOP TOOLBAR: Structured Two-Row Layout */}
-        <div className="hidden sm:flex flex-col gap-2">
-          {/* Row 1: Document Style & Appearance */}
-          <div className="flex items-center justify-between gap-3 pb-1 border-b border-stone-200/50 dark:border-[#30363d]">
-            {/* Template Selector */}
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-                <button
-                  onClick={() => onSetTemplate("lateralis")}
-                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                    cv.template === "lateralis" || cv.template === "canva"
-                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
-                  }`}
-                >
-                  {tUI("templateLateralis", lang)}
-                </button>
-                <button
-                  onClick={() => onSetTemplate("classic")}
-                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                    cv.template === "classic" || cv.template === "latex"
-                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
-                  }`}
-                >
-                  {tUI("templateClassic", lang)}
-                </button>
-                <button
-                  onClick={() => onSetTemplate("matrix")}
-                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                    cv.template === "matrix" || cv.template === "europass"
-                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
-                  }`}
-                >
-                  {tUI("templateMatrix", lang)}
-                </button>
-              </div>
-            </div>
-
-            {/* Right: Spacing Density & Accent Colors */}
-            <div className="flex items-center gap-2.5 shrink-0">
-              {/* Density Selector */}
-              <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-                <button
-                  onClick={() => onUpdateTheme({ fontSize: "compact" })}
-                  title="Compact spacing"
-                  className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                    cv.theme.fontSize === "compact"
-                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
-                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                  }`}
-                >
-                  {tUI("densityCompact", lang)}
-                </button>
-                <button
-                  onClick={() => onUpdateTheme({ fontSize: "normal" })}
-                  title="Balanced spacing"
-                  className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                    cv.theme.fontSize === "normal" || !cv.theme.fontSize
-                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
-                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                  }`}
-                >
-                  {tUI("densityNormal", lang)}
-                </button>
-                <button
-                  onClick={() => onUpdateTheme({ fontSize: "spacious" })}
-                  title="Spacious breathing room"
-                  className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                    cv.theme.fontSize === "spacious"
-                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
-                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                  }`}
-                >
-                  {tUI("densitySpacious", lang)}
-                </button>
-              </div>
-
-              {/* Accent Color Circles */}
-              <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-[#363d47] shrink-0">
-                {ACCENT_COLORS.map((c) => (
-                  <button
-                    key={c.hex}
-                    onClick={() => onUpdateTheme({ primaryColor: c.hex })}
-                    title={c.name}
-                    aria-label={tr("preview.colors.colorLabel", { name: c.name })}
-                    className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full transition-transform flex items-center justify-center ${
-                      cv.theme.primaryColor?.toLowerCase() === c.hex.toLowerCase()
-                        ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-[#161b22] shadow-xs"
-                        : "hover:scale-105 opacity-85 hover:opacity-100"
-                    }`}
-                    style={{ backgroundColor: c.hex }}
-                  />
-                ))}
-
-                {/* Custom Color "Outra" Picker */}
-                <label
-                  title={tr("preview.colors.customColor")}
-                  className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full cursor-pointer relative flex items-center justify-center transition-transform ${
-                    !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
-                      ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-[#161b22] shadow-xs"
-                      : "hover:scale-105 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-[#363d47] bg-stone-100 dark:bg-[#21262d]"
-                  }`}
-                  style={{
-                    backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
-                      ? cv.theme.primaryColor
-                      : undefined,
-                  }}
-                >
-                  <input
-                    type="color"
-                    aria-label={tr("preview.colors.pickCustom")}
-                    value={cv.theme.primaryColor || "#005555"}
-                    onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
-                    className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
-                  />
-                  {ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase()) && (
-                    <Pipette size={11} className="text-stone-500 dark:text-[#8b949e] pointer-events-none" />
-                  )}
-                </label>
-              </div>
+        {/* DESKTOP TOOLBAR: Dedicated Exclusively to Styles & Document Appearance */}
+        <div className="hidden sm:flex items-center justify-between gap-3">
+          {/* Template Selector */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
+              <button
+                onClick={() => onSetTemplate("lateralis")}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                  cv.template === "lateralis" || cv.template === "canva"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {tUI("templateLateralis", lang)}
+              </button>
+              <button
+                onClick={() => onSetTemplate("classic")}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                  cv.template === "classic" || cv.template === "latex"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {tUI("templateClassic", lang)}
+              </button>
+              <button
+                onClick={() => onSetTemplate("matrix")}
+                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                  cv.template === "matrix" || cv.template === "europass"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {tUI("templateMatrix", lang)}
+              </button>
             </div>
           </div>
 
-          {/* Row 2: Navigation & Output Actions */}
-          <div className="flex items-center justify-between gap-2 pt-0.5">
-            {/* Left: Page count badge & Zoom controls with Auto-Fit & Grid */}
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="text-[10.5px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] px-2.5 py-1 rounded-full font-mono border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-                {pageCount} {pageCount === 1 ? tr("preview.toolbar.pageCountSingle") : tr("preview.toolbar.pageCountPlural")}
-              </span>
-
-              <div className="flex items-center bg-stone-100 dark:bg-[#21262d] rounded-full p-1 border border-stone-200 dark:border-[#363d47] text-stone-700 dark:text-[#c9d1d9] shadow-2xs shrink-0">
-                <button
-                  onClick={() => handleZoomChange(-0.1)}
-                  title={tr("preview.canvas.zoomOut")}
-                  aria-label={tr("preview.canvas.zoomOut")}
-                  className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
-                >
-                  <ZoomOut size={13} />
-                </button>
-                <span className="text-[11px] font-mono px-1 min-w-[34px] text-center font-bold">
-                  {Math.round(zoom * 100)}%
-                </span>
-                <button
-                  onClick={() => handleZoomChange(0.1)}
-                  title={tr("preview.canvas.zoomIn")}
-                  aria-label={tr("preview.canvas.zoomIn")}
-                  className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] min-w-[24px] min-h-[24px] flex items-center justify-center"
-                >
-                  <ZoomIn size={13} />
-                </button>
-                <button
-                  onClick={handleToggleAutoFit}
-                  title={tr("preview.canvas.fitToScreen")}
-                  aria-label={tr("preview.canvas.fitToScreen")}
-                  className={`p-1 border-l border-stone-200 dark:border-[#363d47] pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
-                    isAutoFit
-                      ? "text-amber-700 dark:text-amber-400 font-bold"
-                      : "hover:text-stone-900 dark:hover:text-[#f0f3f6] text-stone-600 dark:text-[#8b949e]"
-                  }`}
-                >
-                  <Maximize2 size={12} />
-                </button>
-                <button
-                  onClick={toggleGrid}
-                  title={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
-                  aria-label={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
-                  className={`p-1 border-l border-stone-200 dark:border-[#363d47] pl-1.5 transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
-                    showGrid
-                      ? "text-amber-700 dark:text-amber-400 font-bold"
-                      : "hover:text-stone-900 dark:hover:text-[#f0f3f6] text-stone-600 dark:text-[#8b949e]"
-                  }`}
-                >
-                  <Grid size={12} />
-                </button>
-              </div>
+          {/* Right: Density, Palette Colors, Custom Picker & Full Settings Trigger */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Density Selector */}
+            <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
+              <button
+                onClick={() => onUpdateTheme({ fontSize: "compact" })}
+                title="Compact spacing"
+                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
+                  cv.theme.fontSize === "compact"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {tUI("densityCompact", lang)}
+              </button>
+              <button
+                onClick={() => onUpdateTheme({ fontSize: "normal" })}
+                title="Balanced spacing"
+                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
+                  cv.theme.fontSize === "normal" || !cv.theme.fontSize
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {tUI("densityNormal", lang)}
+              </button>
+              <button
+                onClick={() => onUpdateTheme({ fontSize: "spacious" })}
+                title="Spacious breathing room"
+                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
+                  cv.theme.fontSize === "spacious"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {tUI("densitySpacious", lang)}
+              </button>
             </div>
 
-            {/* Right: PDF, PNG actions */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <button
-                onClick={handleDownloadPdf}
-                disabled={isExporting !== null}
-                className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1.5 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0"
+            {/* Accent Color Circles */}
+            <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-[#363d47] shrink-0">
+              {ACCENT_COLORS.map((c) => (
+                <button
+                  key={c.hex}
+                  onClick={() => onUpdateTheme({ primaryColor: c.hex })}
+                  title={c.name}
+                  aria-label={tr("preview.colors.colorLabel", { name: c.name })}
+                  className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full transition-transform flex items-center justify-center ${
+                    cv.theme.primaryColor?.toLowerCase() === c.hex.toLowerCase()
+                      ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-[#161b22] shadow-xs"
+                      : "hover:scale-105 opacity-85 hover:opacity-100"
+                  }`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              ))}
+
+              {/* Custom Color Picker with accessible hidden text */}
+              <label
+                title={tr("preview.colors.customColor")}
+                aria-label={tr("preview.colors.customColor")}
+                className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full cursor-pointer relative flex items-center justify-center transition-transform ${
+                  !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
+                    ? "scale-110 ring-2 ring-amber-500 ring-offset-1 dark:ring-offset-[#161b22] shadow-xs"
+                    : "hover:scale-105 opacity-75 hover:opacity-100 border border-dashed border-stone-400 dark:border-[#363d47] bg-stone-100 dark:bg-[#21262d]"
+                }`}
+                style={{
+                  backgroundColor: !ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase())
+                    ? cv.theme.primaryColor
+                    : undefined,
+                }}
               >
-                {isExporting === "pdf" ? (
-                  <Loader2 size={13} className="animate-spin" />
-                ) : (
-                  <Download size={13} />
+                <span className="sr-only">{tr("preview.colors.customColor")}</span>
+                <input
+                  type="color"
+                  aria-label={tr("preview.colors.pickCustom")}
+                  value={cv.theme.primaryColor || "#005555"}
+                  onChange={(e) => onUpdateTheme({ primaryColor: e.target.value })}
+                  className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                />
+                {ACCENT_COLORS.some((c) => c.hex.toLowerCase() === cv.theme.primaryColor?.toLowerCase()) && (
+                  <Pipette size={11} className="text-stone-500 dark:text-[#8b949e] pointer-events-none" />
                 )}
-                <span>{tUI("pdfBtn", lang)}</span>
-              </button>
-
-              <button
-                onClick={handleDownloadPng}
-                disabled={isExporting !== null}
-                className="hidden sm:flex items-center gap-1 text-xs font-semibold bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs disabled:opacity-50 shrink-0"
-              >
-                <ImageIcon size={13} />
-                <span>{tUI("pngBtn", lang)}</span>
-              </button>
+              </label>
             </div>
+
+            {/* Personalizar Estilo button */}
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label={tUI("customizeStyle", lang)}
+              className="flex items-center gap-1.5 px-3 py-1 bg-stone-100 hover:bg-stone-200/80 dark:bg-[#21262d] dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] rounded-full text-xs font-bold border border-stone-200/80 dark:border-[#363d47] shadow-2xs transition-all active:scale-95 shrink-0"
+            >
+              <Palette size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>{tUI("customizeStyle", lang)}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -788,136 +696,191 @@ export function CVPreviewContainer({
         </div>
 
         {/* Floating 4-Edge Dockable & Draggable Canvas Control Bar */}
-        <div
-          data-testid="canvas-floating-toolbar"
-          onPointerDown={(e) => e.stopPropagation()}
-          onPointerUp={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchEnd={(e) => e.stopPropagation()}
-          className={`absolute z-20 flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl select-none ${
-            dockEdge === "bottom"
-              ? "bottom-16 sm:bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1"
-              : dockEdge === "top"
-              ? "top-14 sm:top-20 left-1/2 -translate-x-1/2 flex-row gap-1"
-              : dockEdge === "left"
-              ? "left-3 top-1/2 -translate-y-1/2 flex-col gap-1"
-              : "right-3 top-1/2 -translate-y-1/2 flex-col gap-1"
-          }`}
-        >
-          {/* Grip Handle for Dragging or Cycling Edges */}
-          <button
-            type="button"
-            onPointerDown={handleToolbarGripPointerDown}
-            onPointerMove={handleToolbarGripPointerMove}
-            onPointerUp={handleToolbarGripPointerUp}
-            onPointerCancel={handleToolbarGripPointerUp}
-            onClick={cycleDockEdge}
-            title={tr("preview.canvas.dockPosition")}
-            aria-label={tr("preview.canvas.dockPosition")}
-            className={`p-1.5 rounded-full cursor-grab active:cursor-grabbing hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
-              isDraggingToolbar
-                ? "bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400"
-                : "text-stone-400 dark:text-[#8b949e] hover:text-stone-700 dark:hover:text-[#f0f3f6]"
-            }`}
-          >
-            {isDraggingToolbar ? (
-              <Move size={13} className="animate-spin" />
-            ) : (
-              <GripVertical
-                size={13}
-                className={dockEdge === "left" || dockEdge === "right" ? "rotate-90" : ""}
-              />
-            )}
-          </button>
-
-          {/* Divider */}
-          <div
-            className={
-              dockEdge === "left" || dockEdge === "right"
-                ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5"
-                : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"
-            }
-          />
-
-          {/* Selection (Pointer) vs Pan / Hand (Click & Drag) Mode - Visible on BOTH Mobile and Desktop */}
-          <div
-            className={`flex items-center ${
-              dockEdge === "left" || dockEdge === "right" ? "flex-col gap-1" : "gap-1"
-            }`}
-          >
-            <button
-              onClick={() => handleSetToolMode("pointer")}
-              title={tr("preview.canvas.selectionMode")}
-              aria-label={tr("preview.canvas.selectionMode")}
-              className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
-                toolMode === "pointer"
-                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold shadow-2xs"
-                  : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+        {(() => {
+          const isVertical = dockEdge === "left" || dockEdge === "right";
+          return (
+            <div
+              data-testid="canvas-floating-toolbar"
+              onPointerDown={(e) => e.stopPropagation()}
+              onPointerUp={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+              className={`absolute z-20 flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl select-none ${
+                dockEdge === "bottom"
+                  ? "bottom-16 sm:bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
+                  : dockEdge === "top"
+                  ? "top-14 sm:top-16 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
+                  : dockEdge === "left"
+                  ? "left-3 top-1/2 -translate-y-1/2 flex-col gap-1 max-h-[85vh] overflow-y-auto"
+                  : "right-3 top-1/2 -translate-y-1/2 flex-col gap-1 max-h-[85vh] overflow-y-auto"
               }`}
             >
-              <MousePointer size={13} />
-            </button>
-            <button
-              onClick={() => handleSetToolMode("hand")}
-              title={tr("preview.canvas.panMode")}
-              aria-label={tr("preview.canvas.panMode")}
-              className={`p-1.5 rounded-full transition-all min-w-[28px] min-h-[28px] flex items-center justify-center ${
-                toolMode === "hand"
-                  ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold shadow-2xs"
-                  : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
-              }`}
-            >
-              <Hand size={13} />
-            </button>
-          </div>
+              {/* Grip Handle for Dragging or Cycling Edges */}
+              <button
+                type="button"
+                onPointerDown={handleToolbarGripPointerDown}
+                onPointerMove={handleToolbarGripPointerMove}
+                onPointerUp={handleToolbarGripPointerUp}
+                onPointerCancel={handleToolbarGripPointerUp}
+                onClick={cycleDockEdge}
+                title={tr("preview.canvas.dockPosition")}
+                aria-label={tr("preview.canvas.dockPosition")}
+                className={`p-1.5 rounded-full cursor-grab active:cursor-grabbing hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
+                  isDraggingToolbar
+                    ? "bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400"
+                    : "text-stone-400 dark:text-[#8b949e] hover:text-stone-700 dark:hover:text-[#f0f3f6]"
+                }`}
+              >
+                {isDraggingToolbar ? (
+                  <Move size={13} className="animate-spin" />
+                ) : (
+                  <GripVertical
+                    size={13}
+                    className={isVertical ? "rotate-90" : ""}
+                  />
+                )}
+              </button>
 
-          {/* Divider */}
-          <div
-            className={
-              dockEdge === "left" || dockEdge === "right"
-                ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5"
-                : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"
-            }
-          />
+              {/* Divider */}
+              <div className={isVertical ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5" : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"} />
 
-          {/* Alignment Grid Toggle Button */}
-          <button
-            onClick={toggleGrid}
-            title={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
-            aria-label={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
-            className={`p-1.5 rounded-full transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
-              showGrid
-                ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold"
-                : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
-            }`}
-          >
-            <Grid size={13} />
-          </button>
+              {/* Page Count Badge */}
+              <span
+                title={`${pageCount} ${pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang)}`}
+                className="text-[10px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] px-2 py-0.5 rounded-full font-mono border border-stone-200 dark:border-[#363d47] shrink-0 whitespace-nowrap"
+              >
+                {pageCount} {isVertical ? "p" : (pageCount === 1 ? tUI("pageCountSingle", lang) : tUI("pageCountPlural", lang))}
+              </span>
 
-          {/* Auto-Fit */}
-          <button
-            onClick={handleToggleAutoFit}
-            title={tr("preview.canvas.fitToScreen")}
-            aria-label={tr("preview.canvas.fitToScreen")}
-            className={`p-1.5 rounded-full transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
-              isAutoFit
-                ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
-                : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
-            }`}
-          >
-            <Maximize2 size={13} />
-          </button>
+              {/* Divider */}
+              <div className={isVertical ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5" : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"} />
 
-          {/* Reset Viewport Position */}
-          <button
-            onClick={handleResetCanvas}
-            title={tr("preview.canvas.resetView")}
-            aria-label={tr("preview.canvas.resetView")}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6] transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center"
-          >
-            <RotateCcw size={12} />
-          </button>
-        </div>
+              {/* Zoom Controls: Out, Percent, In */}
+              <div className={`flex items-center ${isVertical ? "flex-col gap-0.5" : "gap-0.5"}`}>
+                <button
+                  onClick={() => handleZoomChange(-0.1)}
+                  title={tr("preview.canvas.zoomOut")}
+                  aria-label={tr("preview.canvas.zoomOut")}
+                  className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#21262d] rounded-full min-w-[24px] min-h-[24px] flex items-center justify-center transition-colors"
+                >
+                  <ZoomOut size={12} />
+                </button>
+                <span className="text-[10.5px] font-mono px-0.5 min-w-[28px] text-center font-bold text-stone-700 dark:text-[#c9d1d9]">
+                  {Math.round(zoom * 100)}%
+                </span>
+                <button
+                  onClick={() => handleZoomChange(0.1)}
+                  title={tr("preview.canvas.zoomIn")}
+                  aria-label={tr("preview.canvas.zoomIn")}
+                  className="p-1 hover:text-stone-900 dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#21262d] rounded-full min-w-[24px] min-h-[24px] flex items-center justify-center transition-colors"
+                >
+                  <ZoomIn size={12} />
+                </button>
+              </div>
+
+              {/* Auto-Fit & Reset View */}
+              <div className={`flex items-center ${isVertical ? "flex-col gap-0.5" : "gap-0.5"}`}>
+                <button
+                  onClick={handleToggleAutoFit}
+                  title={tr("preview.canvas.fitToScreen")}
+                  aria-label={tr("preview.canvas.fitToScreen")}
+                  className={`p-1.5 rounded-full transition-colors min-w-[26px] min-h-[26px] flex items-center justify-center ${
+                    isAutoFit
+                      ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold"
+                      : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+                  }`}
+                >
+                  <Maximize2 size={12} />
+                </button>
+                <button
+                  onClick={handleResetCanvas}
+                  title={tr("preview.canvas.resetView")}
+                  aria-label={tr("preview.canvas.resetView")}
+                  className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6] transition-colors min-w-[26px] min-h-[26px] flex items-center justify-center"
+                >
+                  <RotateCcw size={12} />
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className={isVertical ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5" : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"} />
+
+              {/* Pointer / Hand Tool Mode */}
+              <div className={`flex items-center ${isVertical ? "flex-col gap-1" : "gap-1"}`}>
+                <button
+                  onClick={() => handleSetToolMode("pointer")}
+                  title={tr("preview.canvas.selectionMode")}
+                  aria-label={tr("preview.canvas.selectionMode")}
+                  className={`p-1.5 rounded-full transition-all min-w-[26px] min-h-[26px] flex items-center justify-center ${
+                    toolMode === "pointer"
+                      ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold shadow-2xs"
+                      : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+                  }`}
+                >
+                  <MousePointer size={12} />
+                </button>
+                <button
+                  onClick={() => handleSetToolMode("hand")}
+                  title={tr("preview.canvas.panMode")}
+                  aria-label={tr("preview.canvas.panMode")}
+                  className={`p-1.5 rounded-full transition-all min-w-[26px] min-h-[26px] flex items-center justify-center ${
+                    toolMode === "hand"
+                      ? "bg-stone-200/80 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 font-bold shadow-2xs"
+                      : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+                  }`}
+                >
+                  <Hand size={12} />
+                </button>
+              </div>
+
+              {/* Grid Toggle */}
+              <button
+                onClick={toggleGrid}
+                title={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
+                aria-label={showGrid ? tr("preview.canvas.hideGrid") : tr("preview.canvas.showGrid")}
+                className={`p-1.5 rounded-full transition-colors min-w-[26px] min-h-[26px] flex items-center justify-center ${
+                  showGrid
+                    ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold"
+                    : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+                }`}
+              >
+                <Grid size={12} />
+              </button>
+
+              {/* Divider */}
+              <div className={isVertical ? "w-4 h-px bg-stone-200 dark:bg-[#363d47] my-0.5" : "h-4 w-px bg-stone-200 dark:bg-[#363d47] mx-0.5"} />
+
+              {/* Page Output Actions: PDF & PNG */}
+              <div className={`flex items-center ${isVertical ? "flex-col gap-1" : "gap-1.5"}`}>
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={isExporting !== null}
+                  title={tUI("pdfBtn", lang)}
+                  aria-label={tUI("pdfBtn", lang)}
+                  className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-2.5 sm:px-3 py-1 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0 min-h-[26px]"
+                >
+                  {isExporting === "pdf" ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : (
+                    <Download size={12} />
+                  )}
+                  {!isVertical && <span className="text-[11px] font-bold">PDF</span>}
+                </button>
+
+                <button
+                  onClick={handleDownloadPng}
+                  disabled={isExporting !== null}
+                  title={tUI("pngBtn", lang)}
+                  aria-label={tUI("pngBtn", lang)}
+                  className="flex items-center gap-1 text-xs font-semibold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-2.5 sm:px-3 py-1 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs disabled:opacity-50 shrink-0 min-h-[26px]"
+                >
+                  <ImageIcon size={12} />
+                  {!isVertical && <span className="text-[11px] font-medium">PNG</span>}
+                </button>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Mobile iOS Style Settings Sheet */}

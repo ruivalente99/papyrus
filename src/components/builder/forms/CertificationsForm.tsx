@@ -4,7 +4,7 @@ import React from "react";
 import type { CertificationsSection, CertificationItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
-import { Plus, Trash2, Eye, EyeOff, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 
 interface Props {
   section: CertificationsSection;
@@ -14,7 +14,6 @@ interface Props {
 }
 
 export function CertificationsForm({ section, lang, onChange }: Props) {
-  const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
   const handleAddItem = () => {

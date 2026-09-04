@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   Grid,
   Maximize2,
-  Moon,
   Sun,
   Languages,
   ArrowRight,
@@ -339,13 +338,16 @@ export function CommandPalette({
       .replace(/[\u0300-\u036f]/g, "")
       .trim();
 
-  const categoryLabels: Record<string, string> = {
-    all: tr("builder.modals.commandPalette.categories.all"),
-    templates: tr("builder.modals.commandPalette.categories.templates"),
-    sections: tr("builder.modals.commandPalette.categories.sections"),
-    actions: tr("builder.modals.commandPalette.categories.actions"),
-    preferences: tr("builder.modals.commandPalette.categories.preferences"),
-  };
+  const categoryLabels: Record<string, string> = useMemo(
+    () => ({
+      all: tr("builder.modals.commandPalette.categories.all"),
+      templates: tr("builder.modals.commandPalette.categories.templates"),
+      sections: tr("builder.modals.commandPalette.categories.sections"),
+      actions: tr("builder.modals.commandPalette.categories.actions"),
+      preferences: tr("builder.modals.commandPalette.categories.preferences"),
+    }),
+    [tr]
+  );
 
   const filteredCommands = useMemo(() => {
     let list = commands;
@@ -377,7 +379,7 @@ export function CommandPalette({
       );
       return tokens.every((token) => searchBlob.includes(token));
     });
-  }, [commands, query, selectedCategory]);
+  }, [commands, query, selectedCategory, categoryLabels]);
 
   useEffect(() => {
     setSelectedIndex(0);

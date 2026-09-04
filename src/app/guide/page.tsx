@@ -16,8 +16,6 @@ import {
   CheckCircle2,
   Play,
   Pause,
-  Maximize2,
-  RefreshCw,
   Zap,
 } from "lucide-react";
 
@@ -38,7 +36,7 @@ export default function GuidePage() {
       if (savedLang === "pt" || savedLang === "en") {
         setLang(savedLang);
       }
-    } catch (e) {}
+    } catch {}
   }, []);
 
   const isPt = lang === "pt";

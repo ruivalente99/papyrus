@@ -268,8 +268,8 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
   const warningCount = issues.filter((i) => i.level === "warning").length;
   const infoCount = issues.filter((i) => i.level === "info").length;
 
-  let penalty = errorCount * 25 + warningCount * 10 + infoCount * 3;
-  let score = Math.max(15, Math.min(100, 100 - penalty));
+  const penalty = errorCount * 25 + warningCount * 10 + infoCount * 3;
+  const score = Math.max(15, Math.min(100, 100 - penalty));
 
   return {
     score,

@@ -64,19 +64,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (confirmState) {
       confirmState.resolve(true);
       setConfirmState(null);
     }
-  };
+  }, [confirmState]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (confirmState) {
       confirmState.resolve(false);
       setConfirmState(null);
     }
-  };
+  }, [confirmState]);
 
   useEffect(() => {
     if (!confirmState) return;
@@ -87,7 +87,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [confirmState]);
+  }, [confirmState, handleCancel]);
 
   return (
     <ToastContext.Provider value={{ showToast, confirmAction }}>
@@ -101,8 +101,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map((toast) => {
           let Icon = Info;
           let borderClass = "border-stone-200 dark:border-[#363d47]";
-          let bgClass = "bg-white dark:bg-[#161b22]";
-          let textClass = "text-stone-800 dark:text-[#f0f3f6]";
+          const bgClass = "bg-white dark:bg-[#161b22]";
+          const textClass = "text-stone-800 dark:text-[#f0f3f6]";
           let iconClass = "text-sky-500";
 
           if (toast.type === "success") {
