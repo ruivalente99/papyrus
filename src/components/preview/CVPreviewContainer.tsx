@@ -32,6 +32,7 @@ interface Props {
   onUpdateTheme: (theme: Partial<CVDocument["theme"]>) => void;
   onExportJson: () => void;
   onSelectSection?: (sectionId: string) => void;
+  highlightedSectionId?: string | null;
   mobileTab?: "edit" | "preview";
 }
 
@@ -41,6 +42,7 @@ export function CVPreviewContainer({
   onSetTemplate,
   onUpdateTheme,
   onSelectSection,
+  highlightedSectionId,
   mobileTab,
 }: Props) {
   const [zoom, setZoom] = useState<number>(0.85);
@@ -381,7 +383,7 @@ export function CVPreviewContainer({
   const handleSectionSelect = (sectionId: string) => {
     // In hand mode, ignore section click because hand tool is for canvas dragging
     if (toolMode === "hand") return;
-    if (dragMovedRef.current > 6) return;
+    if (dragMovedRef.current > 14) return;
     if (onSelectSection) {
       onSelectSection(sectionId);
     }
@@ -667,7 +669,13 @@ export function CVPreviewContainer({
             }}
             className="relative shadow-2xl rounded-xs bg-white dark:bg-[#161b22] dark:shadow-[0_12px_44px_rgba(0,0,0,0.8)] dark:ring-1 dark:ring-white/10"
           >
-            <CVPage ref={pageRef} cv={cv} lang={lang} onSelectSection={handleSectionSelect} />
+            <CVPage
+              ref={pageRef}
+              cv={cv}
+              lang={lang}
+              highlightedSectionId={highlightedSectionId}
+              onSelectSection={handleSectionSelect}
+            />
 
             {/* Alignment Grid Overlay on Document itself */}
             {showGrid && (

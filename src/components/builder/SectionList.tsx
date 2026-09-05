@@ -101,13 +101,36 @@ export function SectionList({
       [id]: true,
     }));
 
-    const targetId = id === "personal" ? "section-personal" : `section-${id}`;
-    setTimeout(() => {
+    const scrollToAndFocus = () => {
+      const targetId = id === "personal" ? "section-personal" : `section-${id}`;
       const element = document.getElementById(targetId);
+      const container = document.querySelector(".builder-form-pane");
+
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const elemRect = element.getBoundingClientRect();
+          const currentScroll = container.scrollTop;
+          const targetScroll = currentScroll + (elemRect.top - containerRect.top) - 16;
+          container.scrollTo({
+            top: Math.max(0, targetScroll),
+            behavior: "smooth",
+          });
+        } else {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        element.focus?.({ preventScroll: true });
+        const focusable = element.querySelector<HTMLElement>(
+          "input:not([disabled]):not([type='hidden']):not([type='file']), textarea:not([disabled])"
+        );
+        if (focusable) {
+          focusable.focus?.({ preventScroll: true });
+        }
       }
-    }, 50);
+    };
+
+    setTimeout(scrollToAndFocus, 50);
+    setTimeout(scrollToAndFocus, 180);
   };
 
   const getSectionIcon = (type: SectionType) => {
@@ -349,9 +372,12 @@ export function SectionList({
       {/* 1. Personal Info Card */}
       <div
         id="section-personal"
-        className={`bg-white dark:bg-[#21262d] dark-elevation-card rounded-2xl border shadow-xs transition-all duration-300 ${
+        tabIndex={-1}
+        className={`bg-white dark:bg-[#21262d] dark-elevation-card rounded-2xl border shadow-xs transition-all duration-300 outline-none ${
           isPersonalHighlighted
-            ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-[#161b22] border-amber-500 dark:border-amber-500 shadow-md scale-[1.01]"
+            ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-[#161b22] border-amber-500 dark:border-amber-500 shadow-md scale-[1.01] bg-amber-50/10 dark:bg-amber-950/20"
+            : isPersonalExpanded
+            ? "border-stone-300 dark:border-[#484f58] shadow-xs"
             : "border-stone-200 dark:border-[#363d47]"
         }`}
       >
