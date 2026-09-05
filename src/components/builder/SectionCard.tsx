@@ -167,10 +167,14 @@ export function SectionCard({
 
   return (
     <div
+      id={`section-${section.id}`}
+      tabIndex={-1}
       data-testid={`section-card-${section.id}`}
-      className={`bg-white dark:bg-[#21262d] dark-elevation-card rounded-2xl border transition-all duration-300 shadow-xs ${
-        isExpanded
-          ? "border-amber-400/80 dark:border-amber-500 shadow-md ring-1 ring-amber-400/20 dark:ring-amber-500/30"
+      className={`bg-white dark:bg-[#21262d] dark-elevation-card rounded-2xl border transition-all duration-300 shadow-xs outline-none ${
+        isHighlighted
+          ? "ring-2 ring-amber-500 ring-offset-2 dark:ring-offset-[#161b22] border-amber-500 dark:border-amber-500 shadow-md scale-[1.01] bg-amber-50/10 dark:bg-amber-950/20"
+          : isExpanded
+          ? "border-stone-300 dark:border-[#484f58] shadow-xs"
           : "border-stone-200/90 dark:border-[#363d47] hover:border-stone-300 dark:hover:border-[#484f58]"
       } ${
         section.visible

@@ -22,9 +22,10 @@ interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
   onSelectSection?: (sectionId: string) => void;
+  highlightedSectionId?: string | null;
 }
 
-export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
+export function MatrixTemplate({ cv, lang, onSelectSection, highlightedSectionId }: Props) {
   const { t: tr } = useTranslation(lang);
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#1e3a8a";
@@ -33,6 +34,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
 
   const handleSectionClick = (sectionId: string, e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("a")) return;
+    e.stopPropagation();
     onSelectSection?.(sectionId);
   };
 
@@ -61,7 +63,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
       <div
         data-page-break-avoid="true"
         onClick={(e) => handleSectionClick("personal", e)}
-        className="flex gap-5 items-center pb-3 border-b border-stone-200 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+        className={`flex gap-5 items-center pb-3 border-b border-stone-200 cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+          highlightedSectionId === "personal"
+            ? "outline-2 outline-amber-500 bg-amber-50/40 ring-2 ring-amber-500/20 shadow-xs"
+            : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+        }`}
         title={tr("a11y.templates.clickToEditPersonal")}
       >
         {personalInfo.showPhoto && (
@@ -166,7 +172,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           {expSection && (
             <div
               onClick={(e) => handleSectionClick(expSection.id, e)}
-              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === expSection.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: t(expSection.title, lang, cv.defaultLanguage) })}
             >
               <div
@@ -238,7 +248,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           {eduSection && (
             <div
               onClick={(e) => handleSectionClick(eduSection.id, e)}
-              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === eduSection.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: t(eduSection.title, lang, cv.defaultLanguage) })}
             >
               <div
@@ -315,7 +329,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           {langSection && (
             <div
               onClick={(e) => handleSectionClick(langSection.id, e)}
-              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === langSection.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: t(langSection.title, lang, cv.defaultLanguage) })}
             >
               <div
@@ -364,7 +382,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           {skillsSection && (
             <div
               onClick={(e) => handleSectionClick(skillsSection.id, e)}
-              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === skillsSection.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: t(skillsSection.title, lang, cv.defaultLanguage) })}
             >
               <h2
@@ -402,7 +424,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           {certSection && (
             <div
               onClick={(e) => handleSectionClick(certSection.id, e)}
-              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === certSection.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: t(certSection.title, lang, cv.defaultLanguage) })}
             >
               <h2
@@ -449,7 +475,11 @@ export function MatrixTemplate({ cv, lang, onSelectSection }: Props) {
           {hobbiesSection && (
             <div
               onClick={(e) => handleSectionClick(hobbiesSection.id, e)}
-              className="cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === hobbiesSection.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: t(hobbiesSection.title, lang, cv.defaultLanguage) })}
             >
               <h2

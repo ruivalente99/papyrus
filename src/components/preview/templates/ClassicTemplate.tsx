@@ -12,9 +12,10 @@ interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
   onSelectSection?: (sectionId: string) => void;
+  highlightedSectionId?: string | null;
 }
 
-export function ClassicTemplate({ cv, lang, onSelectSection }: Props) {
+export function ClassicTemplate({ cv, lang, onSelectSection, highlightedSectionId }: Props) {
   const { t: tr } = useTranslation(lang);
   const { personalInfo, sections, theme } = cv;
   const primaryColor = theme.primaryColor || "#004f90";
@@ -23,6 +24,7 @@ export function ClassicTemplate({ cv, lang, onSelectSection }: Props) {
 
   const handleSectionClick = (sectionId: string, e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("a")) return;
+    e.stopPropagation();
     onSelectSection?.(sectionId);
   };
 
@@ -44,7 +46,11 @@ export function ClassicTemplate({ cv, lang, onSelectSection }: Props) {
       <div
         data-page-break-avoid="true"
         onClick={(e) => handleSectionClick("personal", e)}
-        className="text-center pb-2.5 border-b border-stone-200 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+        className={`text-center pb-2.5 border-b border-stone-200 cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+          highlightedSectionId === "personal"
+            ? "outline-2 outline-amber-500 bg-amber-50/40 ring-2 ring-amber-500/20 shadow-xs"
+            : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+        }`}
         title={tr("a11y.templates.clickToEditPersonal")}
       >
         <h1
@@ -125,7 +131,11 @@ export function ClassicTemplate({ cv, lang, onSelectSection }: Props) {
         <div
           data-page-break-avoid="true"
           onClick={(e) => handleSectionClick("personal", e)}
-          className="mt-2.5 cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+          className={`mt-2.5 cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+            highlightedSectionId === "personal"
+              ? "outline-2 outline-amber-500 bg-amber-50/40 ring-2 ring-amber-500/20 shadow-xs"
+              : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+          }`}
           title={tr("a11y.templates.clickToEditProfile")}
         >
           <h2
@@ -150,7 +160,11 @@ export function ClassicTemplate({ cv, lang, onSelectSection }: Props) {
             <div
               key={section.id}
               onClick={(e) => handleSectionClick(section.id, e)}
-              className="mt-2.5 cv-section cursor-pointer transition-all duration-150 rounded-xs hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20 p-1 -m-1"
+              className={`mt-2.5 cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                highlightedSectionId === section.id
+                  ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
+                  : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
+              }`}
               title={tr("a11y.templates.clickToEdit", { name: sectionTitle })}
             >
               <h2

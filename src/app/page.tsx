@@ -89,13 +89,40 @@ export default function BuilderPage() {
     setMobileTab("edit");
     setEditorMode("form");
 
-    setTimeout(() => {
+    const scrollToAndFocus = () => {
       const targetId = sectionId === "personal" ? "section-personal" : `section-${sectionId}`;
       const element = document.getElementById(targetId);
+      const container = document.querySelector(".builder-form-pane");
+
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const elemRect = element.getBoundingClientRect();
+          const currentScroll = container.scrollTop;
+          const targetScroll = currentScroll + (elemRect.top - containerRect.top) - 16;
+          container.scrollTo({
+            top: Math.max(0, targetScroll),
+            behavior: "smooth",
+          });
+        } else {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        element.focus?.({ preventScroll: true });
+
+        setTimeout(() => {
+          const focusable = element.querySelector<HTMLElement>(
+            "input:not([disabled]):not([type='hidden']):not([type='file']), textarea:not([disabled])"
+          );
+          if (focusable) {
+            focusable.focus?.({ preventScroll: true });
+          }
+        }, 100);
       }
-    }, 100);
+    };
+
+    setTimeout(scrollToAndFocus, 50);
+    setTimeout(scrollToAndFocus, 180);
 
     setTimeout(() => {
       setHighlightedSectionId((curr) => (curr === sectionId ? null : curr));
@@ -354,6 +381,7 @@ export default function BuilderPage() {
           <CVPreviewContainer
             cv={cv}
             lang={cvLang}
+            highlightedSectionId={highlightedSectionId}
             onSetTemplate={setTemplate}
             onUpdateTheme={updateTheme}
             onExportJson={exportJson}

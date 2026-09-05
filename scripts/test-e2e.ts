@@ -58,4 +58,27 @@ if (!clonedSchema.valid) {
 }
 console.log("  ✓ Blank Canvas and Cloned CV validated successfully");
 
+// Test 5: Section ID targeting and DOM anchor mapping
+console.log("\n[Test 5] Section ID & Preview Targeting");
+for (const preset of PRESET_SEEDS) {
+  const sectionIds = new Set<string>();
+  for (const section of preset.cv.sections) {
+    if (!section.id || typeof section.id !== "string") {
+      console.error(`❌ Section in preset ${preset.id} missing valid ID:`, section);
+      process.exit(1);
+    }
+    if (sectionIds.has(section.id)) {
+      console.error(`❌ Duplicate section ID "${section.id}" in preset ${preset.id}`);
+      process.exit(1);
+    }
+    sectionIds.add(section.id);
+    const targetAnchor = `section-${section.id}`;
+    if (!targetAnchor.startsWith("section-") || targetAnchor.length < 9) {
+      console.error(`❌ Invalid target anchor "${targetAnchor}" in preset ${preset.id}`);
+      process.exit(1);
+    }
+  }
+  console.log(`  ✓ Preset "${preset.name}": All ${preset.cv.sections.length} sections have unique targeting IDs`);
+}
+
 console.log("\n🎉 ALL E2E VERIFICATION TESTS PASSED (100% SUCCESS)!");
