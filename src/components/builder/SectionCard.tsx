@@ -140,7 +140,7 @@ export function SectionCard({
     }
   }, [isHighlighted, controlledExpanded]);
 
-  const { t: tr } = useTranslation(lang);
+  const { t: tr } = useTranslation();
   const { confirmAction } = useToast();
 
   const getSectionIcon = () => {

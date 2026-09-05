@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import type { SupportedLanguage } from "@/types/cv";
-import { Globe, Plus, Check, ChevronDown, Search, Lock, X } from "lucide-react";
+import { Globe, Plus, Check, ChevronDown, Search, Lock, X, Languages } from "lucide-react";
 
 interface Props {
   activeLang: SupportedLanguage;
@@ -10,6 +10,8 @@ interface Props {
   onSwitchLanguage: (lang: SupportedLanguage) => void;
   onAddLanguage?: (code: string, label: string) => void;
   allowAll?: boolean;
+  variant?: "ui" | "cv";
+  uiLang?: SupportedLanguage;
 }
 
 interface LanguageMeta {
@@ -39,6 +41,8 @@ export function LanguageSwitcher({
   onSwitchLanguage,
   onAddLanguage,
   allowAll = false,
+  variant = "ui",
+  uiLang,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -47,7 +51,7 @@ export function LanguageSwitcher({
   const [customLabel, setCustomLabel] = useState("");
 
   const popoverRef = useRef<HTMLDivElement>(null);
-  const isPt = activeLang === "pt";
+  const isPt = (uiLang || activeLang) === "pt";
 
   // Close on outside click
   useEffect(() => {
@@ -138,27 +142,55 @@ export function LanguageSwitcher({
 
   return (
     <div className="relative shrink-0" ref={popoverRef}>
-      {/* Trigger Button with Globe & Flag */}
+      {/* Trigger Button with Globe / Languages & Flag */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label={isPt ? "Alterar idioma ou nacionalidade" : "Switch language or nationality"}
-        title={isPt ? "Alterar idioma ou nacionalidade" : "Switch language or nationality"}
+        aria-label={
+          variant === "cv"
+            ? (isPt ? "Idioma do CV (Conteúdo do Documento)" : "CV Document Language")
+            : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")
+        }
+        title={
+          variant === "cv"
+            ? (isPt ? "Idioma do CV (Conteúdo do Documento)" : "CV Document Language")
+            : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")
+        }
         className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs border ${
           isOpen
             ? "bg-stone-100 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 border-amber-500/50"
             : "bg-white dark:bg-[#161b22] text-stone-700 dark:text-[#f0f3f6] border-stone-200 dark:border-[#363d47] hover:bg-stone-50 dark:hover:bg-[#21262d]"
         }`}
       >
-        <Globe size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+        {variant === "cv" ? (
+          <Languages size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+        ) : (
+          <Globe size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+        )}
         <span className="text-sm leading-none">{activeMeta.flag}</span>
-        <span className="font-mono uppercase text-[11px] font-bold">{activeLang}</span>
+        <span className="font-mono uppercase text-[11px] font-bold">
+          {variant === "cv" ? `CV: ${activeLang}` : activeLang}
+        </span>
         <ChevronDown size={11} className={`text-stone-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {/* Rich Dropdown Popover */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-2.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100">
+          {/* Header Description */}
+          <div className="px-1.5 py-1 mb-2 border-b border-stone-100 dark:border-[#30363d]">
+            <p className="text-[11px] font-bold text-stone-900 dark:text-[#f0f3f6]">
+              {variant === "cv"
+                ? (isPt ? "Idioma do CV (Conteúdo)" : "CV Document Language")
+                : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")}
+            </p>
+            <p className="text-[10px] text-stone-500 dark:text-[#8b949e] leading-tight">
+              {variant === "cv"
+                ? (isPt ? "Altera o idioma de edição, pré-visualização e exportação do CV." : "Changes CV editing, preview, and export language.")
+                : (isPt ? "Altera o idioma dos botões, menus e ferramentas do papyrus." : "Changes papyrus buttons, menus, and tools language.")}
+            </p>
+          </div>
+
           {/* Search Box */}
           <div className="flex items-center gap-2 px-2.5 py-1.5 bg-stone-100 dark:bg-[#0d1117] rounded-xl border border-stone-200 dark:border-[#363d47] mb-2">
             <Search size={13} className="text-stone-400 shrink-0" />

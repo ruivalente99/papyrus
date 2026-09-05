@@ -14,7 +14,7 @@ interface Props {
 }
 
 export function CertificationsForm({ section, lang, onChange }: Props) {
-  const { t: tr } = useTranslation(lang);
+  const { t: tr } = useTranslation();
 
   const handleAddItem = () => {
     const newItem: CertificationItem = {

@@ -32,9 +32,14 @@ import {
 
 interface Props {
   cv: CVDocument;
-  activeLang: SupportedLanguage;
-  onSwitchLanguage: (lang: SupportedLanguage) => void;
-  onAddLanguage: (code: string, label: string) => void;
+  uiLang?: SupportedLanguage;
+  cvLang?: SupportedLanguage;
+  onSwitchUiLang?: (lang: SupportedLanguage) => void;
+  onSwitchCvLang?: (lang: SupportedLanguage) => void;
+  onAddCvLanguage?: (code: string, label: string) => void;
+  activeLang?: SupportedLanguage;
+  onSwitchLanguage?: (lang: SupportedLanguage) => void;
+  onAddLanguage?: (code: string, label: string) => void;
   onLoadPreset: (id: string) => void;
   onOpenSetup?: () => void;
   onImportJson: (data: CVDocument) => void;
@@ -52,6 +57,11 @@ interface Props {
 
 export function BuilderHeader({
   cv,
+  uiLang,
+  cvLang,
+  onSwitchUiLang,
+  onSwitchCvLang,
+  onAddCvLanguage,
   activeLang,
   onSwitchLanguage,
   onAddLanguage,
@@ -68,16 +78,22 @@ export function BuilderHeader({
   onRestoreHistory,
   onOpenCommandPalette,
 }: Props) {
+  const currentUiLang = uiLang || activeLang || "pt";
+  const currentCvLang = cvLang || cv.currentLanguage || activeLang || "en";
+  const handleSwitchUiLang = onSwitchUiLang || onSwitchLanguage || (() => {});
+  const handleSwitchCvLang = onSwitchCvLang || onSwitchLanguage || (() => {});
+  const handleAddCvLang = onAddCvLanguage || onAddLanguage || (() => {});
+
   const [showPresets, setShowPresets] = useState(false);
   const [showLinterModal, setShowLinterModal] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { t: tr } = useTranslation(activeLang);
+  const { t: tr } = useTranslation(currentUiLang);
   const { showToast } = useToast();
 
   const handleDownloadTex = () => {
     try {
-      const texContent = exportToLatex(cv, activeLang);
+      const texContent = exportToLatex(cv, currentCvLang);
       const blob = new Blob([texContent], { type: "application/x-tex;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -91,14 +107,14 @@ export function BuilderHeader({
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast(
-        activeLang === "pt"
+        currentUiLang === "pt"
           ? "Ficheiro TeX (.tex) descarregado com sucesso!"
           : "TeX file (.tex) downloaded successfully!",
         "success"
       );
     } catch {
       showToast(
-        activeLang === "pt" ? "Erro ao gerar código TeX." : "Error exporting TeX code.",
+        currentUiLang === "pt" ? "Erro ao gerar código TeX." : "Error exporting TeX code.",
         "error"
       );
     }
@@ -114,12 +130,12 @@ export function BuilderHeader({
         const parsed = JSON.parse(event.target?.result as string);
         onImportJson(parsed);
         showToast(
-          activeLang === "pt" ? "Documento JSON importado com sucesso!" : "JSON document imported!",
+          currentUiLang === "pt" ? "Documento JSON importado com sucesso!" : "JSON document imported!",
           "success"
         );
       } catch {
         showToast(
-          activeLang === "pt" ? "Ficheiro JSON inválido." : "Invalid JSON file.",
+          currentUiLang === "pt" ? "Ficheiro JSON inválido." : "Invalid JSON file.",
           "error"
         );
       }
@@ -173,8 +189,8 @@ export function BuilderHeader({
                 <button
                   type="button"
                   onClick={() => setShowHistory(!showHistory)}
-                  title={activeLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
-                  aria-label={activeLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
+                  title={currentUiLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
+                  aria-label={currentUiLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
                   className={`p-1.5 rounded transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                     showHistory
                       ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold"
@@ -190,7 +206,7 @@ export function BuilderHeader({
                     onMouseLeave={() => setShowHistory(false)}
                   >
                     <div className="px-2 py-1 font-bold text-stone-500 dark:text-[#8b949e] uppercase text-[10px] tracking-wider border-b border-stone-100 dark:border-[#30363d] mb-1 flex items-center justify-between">
-                      <span>{activeLang === "pt" ? "Últimas Edições" : "Recent Edits"}</span>
+                      <span>{currentUiLang === "pt" ? "Últimas Edições" : "Recent Edits"}</span>
                       <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">{history.length}</span>
                     </div>
                     <div className="space-y-1">
@@ -198,10 +214,10 @@ export function BuilderHeader({
                         const elapsedMin = Math.max(0, Math.round((Date.now() - entry.timestamp) / 60000));
                         const timeText =
                           elapsedMin === 0
-                            ? activeLang === "pt"
+                            ? currentUiLang === "pt"
                               ? "Agora"
                               : "Just now"
-                            : activeLang === "pt"
+                            : currentUiLang === "pt"
                             ? `há ${elapsedMin} min`
                             : `${elapsedMin}m ago`;
 
@@ -213,7 +229,7 @@ export function BuilderHeader({
                               onRestoreHistory(entry.id);
                               setShowHistory(false);
                               showToast(
-                                activeLang === "pt"
+                                currentUiLang === "pt"
                                   ? "Versão anterior restaurada!"
                                   : "Previous version restored!",
                                 "success"
@@ -224,7 +240,7 @@ export function BuilderHeader({
                             <div className="min-w-0">
                               <p className="text-xs font-medium truncate group-hover:text-amber-700 dark:group-hover:text-amber-400">
                                 {idx === 0
-                                  ? activeLang === "pt"
+                                  ? currentUiLang === "pt"
                                     ? "Versão Anterior"
                                     : "Previous Version"
                                   : entry.label}
@@ -235,7 +251,7 @@ export function BuilderHeader({
                               </p>
                             </div>
                             <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                              {activeLang === "pt" ? "Reverter" : "Restore"}
+                              {currentUiLang === "pt" ? "Reverter" : "Restore"}
                             </span>
                           </button>
                         );
@@ -263,16 +279,27 @@ export function BuilderHeader({
         )}
       </div>
 
-      {/* Center Controls: Language Switcher, Theme Selector, Linter Badge */}
+      {/* Center Controls: CV Language, UI Language / Nationality, Theme Selector, Linter Badge */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0 flex-nowrap">
+        {/* CV Document Content Language */}
         <LanguageSwitcher
-          activeLang={activeLang}
+          variant="cv"
+          activeLang={currentCvLang}
+          uiLang={currentUiLang}
           availableLanguages={cv.availableLanguages}
-          onSwitchLanguage={onSwitchLanguage}
-          onAddLanguage={onAddLanguage}
+          onSwitchLanguage={handleSwitchCvLang}
+          onAddLanguage={handleAddCvLang}
         />
 
-        <ThemeSelector lang={activeLang} />
+        {/* App UI Language & Nationality */}
+        <LanguageSwitcher
+          variant="ui"
+          activeLang={currentUiLang}
+          uiLang={currentUiLang}
+          onSwitchLanguage={handleSwitchUiLang}
+        />
+
+        <ThemeSelector lang={currentUiLang} />
 
         <LinterBadge
           report={linterReport}
@@ -285,22 +312,22 @@ export function BuilderHeader({
         {/* Guide / Tutorial Link */}
         <Link
           href="/guide"
-          title={activeLang === "pt" ? "Como construir um CV passo a passo" : "Step-by-step CV guide"}
+          title={currentUiLang === "pt" ? "Como construir um CV passo a passo" : "Step-by-step CV guide"}
           className="flex items-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 px-2.5 sm:px-3 py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95"
         >
           <BookOpen size={13} />
-          <span className="hidden md:inline">{activeLang === "pt" ? "Guia" : "Guide"}</span>
+          <span className="hidden md:inline">{currentUiLang === "pt" ? "Guia" : "Guide"}</span>
         </Link>
 
         {/* Setup / Home screen button (Desktop / Tablet only) */}
         {onOpenSetup && (
           <button
             onClick={onOpenSetup}
-            title={tUI("newDoc", activeLang)}
+            title={tUI("newDoc", currentUiLang)}
             className="hidden sm:flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
           >
             <Plus size={13} className="text-amber-700 dark:text-amber-400" />
-            <span className="hidden md:inline">{tUI("newDoc", activeLang)}</span>
+            <span className="hidden md:inline">{tUI("newDoc", currentUiLang)}</span>
           </button>
         )}
 
@@ -311,14 +338,14 @@ export function BuilderHeader({
             className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-2.5 sm:px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
           >
             <Layers size={13} />
-            <span className="hidden md:inline">{tUI("templates", activeLang)}</span>
+            <span className="hidden md:inline">{tUI("templates", currentUiLang)}</span>
             <ChevronDown size={11} />
           </button>
 
           {showPresets && (
             <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100">
               <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
-                {activeLang === "pt" ? "Modelos" : "Presets"}
+                {currentUiLang === "pt" ? "Modelos" : "Presets"}
               </p>
               {PRESET_SEEDS.map((p) => (
                 <button
@@ -344,7 +371,7 @@ export function BuilderHeader({
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
                     <Plus size={13} className="text-amber-700 dark:text-amber-400" />
-                    <span>{tUI("newDoc", activeLang)}</span>
+                    <span>{tUI("newDoc", currentUiLang)}</span>
                   </button>
                 )}
                 <button
@@ -355,7 +382,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
-                  <span>{activeLang === "pt" ? "Descarregar TeX (.tex)" : "Download TeX (.tex)"}</span>
+                  <span>{currentUiLang === "pt" ? "Descarregar TeX (.tex)" : "Download TeX (.tex)"}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -365,7 +392,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <FileUp size={13} />
-                  <span>{tUI("importAction", activeLang)}</span>
+                  <span>{tUI("importAction", currentUiLang)}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -375,7 +402,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <FileDown size={13} />
-                  <span>{tUI("jsonBackup", activeLang)}</span>
+                  <span>{tUI("jsonBackup", currentUiLang)}</span>
                 </button>
               </div>
             </div>
@@ -386,8 +413,8 @@ export function BuilderHeader({
         <button
           type="button"
           onClick={handleDownloadTex}
-          title={activeLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
-          aria-label={activeLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
+          title={currentUiLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
+          aria-label={currentUiLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
           className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95"
         >
           <Download size={13} className="text-amber-700 dark:text-amber-400" />
@@ -427,7 +454,7 @@ export function BuilderHeader({
         report={linterReport}
         isOpen={showLinterModal}
         onClose={() => setShowLinterModal(false)}
-        lang={activeLang}
+        lang={currentUiLang}
         cv={cv}
       />
     </header>
