@@ -26,7 +26,8 @@
       "hobby_one": "1 hobby",
       "hobby_other": "{{count}} hobbies",
       "item_one": "1 item",
-      "item_other": "{{count}} items"
+      "item_other": "{{count}} items",
+      "personalDefault": "Contact details, avatar and summary"
     }
   },
   "modes": {
@@ -87,6 +88,7 @@
       "title": "Education & Qualifications",
       "newDegree": "New Degree / Course",
       "addDegree": "Add Education",
+      "addEducation": "Add Education",
       "degree": "Degree / Field of Study",
       "degreePlaceholder": "e.g. B.Sc. in Computer Science",
       "institution": "Institution",
@@ -110,7 +112,8 @@
       "categoryPlaceholder": "e.g. Frontend Development, DevOps",
       "addSkill": "Add skill",
       "skillPlaceholder": "Type skill & press Enter",
-      "removeSkill": "Remove {{skill}}"
+      "removeSkill": "Remove {{skill}}",
+      "noSkills": "No skills added yet in this group."
     },
     "languages": {
       "title": "Languages",
@@ -118,6 +121,9 @@
       "addLanguage": "Add Language",
       "name": "Language",
       "namePlaceholder": "e.g. English, French",
+      "level": "Proficiency Level",
+      "levelPlaceholder": "e.g. Native, Fluent, Intermediate",
+      "levelIntermediate": "Professional working proficiency",
       "proficiency": "Proficiency Level",
       "proficiencyPlaceholder": "e.g. Native, Fluent, Intermediate",
       "cefr": "Official CEFR Level",
@@ -145,9 +151,12 @@
       "namePlaceholder": "e.g. AWS Certified Solutions Architect",
       "issuer": "Issuing Entity",
       "issuerPlaceholder": "e.g. Amazon Web Services",
+      "date": "Issue Date",
       "issueDate": "Issue Date",
       "expiryDate": "Expiry Date",
-      "url": "Credential URL"
+      "url": "Credential URL",
+      "notes": "Notes / Description",
+      "notesPlaceholder": "e.g. Score, honors or special credential ID"
     },
     "hobbies": {
       "title": "Interests & Activities",
@@ -156,7 +165,8 @@
       "name": "Interest / Activity",
       "namePlaceholder": "e.g. Open Source, Photography, Hiking",
       "description": "Description / Details",
-      "descriptionPlaceholder": "Brief note or favorite activities..."
+      "descriptionPlaceholder": "Brief note or favorite activities...",
+      "url": "Link / Website"
     }
   },
   "linter": {
@@ -221,5 +231,18 @@
       "latexHint": "Compatible with TeX Live, MacTeX and Overleaf.",
       "close": "Close code"
     }
+  },
+  "iconPicker": {
+    "title": "Choose Icon",
+    "search": "Search icons...",
+    "clear": "Clear search",
+    "sectionIcon": "Section icon: {{name}}",
+    "all": "All",
+    "dev": "Dev & Code",
+    "contact": "Contact",
+    "social": "Social",
+    "design": "Design",
+    "other": "Other",
+    "noIcons": "No icons found"
   }
 }

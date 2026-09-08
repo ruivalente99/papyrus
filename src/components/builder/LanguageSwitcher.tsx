@@ -156,27 +156,34 @@ export function LanguageSwitcher({
             ? (isPt ? "Idioma do CV (Conteúdo do Documento)" : "CV Document Language")
             : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")
         }
-        className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs border ${
+        className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs border shrink-0 ${
           isOpen
             ? "bg-stone-100 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 border-amber-500/50"
             : "bg-white dark:bg-[#161b22] text-stone-700 dark:text-[#f0f3f6] border-stone-200 dark:border-[#363d47] hover:bg-stone-50 dark:hover:bg-[#21262d]"
         }`}
       >
         {variant === "cv" ? (
-          <Languages size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+          <Languages size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
         ) : (
-          <Globe size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+          <Globe size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
         )}
-        <span className="text-sm leading-none">{activeMeta.flag}</span>
-        <span className="font-mono uppercase text-[11px] font-bold">
-          {variant === "cv" ? `CV: ${activeLang}` : activeLang}
+        <span className="text-xs sm:text-sm leading-none shrink-0">{activeMeta.flag}</span>
+        <span className="font-mono uppercase text-[10.5px] sm:text-[11px] font-bold">
+          {variant === "cv" ? (
+            <>
+              <span className="hidden sm:inline">CV: </span>
+              {activeLang}
+            </>
+          ) : (
+            <span className="hidden xs:inline">{activeLang}</span>
+          )}
         </span>
-        <ChevronDown size={11} className={`text-stone-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown size={11} className={`text-stone-400 transition-transform hidden sm:inline ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {/* Rich Dropdown Popover */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-2.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-2.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100">
           {/* Header Description */}
           <div className="px-1.5 py-1 mb-2 border-b border-stone-100 dark:border-[#30363d]">
             <p className="text-[11px] font-bold text-stone-900 dark:text-[#f0f3f6]">

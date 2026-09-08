@@ -381,6 +381,7 @@ export default function BuilderPage() {
           <CVPreviewContainer
             cv={cv}
             lang={cvLang}
+            uiLang={uiLang}
             highlightedSectionId={highlightedSectionId}
             onSetTemplate={setTemplate}
             onUpdateTheme={updateTheme}

@@ -98,7 +98,7 @@ const AVAILABLE_SECTIONS: SectionOption[] = [
   },
 ];
 
-export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) {
+export function AddSectionModal({ isOpen, lang: _lang, onClose, onAddSection }: Props) {
   const [selectedType, setSelectedType] = useState<SectionType>("experience");
   const [customTitle, setCustomTitle] = useState("");
   const { t: tr, lang: uiLang } = useTranslation();
@@ -180,16 +180,16 @@ export function AddSectionModal({ isOpen, lang, onClose, onAddSection }: Props) 
                             : "text-stone-800 dark:text-[#f0f3f6]"
                         }`}
                       >
-                        {sec.title[lang as "en" | "pt"] || sec.title.en}
+                        {sec.title[isPt ? "pt" : "en"] || sec.title.en}
                       </h4>
                       {sec.badge && (
                         <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-stone-200 dark:bg-[#161b22] text-stone-700 dark:text-[#c9d1d9]">
-                          {sec.badge[lang as "en" | "pt"] || sec.badge.en}
+                          {sec.badge[isPt ? "pt" : "en"] || sec.badge.en}
                         </span>
                       )}
                     </div>
                     <p className="text-[11px] text-stone-500 dark:text-[#8b949e] mt-0.5 leading-relaxed">
-                      {sec.desc[lang as "en" | "pt"] || sec.desc.en}
+                      {sec.desc[isPt ? "pt" : "en"] || sec.desc.en}
                     </p>
                   </div>
                 </button>
