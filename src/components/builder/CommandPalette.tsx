@@ -27,6 +27,8 @@ import {
   Globe2,
   Award,
   HeartHandshake,
+  Kanban,
+  BookOpen,
 } from "lucide-react";
 
 interface CommandItem {
@@ -246,6 +248,30 @@ export function CommandPalette({
             },
           ]
         : []),
+
+      // Navigation: External Pages
+      {
+        id: "nav-board",
+        category: "navigation" as const,
+        title: isPt ? "Abrir Quadro de Funcionalidades & Roadmap" : "Open Feature Board & Roadmap",
+        subtitle: isPt ? "Acompanhar tarefas, backlog e marcos" : "Track tickets, backlog and milestones",
+        icon: Kanban,
+        keywords: ["board", "roadmap", "tickets", "features", "tarefas", "quadro"],
+        action: () => {
+          window.location.href = "/board";
+        },
+      },
+      {
+        id: "nav-guide",
+        category: "navigation" as const,
+        title: isPt ? "Abrir Guia de Utilização" : "Open Step-by-Step Guide",
+        subtitle: isPt ? "Tutorial interativo e vídeos" : "Interactive guide and feature tour",
+        icon: BookOpen,
+        keywords: ["guide", "guia", "tutorial", "help", "ajuda"],
+        action: () => {
+          window.location.href = "/guide";
+        },
+      },
 
       // Jump to Sections
       {

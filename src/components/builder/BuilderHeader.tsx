@@ -28,6 +28,7 @@ import {
   History,
   Clock,
   Download,
+  Kanban,
 } from "lucide-react";
 
 interface Props {
@@ -320,6 +321,17 @@ export function BuilderHeader({
           <span className="hidden md:inline">{currentUiLang === "pt" ? "Guia" : "Guide"}</span>
         </Link>
 
+        {/* Board / Roadmap Link */}
+        <Link
+          href="/board"
+          title={currentUiLang === "pt" ? "Quadro de Funcionalidades & Roadmap" : "Feature Board & Roadmap"}
+          aria-label={currentUiLang === "pt" ? "Quadro de Tarefas" : "Feature Board"}
+          className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
+        >
+          <Kanban size={13} />
+          <span className="hidden md:inline">Board</span>
+        </Link>
+
         {/* Setup / Home screen button (Desktop / Tablet only) */}
         {onOpenSetup && (
           <button
@@ -365,6 +377,14 @@ export function BuilderHeader({
 
               {/* Mobile Extended Actions inside Dropdown */}
               <div className="sm:hidden border-t border-stone-150 dark:border-[#363d47] my-1 pt-1 space-y-0.5">
+                <Link
+                  href="/board"
+                  onClick={() => setShowPresets(false)}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                >
+                  <Kanban size={13} className="text-amber-700 dark:text-amber-400" />
+                  <span>{currentUiLang === "pt" ? "Quadro de Funcionalidades (Board)" : "Feature Board & Roadmap"}</span>
+                </Link>
                 {onOpenSetup && (
                   <button
                     onClick={() => {
