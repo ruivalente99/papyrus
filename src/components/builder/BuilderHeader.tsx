@@ -10,7 +10,6 @@ import { LinterModal } from "./linter/LinterModal";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { PRESET_SEEDS } from "@/data/seeds";
-import { tUI } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/context/ToastContext";
 import { exportToLatex } from "@/lib/latexEngine";
@@ -108,14 +107,12 @@ export function BuilderHeader({
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       showToast(
-        currentUiLang === "pt"
-          ? "Ficheiro TeX (.tex) descarregado com sucesso!"
-          : "TeX file (.tex) downloaded successfully!",
+        tr("builder.header.texDownloaded"),
         "success"
       );
     } catch {
       showToast(
-        currentUiLang === "pt" ? "Erro ao gerar código TeX." : "Error exporting TeX code.",
+        tr("builder.header.texError"),
         "error"
       );
     }
@@ -131,12 +128,12 @@ export function BuilderHeader({
         const parsed = JSON.parse(event.target?.result as string);
         onImportJson(parsed);
         showToast(
-          currentUiLang === "pt" ? "Documento JSON importado com sucesso!" : "JSON document imported!",
+          tr("builder.header.jsonImported"),
           "success"
         );
       } catch {
         showToast(
-          currentUiLang === "pt" ? "Ficheiro JSON inválido." : "Invalid JSON file.",
+          tr("builder.header.jsonInvalid"),
           "error"
         );
       }
@@ -190,8 +187,8 @@ export function BuilderHeader({
                 <button
                   type="button"
                   onClick={() => setShowHistory(!showHistory)}
-                  title={currentUiLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
-                  aria-label={currentUiLang === "pt" ? "Histórico de edições recentes" : "Recent edit history"}
+                  title={tr("builder.header.recentHistory")}
+                  aria-label={tr("builder.header.recentHistory")}
                   className={`p-1.5 rounded transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center ${
                     showHistory
                       ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold"
@@ -207,7 +204,7 @@ export function BuilderHeader({
                     onMouseLeave={() => setShowHistory(false)}
                   >
                     <div className="px-2 py-1 font-bold text-stone-500 dark:text-[#8b949e] uppercase text-[10px] tracking-wider border-b border-stone-100 dark:border-[#30363d] mb-1 flex items-center justify-between">
-                      <span>{currentUiLang === "pt" ? "Últimas Edições" : "Recent Edits"}</span>
+                      <span>{tr("builder.header.recentEdits")}</span>
                       <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">{history.length}</span>
                     </div>
                     <div className="space-y-1">
@@ -215,12 +212,8 @@ export function BuilderHeader({
                         const elapsedMin = Math.max(0, Math.round((Date.now() - entry.timestamp) / 60000));
                         const timeText =
                           elapsedMin === 0
-                            ? currentUiLang === "pt"
-                              ? "Agora"
-                              : "Just now"
-                            : currentUiLang === "pt"
-                            ? `há ${elapsedMin} min`
-                            : `${elapsedMin}m ago`;
+                            ? tr("builder.header.justNow")
+                            : tr("builder.header.minutesAgo", { count: elapsedMin });
 
                         return (
                           <button
@@ -230,9 +223,7 @@ export function BuilderHeader({
                               onRestoreHistory(entry.id);
                               setShowHistory(false);
                               showToast(
-                                currentUiLang === "pt"
-                                  ? "Versão anterior restaurada!"
-                                  : "Previous version restored!",
+                                tr("builder.header.versionRestored"),
                                 "success"
                               );
                             }}
@@ -241,9 +232,7 @@ export function BuilderHeader({
                             <div className="min-w-0">
                               <p className="text-xs font-medium truncate group-hover:text-amber-700 dark:group-hover:text-amber-400">
                                 {idx === 0
-                                  ? currentUiLang === "pt"
-                                    ? "Versão Anterior"
-                                    : "Previous Version"
+                                  ? tr("builder.header.previousVersion")
                                   : entry.label}
                               </p>
                               <p className="text-[10px] text-stone-400 dark:text-[#8b949e] flex items-center gap-1">
@@ -252,7 +241,7 @@ export function BuilderHeader({
                               </p>
                             </div>
                             <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                              {currentUiLang === "pt" ? "Reverter" : "Restore"}
+                              {tr("builder.header.restore")}
                             </span>
                           </button>
                         );
@@ -313,34 +302,34 @@ export function BuilderHeader({
         {/* Guide / Tutorial Link */}
         <Link
           href="/guide"
-          title={currentUiLang === "pt" ? "Como construir um CV passo a passo" : "Step-by-step CV guide"}
-          aria-label={currentUiLang === "pt" ? "Guia passo a passo" : "Step-by-step CV guide"}
+          title={tr("builder.header.guideTitle")}
+          aria-label={tr("builder.header.guideTitle")}
           className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
         >
           <BookOpen size={13} />
-          <span className="hidden md:inline">{currentUiLang === "pt" ? "Guia" : "Guide"}</span>
+          <span className="hidden md:inline">{tr("builder.header.guide")}</span>
         </Link>
 
         {/* Board / Roadmap Link */}
         <Link
           href="/board"
-          title={currentUiLang === "pt" ? "Quadro de Funcionalidades & Roadmap" : "Feature Board & Roadmap"}
-          aria-label={currentUiLang === "pt" ? "Quadro de Tarefas" : "Feature Board"}
+          title={tr("builder.header.boardTitle")}
+          aria-label={tr("builder.header.boardTitle")}
           className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
         >
           <Kanban size={13} />
-          <span className="hidden md:inline">Board</span>
+          <span className="hidden md:inline">{tr("builder.header.board")}</span>
         </Link>
 
         {/* Setup / Home screen button (Desktop / Tablet only) */}
         {onOpenSetup && (
           <button
             onClick={onOpenSetup}
-            title={tUI("newDoc", currentUiLang)}
+            title={tr("builder.header.newDoc")}
             className="hidden sm:flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
           >
             <Plus size={13} className="text-amber-700 dark:text-amber-400" />
-            <span className="hidden md:inline">{tUI("newDoc", currentUiLang)}</span>
+            <span className="hidden md:inline">{tr("builder.header.newDoc")}</span>
           </button>
         )}
 
@@ -348,19 +337,19 @@ export function BuilderHeader({
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            aria-label={tUI("templates", currentUiLang)}
-            title={tUI("templates", currentUiLang)}
+            aria-label={tr("builder.header.templates")}
+            title={tr("builder.header.templates")}
             className="flex items-center justify-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs shrink-0 min-w-[28px] min-h-[28px]"
           >
             <Layers size={13} />
-            <span className="hidden md:inline">{tUI("templates", currentUiLang)}</span>
+            <span className="hidden md:inline">{tr("builder.header.templates")}</span>
             <ChevronDown size={11} className="hidden sm:inline" />
           </button>
 
           {showPresets && (
             <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100">
               <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
-                {currentUiLang === "pt" ? "Modelos" : "Presets"}
+                {tr("builder.header.presets")}
               </p>
               {PRESET_SEEDS.map((p) => (
                 <button
@@ -383,7 +372,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <Kanban size={13} className="text-amber-700 dark:text-amber-400" />
-                  <span>{currentUiLang === "pt" ? "Quadro de Funcionalidades (Board)" : "Feature Board & Roadmap"}</span>
+                  <span>{tr("builder.header.boardTitle")}</span>
                 </Link>
                 {onOpenSetup && (
                   <button
@@ -394,7 +383,7 @@ export function BuilderHeader({
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
                     <Plus size={13} className="text-amber-700 dark:text-amber-400" />
-                    <span>{tUI("newDoc", currentUiLang)}</span>
+                    <span>{tr("builder.header.newDoc")}</span>
                   </button>
                 )}
                 <button
@@ -405,7 +394,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
-                  <span>{currentUiLang === "pt" ? "Descarregar TeX (.tex)" : "Download TeX (.tex)"}</span>
+                  <span>{tr("builder.header.downloadTex")}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -415,7 +404,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <FileUp size={13} />
-                  <span>{tUI("importAction", currentUiLang)}</span>
+                  <span>{tr("common.actions.import")}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -425,7 +414,7 @@ export function BuilderHeader({
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <FileDown size={13} />
-                  <span>{tUI("jsonBackup", currentUiLang)}</span>
+                  <span>{tr("builder.header.jsonBackup")}</span>
                 </button>
               </div>
             </div>
@@ -436,8 +425,8 @@ export function BuilderHeader({
         <button
           type="button"
           onClick={handleDownloadTex}
-          title={currentUiLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
-          aria-label={currentUiLang === "pt" ? "Descarregar código TeX (.tex)" : "Download TeX code (.tex)"}
+          title={tr("builder.header.downloadTex")}
+          aria-label={tr("builder.header.downloadTex")}
           className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95"
         >
           <Download size={13} className="text-amber-700 dark:text-amber-400" />
@@ -458,6 +447,7 @@ export function BuilderHeader({
           type="file"
           accept=".json,application/json"
           onChange={handleFileUpload}
+          aria-label={tr("builder.header.importFileAria")}
           className="hidden"
         />
 

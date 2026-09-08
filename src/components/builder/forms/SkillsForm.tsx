@@ -101,17 +101,17 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
 
   return (
     <div className="space-y-4 text-xs">
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-stone-600 dark:text-[#c9d1d9]">
-          {tr("builder.forms.skills.title")} ({categories.length})
+      <div className="flex items-center justify-between pb-1 border-b border-stone-200 dark:border-[#30363d]">
+        <span className="font-semibold text-stone-700 dark:text-[#c9d1d9]">
+          {tr("builder.forms.skills.title")}
         </span>
         <button
           type="button"
           onClick={handleAddCategory}
-          className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
+          className="flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-0.5 rounded-full transition-all active:scale-95 shadow-2xs"
         >
-          <Plus size={13} />
-          <span>+ {tr("builder.forms.skills.addCategory")}</span>
+          <Plus size={12} />
+          <span>{tr("builder.forms.skills.addCategory")}</span>
         </button>
       </div>
 
@@ -119,7 +119,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
         {categories.map((cat) => (
           <div
             key={cat.id}
-            className={`p-3 rounded-xl border transition-all ${
+            className={`p-3.5 rounded-xl border transition-all ${
               cat.visible
                 ? "bg-white dark:bg-[#161b22] border-stone-300 dark:border-[#30363d] shadow-2xs"
                 : "bg-stone-100/70 dark:bg-[#161b22]/40 border-stone-200 dark:border-[#30363d]/60 opacity-60"
@@ -169,8 +169,8 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
                   <button
                     type="button"
                     onClick={() => handleRemoveSkillTag(cat.id, sIdx)}
-                    title={tr("a11y.forms.deleteSkill", { skill })}
-                    aria-label={tr("a11y.forms.deleteSkill", { skill })}
+                    title={tr("a11y.forms.deleteSkill", { name: skill })}
+                    aria-label={tr("a11y.forms.deleteSkill", { name: skill })}
                     className="text-amber-700 dark:text-amber-400 hover:text-red-600 dark:hover:text-red-400 p-1 rounded-full min-w-[24px] min-h-[24px] flex items-center justify-center"
                   >
                     <X size={11} />

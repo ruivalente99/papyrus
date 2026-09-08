@@ -122,7 +122,16 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
               setIsDraggingOverAvatar(false);
             }}
             onDrop={handleAvatarDrop}
-            title={isPt ? "Clica ou arrasta uma foto para aqui" : "Click or drop photo here"}
+            title={tr("builder.header.avatarClickHint")}
+            role="button"
+            tabIndex={0}
+            aria-label={tr("builder.header.avatarClickHint")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                photoInputRef.current?.click();
+              }
+            }}
             className={`group relative w-16 h-16 rounded-full overflow-hidden bg-stone-200 dark:bg-[#0d1117] border-2 transition-all cursor-pointer flex items-center justify-center ${
               isDraggingOverAvatar
                 ? "border-amber-500 ring-4 ring-amber-500/30 scale-105"
@@ -140,7 +149,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             {/* Hover overlay for instant photo upload */}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-0.5">
               <Camera size={16} className="text-amber-400" />
-              <span className="text-[9px] font-bold">{isPt ? "Mudar" : "Upload"}</span>
+              <span className="text-[9px] font-bold">{tr("builder.header.avatarUpload")}</span>
             </div>
           </div>
 
@@ -148,8 +157,8 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           <button
             type="button"
             onClick={handleRerollDylanAvatar}
-            title={isPt ? "Gerar novo avatar Dylan aleatório" : "Reroll Dylan avatar"}
-            aria-label={isPt ? "Gerar novo avatar Dylan aleatório" : "Reroll Dylan avatar"}
+            title={tr("builder.header.avatarRerollAria")}
+            aria-label={tr("builder.header.avatarRerollAria")}
             className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 flex items-center justify-center shadow-md border-2 border-white dark:border-[#161b22] active:scale-90 transition-transform"
           >
             <Dices size={12} />
@@ -160,6 +169,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             ref={photoInputRef}
             type="file"
             accept="image/*"
+            aria-label={tr("builder.header.importFileAria")}
             onChange={handlePhotoUpload}
             className="hidden"
           />
@@ -227,10 +237,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       {/* Name & Professional Headline */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+          <label htmlFor="personal-full-name" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.fullName")} *
           </label>
           <input
+            id="personal-full-name"
             type="text"
             value={data.fullName || ""}
             onChange={(e) => {
@@ -247,10 +258,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+          <label htmlFor="personal-headline" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.headline")} ({lang.toUpperCase()})
           </label>
           <input
+            id="personal-headline"
             type="text"
             value={data.headline?.[lang] || ""}
             onChange={(e) =>
@@ -271,10 +283,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
       {/* Contact info: Email, Phone, Location, Website */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+          <label htmlFor="personal-email" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.email")} *
           </label>
           <input
+            id="personal-email"
             type="email"
             value={data.email || ""}
             onChange={(e) => onChange({ email: e.target.value })}
@@ -284,10 +297,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+          <label htmlFor="personal-phone" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.phone")}
           </label>
           <input
+            id="personal-phone"
             type="tel"
             value={data.phone || ""}
             onChange={(e) => onChange({ phone: e.target.value })}
@@ -297,10 +311,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+          <label htmlFor="personal-location" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.location")} ({lang.toUpperCase()})
           </label>
           <input
+            id="personal-location"
             type="text"
             value={data.location?.[lang] || ""}
             onChange={(e) =>
@@ -318,10 +333,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
         </div>
 
         <div>
-          <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+          <label htmlFor="personal-website" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
             {tr("builder.forms.personalInfo.website")}
           </label>
           <input
+            id="personal-website"
             type="url"
             value={data.website || ""}
             onChange={(e) => onChange({ website: e.target.value })}
@@ -418,10 +434,11 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
 
       {/* Summary / About */}
       <div>
-        <label className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+        <label htmlFor="personal-summary" className="block font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
           {tr("builder.forms.personalInfo.summary")} ({lang.toUpperCase()})
         </label>
         <textarea
+          id="personal-summary"
           rows={3}
           value={data.summary?.[lang] || ""}
           onChange={(e) =>

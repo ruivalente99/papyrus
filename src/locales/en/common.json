@@ -54,7 +54,17 @@
     "codePlaceholder": "e.g. FR",
     "namePlaceholder": "e.g. French",
     "confirmNew": "Confirm new language",
-    "currentEditing": "Editing in: {{lang}}"
+    "currentEditing": "Editing in: {{lang}}",
+    "cvVariantTitle": "CV Document Language",
+    "cvVariantDesc": "Changes CV editing, preview, and export language.",
+    "uiVariantTitle": "Interface Language & Nationality",
+    "uiVariantDesc": "Changes papyrus buttons, menus, and tools language.",
+    "searchPlaceholder": "Search country or language...",
+    "soon": "Soon",
+    "addCustomToCV": "Add custom language to CV",
+    "codeAria": "Language code (e.g. es)",
+    "nameAria": "Language name (e.g. Spanish)",
+    "confirmNewAria": "Confirm new language"
   },
   "shortcuts": {
     "commandPalette": "Command Palette (⌘K)",
@@ -63,7 +73,12 @@
   "status": {
     "loading": "Loading...",
     "error": "Error",
-    "success": "Success"
+    "success": "Success",
+    "present": "Present"
+  },
+  "tabs": {
+    "editor": "Editor",
+    "preview": "Preview"
   },
   "misc": {
     "present": "Present"

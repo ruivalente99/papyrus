@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { RotateCw, ZoomIn, ZoomOut, Check, X, Move } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface Props {
   isOpen: boolean;
@@ -16,10 +17,10 @@ export function ImageCropModal({
   isOpen,
   imageSrc,
   shape = "circle",
-  isPt = false,
   onClose,
   onConfirm,
 }: Props) {
+  const { t: tr } = useTranslation();
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0); // 0, 90, 180, 270
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -173,16 +174,17 @@ export function ImageCropModal({
         <div className="flex items-center justify-between border-b border-stone-100 dark:border-[#30363d] pb-3">
           <div>
             <h3 className="text-sm font-bold text-stone-900 dark:text-[#f0f3f6]">
-              {isPt ? "Ajustar e Recortar Foto" : "Crop & Rotate Photo"}
+              {tr("builder.cropModal.title")}
             </h3>
             <p className="text-[11px] text-stone-500 dark:text-[#8b949e]">
-              {isPt ? "Arrasta para centrar, faz zoom ou roda" : "Drag to center, zoom or rotate"}
+              {tr("builder.cropModal.subtitle")}
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors"
+            aria-label={tr("builder.cropModal.close")}
+            className="p-1 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
           >
             <X size={16} />
           </button>
@@ -224,7 +226,7 @@ export function ImageCropModal({
             {/* Drag hint badge */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono pointer-events-none flex items-center gap-1">
               <Move size={10} />
-              <span>{isPt ? "Arrasta para posicionar" : "Drag to position"}</span>
+              <span>{tr("builder.cropModal.dragHint")}</span>
             </div>
           </div>
         </div>
@@ -236,8 +238,9 @@ export function ImageCropModal({
             <button
               type="button"
               onClick={() => setZoom((z) => Math.max(1, +(z - 0.1).toFixed(2)))}
-              className="p-1 rounded-md text-stone-600 dark:text-[#8b949e] hover:bg-stone-200 dark:hover:bg-[#21262d]"
-              title={isPt ? "Reduzir zoom" : "Zoom out"}
+              className="p-1 rounded-md text-stone-600 dark:text-[#8b949e] hover:bg-stone-200 dark:hover:bg-[#21262d] min-w-[24px] min-h-[24px] flex items-center justify-center"
+              title={tr("builder.cropModal.zoomOut")}
+              aria-label={tr("builder.cropModal.zoomOut")}
             >
               <ZoomOut size={14} />
             </button>
@@ -248,13 +251,15 @@ export function ImageCropModal({
               step={0.05}
               value={zoom}
               onChange={(e) => setZoom(parseFloat(e.target.value))}
+              aria-label={tr("builder.cropModal.zoomAria")}
               className="flex-1 accent-amber-600 h-1.5 rounded-lg bg-stone-300 dark:bg-[#363d47] cursor-pointer"
             />
             <button
               type="button"
               onClick={() => setZoom((z) => Math.min(3, +(z + 0.1).toFixed(2)))}
-              className="p-1 rounded-md text-stone-600 dark:text-[#8b949e] hover:bg-stone-200 dark:hover:bg-[#21262d]"
-              title={isPt ? "Aumentar zoom" : "Zoom in"}
+              className="p-1 rounded-md text-stone-600 dark:text-[#8b949e] hover:bg-stone-200 dark:hover:bg-[#21262d] min-w-[24px] min-h-[24px] flex items-center justify-center"
+              title={tr("builder.cropModal.zoomIn")}
+              aria-label={tr("builder.cropModal.zoomIn")}
             >
               <ZoomIn size={14} />
             </button>
@@ -266,7 +271,7 @@ export function ImageCropModal({
           {/* Rotate Button */}
           <div className="flex items-center justify-between pt-1 border-t border-stone-200/60 dark:border-[#30363d]">
             <span className="text-xs text-stone-600 dark:text-[#8b949e]">
-              {isPt ? "Orientação:" : "Orientation:"}
+              {tr("builder.cropModal.orientation")}
             </span>
             <button
               type="button"
@@ -274,7 +279,7 @@ export function ImageCropModal({
               className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-[#21262d] hover:bg-stone-100 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] border border-stone-300/80 dark:border-[#363d47] transition-all shadow-2xs active:scale-95"
             >
               <RotateCw size={13} className="text-amber-600 dark:text-amber-400" />
-              <span>{rotation}° ({isPt ? "Rodar 90°" : "Rotate 90°"})</span>
+              <span>{rotation}° ({tr("builder.cropModal.rotate90")})</span>
             </button>
           </div>
         </div>
@@ -286,7 +291,7 @@ export function ImageCropModal({
             onClick={onClose}
             className="px-4 py-1.5 rounded-full text-xs font-semibold text-stone-600 dark:text-[#c9d1d9] hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors"
           >
-            {isPt ? "Cancelar" : "Cancel"}
+            {tr("builder.cropModal.cancel")}
           </button>
           <button
             type="button"
@@ -295,7 +300,7 @@ export function ImageCropModal({
             className="px-4 py-1.5 rounded-full text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition-colors flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
           >
             <Check size={13} />
-            <span>{isPt ? "Aplicar Foto" : "Apply Photo"}</span>
+            <span>{tr("builder.cropModal.apply")}</span>
           </button>
         </div>
       </div>

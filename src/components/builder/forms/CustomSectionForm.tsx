@@ -58,14 +58,14 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
 
   return (
     <div className="space-y-4 text-xs">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center pb-1 border-b border-stone-200 dark:border-[#30363d]">
         <span className="font-semibold text-stone-600 dark:text-[#c9d1d9]">
           {tr("builder.forms.custom.title")} ({items.length})
         </span>
         <button
           type="button"
           onClick={handleAddItem}
-          className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
+          className="flex items-center gap-1.5 text-xs font-medium bg-amber-700 hover:bg-amber-800 text-white px-2.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
           <span>+ {tr("builder.forms.custom.addItem")}</span>
@@ -113,10 +113,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
             <div className="space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div className="sm:col-span-2">
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`custom-title-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.custom.itemTitle")} ({lang.toUpperCase()}) *
                   </label>
                   <input
+                    id={`custom-title-${item.id}`}
                     type="text"
                     placeholder={tr("builder.forms.custom.itemTitlePlaceholder")}
                     value={item.title?.[lang] || ""}
@@ -130,10 +131,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`custom-date-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.custom.date")}
                   </label>
                   <input
+                    id={`custom-date-${item.id}`}
                     type="text"
                     placeholder="2025"
                     value={item.date || ""}
@@ -145,10 +147,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`custom-subtitle-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.custom.subtitle")} ({lang.toUpperCase()})
                   </label>
                   <input
+                    id={`custom-subtitle-${item.id}`}
                     type="text"
                     placeholder={tr("builder.forms.custom.subtitlePlaceholder")}
                     value={item.subtitle?.[lang] || ""}
@@ -162,10 +165,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`custom-url-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.custom.url")}
                   </label>
                   <input
+                    id={`custom-url-${item.id}`}
                     type="url"
                     placeholder="https://..."
                     value={item.url || ""}
@@ -176,10 +180,11 @@ export function CustomSectionForm({ section, lang, onChange }: Props) {
               </div>
 
               <div>
-                <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                <label htmlFor={`custom-desc-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                   {tr("builder.forms.custom.description")} ({lang.toUpperCase()})
                 </label>
                 <textarea
+                  id={`custom-desc-${item.id}`}
                   rows={2}
                   placeholder={tr("builder.forms.custom.descriptionPlaceholder")}
                   value={item.description?.[lang] || ""}

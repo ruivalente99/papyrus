@@ -2,7 +2,6 @@
 
 import React, { useEffect } from "react";
 import type { SupportedLanguage, TemplateId, CVDocument } from "@/types/cv";
-import { tUI } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import {
   X,
@@ -46,7 +45,6 @@ export function PreviewSettingsSheet({
   onSetTemplate,
   onUpdateTheme,
 }: Props) {
-  const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
   // Handle ESC key to close
@@ -64,20 +62,20 @@ export function PreviewSettingsSheet({
   const TEMPLATES: { id: TemplateId; name: string; subtitle: string; icon: any }[] = [
     {
       id: "lateralis",
-      name: "Lateralis",
-      subtitle: isPt ? "Split moderno com barra" : "Modern split sidebar",
+      name: tr("preview.templates.lateralis"),
+      subtitle: tr("preview.templates.lateralisSub"),
       icon: Columns,
     },
     {
       id: "classic",
-      name: "Classic",
-      subtitle: isPt ? "Minimalista ATS TeX" : "Minimalist ATS & TeX",
+      name: tr("preview.templates.classic"),
+      subtitle: tr("preview.templates.classicSub"),
       icon: AlignLeft,
     },
     {
       id: "matrix",
-      name: "Matrix",
-      subtitle: isPt ? "Grelha executiva" : "Structured executive",
+      name: tr("preview.templates.matrix"),
+      subtitle: tr("preview.templates.matrixSub"),
       icon: LayoutGrid,
     },
   ];
@@ -85,18 +83,18 @@ export function PreviewSettingsSheet({
   const DENSITIES: { id: "compact" | "normal" | "spacious"; label: string; desc: string }[] = [
     {
       id: "compact",
-      label: tUI("densityCompact", lang),
-      desc: isPt ? "Mais compacto" : "More content",
+      label: tr("preview.toolbar.densityCompact"),
+      desc: tr("preview.densityDescriptions.compact"),
     },
     {
       id: "normal",
-      label: tUI("densityNormal", lang),
-      desc: isPt ? "Padrão equilibrado" : "Balanced",
+      label: tr("preview.toolbar.densityNormal"),
+      desc: tr("preview.densityDescriptions.normal"),
     },
     {
       id: "spacious",
-      label: tUI("densitySpacious", lang),
-      desc: isPt ? "Maior respiro" : "Breathing room",
+      label: tr("preview.toolbar.densitySpacious"),
+      desc: tr("preview.densityDescriptions.spacious"),
     },
   ];
 
@@ -125,7 +123,7 @@ export function PreviewSettingsSheet({
               <Palette size={15} />
             </div>
             <h2 id="preview-settings-title" className="text-base font-bold text-stone-900 dark:text-[#f0f3f6]">
-              {tUI("customizeModalTitle", lang)}
+              {tr("preview.settingsSheet.title")}
             </h2>
           </div>
           <button
@@ -144,7 +142,7 @@ export function PreviewSettingsSheet({
           <div>
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
-                {tUI("layoutTemplate", lang)}
+                {tr("preview.settingsSheet.templates")}
               </span>
               <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold font-mono">
                 {TEMPLATES.find((t) => t.id === currentTemplate)?.name}
@@ -193,7 +191,7 @@ export function PreviewSettingsSheet({
           <div>
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
-                {tUI("densitySpacing", lang)}
+                {tr("preview.toolbar.density")}
               </span>
             </div>
 
@@ -222,7 +220,7 @@ export function PreviewSettingsSheet({
           <div>
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
-                {tUI("accentColor", lang)}
+                {tr("preview.colors.accentColor")}
               </span>
               <span className="text-[11px] font-mono text-stone-400 dark:text-[#8b949e]">
                 {ACCENT_COLORS.find((c) => c.hex.toLowerCase() === currentColor?.toLowerCase())?.name || currentColor}

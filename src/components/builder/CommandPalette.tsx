@@ -87,7 +87,6 @@ export function CommandPalette({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const isPt = lang === "pt";
   const { t: tr } = useTranslation(lang);
 
   useEffect(() => {
@@ -108,55 +107,55 @@ export function CommandPalette({
       {
         id: "tpl-lateralis",
         category: "templates",
-        title: isPt ? "Modelo Lateralis (Barra lateral moderna)" : "Lateralis Template (Modern split column)",
-        subtitle: isPt ? "Layout com timeline e paleta customizável" : "Timeline layout with accent palette",
+        title: tr("builder.modals.commandPalette.commands.tplLateralis.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.tplLateralis.subtitle"),
         icon: Layers,
-        keywords: ["sidebar", "modern", "design", "lateralis"],
+        keywords: tr("builder.modals.commandPalette.commands.tplLateralis.keywords").split(" "),
         action: () => onSelectTemplate("lateralis"),
       },
       {
         id: "tpl-classic",
         category: "templates",
-        title: isPt ? "Modelo Classic (Minimalista TeX / ATS)" : "Classic Template (Minimalist TeX / ATS)",
-        subtitle: isPt ? "Padrão de engenharia otimizado para ATS" : "Engineering standard ATS-optimized",
+        title: tr("builder.modals.commandPalette.commands.tplClassic.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.tplClassic.subtitle"),
         icon: Layers,
-        keywords: ["latex", "ats", "classic", "minimalist"],
+        keywords: tr("builder.modals.commandPalette.commands.tplClassic.keywords").split(" "),
         action: () => onSelectTemplate("classic"),
       },
       {
         id: "tpl-matrix",
         category: "templates",
-        title: isPt ? "Modelo Matrix (Grelha executiva)" : "Matrix Template (Executive grid)",
-        subtitle: isPt ? "Grelha de competências e línguas CEFR" : "Skills grid and CEFR language competence",
+        title: tr("builder.modals.commandPalette.commands.tplMatrix.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.tplMatrix.subtitle"),
         icon: Layers,
-        keywords: ["executive", "matrix", "grid", "cefr"],
+        keywords: tr("builder.modals.commandPalette.commands.tplMatrix.keywords").split(" "),
         action: () => onSelectTemplate("matrix"),
       },
       {
         id: "density-compact",
         category: "templates",
-        title: isPt ? "Densidade: Compacto" : "Density: Compact",
-        subtitle: isPt ? "Entrelinha densa para incluir mais conteúdo" : "Tighter spacing to fit more content",
+        title: tr("builder.modals.commandPalette.commands.densityCompact.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.densityCompact.subtitle"),
         icon: Sparkles,
-        keywords: ["compact", "size", "spacing", "densidade"],
+        keywords: tr("builder.modals.commandPalette.commands.densityCompact.keywords").split(" "),
         action: () => onSetDensity("compact"),
       },
       {
         id: "density-normal",
         category: "templates",
-        title: isPt ? "Densidade: Normal" : "Density: Normal",
-        subtitle: isPt ? "Espaçamento padrão equilibrado" : "Balanced standard spacing",
+        title: tr("builder.modals.commandPalette.commands.densityNormal.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.densityNormal.subtitle"),
         icon: Sparkles,
-        keywords: ["normal", "size", "spacing", "densidade"],
+        keywords: tr("builder.modals.commandPalette.commands.densityNormal.keywords").split(" "),
         action: () => onSetDensity("normal"),
       },
       {
         id: "density-spacious",
         category: "templates",
-        title: isPt ? "Densidade: Espaçoso" : "Density: Spacious",
-        subtitle: isPt ? "Tipografia arejada com margens generosas" : "Airy typography with generous margins",
+        title: tr("builder.modals.commandPalette.commands.densitySpacious.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.densitySpacious.subtitle"),
         icon: Sparkles,
-        keywords: ["spacious", "size", "spacing", "densidade"],
+        keywords: tr("builder.modals.commandPalette.commands.densitySpacious.keywords").split(" "),
         action: () => onSetDensity("spacious"),
       },
 
@@ -166,10 +165,10 @@ export function CommandPalette({
             {
               id: "act-reroll-dylan",
               category: "actions" as const,
-              title: isPt ? "Sortear Novo Avatar Dylan (Re-roll)" : "Re-roll Dylan Avatar (DiceBear)",
-              subtitle: isPt ? "Gera uma nova variação artística vetorial" : "Generates a fresh artistic vector avatar",
+              title: tr("builder.modals.commandPalette.commands.rerollDylan.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.rerollDylan.subtitle"),
               icon: Dices,
-              keywords: ["dylan", "dicebear", "avatar", "foto", "photo", "random"],
+              keywords: tr("builder.modals.commandPalette.commands.rerollDylan.keywords").split(" "),
               action: onRerollDylan,
             },
           ]
@@ -177,47 +176,47 @@ export function CommandPalette({
       {
         id: "act-export-pdf",
         category: "actions",
-        title: isPt ? "Exportar PDF Vetorial A4" : "Export Vector A4 PDF",
-        subtitle: isPt ? "Documento oficial pronto a entregar (210×297mm)" : "Official vector document ready to submit",
+        title: tr("builder.modals.commandPalette.commands.exportPdf.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.exportPdf.subtitle"),
         icon: Download,
-        keywords: ["pdf", "download", "export", "imprimir"],
+        keywords: tr("builder.modals.commandPalette.commands.exportPdf.keywords").split(" "),
         shortcut: "PDF",
         action: onExportPdf,
       },
       {
         id: "act-export-png",
         category: "actions",
-        title: isPt ? "Exportar Imagem PNG em Alta Resolução" : "Export High-Res PNG Image",
-        subtitle: isPt ? "Cartaz visual para partilha rápida" : "Visual asset for instant sharing",
+        title: tr("builder.modals.commandPalette.commands.exportPng.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.exportPng.subtitle"),
         icon: Download,
-        keywords: ["png", "image", "export", "foto"],
+        keywords: tr("builder.modals.commandPalette.commands.exportPng.keywords").split(" "),
         action: onExportPng,
       },
       {
         id: "act-linter",
         category: "actions",
-        title: isPt ? "Abrir Auditoria de Qualidade & Linter ATS" : "Open Quality Linter & ATS Audit",
-        subtitle: isPt ? "Verificar pontuação, métricas e avisos" : "Check ATS score, impact metrics and tips",
+        title: tr("builder.modals.commandPalette.commands.linter.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.linter.subtitle"),
         icon: ShieldCheck,
-        keywords: ["linter", "score", "ats", "auditoria", "qualidade"],
+        keywords: tr("builder.modals.commandPalette.commands.linter.keywords").split(" "),
         action: onOpenLinter,
       },
       {
         id: "act-latex",
         category: "actions",
-        title: isPt ? "Ver / Exportar Código LaTeX (.tex)" : "View / Export LaTeX Code (.tex)",
-        subtitle: isPt ? "Código-fonte TeX compilável no Overleaf" : "Compilable TeX source for Overleaf",
+        title: tr("builder.modals.commandPalette.commands.latex.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.latex.subtitle"),
         icon: FileCode2,
-        keywords: ["latex", "tex", "code", "overleaf"],
+        keywords: tr("builder.modals.commandPalette.commands.latex.keywords").split(" "),
         action: onOpenLatex,
       },
       {
         id: "act-json",
         category: "actions",
-        title: isPt ? "Descarregar Cópia de Segurança JSON" : "Download JSON Backup",
-        subtitle: isPt ? "Exportar dados brutos do CV em formato JSON" : "Export raw CV document data as JSON",
+        title: tr("builder.modals.commandPalette.commands.json.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.json.subtitle"),
         icon: FileJson,
-        keywords: ["json", "backup", "save", "data"],
+        keywords: tr("builder.modals.commandPalette.commands.json.keywords").split(" "),
         action: onExportJson,
       },
 
@@ -227,10 +226,10 @@ export function CommandPalette({
             {
               id: "nav-grid",
               category: "navigation" as const,
-              title: isPt ? "Alternar Grelha de Alinhamento (#)" : "Toggle Alignment Grid (#)",
-              subtitle: isPt ? "Ligar/desligar grelha milimétrica atrás da folha" : "Show/hide alignment grid on canvas",
+              title: tr("builder.modals.commandPalette.commands.navGrid.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.navGrid.subtitle"),
               icon: Grid,
-              keywords: ["grid", "grelha", "alinhamento", "canvas"],
+              keywords: tr("builder.modals.commandPalette.commands.navGrid.keywords").split(" "),
               action: onToggleGrid,
             },
           ]
@@ -240,10 +239,10 @@ export function CommandPalette({
             {
               id: "nav-reset-canvas",
               category: "navigation" as const,
-              title: isPt ? "Repor Enquadramento do Canvas (Auto-Fit)" : "Reset Canvas View (Auto-Fit)",
-              subtitle: isPt ? "Centraliza a folha A4 no ecrã" : "Centers the A4 document on screen",
+              title: tr("builder.modals.commandPalette.commands.navResetCanvas.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.navResetCanvas.subtitle"),
               icon: Maximize2,
-              keywords: ["reset", "zoom", "fit", "canvas", "repor"],
+              keywords: tr("builder.modals.commandPalette.commands.navResetCanvas.keywords").split(" "),
               action: onResetCanvas,
             },
           ]
@@ -253,10 +252,10 @@ export function CommandPalette({
       {
         id: "nav-board",
         category: "navigation" as const,
-        title: isPt ? "Abrir Quadro de Funcionalidades & Roadmap" : "Open Feature Board & Roadmap",
-        subtitle: isPt ? "Acompanhar tarefas, backlog e marcos" : "Track tickets, backlog and milestones",
+        title: tr("builder.modals.commandPalette.commands.navBoard.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.navBoard.subtitle"),
         icon: Kanban,
-        keywords: ["board", "roadmap", "tickets", "features", "tarefas", "quadro"],
+        keywords: tr("builder.modals.commandPalette.commands.navBoard.keywords").split(" "),
         action: () => {
           window.location.href = "/board";
         },
@@ -264,10 +263,10 @@ export function CommandPalette({
       {
         id: "nav-guide",
         category: "navigation" as const,
-        title: isPt ? "Abrir Guia de Utilização" : "Open Step-by-Step Guide",
-        subtitle: isPt ? "Tutorial interativo e vídeos" : "Interactive guide and feature tour",
+        title: tr("builder.modals.commandPalette.commands.navGuide.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.navGuide.subtitle"),
         icon: BookOpen,
-        keywords: ["guide", "guia", "tutorial", "help", "ajuda"],
+        keywords: tr("builder.modals.commandPalette.commands.navGuide.keywords").split(" "),
         action: () => {
           window.location.href = "/guide";
         },
@@ -277,10 +276,10 @@ export function CommandPalette({
       {
         id: "sec-personal",
         category: "navigation",
-        title: isPt ? "Saltar para: Dados Pessoais & Foto" : "Jump to: Personal Info & Photo",
-        subtitle: isPt ? "Nome, contactos, links e biografia" : "Name, contact details, links and bio",
+        title: tr("builder.modals.commandPalette.commands.secPersonal.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.secPersonal.subtitle"),
         icon: User,
-        keywords: ["personal", "pessoal", "nome", "contacto", "foto"],
+        keywords: tr("builder.modals.commandPalette.commands.secPersonal.keywords").split(" "),
         action: () => onJumpToSection?.("personal"),
       },
       ...sections.map((s) => {
@@ -296,8 +295,8 @@ export function CommandPalette({
         return {
           id: `sec-${s.id}`,
           category: "navigation" as const,
-          title: `${isPt ? "Saltar para:" : "Jump to:"} ${titleStr}`,
-          subtitle: `${isPt ? "Secção" : "Section"}: ${s.type}`,
+          title: tr("builder.modals.commandPalette.commands.secJumpPrefix", { name: titleStr }),
+          subtitle: tr("builder.modals.commandPalette.commands.secSectionPrefix", { type: s.type }),
           icon: IconComp,
           keywords: [s.type, titleStr.toLowerCase()],
           action: () => onJumpToSection?.(s.id),
@@ -308,35 +307,35 @@ export function CommandPalette({
       {
         id: "pref-lang-pt",
         category: "preferences",
-        title: isPt ? "Idioma da Aplicação: Português (PT)" : "Interface Language: Portuguese (PT)",
-        subtitle: isPt ? "Altera o idioma dos botões e menus para Português" : "Switch app interface to Portuguese",
+        title: tr("builder.modals.commandPalette.commands.prefLangPt.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.prefLangPt.subtitle"),
         icon: Globe,
-        keywords: ["portugues", "portuguese", "pt", "interface", "app", "idioma", "nacionalidade"],
+        keywords: tr("builder.modals.commandPalette.commands.prefLangPt.keywords").split(" "),
         action: () => onSwitchLanguage("pt"),
       },
       {
         id: "pref-lang-en",
         category: "preferences",
-        title: isPt ? "Idioma da Aplicação: Inglês (EN)" : "Interface Language: English (EN)",
-        subtitle: isPt ? "Altera o idioma dos botões e menus para Inglês" : "Switch app interface to English",
+        title: tr("builder.modals.commandPalette.commands.prefLangEn.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.prefLangEn.subtitle"),
         icon: Globe,
-        keywords: ["ingles", "english", "en", "interface", "app", "idioma", "nationality"],
+        keywords: tr("builder.modals.commandPalette.commands.prefLangEn.keywords").split(" "),
         action: () => onSwitchLanguage("en"),
       },
       {
         id: "pref-theme",
         category: "preferences",
-        title: isPt ? "Alternar Tema (Claro / Escuro)" : "Toggle Theme (Light / Dark)",
-        subtitle: isPt ? "Muda entre modo dia e modo noite" : "Switch between light and dark mode",
+        title: tr("builder.modals.commandPalette.commands.prefTheme.title"),
+        subtitle: tr("builder.modals.commandPalette.commands.prefTheme.subtitle"),
         icon: Sun,
-        keywords: ["theme", "dark", "light", "tema", "escuro", "claro"],
+        keywords: tr("builder.modals.commandPalette.commands.prefTheme.keywords").split(" "),
         action: onToggleTheme,
       },
     ];
 
     return list;
   }, [
-    isPt,
+    tr,
     lang,
     sections,
     onSelectTemplate,
@@ -515,7 +514,7 @@ export function CommandPalette({
             <div className="py-14 text-center text-stone-400 dark:text-[#8b949e] text-xs">
               <p className="font-bold">{tr("builder.modals.commandPalette.noResults")}</p>
               <p className="text-[11px] mt-1 text-stone-500">
-                {isPt ? "Tenta pesquisar por 'latex', 'pdf', 'tema', 'lateralis' ou uma secção." : "Try searching for 'latex', 'pdf', 'theme', 'lateralis' or a section."}
+                {tr("builder.modals.commandPalette.noResultsHint")}
               </p>
             </div>
           ) : (
@@ -585,10 +584,10 @@ export function CommandPalette({
         {/* Footer Shortcut Bar */}
         <div className="px-4 py-2.5 border-t border-stone-200 dark:border-[#30363d] bg-stone-50/50 dark:bg-[#161b22] flex items-center justify-between text-[11px] text-stone-500 dark:text-[#8b949e] font-mono">
           <div className="flex items-center gap-3">
-            <span>↑↓ {isPt ? "Navegar" : "Navigate"}</span>
-            <span>↵ {isPt ? "Selecionar" : "Execute"}</span>
+            <span>↑↓ {tr("builder.modals.commandPalette.footer.navigate")}</span>
+            <span>↵ {tr("builder.modals.commandPalette.footer.execute")}</span>
           </div>
-          <span className="font-bold text-amber-600 dark:text-amber-400">PAPYRUS Actions</span>
+          <span className="font-bold text-amber-600 dark:text-amber-400">{tr("builder.modals.commandPalette.footer.brand")}</span>
         </div>
       </div>
     </div>,

@@ -282,10 +282,11 @@ export function SectionCard({
         <div className="px-5 pb-5 pt-1 border-t border-stone-100 dark:border-[#30363d]">
           {/* Custom Section Title Input */}
           <div className="mb-4 pt-2">
-            <label className="block text-[11px] font-bold text-stone-500 dark:text-[#8b949e] mb-1 font-mono uppercase tracking-wider">
+            <label htmlFor={`section-title-${section.id}`} className="block text-[11px] font-bold text-stone-500 dark:text-[#8b949e] mb-1 font-mono uppercase tracking-wider">
               {tr("builder.sections.titleField")} ({lang.toUpperCase()})
             </label>
             <input
+              id={`section-title-${section.id}`}
               type="text"
               value={section.title?.[lang] || ""}
               onChange={(e) =>

@@ -45,5 +45,23 @@
     "close": "Fechar definições de pré-visualização",
     "templates": "Modelo de Layout",
     "appearance": "Tema Visual"
+  },
+  "toasts": {
+    "pdfError": "Erro ao gerar PDF.",
+    "pngSuccess": "Imagem PNG descarregada com sucesso!",
+    "pngError": "Erro ao exportar PNG."
+  },
+  "templates": {
+    "lateralis": "Lateralis",
+    "lateralisSub": "Split moderno com barra",
+    "classic": "Clássico",
+    "classicSub": "Minimalista ATS TeX",
+    "matrix": "Matrix",
+    "matrixSub": "Grelha executiva"
+  },
+  "densityDescriptions": {
+    "compact": "Mais compacto",
+    "normal": "Padrão equilibrado",
+    "spacious": "Maior respiro"
   }
 }

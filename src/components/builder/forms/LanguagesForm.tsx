@@ -55,14 +55,14 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
 
   return (
     <div className="space-y-4 text-xs">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center pb-1 border-b border-stone-200 dark:border-[#30363d]">
         <span className="font-semibold text-stone-600 dark:text-[#c9d1d9]">
           {tr("builder.forms.languages.title")} ({items.length})
         </span>
         <button
           type="button"
           onClick={handleAddItem}
-          className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
+          className="flex items-center gap-1.5 text-xs font-medium bg-amber-700 hover:bg-amber-800 text-white px-2.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
           <span>+ {tr("builder.forms.languages.addLanguage")}</span>
@@ -73,7 +73,7 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
         {items.map((item) => (
           <div
             key={item.id}
-            className={`p-3 rounded-xl border transition-all ${
+            className={`p-3.5 rounded-xl border transition-all ${
               item.visible
                 ? "bg-white dark:bg-[#161b22] border-stone-300 dark:border-[#30363d] shadow-2xs"
                 : "bg-stone-100/70 dark:bg-[#161b22]/40 border-stone-200 dark:border-[#30363d]/60 opacity-60"
@@ -108,10 +108,11 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div>
-                <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                <label htmlFor={`lang-name-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                   {tr("builder.forms.languages.name")} ({lang.toUpperCase()}) *
                 </label>
                 <input
+                  id={`lang-name-${item.id}`}
                   type="text"
                   placeholder={tr("builder.forms.languages.namePlaceholder")}
                   value={item.name?.[lang] || ""}
@@ -125,10 +126,11 @@ export function LanguagesForm({ section, lang, onChange }: Props) {
               </div>
 
               <div>
-                <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                <label htmlFor={`lang-level-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                   {tr("builder.forms.languages.level")} ({lang.toUpperCase()})
                 </label>
                 <input
+                  id={`lang-level-${item.id}`}
                   type="text"
                   placeholder={tr("builder.forms.languages.levelPlaceholder")}
                   value={item.level?.[lang] || ""}

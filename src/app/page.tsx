@@ -10,7 +10,6 @@ import { SetupScreen } from "@/components/setup/SetupScreen";
 import { CommandPalette } from "@/components/builder/CommandPalette";
 import { CodeEditorPane } from "@/components/builder/code/CodeEditorPane";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
-import { tUI } from "@/lib/i18n";
 import { I18nProvider } from "@/context/I18nContext";
 import { translate } from "@/locales";
 import { Pencil, Eye, Loader2, FileText, FileJson, Code2 } from "lucide-react";
@@ -405,7 +404,7 @@ export default function BuilderPage() {
             }`}
           >
             <Pencil size={13} />
-            <span>{tUI("editTab", uiLang)}</span>
+            <span>{translate("common.tabs.editor", uiLang)}</span>
           </button>
           <button
             type="button"
@@ -417,7 +416,7 @@ export default function BuilderPage() {
             }`}
           >
             <Eye size={13} />
-            <span>{tUI("previewTab", uiLang)}</span>
+            <span>{translate("common.tabs.preview", uiLang)}</span>
           </button>
         </div>
       </div>

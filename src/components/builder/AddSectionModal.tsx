@@ -200,12 +200,13 @@ export function AddSectionModal({ isOpen, lang: _lang, onClose, onAddSection }: 
           {/* Custom Section Title Input */}
           {selectedType === "custom" && (
             <div className="pt-2 animate-in fade-in duration-100">
-              <label className="block text-xs font-bold text-stone-700 dark:text-[#c9d1d9] mb-1">
-                {isPt ? "Título Personalizado da Secção (Opcional)" : "Custom Section Title (Optional)"}
+              <label htmlFor="custom-section-title" className="block text-xs font-bold text-stone-700 dark:text-[#c9d1d9] mb-1">
+                {tr("builder.sections.customTitleLabel")}
               </label>
               <input
+                id="custom-section-title"
                 type="text"
-                placeholder={isPt ? "Ex: Publicações, Projetos Open-Source, Bolsas" : "e.g. Publications, Open Source, Awards"}
+                placeholder={tr("builder.sections.customTitlePlaceholder")}
                 value={customTitle}
                 onChange={(e) => setCustomTitle(e.target.value)}
                 className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-full px-4 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-hidden"

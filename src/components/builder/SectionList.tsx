@@ -15,7 +15,7 @@ import type {
 import { PersonalInfoForm } from "./forms/PersonalInfoForm";
 import { SectionCard } from "./SectionCard";
 import { AddSectionModal } from "./AddSectionModal";
-import { t, tUI } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { useTranslation } from "@/hooks/useTranslation";
 import {
   User,
@@ -391,7 +391,7 @@ export function SectionList({
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="font-bold text-stone-900 dark:text-[#f0f3f6] text-sm truncate">
-                {tUI("personalInfo", lang)}
+                {tr("builder.sections.personalInfo")}
               </h3>
               <p className="text-[11px] text-stone-500 dark:text-[#8b949e] truncate">
                 {cv.personalInfo.fullName
