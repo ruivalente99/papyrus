@@ -145,7 +145,7 @@ export function BuilderHeader({
   };
 
   return (
-    <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/80 dark:bg-[#161b22]/95 backdrop-blur-md px-2.5 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1.5 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors">
+    <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/80 dark:bg-[#161b22]/95 backdrop-blur-md px-2 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors max-w-full overflow-hidden sm:overflow-visible">
       {/* Brand: Minimalist Logo + lowercase papyrus */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <Link
@@ -280,7 +280,7 @@ export function BuilderHeader({
       </div>
 
       {/* Center Controls: CV Language, UI Language / Nationality, Theme Selector, Linter Badge */}
-      <div className="flex items-center gap-1 sm:gap-2 shrink-0 flex-nowrap">
+      <div className="flex items-center gap-1 sm:gap-2 shrink min-w-0 flex-nowrap">
         {/* CV Document Content Language */}
         <LanguageSwitcher
           variant="cv"
@@ -313,7 +313,8 @@ export function BuilderHeader({
         <Link
           href="/guide"
           title={currentUiLang === "pt" ? "Como construir um CV passo a passo" : "Step-by-step CV guide"}
-          className="flex items-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 px-2.5 sm:px-3 py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95"
+          aria-label={currentUiLang === "pt" ? "Guia passo a passo" : "Step-by-step CV guide"}
+          className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
         >
           <BookOpen size={13} />
           <span className="hidden md:inline">{currentUiLang === "pt" ? "Guia" : "Guide"}</span>
@@ -335,11 +336,13 @@ export function BuilderHeader({
         <div className="relative">
           <button
             onClick={() => setShowPresets(!showPresets)}
-            className="flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-2.5 sm:px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
+            aria-label={tUI("templates", currentUiLang)}
+            title={tUI("templates", currentUiLang)}
+            className="flex items-center justify-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs shrink-0 min-w-[28px] min-h-[28px]"
           >
             <Layers size={13} />
             <span className="hidden md:inline">{tUI("templates", currentUiLang)}</span>
-            <ChevronDown size={11} />
+            <ChevronDown size={11} className="hidden sm:inline" />
           </button>
 
           {showPresets && (

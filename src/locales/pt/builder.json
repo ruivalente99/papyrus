@@ -26,7 +26,8 @@
       "hobby_one": "1 interesse",
       "hobby_other": "{{count}} interesses",
       "item_one": "1 item",
-      "item_other": "{{count}} itens"
+      "item_other": "{{count}} itens",
+      "personalDefault": "Contactos, fotografia e resumo profissional"
     }
   },
   "modes": {
@@ -87,6 +88,7 @@
       "title": "Habilitações e Formação",
       "newDegree": "Novo Grau / Curso",
       "addDegree": "Adicionar Formação",
+      "addEducation": "Adicionar Formação",
       "degree": "Grau / Área de Estudo",
       "degreePlaceholder": "ex: Licenciatura em Engenharia Informática",
       "institution": "Instituição de Ensino",
@@ -110,7 +112,8 @@
       "categoryPlaceholder": "ex: Desenvolvimento Frontend, DevOps",
       "addSkill": "Adicionar competência",
       "skillPlaceholder": "Escreva a competência e prima Enter",
-      "removeSkill": "Remover {{skill}}"
+      "removeSkill": "Remover {{skill}}",
+      "noSkills": "Ainda sem competências adicionadas neste grupo."
     },
     "languages": {
       "title": "Competências Linguísticas",
@@ -118,6 +121,9 @@
       "addLanguage": "Adicionar Idioma",
       "name": "Idioma",
       "namePlaceholder": "ex: Inglês, Francês",
+      "level": "Nível de Proficiência",
+      "levelPlaceholder": "ex: Nativo, Fluente, Intermédio",
+      "levelIntermediate": "Proficiência profissional",
       "proficiency": "Nível de Proficiência",
       "proficiencyPlaceholder": "ex: Nativo, Fluente, Intermédio",
       "cefr": "Nível Oficial QECR / CEFR",
@@ -145,9 +151,12 @@
       "namePlaceholder": "ex: AWS Certified Solutions Architect",
       "issuer": "Entidade Emissora",
       "issuerPlaceholder": "ex: Amazon Web Services",
+      "date": "Data de Emissão",
       "issueDate": "Data de Emissão",
       "expiryDate": "Data de Expiração",
-      "url": "URL da Credencial"
+      "url": "URL da Credencial",
+      "notes": "Notas / Descrição",
+      "notesPlaceholder": "ex: Classificação, distinção ou ID de credencial"
     },
     "hobbies": {
       "title": "Interesses & Atividades",
@@ -156,7 +165,8 @@
       "name": "Interesse / Atividade",
       "namePlaceholder": "ex: Open Source, Fotografia, Caminhadas",
       "description": "Descrição / Detalhes",
-      "descriptionPlaceholder": "Breve nota ou atividades favoritas..."
+      "descriptionPlaceholder": "Breve nota ou atividades favoritas...",
+      "url": "Ligação / Website"
     }
   },
   "linter": {
@@ -221,5 +231,18 @@
       "latexHint": "Compatível com TeX Live, MacTeX e Overleaf.",
       "close": "Fechar código"
     }
+  },
+  "iconPicker": {
+    "title": "Escolher Ícone",
+    "search": "Pesquisar ícones...",
+    "clear": "Limpar pesquisa",
+    "sectionIcon": "Ícone da secção: {{name}}",
+    "all": "Todos",
+    "dev": "Código & Dev",
+    "contact": "Contacto",
+    "social": "Social",
+    "design": "Design",
+    "other": "Outros",
+    "noIcons": "Nenhum ícone encontrado"
   }
 }

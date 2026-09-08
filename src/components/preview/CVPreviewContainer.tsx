@@ -28,6 +28,7 @@ import { useToast } from "@/context/ToastContext";
 interface Props {
   cv: CVDocument;
   lang: SupportedLanguage;
+  uiLang?: SupportedLanguage;
   onSetTemplate: (t: TemplateId) => void;
   onUpdateTheme: (theme: Partial<CVDocument["theme"]>) => void;
   onExportJson: () => void;
@@ -39,12 +40,14 @@ interface Props {
 export function CVPreviewContainer({
   cv,
   lang,
+  uiLang,
   onSetTemplate,
   onUpdateTheme,
   onSelectSection,
   highlightedSectionId,
   mobileTab,
 }: Props) {
+  const currentUiLang = uiLang || "pt";
   const [zoom, setZoom] = useState<number>(0.85);
   const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
@@ -60,7 +63,7 @@ export function CVPreviewContainer({
   const [isDraggingToolbar, setIsDraggingToolbar] = useState<boolean>(false);
   const pageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
-  const { t: tr } = useTranslation(lang);
+  const { t: tr } = useTranslation(currentUiLang);
   const { showToast } = useToast();
 
   const dragStartRef = useRef<{ x: number; y: number; panX: number; panY: number }>({ x: 0, y: 0, panX: 0, panY: 0 });
@@ -397,7 +400,7 @@ export function CVPreviewContainer({
       await exportToPdf(pageRef.current, filename);
     } catch (e) {
       console.error("PDF export error:", e);
-      showToast(lang === "pt" ? "Erro ao gerar PDF." : "Error generating PDF.", "error");
+      showToast(currentUiLang === "pt" ? "Erro ao gerar PDF." : "Error generating PDF.", "error");
     } finally {
       setIsExporting(null);
     }
@@ -409,10 +412,10 @@ export function CVPreviewContainer({
     try {
       const filename = `${(cv.personalInfo.fullName || "curriculum").toLowerCase().replace(/\s+/g, "_")}_cv.png`;
       await exportToPng(pageRef.current, filename);
-      showToast(lang === "pt" ? "Imagem PNG descarregada com sucesso!" : "PNG image exported successfully!", "success");
+      showToast(currentUiLang === "pt" ? "Imagem PNG descarregada com sucesso!" : "PNG image exported successfully!", "success");
     } catch (e) {
       console.error("PNG export error:", e);
-      showToast(lang === "pt" ? "Erro ao exportar PNG." : "Error exporting PNG.", "error");
+      showToast(currentUiLang === "pt" ? "Erro ao exportar PNG." : "Error exporting PNG.", "error");
     } finally {
       setIsExporting(null);
     }
@@ -425,12 +428,12 @@ export function CVPreviewContainer({
       {/* Top Controls Toolbar - Charm Segmented Pill Toolbar */}
       <div className="bg-white/90 dark:bg-[#161b22]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-[#30363d] px-3 sm:px-4 py-2 shadow-2xs transition-colors shrink-0">
         {/* MOBILE TOOLBAR: Style & Template Selection Only */}
-        <div className="flex sm:hidden items-center justify-between gap-2">
+        <div className="flex sm:hidden items-center justify-between gap-1.5 w-full overflow-x-auto no-scrollbar py-0.5">
           {/* Left: Template Selector */}
           <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-0.5 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
             <button
               onClick={() => onSetTemplate("lateralis")}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+              className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
                 cv.template === "lateralis" || cv.template === "canva"
                   ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
                   : "text-stone-500 dark:text-[#8b949e]"
@@ -440,17 +443,17 @@ export function CVPreviewContainer({
             </button>
             <button
               onClick={() => onSetTemplate("classic")}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+              className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
                 cv.template === "classic" || cv.template === "latex"
                   ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
                   : "text-stone-500 dark:text-[#8b949e]"
               }`}
             >
-              Clássico
+              {currentUiLang === "pt" ? "Clássico" : "Classic"}
             </button>
             <button
               onClick={() => onSetTemplate("matrix")}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+              className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
                 cv.template === "matrix" || cv.template === "europass"
                   ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
                   : "text-stone-500 dark:text-[#8b949e]"
@@ -464,15 +467,15 @@ export function CVPreviewContainer({
           <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={() => setIsSettingsOpen(true)}
-              aria-label={tUI("customizeStyle", lang)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-stone-200/80 dark:bg-[#21262d] dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] rounded-full text-xs font-bold border border-stone-200/80 dark:border-[#363d47] shadow-2xs transition-all active:scale-95 shrink-0"
+              aria-label={tUI("customizeStyle", currentUiLang)}
+              className="flex items-center gap-1 px-2.5 py-1 bg-stone-100 hover:bg-stone-200/80 dark:bg-[#21262d] dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] rounded-full text-xs font-bold border border-stone-200/80 dark:border-[#363d47] shadow-2xs transition-all active:scale-95 shrink-0"
             >
               <span
                 className="w-2.5 h-2.5 rounded-full ring-1 ring-black/10 shrink-0"
                 style={{ backgroundColor: cv.theme.primaryColor || "#005555" }}
               />
               <Palette size={13} className="text-amber-600 dark:text-amber-400 shrink-0" />
-              <span>{tUI("customizeStyle", lang)}</span>
+              <span>{tUI("customizeStyle", currentUiLang)}</span>
             </button>
           </div>
         </div>
@@ -490,7 +493,7 @@ export function CVPreviewContainer({
                     : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
                 }`}
               >
-                {tUI("templateLateralis", lang)}
+                {tUI("templateLateralis", currentUiLang)}
               </button>
               <button
                 onClick={() => onSetTemplate("classic")}
@@ -500,7 +503,7 @@ export function CVPreviewContainer({
                     : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
                 }`}
               >
-                {tUI("templateClassic", lang)}
+                {tUI("templateClassic", currentUiLang)}
               </button>
               <button
                 onClick={() => onSetTemplate("matrix")}
@@ -510,7 +513,7 @@ export function CVPreviewContainer({
                     : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
                 }`}
               >
-                {tUI("templateMatrix", lang)}
+                {tUI("templateMatrix", currentUiLang)}
               </button>
             </div>
           </div>
@@ -521,36 +524,39 @@ export function CVPreviewContainer({
             <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
               <button
                 onClick={() => onUpdateTheme({ fontSize: "compact" })}
-                title="Compact spacing"
+                title={tUI("densityCompact", currentUiLang)}
+                aria-label={tUI("densityCompact", currentUiLang)}
                 className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                   cv.theme.fontSize === "compact"
                     ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
                     : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                 }`}
               >
-                {tUI("densityCompact", lang)}
+                {tUI("densityCompact", currentUiLang)}
               </button>
               <button
                 onClick={() => onUpdateTheme({ fontSize: "normal" })}
-                title="Balanced spacing"
+                title={tUI("densityNormal", currentUiLang)}
+                aria-label={tUI("densityNormal", currentUiLang)}
                 className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                   cv.theme.fontSize === "normal" || !cv.theme.fontSize
                     ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
                     : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                 }`}
               >
-                {tUI("densityNormal", lang)}
+                {tUI("densityNormal", currentUiLang)}
               </button>
               <button
                 onClick={() => onUpdateTheme({ fontSize: "spacious" })}
-                title="Spacious breathing room"
+                title={tUI("densitySpacious", currentUiLang)}
+                aria-label={tUI("densitySpacious", currentUiLang)}
                 className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
                   cv.theme.fontSize === "spacious"
                     ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
                     : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                 }`}
               >
-                {tUI("densitySpacious", lang)}
+                {tUI("densitySpacious", currentUiLang)}
               </button>
             </div>
 
@@ -863,8 +869,8 @@ export function CVPreviewContainer({
                 <button
                   onClick={handleDownloadPdf}
                   disabled={isExporting !== null}
-                  title={tUI("pdfBtn", lang)}
-                  aria-label={tUI("pdfBtn", lang)}
+                  title={tUI("pdfBtn", currentUiLang)}
+                  aria-label={tUI("pdfBtn", currentUiLang)}
                   className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-2.5 sm:px-3 py-1 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0 min-h-[26px]"
                 >
                   {isExporting === "pdf" ? (
@@ -878,8 +884,8 @@ export function CVPreviewContainer({
                 <button
                   onClick={handleDownloadPng}
                   disabled={isExporting !== null}
-                  title={tUI("pngBtn", lang)}
-                  aria-label={tUI("pngBtn", lang)}
+                  title={tUI("pngBtn", currentUiLang)}
+                  aria-label={tUI("pngBtn", currentUiLang)}
                   className="flex items-center gap-1 text-xs font-semibold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-2.5 sm:px-3 py-1 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs disabled:opacity-50 shrink-0 min-h-[26px]"
                 >
                   <ImageIcon size={12} />
@@ -895,7 +901,7 @@ export function CVPreviewContainer({
       <PreviewSettingsSheet
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        lang={lang}
+        lang={currentUiLang}
         currentTemplate={cv.template}
         currentDensity={cv.theme.fontSize}
         currentColor={cv.theme.primaryColor}
