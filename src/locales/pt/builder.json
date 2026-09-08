@@ -245,6 +245,11 @@
           "subtitle": "Tipografia arejada com margens generosas",
           "keywords": "spacious size spacing densidade espaçoso"
         },
+        "compare": {
+          "title": "Comparar Versões de CV (Motor de Diff)",
+          "subtitle": "Comparação A4 lado a lado, diff semântico e auditoria ATS",
+          "keywords": "diff comparar comparador versao ats semantico merge"
+        },
         "rerollDylan": {
           "title": "Sortear Novo Avatar Dylan (Re-roll)",
           "subtitle": "Gera uma nova variação artística vetorial",
@@ -362,6 +367,9 @@
     "guideTitle": "Como construir um CV passo a passo",
     "board": "Board",
     "boardTitle": "Quadro de Funcionalidades & Roadmap",
+    "compare": "Comparar",
+    "compareCV": "Comparar",
+    "compareTitle": "Comparador Visual de CVs & Motor de Diff",
     "recentEdits": "Últimas Edições",
     "recentHistory": "Histórico de edições recentes",
     "justNow": "Agora",
@@ -395,5 +403,29 @@
     "design": "Design",
     "other": "Outros",
     "noIcons": "Nenhum ícone encontrado"
+  },
+  "comparator": {
+    "title": "Comparador Visual de CVs & Motor de Diff",
+    "subtitle": "Comparação lado a lado, diff semântico e matriz de qualidade ATS",
+    "changesCount": "{{count}} alterações",
+    "sideBySide": "Lado a Lado (A4)",
+    "semanticDiff": "Diff Semântico",
+    "atsMatrix": "Matriz ATS",
+    "target": "Alvo:",
+    "uploadHint": "Carregar ficheiro JSON para comparar",
+    "lockScroll": "Bloquear scroll sincronizado",
+    "unlockScroll": "Desbloquear scroll",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Reduzir zoom",
+    "activeVersion": "Versão A (CV Ativo)",
+    "compareVersion": "Versão B (Comparação)",
+    "totalChanges": "Total de Alterações",
+    "additions": "adições",
+    "modifications": "modificações",
+    "deletions": "remoções",
+    "applyToActive": "Aplicar ao CV Ativo",
+    "applied": "Aplicado ao CV Ativo",
+    "atsDelta": "Diferença ATS",
+    "benchmarkMetrics": "Métricas Comparativas Detalhadas"
   }
 }

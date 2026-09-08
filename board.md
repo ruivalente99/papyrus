@@ -85,17 +85,16 @@
 - [x] **[FEAT-024]** **Design Tokens & i18n Hardcoded Strings Consolidation** `tags: refactor, tokens, i18n`
   - Replaced inline `isPt ? ... : ...` ternaries and legacy `tUI(...)` calls across `ImageCropModal`, `BuilderHeader`, `CVPreviewContainer`, `PreviewSettingsSheet`, and `SectionCard` with unified `useTranslation` dictionary catalogs.
   - Zero ESLint errors and zero TypeScript warnings on full production builds.
+- [x] **[FEAT-012]** **Visual CV Comparator & Semantic Diff Engine** `tags: diff, review, ats`
+  - Side-by-side synchronized comparison between 2 CV versions (active CV vs presets, JSON backups, or custom profiles).
+  - 3 view modes: Synchronized Dual Canvas (A4) with scroll locking, Semantic Diff Tree with selective merge ("Apply to Active CV"), and Comparative Quality & ATS Matrix.
+  - Automated diffing algorithms: Longest Common Subsequence (LCS) for bullet points, field-level diffing, and ATS score/verb/word-count delta metrics.
+  - CLI command: `npm run cv -- diff <sourceA> <sourceB> [--lang=en|pt] [--json]`.
+  - Accessible modal dialog mounted in header, mobile actions menu, and Command Palette (`Cmd+K`).
 
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.2)
-- [ ] **[FEAT-012]** **Visual CV Comparator & Semantic Diff Engine** `tags: diff, review, ats`
-  - *Status:* Technical specification complete ([`docs/CV_COMPARATOR_SPEC.md`](docs/CV_COMPARATOR_SPEC.md)).
-  - *Objective:* Side-by-side synchronized comparison between 2 CV versions (e.g. baseline generic CV vs job-tailored CV).
-  - *Deliverables:*
-    1. Side-by-side visual canvas mode with synchronized scrolling.
-    2. Word-level inline diff in bullet points and skills.
-    3. Comparative ATS keyword and word-count score matrix.
 - [ ] **[FEAT-013]** **Visual Page Break Guide & Manual Page Split (`\pagebreak`)** `tags: pdf, editor`
   - *Status:* A4 ruler prototyping.
   - *Objective:* Allow users to drag or manually insert page break separators when document content exceeds one page.

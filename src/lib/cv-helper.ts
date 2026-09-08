@@ -555,3 +555,12 @@ export function findMissingTranslations(
 
   return missing;
 }
+
+export {
+  compareCVs,
+  mergeItemIntoCV,
+  diffBullets,
+  diffPersonalInfo,
+  diffSections,
+  diffATSMetrics,
+} from "@/lib/cvDiff";
