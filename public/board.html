@@ -31,13 +31,11 @@
       margin: 0;
       padding: 0;
     }
-    /* Natural flow for card containers */
     .kanban-col {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
-    /* Fallback card styles if CDN is offline */
     .ticket-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -81,15 +79,16 @@
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
-              <span>PAPYRUS Board</span>
-              <span class="text-xs font-mono font-normal px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
+              <span id="board-title">PAPYRUS Board</span>
+              <span id="board-version" class="text-xs font-mono font-normal px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
                 v1.1.2
               </span>
             </h1>
             <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System Online"></span>
           </div>
-          <p class="text-xs sm:text-sm text-[var(--text-muted)]">
-            Product Board & Feature Tracking
+          <p class="text-xs sm:text-sm text-[var(--text-muted)] flex items-center gap-2">
+            <span>Dynamic tracking parsed from <code class="font-mono text-amber-500">board.md</code></span>
+            <span id="board-updated" class="text-[10px] font-mono text-[var(--text-muted)]"></span>
           </p>
         </div>
       </div>
@@ -98,58 +97,77 @@
       <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-between md:justify-end">
         <!-- View Tabs -->
         <div class="flex items-center bg-[var(--card-bg)] border border-[var(--card-border)] p-1 rounded-xl shadow-xs">
-          <button id="tab-kanban" onclick="switchView('kanban')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-600 text-white shadow-xs">
-            Kanban Board
+          <button id="tab-kanban" onclick="switchView('kanban')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all bg-stone-200 dark:bg-[#21262d] text-[var(--text-main)]">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v8a1 1 0 01-1 1h-4a1 1 0 01-1-1V5z"/></svg>
+            <span>Kanban</span>
           </button>
-          <button id="tab-roadmap" onclick="switchView('roadmap')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
-            Roadmap
+          <button id="tab-roadmap" onclick="switchView('roadmap')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+            <span>Roadmap</span>
           </button>
-          <button id="tab-metrics" onclick="switchView('metrics')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
-            Metrics
+          <button id="tab-metrics" onclick="switchView('metrics')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Metrics</span>
           </button>
         </div>
 
-        <button onclick="openAddTaskModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all active:scale-95">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+        <!-- Sync board.md button -->
+        <button onclick="fetchAndParseBoard()" title="Reload directly from board.md" class="flex items-center gap-1 px-3 py-1.5 bg-stone-200 dark:bg-[#161b22] hover:bg-stone-300 dark:hover:bg-[#21262d] text-[var(--text-main)] rounded-xl text-xs font-bold border border-[var(--card-border)] transition-all">
+          <svg id="sync-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden sm:inline">Sync board.md</span>
+        </button>
+
+        <!-- Export Markdown Button -->
+        <button onclick="copyMarkdownSummary()" title="Export Markdown Checklist" class="flex items-center gap-1 px-3 py-1.5 bg-stone-200 dark:bg-[#161b22] hover:bg-stone-300 dark:hover:bg-[#21262d] text-[var(--text-main)] rounded-xl text-xs font-bold border border-[var(--card-border)] transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          <span class="hidden sm:inline">Export MD</span>
+        </button>
+
+        <!-- New Task Button -->
+        <button onclick="openAddTaskModal()" class="flex items-center gap-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold shadow-sm shadow-amber-600/20 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
           <span>New Task</span>
         </button>
 
-        <button onclick="copyMarkdownBoard()" title="Copy as Markdown" class="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--card-bg)] hover:bg-stone-200 dark:hover:bg-[#21262d] text-[var(--text-main)] border border-[var(--card-border)] rounded-xl text-xs font-semibold transition-all">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span class="hidden sm:inline">Copy MD</span>
-        </button>
-
-        <button onclick="resetToDefaults()" title="Reset All Tasks to Default" class="p-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-stone-200 dark:hover:bg-[#21262d] transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        </button>
-
         <!-- Theme Toggle -->
-        <button onclick="toggleTheme()" aria-label="Toggle Theme" class="p-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-[var(--text-main)] hover:bg-stone-200 dark:hover:bg-[#21262d] transition-all">
-          <svg id="theme-icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          <svg id="theme-icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <button onclick="toggleTheme()" title="Toggle Color Theme" class="p-2 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-stone-200 dark:hover:bg-[#21262d] transition-all">
+          <svg id="theme-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="theme-moon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
       </div>
     </header>
 
-    <!-- KPI & Stats Summary Bar -->
-    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Shipped (Completed)</span>
+    <!-- Local File Fallback Banner (only displayed if local file:// blocks auto-fetch) -->
+    <div id="local-file-banner" class="hidden p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2.5">
+        <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span><strong>Local file mode:</strong> Browser security restricts auto-fetching local files over <code class="font-mono">file://</code>. Please select <code class="font-mono font-bold">board.md</code> to parse, or view via web server (<code class="font-mono">npm run dev</code>).</span>
+      </div>
+      <label class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-bold cursor-pointer transition-all whitespace-nowrap shadow-xs">
+        <span>Load board.md</span>
+        <input type="file" id="local-file-input" accept=".md" class="hidden" onchange="handleLocalFileSelect(event)">
+      </label>
+    </div>
+
+    <!-- Quick Stats Cards Strip -->
+    <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Shipped Features</span>
         <div class="flex items-baseline justify-between mt-2">
-          <span id="stat-shipped-count" class="text-2xl font-black text-emerald-500">11</span>
-          <span id="stat-shipped-pct" class="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">52%</span>
+          <span id="stat-shipped-count" class="text-2xl font-black text-emerald-500">14</span>
+          <span id="stat-shipped-pct" class="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">50%</span>
         </div>
       </div>
 
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Current Sprint</span>
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
+        <span class="text-xs font-semibold text-[var(--text-muted)]">In Progress</span>
         <div class="flex items-baseline justify-between mt-2">
           <span id="stat-progress-count" class="text-2xl font-black text-amber-500">3</span>
-          <span class="text-xs font-mono font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">v1.2</span>
+          <span class="text-xs font-mono font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">Sprint v1.2</span>
         </div>
       </div>
 
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
         <span class="text-xs font-semibold text-[var(--text-muted)]">Priority Backlog</span>
         <div class="flex items-baseline justify-between mt-2">
           <span id="stat-backlog-count" class="text-2xl font-black text-indigo-400">7</span>
@@ -157,56 +175,37 @@
         </div>
       </div>
 
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Code Health & CI</span>
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Total Tracked</span>
         <div class="flex items-baseline justify-between mt-2">
-          <span class="text-2xl font-black text-emerald-400">100%</span>
-          <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">0 Bugs</span>
+          <span id="stat-total-count" class="text-2xl font-black text-[var(--text-main)]">28</span>
+          <span class="text-xs font-mono font-bold text-[var(--text-muted)] bg-stone-200 dark:bg-[#21262d] px-2 py-0.5 rounded-full">Tickets</span>
         </div>
       </div>
     </section>
 
     <!-- Global Progress Bar -->
     <div class="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-full h-2.5 overflow-hidden flex shadow-inner">
-      <div id="bar-shipped" class="bg-emerald-500 h-full transition-all duration-500" style="width: 52%" title="Shipped: 52%"></div>
-      <div id="bar-progress" class="bg-amber-500 h-full transition-all duration-500" style="width: 14%" title="In Progress: 14%"></div>
-      <div id="bar-backlog" class="bg-indigo-500 h-full transition-all duration-500" style="width: 34%" title="Backlog: 34%"></div>
+      <div id="bar-shipped" class="bg-emerald-500 h-full transition-all duration-500" style="width: 50%" title="Shipped"></div>
+      <div id="bar-progress" class="bg-amber-500 h-full transition-all duration-500" style="width: 11%" title="In Progress"></div>
+      <div id="bar-backlog" class="bg-indigo-500 h-full transition-all duration-500" style="width: 25%" title="Backlog"></div>
     </div>
 
-    <!-- Filter & Search Controls -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[var(--card-bg)] border border-[var(--card-border)] p-3 rounded-2xl">
-      <!-- Search -->
+    <!-- Filters and Search Bar -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[var(--card-bg)] border border-[var(--card-border)] p-3 rounded-2xl shadow-2xs">
       <div class="relative w-full sm:w-80">
         <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input 
-          id="search-input" 
-          type="text" 
-          placeholder="Search tasks, tags, IDs..." 
-          oninput="handleSearch(this.value)"
-          class="w-full pl-9 pr-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500 text-[var(--text-main)]"
-        />
+        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search tasks, tags, IDs..." class="w-full pl-9 pr-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500 text-[var(--text-main)]">
       </div>
 
-      <!-- Tag Filters -->
       <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 text-xs">
-        <button onclick="filterByTag('all')" class="tag-btn active px-2.5 py-1 rounded-lg font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 whitespace-nowrap">
-          All
-        </button>
-        <button onclick="filterByTag('i18n')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
-          i18n
-        </button>
-        <button onclick="filterByTag('ui/ux')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
-          UI/UX
-        </button>
-        <button onclick="filterByTag('pdf')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
-          PDF & TeX
-        </button>
-        <button onclick="filterByTag('ats')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
-          ATS & Linter
-        </button>
-        <button onclick="filterByTag('ai')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
-          AI & CLI
-        </button>
+        <button onclick="filterByTag('all')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-500/20 text-amber-500 border border-amber-500/30" data-tag="all">All</button>
+        <button onclick="filterByTag('i18n')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]" data-tag="i18n">I18N</button>
+        <button onclick="filterByTag('ui/ux')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]" data-tag="ui/ux">UI/UX</button>
+        <button onclick="filterByTag('pdf')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]" data-tag="pdf">PDF</button>
+        <button onclick="filterByTag('ats')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]" data-tag="ats">ATS</button>
+        <button onclick="filterByTag('ai')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]" data-tag="ai">AI</button>
+        <button onclick="filterByTag('core')" class="tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]" data-tag="core">CORE</button>
       </div>
     </div>
 
@@ -214,179 +213,104 @@
     <div id="view-kanban" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
       
       <!-- COLUMN 1: Shipped -->
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3">
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3 min-h-[450px]">
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <h2 class="font-bold text-xs uppercase tracking-wider">Shipped / Completed</h2>
+            <h2 class="font-bold text-xs uppercase tracking-wider">Shipped (Completed)</h2>
           </div>
-          <span id="badge-shipped" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">11</span>
+          <span id="badge-shipped" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">0</span>
         </div>
         <div id="col-shipped" class="kanban-col">
-          <!-- Populated by JS -->
+          <!-- Populated by parseBoardMarkdown -->
         </div>
       </div>
 
       <!-- COLUMN 2: In Progress -->
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3">
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3 min-h-[450px]">
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
             <h2 class="font-bold text-xs uppercase tracking-wider">In Progress (v1.2)</h2>
           </div>
-          <span id="badge-progress" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">3</span>
+          <span id="badge-progress" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500">0</span>
         </div>
         <div id="col-progress" class="kanban-col">
-          <!-- Populated by JS -->
+          <!-- Populated by parseBoardMarkdown -->
         </div>
       </div>
 
-      <!-- COLUMN 3: Priority Backlog -->
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3">
+      <!-- COLUMN 3: Backlog -->
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3 min-h-[450px]">
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
             <h2 class="font-bold text-xs uppercase tracking-wider">Priority Backlog</h2>
           </div>
-          <span id="badge-backlog" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">7</span>
+          <span id="badge-backlog" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">0</span>
         </div>
         <div id="col-backlog" class="kanban-col">
-          <!-- Populated by JS -->
+          <!-- Populated by parseBoardMarkdown -->
         </div>
       </div>
 
       <!-- COLUMN 4: Icebox / Future -->
-      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3">
+      <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3 min-h-[450px]">
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
             <h2 class="font-bold text-xs uppercase tracking-wider">Icebox / Future</h2>
           </div>
-          <span id="badge-icebox" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400">4</span>
+          <span id="badge-icebox" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400">0</span>
         </div>
         <div id="col-icebox" class="kanban-col">
-          <!-- Populated by JS -->
+          <!-- Populated by parseBoardMarkdown -->
         </div>
       </div>
 
     </div>
 
-    <!-- VIEW 2: ROADMAP TIMELINE -->
+    <!-- VIEW 2: ROADMAP TIMELINE (Populated dynamically from board.md) -->
     <div id="view-roadmap" class="hidden space-y-6">
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6">
         <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
           <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          Release Timeline & Strategic Milestones
+          <span>Release Timeline & Strategic Milestones (from board.md)</span>
         </h2>
         
-        <div class="relative border-l-2 border-stone-300 dark:border-[#363d47] ml-4 space-y-8 py-2">
-          <div class="relative pl-6">
-            <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-[var(--bg)]"></span>
-            <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-emerald-500">v1.0.0 • Initial Release (Completed)</span>
-                <span class="text-[11px] text-[var(--text-muted)]">August 2026</span>
-              </div>
-              <h3 class="font-bold text-sm">Split-Pane Interactive Builder & TeX/PDF Engine</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">MVP launch with 3 core resume templates (Lateralis, Classic, Matrix), live synchronized A4 preview, compilable TeX export/import, and dynamic 0–100% linter.</p>
-            </div>
-          </div>
-
-          <div class="relative pl-6">
-            <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-[var(--bg)]"></span>
-            <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-emerald-500">v1.1.2 • Mobile UX & Stability (Completed)</span>
-                <span class="text-[11px] text-[var(--text-muted)]">September 2026</span>
-              </div>
-              <h3 class="font-bold text-sm">Full i18n Decoupling, 4-Edge Action Bar & Avatar Crop</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Clean separation of UI/nationality language from CV document language, mobile top bar overflow fix, circular avatar crop & rotation, exhaustive 40 missing translation keys fix, and preview click-to-focus.</p>
-            </div>
-          </div>
-
-          <div class="relative pl-6">
-            <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-amber-500 ring-4 ring-[var(--bg)]"></span>
-            <div class="bg-stone-100 dark:bg-[#0d1117] border border-amber-500/40 p-4 rounded-xl shadow-lg shadow-amber-500/5">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-amber-500">v1.2.0 • Current Sprint (Active Development)</span>
-                <span class="text-[11px] text-[var(--text-muted)]">Active Sprint</span>
-              </div>
-              <h3 class="font-bold text-sm">Visual CV Comparator & Manual Page Breaks</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Side-by-side synchronized comparison with word-level semantic diff and ATS score matrix. Manual page break insertions (<code class="text-xs font-mono">\pagebreak</code>) and native print mode fidelity.</p>
-            </div>
-          </div>
-
-          <div class="relative pl-6">
-            <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-[var(--bg)]"></span>
-            <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-indigo-400">v2.0.0 • Unified Application Suite</span>
-                <span class="text-[11px] text-[var(--text-muted)]">Planned Q4 2026</span>
-              </div>
-              <h3 class="font-bold text-sm">Cover Letters, ATS Vacancy Scanner & Typography Selector</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Thematically coordinated cover letter engine, ATS job description keyword matcher, open standard JSON Resume format compatibility, and curated font families.</p>
-            </div>
-          </div>
+        <div id="roadmap-container" class="relative border-l-2 border-stone-300 dark:border-[#363d47] ml-4 space-y-8 py-2">
+          <!-- Populated dynamically by JS -->
         </div>
       </div>
     </div>
 
-    <!-- VIEW 3: METRICS VIEW -->
+    <!-- VIEW 3: METRICS VIEW (Populated dynamically from board.md) -->
     <div id="view-metrics" class="hidden space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Automated Verification</h3>
-          <div class="space-y-2 text-xs">
-            <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
-              <span>E2E Verification (5 Presets)</span>
-              <span class="font-bold font-mono text-emerald-500">100% Pass</span>
-            </div>
-            <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
-              <span>Field Editing Stress Test</span>
-              <span class="font-bold font-mono text-emerald-500">100% Pass</span>
-            </div>
-            <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
-              <span>TypeScript Strict Check</span>
-              <span class="font-bold font-mono text-emerald-500">0 Errors</span>
-            </div>
-            <div class="flex justify-between items-center py-1">
-              <span>ESLint Code Quality</span>
-              <span class="font-bold font-mono text-emerald-500">0 Errors</span>
-            </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center justify-between">
+            <span>Project Health & Metrics (from board.md)</span>
+            <span id="metrics-system-status" class="text-[10px] font-mono lowercase bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full font-bold">Active</span>
+          </h3>
+          <div id="metrics-table-rows" class="space-y-3 text-xs">
+            <!-- Populated dynamically by JS -->
           </div>
         </div>
 
-        <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Performance & Build</h3>
-          <div class="space-y-2 text-xs">
-            <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
-              <span>Next.js Build Time</span>
-              <span class="font-bold font-mono text-amber-500">~2.8s</span>
-            </div>
-            <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
-              <span>First Load JS Bundle</span>
-              <span class="font-bold font-mono text-emerald-500">336 kB</span>
-            </div>
-            <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
-              <span>A4 Dimension Accuracy</span>
-              <span class="font-bold font-mono text-emerald-500">794 × 1123 px</span>
-            </div>
-            <div class="flex justify-between items-center py-1">
-              <span>PDF Export Resolution</span>
-              <span class="font-bold font-mono text-stone-400">96 DPI / 210x297mm</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Technology Stack</h3>
-          <div class="flex flex-wrap gap-1.5 pt-1">
+        <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+            Core Architecture & Tech Stack
+          </h3>
+          <div class="flex flex-wrap gap-2 pt-1">
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">Next.js 15</span>
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">React 19</span>
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">TypeScript 5</span>
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">Tailwind CSS 4</span>
-            <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">jsPDF Links</span>
+            <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">jsPDF Clickable Links</span>
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">Radix UI</span>
+          </div>
+          <div class="p-3 bg-stone-100 dark:bg-[#0d1117] rounded-xl border border-[var(--card-border)] text-xs text-[var(--text-muted)] leading-relaxed">
+            This visual board parses <code class="text-amber-500 font-mono font-bold">board.md</code> in real-time as the single source of truth. Any edits to the markdown file directly refresh tickets, metrics, and roadmap milestones with zero content duplication.
           </div>
         </div>
       </div>
@@ -421,16 +345,16 @@
           <div id="modal-task-tags" class="flex flex-wrap gap-1 mt-1"></div>
         </div>
 
-        <div>
-          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Related Files & Modules:</span>
+        <div id="modal-task-files-container">
+          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Related Files & References:</span>
           <div id="modal-task-files" class="font-mono text-[11px] text-amber-500 bg-stone-100 dark:bg-[#0d1117] p-2 rounded-xl border border-[var(--card-border)] mt-1"></div>
         </div>
       </div>
 
       <div class="flex items-center justify-between pt-3 border-t border-[var(--card-border)]">
         <div class="flex items-center gap-1.5">
-          <button onclick="moveTaskCurrent(-1)" title="Move to previous column" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">← Move Left</button>
-          <button onclick="moveTaskCurrent(1)" title="Move to next column" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">Move Right →</button>
+          <button onclick="moveTaskCurrent(-1)" title="Move to previous column" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">← Demote</button>
+          <button onclick="moveTaskCurrent(1)" title="Move to next column" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">Advance →</button>
         </div>
         <button onclick="closeDetailModal()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all">
           Close
@@ -443,37 +367,37 @@
   <div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs hidden animate-in fade-in duration-150">
     <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-        <h3 class="text-sm font-bold">Create New Task / Feature</h3>
+        <h3 class="text-sm font-bold">Create New Board Task</h3>
         <button onclick="closeAddTaskModal()" class="text-[var(--text-muted)] hover:text-[var(--text-main)]">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <form id="add-task-form" onsubmit="handleAddTask(event)" class="space-y-3 text-xs">
+      <form onsubmit="handleAddTask(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-bold mb-1">Feature Title</label>
-          <input id="new-title" required type="text" placeholder="e.g. Export resume as DOCX format" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
+          <label class="block font-bold mb-1">Title</label>
+          <input type="text" id="new-title" required placeholder="e.g. Add Docx export engine" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-bold mb-1">Column / Status</label>
+            <label class="block font-bold mb-1">Status Column</label>
             <select id="new-status" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
-              <option value="backlog">Priority Backlog</option>
-              <option value="progress">In Progress (v1.2)</option>
-              <option value="shipped">Shipped (Completed)</option>
-              <option value="icebox">Icebox / Future</option>
+              <option value="progress">In Progress</option>
+              <option value="backlog" selected>Priority Backlog</option>
+              <option value="icebox">Icebox</option>
+              <option value="shipped">Shipped</option>
             </select>
           </div>
           <div>
-            <label class="block font-bold mb-1">Target Version</label>
-            <input id="new-version" type="text" placeholder="v1.3.0" value="v1.3.0" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
+            <label class="block font-bold mb-1">Version</label>
+            <input type="text" id="new-version" value="v1.3.0" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
           </div>
         </div>
 
         <div>
           <label class="block font-bold mb-1">Tags (comma-separated)</label>
-          <input id="new-tags" type="text" placeholder="core, export, ui/ux" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
+          <input type="text" id="new-tags" placeholder="core, export, ui" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
@@ -496,283 +420,249 @@
   </div>
 
   <script>
-    // Initial Dataset matching board.md
-    const INITIAL_TASKS = [
-      {
-        id: "FEAT-001",
-        title: "Full Multilingual Decoupling (i18n)",
-        status: "shipped",
-        tags: ["i18n", "core"],
-        version: "v1.1",
-        files: "src/lib/i18n.ts, src/locales/*",
-        desc: "Strict separation between UI/nationality language (uiLang) and CV document content language (cvLang). Real-time search and 0 missing keys."
-      },
-      {
-        id: "FEAT-002",
-        title: "Floating Action Bar with 4-Edge Snapping",
-        status: "shipped",
-        tags: ["ui/ux", "mobile"],
-        version: "v1.1",
-        files: "src/components/preview/CVPreviewContainer.tsx",
-        desc: "Floating action toolbar with magnetic docking to top, bottom, left, and right edges with mobile responsive layout."
-      },
-      {
-        id: "FEAT-003",
-        title: "Avatar Modal with Crop, 90° Rotation & Drag-and-Drop",
-        status: "shipped",
-        tags: ["ui/ux", "media"],
-        version: "v1.1",
-        files: "src/components/builder/AvatarCropModal.tsx",
-        desc: "Direct hover upload on avatar, full drag-and-drop support, 90° step rotation, and digital zoom canvas."
-      },
-      {
-        id: "FEAT-004",
-        title: "Smart Command Palette (Cmd/Ctrl + K)",
-        status: "shipped",
-        tags: ["ui/ux", "accessibility"],
-        version: "v1.1",
-        files: "src/components/builder/CommandPalette.tsx",
-        desc: "Categorized command search across templates, sections, actions, and user preferences with keyboard navigation."
-      },
-      {
-        id: "FEAT-005",
-        title: "Mobile Top Bar Extreme Optimization",
-        status: "shipped",
-        tags: ["mobile", "responsive"],
-        version: "v1.1.2",
-        files: "src/components/builder/BuilderHeader.tsx",
-        desc: "Total elimination of horizontal overflow on small devices (320px-390px), footprint reduced from 435px to 272px."
-      },
-      {
-        id: "FEAT-006",
-        title: "Interactive Preview Targeting & Smooth Focus",
-        status: "shipped",
-        tags: ["preview", "editor"],
-        version: "v1.1",
-        files: "src/components/preview/CVPreviewContainer.tsx, src/app/page.tsx",
-        desc: "Directly click any block on the live A4 preview to automatically open and scroll to the form field in the left editor."
-      },
-      {
-        id: "FEAT-007",
-        title: "Bi-directional TeX (.tex) Export & Import Engine",
-        status: "shipped",
-        tags: ["latex", "export"],
-        version: "v1.0",
-        files: "src/lib/latexEngine.ts",
-        desc: "Export and import compilable TeX files compatible with TeX Live and Overleaf with automated character escaping."
-      },
-      {
-        id: "FEAT-008",
-        title: "Precision A4 PDF Engine with Clickable Hyperlinks",
-        status: "shipped",
-        tags: ["pdf", "export"],
-        version: "v1.0",
-        files: "src/lib/pdfExport.ts",
-        desc: "Locked standard A4 dimensions (794x1123px at 96 DPI), smart page break boundary detection, and clickable links."
-      },
-      {
-        id: "FEAT-009",
-        title: "Real-Time ATS Quality Audit & Linter (0–100%)",
-        status: "shipped",
-        tags: ["ats", "quality"],
-        version: "v1.0",
-        files: "src/lib/linter.ts, src/components/builder/linter/*",
-        desc: "Real-time evaluation of action verbs, contact completeness, date ranges, and multilingual section parity."
-      },
-      {
-        id: "FEAT-010",
-        title: "AI Agent Automation Skill (cv-agent) & CLI Suite",
-        status: "shipped",
-        tags: ["ai", "cli"],
-        version: "v1.0",
-        files: "scripts/cv-cli.ts, src/lib/cv-helper.ts",
-        desc: "CLI scripts and programmatic TypeScript API for auditing, translating, mutating, and exporting resumes without a browser."
-      },
-      {
-        id: "FEAT-011",
-        title: "Automated CI/CD Quality Gates & Semantic PR Flow",
-        status: "shipped",
-        tags: ["devops", "qa"],
-        version: "v1.1",
-        files: ".github/workflows/ci.yml",
-        desc: "Enforced quality gates in GitHub Actions with E2E verification, strict type checks, and preview deployments on Vercel."
-      },
-      {
-        id: "FEAT-012",
-        title: "Visual CV Comparator & Semantic Diff Engine",
-        status: "progress",
-        tags: ["diff", "ats"],
-        version: "v1.2",
-        files: "docs/CV_COMPARATOR_SPEC.md",
-        desc: "Side-by-side synchronized scrolling between 2 CV versions, word-level inline diffs, and ATS keyword differentials."
-      },
-      {
-        id: "FEAT-013",
-        title: "Visual Page Break Guide & Manual Page Split",
-        status: "progress",
-        tags: ["pdf", "editor"],
-        version: "v1.2",
-        files: "src/components/preview/CVPreviewContainer.tsx",
-        desc: "Interactive ruler allowing users to manually drag or trigger page splits where preferred."
-      },
-      {
-        id: "FEAT-014",
-        title: "High-Fidelity Print Mode Preview (CSS Print)",
-        status: "progress",
-        tags: ["preview", "styles"],
-        version: "v1.2",
-        files: "src/app/globals.css",
-        desc: "Precise emulation of native browser print mode (Ctrl+P) automatically suppressing chrome and UI controls."
-      },
-      {
-        id: "FEAT-022",
-        title: "Command Palette Full i18n Localization",
-        status: "shipped",
-        tags: ["i18n", "ui/ux", "accessibility"],
-        version: "v1.2",
-        files: "src/components/builder/CommandPalette.tsx, src/locales/*/builder.json",
-        desc: "100% dictionary-backed localization of command items, categories, shortcuts, and multilingual search querying."
-      },
-      {
-        id: "FEAT-023",
-        title: "Comprehensive UI/UX Audit: A11y Form Labels & Spacing Tokens",
-        status: "shipped",
-        tags: ["ui/ux", "a11y", "styling"],
-        version: "v1.2",
-        files: "src/components/builder/forms/*, src/components/builder/*",
-        desc: "Explicit id and htmlFor on all CV form fields, aria-labels on icon buttons, top bar vs action bar deduplication, and standard spacing scale tokens."
-      },
-      {
-        id: "FEAT-024",
-        title: "Design Tokens & i18n Hardcoded Strings Consolidation",
-        status: "shipped",
-        tags: ["refactor", "tokens", "i18n"],
-        version: "v1.2",
-        files: "src/components/builder/*, src/components/preview/*, src/app/globals.css",
-        desc: "Eliminate raw inline isPt ? ... : ... ternaries and legacy tUI in favor of useTranslation, replacing arbitrary dark-mode hexes with CSS variables."
-      },
-      {
-        id: "FEAT-015",
-        title: "Cover Letter Generator Engine",
-        status: "backlog",
-        tags: ["feature", "new-doc"],
-        version: "v2.0",
-        files: "src/components/cover-letter/*",
-        desc: "Coordinated cover letter generation matching the color accents, header geometry, and typography of the active CV."
-      },
-      {
-        id: "FEAT-016",
-        title: "AI-Assisted Bullet Point Polisher (Google XYZ)",
-        status: "backlog",
-        tags: ["ai", "ats"],
-        version: "v2.0",
-        files: "src/lib/aiWritingAssistant.ts",
-        desc: "Actionable suggestions converting passive bullet points: 'Accomplished [X], measured by [Y], by doing [Z]'."
-      },
-      {
-        id: "FEAT-017",
-        title: "ATS Job Vacancy Keyword Matcher",
-        status: "backlog",
-        tags: ["ats", "recruiter"],
-        version: "v2.0",
-        files: "src/lib/atsScanner.ts",
-        desc: "Paste any job posting text and calculate instant ATS match rate and identify missing high-value technical keywords."
-      },
-      {
-        id: "FEAT-018",
-        title: "Editorial Typography Selector",
-        status: "backlog",
-        tags: ["styling", "typography"],
-        version: "v2.0",
-        files: "src/types/cv.ts, src/components/preview/*",
-        desc: "Curated typography pairings across Serif (Merriweather, Garamond) and Sans-Serif (Inter, Plus Jakarta Sans, JetBrains Mono)."
-      },
-      {
-        id: "FEAT-019",
-        title: "JSON Resume & Europass XML Schema Interoperability",
-        status: "backlog",
-        tags: ["standards"],
-        version: "v2.0",
-        files: "src/lib/schemaConverter.ts",
-        desc: "Import and export interoperability with standard jsonresume.org schemas and Europass XML format."
-      },
-      {
-        id: "FEAT-020",
-        title: "Header Vector QR Code Generator",
-        status: "backlog",
-        tags: ["contact", "modern"],
-        version: "v2.0",
-        files: "src/components/preview/templates/*",
-        desc: "Embedded vector QR code in the resume header linking to personal portfolio, LinkedIn, or GitHub repository."
-      },
-      {
-        id: "FEAT-021",
-        title: "PDF Encryption & PDF/UA Accessibility",
-        status: "backlog",
-        tags: ["pdf", "security"],
-        version: "v2.0",
-        files: "src/lib/pdfExport.ts",
-        desc: "Password protection encryption and semantic tagging for screen reader compliance under PDF/UA standards."
-      },
-      {
-        id: "IDEA-001",
-        title: "Private Cloud Sync (WebDAV / Nextcloud / Drive)",
-        status: "icebox",
-        tags: ["cloud", "privacy"],
-        version: "v3.0",
-        files: "src/lib/storageSync.ts",
-        desc: "Optional end-to-end encrypted backup to private user cloud infrastructure while maintaining offline-first guarantees."
-      },
-      {
-        id: "IDEA-002",
-        title: "Vector SVG Export Engine",
-        status: "icebox",
-        tags: ["design", "export"],
-        version: "v3.0",
-        files: "src/lib/svgExport.ts",
-        desc: "Direct vector export allowing visual design teams to refine resumes inside Figma or Illustrator."
-      },
-      {
-        id: "IDEA-003",
-        title: "Dark Mode PDF Export for Creative Portfolios",
-        status: "icebox",
-        tags: ["design", "creative"],
-        version: "v3.0",
-        files: "src/lib/pdfExport.ts",
-        desc: "Dark background PDF export option tailored for multimedia designers and game developers."
-      },
-      {
-        id: "IDEA-004",
-        title: "Multi-Profile Resume Management",
-        status: "icebox",
-        tags: ["profile", "ux"],
-        version: "v3.0",
-        files: "src/context/CVContext.tsx",
-        desc: "Manage and switch instantly between multiple full profiles (e.g. Senior Frontend profile vs Tech Lead profile)."
+    /**
+     * PAPYRUS Board Markdown Parser (Client-Side)
+     * Zero-dependency parser converting board.md directly into structured BoardData
+     */
+    function parseBoardMarkdown(markdown) {
+      const lines = markdown.split(/\r?\n/);
+      let title = "PAPYRUS Board";
+      let lastUpdated = "";
+      let stableVersion = "v1.1.2";
+      let systemStatus = "Active";
+
+      const titleMatch = markdown.match(/^#\s+(.+)$/m);
+      if (titleMatch) title = titleMatch[1].replace(/^[^\w\s]+/, "").trim();
+
+      const metaMatch = markdown.match(/\*Last Updated:\*\s*([^•]+)•\s*\*Status:\*\s*([^•]+)•\s*\*Stable Version:\*\s*([^\n\r]+)/i);
+      if (metaMatch) {
+        lastUpdated = metaMatch[1].trim();
+        systemStatus = metaMatch[2].trim();
+        stableVersion = metaMatch[3].trim();
       }
-    ];
 
-    let stored = null;
-    try {
-      const item = localStorage.getItem("papyrus_board_tasks_en") || localStorage.getItem("papyrus_board_tasks");
-      if (item) stored = JSON.parse(item);
-    } catch (e) {}
-    let tasks = (Array.isArray(stored) && stored.length > 0) ? stored : INITIAL_TASKS;
+      // Metrics Table
+      const metrics = [];
+      const tableMatch = markdown.match(/##\s+.*?Project Health & Key Metrics[\s\S]*?\n\n\| Metric \|[^\n]+\n\|[^\n]+\n([\s\S]*?)\n\n---/);
+      if (tableMatch) {
+        const rows = tableMatch[1].trim().split(/\r?\n/);
+        for (const row of rows) {
+          const cells = row.split("|").map(c => c.trim()).filter(Boolean);
+          if (cells.length >= 4) {
+            metrics.push({
+              metric: cells[0].replace(/\*\*/g, ""),
+              value: cells[1],
+              target: cells[2],
+              status: cells[3]
+            });
+          }
+        }
+      }
 
+      // Timeline (Mermaid)
+      const timeline = [];
+      const timelineMatch = markdown.match(/```mermaid[\s\S]*?timeline[\s\S]*?\n([\s\S]*?)```/);
+      if (timelineMatch) {
+        const tlines = timelineMatch[1].trim().split(/\r?\n/);
+        let currentGroup = null;
+        for (const line of tlines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("title ")) continue;
+          if (trimmed.includes(" : ")) {
+            const parts = trimmed.split(" : ");
+            currentGroup = {
+              version: parts[0].trim(),
+              items: [parts[1].trim()]
+            };
+            timeline.push(currentGroup);
+          } else if (trimmed.startsWith(": ") && currentGroup) {
+            currentGroup.items.push(trimmed.slice(2).trim());
+          }
+        }
+      }
+
+      // Kanban Tasks
+      const tasks = [];
+      let currentSectionStatus = "backlog";
+      let currentSectionVersion = "v1.0";
+      let currentTask = null;
+
+      function finishTask() {
+        if (!currentTask) return;
+        const desc = currentTask.bullets
+          .map(b => b.replace(/\*\*/g, "").replace(/\*/g, ""))
+          .join(" ");
+        tasks.push({
+          id: currentTask.id,
+          title: currentTask.title,
+          status: currentTask.status,
+          tags: currentTask.tags,
+          version: currentTask.version,
+          files: currentTask.files,
+          desc
+        });
+        currentTask = null;
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (line.startsWith("### ")) {
+          finishTask();
+          const heading = line.toLowerCase();
+          if (heading.includes("shipped") || heading.includes("completed")) {
+            currentSectionStatus = "shipped";
+            currentSectionVersion = "v1.1";
+          } else if (heading.includes("in progress") || heading.includes("current sprint")) {
+            currentSectionStatus = "progress";
+            currentSectionVersion = "v1.2";
+          } else if (heading.includes("backlog") || heading.includes("priority")) {
+            currentSectionStatus = "backlog";
+            currentSectionVersion = "v2.0";
+          } else if (heading.includes("icebox") || heading.includes("future")) {
+            currentSectionStatus = "icebox";
+            currentSectionVersion = "v3.0";
+          }
+          const verMatch = line.match(/\((v[0-9]+(?:\.[0-9]+)*(?:\s*-\s*v[0-9]+(?:\.[0-9]+)*)?)\)/i);
+          if (verMatch) currentSectionVersion = verMatch[1];
+          continue;
+        }
+
+        if (line.startsWith("## ") || line.startsWith("---")) {
+          finishTask();
+          continue;
+        }
+
+        const taskMatch = line.match(/^-\s*\[([ xX])\]\s*\*\*\[([A-Z0-9_-]+)\]\*\*\s*\*\*(.+)\*\*(.*)$/);
+        if (taskMatch) {
+          finishTask();
+          const isChecked = taskMatch[1].toLowerCase() === "x";
+          const id = taskMatch[2];
+          const taskTitle = taskMatch[3].trim();
+          const rest = taskMatch[4] || "";
+
+          let tags = [];
+          const tagsMatch = rest.match(/`tags:\s*([^`]+)`/i);
+          if (tagsMatch) {
+            tags = tagsMatch[1].split(",").map(t => t.trim()).filter(Boolean);
+          }
+
+          currentTask = {
+            id,
+            title: taskTitle,
+            status: isChecked ? "shipped" : currentSectionStatus,
+            tags,
+            version: currentSectionVersion,
+            files: "",
+            bullets: []
+          };
+          continue;
+        }
+
+        if (currentTask && line.trim()) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+            const bullet = trimmed.replace(/^[-*]\s+/, "");
+            const fileMatch = bullet.match(/\*Files:\*\s*(.+)/i) || bullet.match(/\[`([^`]+)`\]/);
+            if (fileMatch && !currentTask.files) {
+              currentTask.files = fileMatch[1];
+            }
+            currentTask.bullets.push(bullet);
+          } else if (trimmed.match(/^[0-9]+\.\s+/)) {
+            currentTask.bullets.push(trimmed.replace(/^[0-9]+\.\s+/, ""));
+          }
+        }
+      }
+
+      finishTask();
+
+      return {
+        title,
+        lastUpdated,
+        stableVersion,
+        systemStatus,
+        metrics,
+        timeline,
+        tasks
+      };
+    }
+
+    // Runtime state
+    let boardData = null;
+    let tasks = [];
     let currentFilterTag = "all";
     let searchQuery = "";
     let selectedTaskId = null;
 
-    function saveTasks() {
-      localStorage.setItem("papyrus_board_tasks_en", JSON.stringify(tasks));
-      renderBoard();
-      updateStats();
+    /**
+     * Dynamically fetch and parse board.md with multi-path resolution
+     */
+    async function fetchAndParseBoard() {
+      const syncIcon = document.getElementById("sync-icon");
+      if (syncIcon) syncIcon.classList.add("animate-spin");
+
+      const paths = ["board.md", "/board.md", "../board.md", "/api/board", "public/board.md"];
+      let markdown = null;
+
+      for (const p of paths) {
+        try {
+          const res = await fetch(p, { cache: "no-store" });
+          if (res.ok) {
+            const text = await res.text();
+            if (text.includes("PAPYRUS") && (text.includes("Kanban Board") || text.includes("FEAT-"))) {
+              markdown = text;
+              break;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (syncIcon) syncIcon.classList.remove("animate-spin");
+
+      if (markdown) {
+        boardData = parseBoardMarkdown(markdown);
+        tasks = boardData.tasks;
+        renderAll();
+        showToast("Board synchronized with board.md!");
+        const banner = document.getElementById("local-file-banner");
+        if (banner) banner.classList.add("hidden");
+      } else {
+        // If fetch failed (e.g. file:// protocol restriction), show fallback banner
+        const banner = document.getElementById("local-file-banner");
+        if (banner) banner.classList.remove("hidden");
+        showToast("Could not auto-fetch board.md. Select file manually.");
+      }
     }
 
-    function resetToDefaults() {
-      tasks = JSON.parse(JSON.stringify(INITIAL_TASKS));
-      saveTasks();
-      showToast("Tasks restored to default catalog!");
+    function handleLocalFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        boardData = parseBoardMarkdown(text);
+        tasks = boardData.tasks;
+        renderAll();
+        showToast("Loaded " + file.name + " successfully!");
+        const banner = document.getElementById("local-file-banner");
+        if (banner) banner.classList.add("hidden");
+      };
+      reader.readAsText(file);
+    }
+
+    function renderAll() {
+      if (!boardData) return;
+      const elTitle = document.getElementById("board-title");
+      const elVer = document.getElementById("board-version");
+      const elUpdated = document.getElementById("board-updated");
+      if (elTitle) elTitle.innerText = boardData.title;
+      if (elVer) elVer.innerText = boardData.stableVersion;
+      if (elUpdated && boardData.lastUpdated) elUpdated.innerText = "• Updated " + boardData.lastUpdated;
+
+      renderBoard();
+      updateStats();
+      renderRoadmap();
+      renderMetrics();
     }
 
     function renderBoard() {
@@ -788,7 +678,7 @@
       const filtered = tasks.filter(t => {
         const matchesTag = currentFilterTag === "all" || t.tags.includes(currentFilterTag);
         const q = searchQuery.toLowerCase().trim();
-        const matchesSearch = !q || t.title.toLowerCase().includes(q) || t.id.toLowerCase().includes(q) || t.tags.some(tag => tag.toLowerCase().includes(q));
+        const matchesSearch = !q || t.title.toLowerCase().includes(q) || t.id.toLowerCase().includes(q) || (t.desc && t.desc.toLowerCase().includes(q)) || t.tags.some(tag => tag.toLowerCase().includes(q));
         return matchesTag && matchesSearch;
       });
 
@@ -816,7 +706,7 @@
             <span style="font-size: 9px; font-family: monospace; font-weight: bold; padding: 2px 6px; border-radius: 4px; ${badgeColor}">${task.version || ""}</span>
           </div>
           <h4 style="font-size: 12px; font-weight: bold; margin: 0; color: var(--text-main); line-height: 1.35;">${task.title}</h4>
-          <p style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4;">${task.desc || ""}</p>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${task.desc || ""}</p>
           <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(100,116,139,0.2);">
             ${tagsHtml}
           </div>
@@ -851,56 +741,114 @@
       const elShippedPct = document.getElementById("stat-shipped-pct");
       const elProgressCount = document.getElementById("stat-progress-count");
       const elBacklogCount = document.getElementById("stat-backlog-count");
+      const elTotalCount = document.getElementById("stat-total-count");
+
       if (elShippedCount) elShippedCount.innerText = shipped;
       if (elShippedPct) elShippedPct.innerText = `${shippedPct}%`;
       if (elProgressCount) elProgressCount.innerText = progress;
       if (elBacklogCount) elBacklogCount.innerText = backlog;
+      if (elTotalCount) elTotalCount.innerText = tasks.length;
 
       const barShipped = document.getElementById("bar-shipped");
       const barProgress = document.getElementById("bar-progress");
       const barBacklog = document.getElementById("bar-backlog");
+
       if (barShipped) barShipped.style.width = `${shippedPct}%`;
       if (barProgress) barProgress.style.width = `${progressPct}%`;
       if (barBacklog) barBacklog.style.width = `${backlogPct}%`;
     }
 
-    function switchView(view) {
-      const vk = document.getElementById("view-kanban");
-      const vr = document.getElementById("view-roadmap");
-      const vm = document.getElementById("view-metrics");
-      if (vk) vk.classList.toggle("hidden", view !== "kanban");
-      if (vr) vr.classList.toggle("hidden", view !== "roadmap");
-      if (vm) vm.classList.toggle("hidden", view !== "metrics");
+    function renderRoadmap() {
+      const container = document.getElementById("roadmap-container");
+      if (!container || !boardData || !boardData.timeline) return;
+      container.innerHTML = "";
 
-      const tabs = ["kanban", "roadmap", "metrics"];
-      tabs.forEach(t => {
-        const btn = document.getElementById(`tab-${t}`);
-        if (btn) {
-          if (t === view) {
-            btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-600 text-white shadow-xs";
-          } else {
-            btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all";
-          }
-        }
+      boardData.timeline.forEach((group, idx) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "relative pl-6";
+
+        let dotColor = "bg-emerald-500";
+        if (idx === 2) dotColor = "bg-amber-500";
+        if (idx >= 3) dotColor = "bg-indigo-500";
+
+        const tags = group.items.map(it => 
+          `<span class="px-2.5 py-1 bg-stone-100 dark:bg-[#161b22] border border-[var(--card-border)] rounded-lg text-xs font-medium text-[var(--text-main)]">${it}</span>`
+        ).join("");
+
+        itemDiv.innerHTML = `
+          <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full ${dotColor} ring-4 ring-[var(--bg)]"></span>
+          <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-amber-500">${group.version}</span>
+              <span class="text-[11px] text-[var(--text-muted)] font-mono">Milestone</span>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-1">
+              ${tags}
+            </div>
+          </div>
+        `;
+        container.appendChild(itemDiv);
       });
     }
 
-    function handleSearch(q) {
-      searchQuery = q;
+    function renderMetrics() {
+      const container = document.getElementById("metrics-table-rows");
+      const statusBadge = document.getElementById("metrics-system-status");
+      if (statusBadge && boardData) statusBadge.innerText = boardData.systemStatus || "Active";
+      if (!container || !boardData || !boardData.metrics) return;
+      container.innerHTML = "";
+
+      boardData.metrics.forEach(m => {
+        const row = document.createElement("div");
+        row.className = "flex justify-between items-center py-1.5 border-b border-[var(--card-border)]";
+        row.innerHTML = `
+          <div>
+            <div class="font-semibold text-[var(--text-main)]">${m.metric}</div>
+            <div class="text-[10px] text-[var(--text-muted)] font-mono">Target: ${m.target}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-bold font-mono text-[var(--text-main)]">${m.value}</div>
+            <div class="text-[10px]">${m.status}</div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
       renderBoard();
     }
 
     function filterByTag(tag) {
       currentFilterTag = tag;
-      document.querySelectorAll(".tag-btn").forEach(btn => {
-        const isActive = btn.innerText.toLowerCase().trim() === (tag === "all" ? "all" : tag.toLowerCase().trim());
-        if (isActive) {
-          btn.className = "tag-btn active px-2.5 py-1 rounded-lg font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 whitespace-nowrap";
+      document.querySelectorAll(".tag-filter-btn").forEach(btn => {
+        const isSelected = btn.getAttribute("data-tag") === tag;
+        if (isSelected) {
+          btn.className = "tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all bg-amber-500/20 text-amber-500 border border-amber-500/30";
         } else {
-          btn.className = "tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap";
+          btn.className = "tag-filter-btn px-2.5 py-1 rounded-lg font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]";
         }
       });
       renderBoard();
+    }
+
+    function switchView(viewName) {
+      ["kanban", "roadmap", "metrics"].forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        const tab = document.getElementById(`tab-${v}`);
+        if (v === viewName) {
+          if (el) el.classList.remove("hidden");
+          if (tab) {
+            tab.className = "flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all bg-stone-200 dark:bg-[#21262d] text-[var(--text-main)]";
+          }
+        } else {
+          if (el) el.classList.add("hidden");
+          if (tab) {
+            tab.className = "flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all text-[var(--text-muted)] hover:text-[var(--text-main)]";
+          }
+        }
+      });
     }
 
     function openDetailModal(id) {
@@ -910,21 +858,30 @@
 
       document.getElementById("modal-task-id").innerText = task.id;
       document.getElementById("modal-task-title").innerText = task.title;
-      document.getElementById("modal-task-desc").innerText = task.desc;
-      document.getElementById("modal-task-files").innerText = task.files || "src/lib/cv-helper.ts";
+      document.getElementById("modal-task-status").innerText = task.status;
+      document.getElementById("modal-task-desc").innerText = task.desc || "No extended details provided.";
 
       const statusBadge = document.getElementById("modal-task-status");
-      statusBadge.innerText = task.status;
-      statusBadge.className = `text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full ${
-        task.status === "shipped" ? "bg-emerald-500/20 text-emerald-400" :
-        task.status === "progress" ? "bg-amber-500/20 text-amber-400" :
-        task.status === "backlog" ? "bg-indigo-500/20 text-indigo-400" : "bg-purple-500/20 text-purple-400"
-      }`;
+      let statusColor = "bg-stone-500/10 text-stone-400";
+      if (task.status === "shipped") statusColor = "bg-emerald-500/10 text-emerald-500";
+      if (task.status === "progress") statusColor = "bg-amber-500/10 text-amber-500";
+      if (task.status === "backlog") statusColor = "bg-indigo-500/10 text-indigo-400";
+      if (task.status === "icebox") statusColor = "bg-purple-500/10 text-purple-400";
+      statusBadge.className = `text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full ${statusColor}`;
 
       const tagsContainer = document.getElementById("modal-task-tags");
-      tagsContainer.innerHTML = task.tags.map(tag => 
-        `<span class="px-2 py-0.5 rounded-md text-[11px] font-mono bg-stone-200 dark:bg-[#21262d] text-[var(--text-muted)]">${tag}</span>`
+      tagsContainer.innerHTML = task.tags.map(t => 
+        `<span class="px-2 py-0.5 rounded-md text-[10px] font-mono bg-stone-100 dark:bg-[#21262d] border border-[var(--card-border)] text-[var(--text-muted)]">${t}</span>`
       ).join("");
+
+      const filesContainer = document.getElementById("modal-task-files-container");
+      const filesEl = document.getElementById("modal-task-files");
+      if (task.files) {
+        filesContainer.classList.remove("hidden");
+        filesEl.innerText = task.files;
+      } else {
+        filesContainer.classList.add("hidden");
+      }
 
       document.getElementById("detail-modal").classList.remove("hidden");
     }
@@ -934,19 +891,20 @@
       selectedTaskId = null;
     }
 
-    function moveTaskCurrent(delta) {
+    function moveTaskCurrent(dir) {
       if (!selectedTaskId) return;
       const order = ["icebox", "backlog", "progress", "shipped"];
-      const task = tasks.find(t => t.id === selectedTaskId);
-      if (!task) return;
+      const taskIndex = tasks.findIndex(t => t.id === selectedTaskId);
+      if (taskIndex === -1) return;
 
-      let idx = order.indexOf(task.status);
-      let newIdx = idx + delta;
+      const currentIdx = order.indexOf(tasks[taskIndex].status);
+      const newIdx = currentIdx + dir;
       if (newIdx >= 0 && newIdx < order.length) {
-        task.status = order[newIdx];
-        saveTasks();
+        tasks[taskIndex].status = order[newIdx];
+        renderBoard();
+        updateStats();
         openDetailModal(selectedTaskId);
-        showToast(`Task moved to ${task.status}!`);
+        showToast(`Moved ${selectedTaskId} to ${order[newIdx]}`);
       }
     }
 
@@ -963,78 +921,71 @@
       const title = document.getElementById("new-title").value.trim();
       const status = document.getElementById("new-status").value;
       const version = document.getElementById("new-version").value.trim() || "v1.3.0";
-      const tagsStr = document.getElementById("new-tags").value.trim();
-      const desc = document.getElementById("new-desc").value.trim();
+      const tagsRaw = document.getElementById("new-tags").value.trim();
+      const desc = document.getElementById("new-desc").value.trim() || "Feature specification and implementation.";
 
-      const nextNum = tasks.length + 1;
-      const id = `FEAT-${String(nextNum).padStart(3, "0")}`;
+      if (!title) return;
 
-      const tags = tagsStr ? tagsStr.split(",").map(t => t.trim().toLowerCase()).filter(Boolean) : ["core"];
+      const id = `FEAT-${String(tasks.length + 1).padStart(3, "0")}`;
+      const tags = tagsRaw ? tagsRaw.split(",").map(t => t.trim().toLowerCase()).filter(Boolean) : ["core"];
 
-      tasks.push({
-        id,
-        title,
-        status,
-        version,
-        tags,
-        desc,
-        files: "src/components/builder/*"
-      });
+      const newTask = { id, title, status, version, tags, desc, files: "src/components/builder/*" };
+      tasks.push(newTask);
 
-      saveTasks();
+      renderBoard();
+      updateStats();
       closeAddTaskModal();
-      document.getElementById("add-task-form").reset();
-      showToast(`New task ${id} added to board!`);
+      showToast(`Added ${id} to ${status}`);
+
+      e.target.reset();
     }
 
-    function copyMarkdownBoard() {
+    function copyMarkdownSummary() {
       let md = "# PAPYRUS — Current Board State\n\n";
       md += `*Exported on ${new Date().toISOString()}*\n\n`;
       ["shipped", "progress", "backlog", "icebox"].forEach(status => {
         md += `### ${status.toUpperCase()}\n`;
         tasks.filter(t => t.status === status).forEach(t => {
-          md += `- [${status === "shipped" ? "x" : " "}] **[${t.id}]** ${t.title} (\`${t.tags.join(", ")}\`)\n`;
+          md += `- [${t.status === "shipped" ? "x" : " "}] **[${t.id}]** ${t.title} (\`${t.tags.join(", ")}\`)\n`;
         });
         md += "\n";
       });
 
       navigator.clipboard.writeText(md).then(() => {
-        showToast("Board Markdown copied to clipboard!");
-      }).catch(() => {
-        showToast("Board copied!");
+        showToast("Markdown checklist copied to clipboard!");
       });
-    }
-
-    function toggleTheme() {
-      const html = document.documentElement;
-      const isDark = html.classList.toggle("dark");
-      html.classList.toggle("light", !isDark);
-      document.getElementById("theme-icon-sun").classList.toggle("hidden", isDark);
-      document.getElementById("theme-icon-moon").classList.toggle("hidden", !isDark);
-      localStorage.setItem("papyrus_theme", isDark ? "dark" : "light");
     }
 
     function showToast(msg) {
       const toast = document.getElementById("toast");
-      document.getElementById("toast-msg").innerText = msg;
-      toast.classList.remove("translate-y-20", "opacity-0");
+      const msgEl = document.getElementById("toast-msg");
+      if (!toast || !msgEl) return;
+      msgEl.innerText = msg;
+      toast.classList.remove("opacity-0", "translate-y-20", "pointer-events-none");
       setTimeout(() => {
-        toast.classList.add("translate-y-20", "opacity-0");
+        toast.classList.add("opacity-0", "translate-y-20", "pointer-events-none");
       }, 2500);
     }
 
-    // Initialize Theme
-    const savedTheme = localStorage.getItem("papyrus_theme") || "dark";
-    if (savedTheme === "light") {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.classList.add("light");
-      document.getElementById("theme-icon-sun").classList.remove("hidden");
-      document.getElementById("theme-icon-moon").classList.add("hidden");
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle("dark");
+      document.documentElement.classList.toggle("light", !isDark);
+      try {
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      } catch (e) {}
     }
 
-    // Initial Render
-    renderBoard();
-    updateStats();
+    // Auto-init on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "light") {
+          document.documentElement.classList.remove("dark");
+          document.documentElement.classList.add("light");
+        }
+      } catch (e) {}
+      fetchAndParseBoard();
+    });
   </script>
 </body>
 </html>

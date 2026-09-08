@@ -10,8 +10,9 @@
     "cv": "tsx scripts/cv-cli.ts",
     "test:e2e": "tsx scripts/test-e2e.ts",
     "test:fields": "tsx scripts/test-field-editing.ts",
+    "test:board": "tsx scripts/test-board-parser.ts",
     "test:playwright": "playwright test",
-    "test:all": "tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && playwright test"
+    "test:all": "tsx scripts/test-board-parser.ts && tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && playwright test"
   },
   "dependencies": {
     "@dicebear/core": "^10.7.0",
