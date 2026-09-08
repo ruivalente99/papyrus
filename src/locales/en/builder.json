@@ -15,6 +15,8 @@
     "customTitleLabel": "Custom Section Title (Optional)",
     "customTitlePlaceholder": "e.g. Publications, Open Source, Awards",
     "confirmDelete": "Permanently delete this section?",
+    "insertPageBreak": "Insert page break before this section (\\pagebreak)",
+    "removePageBreak": "Remove page break before this section",
     "summaries": {
       "role_one": "1 role",
       "role_other": "{{count}} roles",

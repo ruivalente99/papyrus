@@ -110,6 +110,9 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
   cv.sections
     .filter((s) => s.visible)
     .forEach((section) => {
+      if (section.pageBreakBefore) {
+        tex += `\n\\newpage\n`;
+      }
       const sectionTitle = escapeLatex(t(section.title, lang, cv.defaultLanguage));
 
       if (section.type === "experience") {
@@ -293,6 +296,8 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
   for (let i = 1; i < sectionSplits.length; i += 2) {
     const secTitle = sectionSplits[i].trim();
     const secBody = sectionSplits[i + 1] || "";
+    const priorText = sectionSplits[i - 1] || "";
+    const hasPageBreak = /\\newpage|\\pagebreak/.test(priorText);
     const lower = secTitle.toLowerCase();
 
     if (
@@ -344,6 +349,7 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
         type: "experience",
         title: { pt: secTitle, en: secTitle },
         visible: true,
+        pageBreakBefore: hasPageBreak || undefined,
         order: order++,
         items: items.length > 0 ? items : [
           {
@@ -395,6 +401,7 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
         type: "education",
         title: { pt: secTitle, en: secTitle },
         visible: true,
+        pageBreakBefore: hasPageBreak || undefined,
         order: order++,
         items: items.length > 0 ? items : [],
       });
@@ -417,6 +424,7 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
         type: "skills",
         title: { pt: secTitle, en: secTitle },
         visible: true,
+        pageBreakBefore: hasPageBreak || undefined,
         order: order++,
         categories: categories.length > 0 ? categories : [
           {

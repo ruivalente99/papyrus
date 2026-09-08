@@ -229,3 +229,26 @@
     page-break-after: avoid;
   }
 }
+
+/* Page break utilities */
+.page-break-before,
+[data-page-break-before="true"] {
+  break-before: page;
+  page-break-before: always;
+}
+
+/* High-Fidelity Print Emulation Mode (FEAT-014) */
+.print-emulation {
+  background-color: #2b2f36 !important;
+}
+
+.print-emulation #cv-printable-page {
+  background-color: #ffffff !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+.print-emulation .print-hide {
+  display: none !important;
+}
+

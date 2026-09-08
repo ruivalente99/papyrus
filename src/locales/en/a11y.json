@@ -9,7 +9,9 @@
     "show": "Show section {{name}} on CV",
     "delete": "Delete section {{name}}",
     "collapse": "Collapse section {{name}}",
-    "expand": "Expand section {{name}}"
+    "expand": "Expand section {{name}}",
+    "insertPageBreak": "Insert page break before {{name}}",
+    "removePageBreak": "Remove page break before {{name}}"
   },
   "sectionList": {
     "scrollLeft": "Scroll sections left",

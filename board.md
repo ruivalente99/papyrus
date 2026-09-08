@@ -1,7 +1,7 @@
 # 📋 PAPYRUS — Project Board & Strategic Roadmap
 
 > **Product, Engineering & Roadmap Tracking Center**  
-> *Last Updated:* 2026-09-08 • *Status:* Active • *Stable Version:* v1.1.2
+> *Last Updated:* 2026-09-08 • *Status:* Active • *Stable Version:* v1.2.0
 
 ---
 
@@ -91,15 +91,22 @@
   - Automated diffing algorithms: Longest Common Subsequence (LCS) for bullet points, field-level diffing, and ATS score/verb/word-count delta metrics.
   - CLI command: `npm run cv -- diff <sourceA> <sourceB> [--lang=en|pt] [--json]`.
   - Accessible modal dialog mounted in header, mobile actions menu, and Command Palette (`Cmd+K`).
+- [x] **[FEAT-013]** **Visual Page Break Guide & Manual Page Split (`\pagebreak`)** `tags: pdf, editor`
+  - Multi-page A4 visual cutoffs (`A4_H_PX * n`) with dynamic page badges and exact page boundary rulers.
+  - Manual page break toggle (`pageBreakBefore`) on section cards with instant visual indicator pill `\pagebreak`.
+  - LaTeX bidirectional sync: exports `\newpage` / `\pagebreak` before marked sections and imports existing TeX page break commands.
+  - Smart PDF engine splits slices cleanly at user-specified forced boundaries.
+- [x] **[FEAT-014]** **High-Fidelity Print Mode Preview (CSS Print Emulation)** `tags: preview, styles`
+  - High-fidelity print preview emulation with page sheet separators, paper shadows, and watermarked page badges.
+  - Dedicated print emulation toggle in floating toolbar (`Printer` icon) with bilingual accessibility tooltips.
+  - Complete CSS `@media print` and `.print-emulation` styling guaranteeing pixel-perfect physical print parity.
 
 ---
 
-### 🔄 In Progress / Current Sprint (v1.2)
-- [ ] **[FEAT-013]** **Visual Page Break Guide & Manual Page Split (`\pagebreak`)** `tags: pdf, editor`
-  - *Status:* A4 ruler prototyping.
-  - *Objective:* Allow users to drag or manually insert page break separators when document content exceeds one page.
-- [ ] **[FEAT-014]** **High-Fidelity Print Mode Preview (CSS Print Emulation)** `tags: preview, styles`
-  - *Status:* Mapping `@media print` rules.
+### 🔄 In Progress / Current Sprint (v1.3)
+- [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
+  - *Status:* Scoping layout and typography parity with CV templates.
+  - *Objective:* Unified generation and multi-page bundling of cover letter with active resume.
 ---
 
 ### 📋 Priority Backlog (v1.3 - v2.0)

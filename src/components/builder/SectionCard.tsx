@@ -29,6 +29,7 @@ import {
   Award,
   Heart,
   FileText,
+  Scissors,
 } from "lucide-react";
 import { ExperienceForm } from "./forms/ExperienceForm";
 import { EducationForm } from "./forms/EducationForm";
@@ -194,6 +195,11 @@ export function SectionCard({
           <div className="min-w-0 flex-1">
             <h3 className="font-bold text-stone-900 dark:text-[#f0f3f6] text-sm flex items-center gap-2 truncate">
               <span className="truncate">{sectionTitle}</span>
+              {section.pageBreakBefore && (
+                <span className="text-[10px] bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold shrink-0">
+                  \pagebreak
+                </span>
+              )}
               {!section.visible && (
                 <span className="text-[10px] bg-stone-200 dark:bg-[#161b22] dark:border dark:border-[#363d47] text-stone-600 dark:text-[#8b949e] px-1.5 py-0.5 rounded font-medium shrink-0">
                   {tr("common.actions.hide")}
@@ -227,6 +233,33 @@ export function SectionCard({
             className="text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-[#30363d] disabled:opacity-30 disabled:cursor-not-allowed min-w-[28px] min-h-[28px] flex items-center justify-center"
           >
             <ArrowDown size={14} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              onUpdate((sec) => ({
+                ...sec,
+                pageBreakBefore: !sec.pageBreakBefore,
+              }));
+            }}
+            title={
+              section.pageBreakBefore
+                ? tr("builder.sections.removePageBreak")
+                : tr("builder.sections.insertPageBreak")
+            }
+            aria-label={
+              section.pageBreakBefore
+                ? tr("a11y.sectionCard.removePageBreak", { name: sectionTitle })
+                : tr("a11y.sectionCard.insertPageBreak", { name: sectionTitle })
+            }
+            className={`p-1.5 rounded-lg transition-colors min-w-[28px] min-h-[28px] flex items-center justify-center ${
+              section.pageBreakBefore
+                ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 shadow-2xs"
+                : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#30363d]"
+            }`}
+          >
+            <Scissors size={14} className={section.pageBreakBefore ? "rotate-90 text-amber-600 dark:text-amber-400" : ""} />
           </button>
 
           <button

@@ -15,6 +15,8 @@
     "customTitleLabel": "Título Personalizado da Secção (Opcional)",
     "customTitlePlaceholder": "Ex: Publicações, Projetos Open-Source, Bolsas",
     "confirmDelete": "Eliminar esta secção permanentemente?",
+    "insertPageBreak": "Inserir quebra de página antes desta secção (\\pagebreak)",
+    "removePageBreak": "Remover quebra de página antes desta secção",
     "summaries": {
       "role_one": "1 cargo profissional",
       "role_other": "{{count}} cargos profissionais",

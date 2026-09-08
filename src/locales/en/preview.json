@@ -13,7 +13,12 @@
     "pdf": "PDF",
     "png": "PNG",
     "exportPdf": "Export PDF",
-    "generatingPdf": "Generating PDF..."
+    "generatingPdf": "Generating PDF...",
+    "printEmulation": "Print Mode Preview",
+    "printEmulationActive": "Exit Print Mode",
+    "printEmulationTooltip": "Toggle CSS print emulation preview (paginated A4 sheets)",
+    "pageCutoff": "A4 Page Cutoff (Page {{page}})",
+    "pageIndicator": "Page {{current}} of {{total}}"
   },
   "canvas": {
     "zoomIn": "Zoom in",
