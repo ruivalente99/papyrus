@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt" class="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PAPYRUS — Visual Board & Roadmap</title>
+  <title>PAPYRUS — Visual Board & Strategic Roadmap</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     :root {
@@ -29,7 +29,6 @@
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -65,7 +64,7 @@
                 v1.1.2
               </span>
             </h1>
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Sistema Online"></span>
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System Online"></span>
           </div>
           <p class="text-xs sm:text-sm text-[var(--text-muted)]">
             Architectura Vitae • Product Board & Strategic Roadmap
@@ -78,28 +77,28 @@
         <!-- View Tabs -->
         <div class="flex items-center bg-[var(--card-bg)] border border-[var(--card-border)] p-1 rounded-xl shadow-xs">
           <button id="tab-kanban" onclick="switchView('kanban')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-600 text-white shadow-xs">
-            Quadro Kanban
+            Kanban Board
           </button>
           <button id="tab-roadmap" onclick="switchView('roadmap')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
             Roadmap
           </button>
           <button id="tab-metrics" onclick="switchView('metrics')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all">
-            Métricas
+            Metrics
           </button>
         </div>
 
         <button onclick="openAddTaskModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all active:scale-95">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-          <span>Nova Tarefa</span>
+          <span>New Task</span>
         </button>
 
-        <button onclick="copyMarkdownBoard()" title="Copiar como Markdown" class="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--card-bg)] hover:bg-stone-200 dark:hover:bg-[#21262d] text-[var(--text-main)] border border-[var(--card-border)] rounded-xl text-xs font-semibold transition-all">
+        <button onclick="copyMarkdownBoard()" title="Copy as Markdown" class="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--card-bg)] hover:bg-stone-200 dark:hover:bg-[#21262d] text-[var(--text-main)] border border-[var(--card-border)] rounded-xl text-xs font-semibold transition-all">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          <span class="hidden sm:inline">Copiar MD</span>
+          <span class="hidden sm:inline">Copy MD</span>
         </button>
 
         <!-- Theme Toggle -->
-        <button onclick="toggleTheme()" aria-label="Alterar Tema" class="p-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-[var(--text-main)] hover:bg-stone-200 dark:hover:bg-[#21262d] transition-all">
+        <button onclick="toggleTheme()" aria-label="Toggle Theme" class="p-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl text-[var(--text-main)] hover:bg-stone-200 dark:hover:bg-[#21262d] transition-all">
           <svg id="theme-icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <svg id="theme-icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
@@ -109,7 +108,7 @@
     <!-- KPI & Stats Summary Bar -->
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Concluído (Shipped)</span>
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Shipped (Completed)</span>
         <div class="flex items-baseline justify-between mt-2">
           <span id="stat-shipped-count" class="text-2xl font-black text-emerald-500">11</span>
           <span id="stat-shipped-pct" class="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">52%</span>
@@ -117,7 +116,7 @@
       </div>
 
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Sprint Atual (In Progress)</span>
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Current Sprint (In Progress)</span>
         <div class="flex items-baseline justify-between mt-2">
           <span id="stat-progress-count" class="text-2xl font-black text-amber-500">3</span>
           <span class="text-xs font-mono font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full">v1.2</span>
@@ -125,7 +124,7 @@
       </div>
 
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Backlog Prioritário</span>
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Priority Backlog</span>
         <div class="flex items-baseline justify-between mt-2">
           <span id="stat-backlog-count" class="text-2xl font-black text-indigo-400">7</span>
           <span class="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">v1.3+</span>
@@ -133,7 +132,7 @@
       </div>
 
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col justify-between">
-        <span class="text-xs font-semibold text-[var(--text-muted)]">Saúde do Código & CI</span>
+        <span class="text-xs font-semibold text-[var(--text-muted)]">Code Health & CI</span>
         <div class="flex items-baseline justify-between mt-2">
           <span class="text-2xl font-black text-emerald-400">100%</span>
           <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">0 Bugs</span>
@@ -156,7 +155,7 @@
         <input 
           id="search-input" 
           type="text" 
-          placeholder="Pesquisar tarefas, tags, IDs..." 
+          placeholder="Search tasks, tags, IDs..." 
           oninput="handleSearch(this.value)"
           class="w-full pl-9 pr-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500 text-[var(--text-main)]"
         />
@@ -165,7 +164,7 @@
       <!-- Tag Filters -->
       <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 text-xs">
         <button onclick="filterByTag('all')" class="tag-btn active px-2.5 py-1 rounded-lg font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 whitespace-nowrap">
-          Todos
+          All
         </button>
         <button onclick="filterByTag('i18n')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
           i18n
@@ -180,7 +179,7 @@
           ATS & Linter
         </button>
         <button onclick="filterByTag('ai')" class="tag-btn px-2.5 py-1 rounded-lg font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] whitespace-nowrap">
-          IA & CLI
+          AI & CLI
         </button>
       </div>
     </div>
@@ -193,7 +192,7 @@
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <h2 class="font-bold text-xs uppercase tracking-wider">Shipped / Concluído</h2>
+            <h2 class="font-bold text-xs uppercase tracking-wider">Shipped / Completed</h2>
           </div>
           <span id="badge-shipped" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">11</span>
         </div>
@@ -216,12 +215,12 @@
         </div>
       </div>
 
-      <!-- COLUMN 3: Backlog Prioritário -->
+      <!-- COLUMN 3: Priority Backlog -->
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3 min-h-[500px]">
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-            <h2 class="font-bold text-xs uppercase tracking-wider">Backlog Prioritário</h2>
+            <h2 class="font-bold text-xs uppercase tracking-wider">Priority Backlog</h2>
           </div>
           <span id="badge-backlog" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">7</span>
         </div>
@@ -230,12 +229,12 @@
         </div>
       </div>
 
-      <!-- COLUMN 4: Icebox / Ideias -->
+      <!-- COLUMN 4: Icebox / Future -->
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-3.5 flex flex-col gap-3 min-h-[500px]">
         <div class="flex items-center justify-between pb-2 border-b border-[var(--card-border)]">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-            <h2 class="font-bold text-xs uppercase tracking-wider">Icebox / Futuro</h2>
+            <h2 class="font-bold text-xs uppercase tracking-wider">Icebox / Future</h2>
           </div>
           <span id="badge-icebox" class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400">4</span>
         </div>
@@ -251,7 +250,7 @@
       <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-6">
         <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
           <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          Linha Temporal de Versões e Entregas
+          Release Timeline & Strategic Milestones
         </h2>
         
         <div class="relative border-l-2 border-stone-300 dark:border-[#363d47] ml-4 space-y-8 py-2">
@@ -261,11 +260,11 @@
             <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-[var(--bg)]"></span>
             <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-emerald-500">v1.0.0 • Lançamento Inicial (Concluído)</span>
-                <span class="text-[11px] text-[var(--text-muted)]">Agosto 2026</span>
+                <span class="text-xs font-mono font-bold text-emerald-500">v1.0.0 • Initial Release (Completed)</span>
+                <span class="text-[11px] text-[var(--text-muted)]">August 2026</span>
               </div>
-              <h3 class="font-bold text-sm">Split-Pane Interactive Builder & Engine TeX/PDF</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Lançamento do MVP com os 3 modelos de CV (Lateralis, Classic, Matrix), sincronização em tempo real de preview A4, exportador TeX e linter dinâmico 0-100%.</p>
+              <h3 class="font-bold text-sm">Split-Pane Interactive Builder & TeX/PDF Engine</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1">MVP launch with 3 core resume templates (Lateralis, Classic, Matrix), live synchronized A4 preview, compilable TeX export/import, and dynamic 0–100% linter.</p>
             </div>
           </div>
 
@@ -274,11 +273,11 @@
             <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-[var(--bg)]"></span>
             <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-emerald-500">v1.1.2 • Estabilidade e UX Móvel (Concluído)</span>
-                <span class="text-[11px] text-[var(--text-muted)]">Setembro 2026</span>
+                <span class="text-xs font-mono font-bold text-emerald-500">v1.1.2 • Mobile UX & Stability (Completed)</span>
+                <span class="text-[11px] text-[var(--text-muted)]">September 2026</span>
               </div>
-              <h3 class="font-bold text-sm">Desacoplamento i18n, Barra de Ações 4 Arestas & Avatar Crop</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Desacoplamento completo entre UI/Nacionalidade e língua do CV, resolução de overflow no top bar móvel, crop/rotação de fotografia, linter de 40 termos em falta e foco por clique no preview.</p>
+              <h3 class="font-bold text-sm">Full i18n Decoupling, 4-Edge Action Bar & Avatar Crop</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1">Clean separation of UI/nationality language from CV document language, mobile top bar overflow fix, circular avatar crop & rotation, exhaustive 40 missing translation keys fix, and preview click-to-focus.</p>
             </div>
           </div>
 
@@ -288,11 +287,11 @@
             <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-amber-500 ring-4 ring-[var(--bg)]"></span>
             <div class="bg-stone-100 dark:bg-[#0d1117] border border-amber-500/40 p-4 rounded-xl shadow-lg shadow-amber-500/5">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-amber-500">v1.2.0 • Sprint Atual (Em Desenvolvimento)</span>
-                <span class="text-[11px] text-[var(--text-muted)]">Sprint Ativo</span>
+                <span class="text-xs font-mono font-bold text-amber-500">v1.2.0 • Current Sprint (Active Development)</span>
+                <span class="text-[11px] text-[var(--text-muted)]">Active Sprint</span>
               </div>
-              <h3 class="font-bold text-sm">Comparador Visual de CVs & Quebras de Página Manuais</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Comparador lado a lado com diff semântico e score ATS diferencial. Inserção manual de quebras de página (<code class="text-xs font-mono">\pagebreak</code>) e emulação de impressão nativa.</p>
+              <h3 class="font-bold text-sm">Visual CV Comparator & Manual Page Breaks</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1">Side-by-side synchronized comparison with word-level semantic diff and ATS score matrix. Manual page break insertions (<code class="text-xs font-mono">\pagebreak</code>) and native print mode fidelity.</p>
             </div>
           </div>
 
@@ -301,11 +300,11 @@
             <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-[var(--bg)]"></span>
             <div class="bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] p-4 rounded-xl">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-mono font-bold text-indigo-400">v2.0.0 • Suite de Candidatura Unificada</span>
-                <span class="text-[11px] text-[var(--text-muted)]">Planeamento Q4 2026</span>
+                <span class="text-xs font-mono font-bold text-indigo-400">v2.0.0 • Unified Application Suite</span>
+                <span class="text-[11px] text-[var(--text-muted)]">Planned Q4 2026</span>
               </div>
-              <h3 class="font-bold text-sm">Cartas de Apresentação, Scanner de Vagas ATS & Tipografias</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">Gerador de cartas de apresentação esteticamente emparelhadas com o CV, analisador semântico de ofertas de emprego para sugestão de palavras-chave em falta e compatibilidade com JSON Resume.</p>
+              <h3 class="font-bold text-sm">Cover Letters, ATS Vacancy Scanner & Typography Selector</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1">Thematically coordinated cover letter engine, ATS job description keyword matcher, open standard JSON Resume format compatibility, and curated font families.</p>
             </div>
           </div>
 
@@ -317,7 +316,7 @@
     <div id="view-metrics" class="hidden space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Testes Automatizados</h3>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Automated Verification</h3>
           <div class="space-y-2 text-xs">
             <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
               <span>E2E Verification (5 Presets)</span>
@@ -329,11 +328,11 @@
             </div>
             <div class="flex justify-between items-center py-1 border-b border-[var(--card-border)]">
               <span>TypeScript Strict Check</span>
-              <span class="font-bold font-mono text-emerald-500">0 Erros</span>
+              <span class="font-bold font-mono text-emerald-500">0 Errors</span>
             </div>
             <div class="flex justify-between items-center py-1">
               <span>ESLint Code Quality</span>
-              <span class="font-bold font-mono text-emerald-500">0 Erros</span>
+              <span class="font-bold font-mono text-emerald-500">0 Errors</span>
             </div>
           </div>
         </div>
@@ -354,14 +353,14 @@
               <span class="font-bold font-mono text-emerald-500">794 × 1123 px</span>
             </div>
             <div class="flex justify-between items-center py-1">
-              <span>DPI de Exportação PDF</span>
+              <span>PDF Export Resolution</span>
               <span class="font-bold font-mono text-stone-400">96 DPI / 210x297mm</span>
             </div>
           </div>
         </div>
 
         <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-5 space-y-3">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Stack Tecnológica</h3>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Technology Stack</h3>
           <div class="flex flex-wrap gap-1.5 pt-1">
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">Next.js 15 (App Router)</span>
             <span class="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-lg text-xs font-semibold">React 19</span>
@@ -395,28 +394,28 @@
 
       <div class="space-y-3 text-xs">
         <div>
-          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Descrição & Escopo:</span>
+          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Description & Scope:</span>
           <p id="modal-task-desc" class="mt-1 text-[var(--text-main)] leading-relaxed"></p>
         </div>
 
         <div>
-          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Tags / Domínio:</span>
+          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Tags / Domain:</span>
           <div id="modal-task-tags" class="flex flex-wrap gap-1 mt-1"></div>
         </div>
 
         <div>
-          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Ficheiros & Módulos Relacionados:</span>
+          <span class="font-bold text-[var(--text-muted)] uppercase tracking-wider text-[10px]">Related Files & Modules:</span>
           <div id="modal-task-files" class="font-mono text-[11px] text-amber-500 bg-stone-100 dark:bg-[#0d1117] p-2 rounded-xl border border-[var(--card-border)] mt-1"></div>
         </div>
       </div>
 
       <div class="flex items-center justify-between pt-3 border-t border-[var(--card-border)]">
         <div class="flex items-center gap-1.5">
-          <button onclick="moveTaskCurrent(-1)" title="Mover para coluna anterior" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">← Mover</button>
-          <button onclick="moveTaskCurrent(1)" title="Mover para próxima coluna" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">Mover →</button>
+          <button onclick="moveTaskCurrent(-1)" title="Move to previous column" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">← Move Left</button>
+          <button onclick="moveTaskCurrent(1)" title="Move to next column" class="px-2.5 py-1 bg-stone-200 dark:bg-[#21262d] rounded-lg text-xs font-bold hover:bg-stone-300 dark:hover:bg-[#30363d] transition-all">Move Right →</button>
         </div>
         <button onclick="closeDetailModal()" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all">
-          Fechar
+          Close
         </button>
       </div>
     </div>
@@ -426,7 +425,7 @@
   <div id="add-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs hidden animate-in fade-in duration-150">
     <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-[var(--card-border)] pb-3">
-        <h3 class="text-sm font-bold">Criar Nova Tarefa / Funcionalidade</h3>
+        <h3 class="text-sm font-bold">Create New Task / Feature</h3>
         <button onclick="closeAddTaskModal()" class="text-[var(--text-muted)] hover:text-[var(--text-main)]">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
@@ -434,39 +433,39 @@
 
       <form id="add-task-form" onsubmit="handleAddTask(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-bold mb-1">Título da Funcionalidade</label>
-          <input id="new-title" required type="text" placeholder="ex: Exportação de CV em formato DOCX" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
+          <label class="block font-bold mb-1">Feature Title</label>
+          <input id="new-title" required type="text" placeholder="e.g. Export resume as DOCX format" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-bold mb-1">Coluna / Status</label>
+            <label class="block font-bold mb-1">Column / Status</label>
             <select id="new-status" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
-              <option value="backlog">Backlog Prioritário</option>
-              <option value="progress">In Progress (Sprint)</option>
-              <option value="shipped">Shipped (Concluído)</option>
-              <option value="icebox">Icebox / Futuro</option>
+              <option value="backlog">Priority Backlog</option>
+              <option value="progress">In Progress (v1.2)</option>
+              <option value="shipped">Shipped (Completed)</option>
+              <option value="icebox">Icebox / Future</option>
             </select>
           </div>
           <div>
-            <label class="block font-bold mb-1">Versão Alvo</label>
+            <label class="block font-bold mb-1">Target Version</label>
             <input id="new-version" type="text" placeholder="v1.3.0" value="v1.3.0" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
           </div>
         </div>
 
         <div>
-          <label class="block font-bold mb-1">Tags (separadas por vírgula)</label>
+          <label class="block font-bold mb-1">Tags (comma-separated)</label>
           <input id="new-tags" type="text" placeholder="core, export, ui/ux" class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500">
         </div>
 
         <div>
-          <label class="block font-bold mb-1">Descrição / Critérios</label>
-          <textarea id="new-desc" rows="3" placeholder="Detalhes do que a feature deve entregar..." class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500"></textarea>
+          <label class="block font-bold mb-1">Description / Acceptance Criteria</label>
+          <textarea id="new-desc" rows="3" placeholder="Specification details and expected outcomes..." class="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-[var(--card-border)] rounded-xl text-xs focus:outline-none focus:border-amber-500"></textarea>
         </div>
 
         <div class="flex justify-end gap-2 pt-2 border-t border-[var(--card-border)]">
-          <button type="button" onclick="closeAddTaskModal()" class="px-3 py-1.5 rounded-xl border border-[var(--card-border)] font-semibold">Cancelar</button>
-          <button type="submit" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold">Adicionar ao Board</button>
+          <button type="button" onclick="closeAddTaskModal()" class="px-3 py-1.5 rounded-xl border border-[var(--card-border)] font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold">Add to Board</button>
         </div>
       </form>
     </div>
@@ -475,7 +474,7 @@
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-5 right-5 bg-stone-900 text-white dark:bg-white dark:text-stone-900 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-200 pointer-events-none z-50">
     <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-    <span id="toast-msg">Notificação</span>
+    <span id="toast-msg">Notification</span>
   </div>
 
   <script>
@@ -483,238 +482,238 @@
     const INITIAL_TASKS = [
       {
         id: "FEAT-001",
-        title: "Suporte Multilingue com Desacoplamento (i18n)",
+        title: "Full Multilingual Decoupling (i18n)",
         status: "shipped",
         tags: ["i18n", "core"],
         version: "v1.1",
         files: "src/lib/i18n.ts, src/locales/*",
-        desc: "Separação estrita entre língua da interface (uiLang) e do documento CV (cvLang). Seletor de nacionalidade com bandeiras e 0 chaves em falta."
+        desc: "Strict separation between UI/nationality language (uiLang) and CV document content language (cvLang). Real-time search and 0 missing keys."
       },
       {
         id: "FEAT-002",
-        title: "Barra Flutuante com Arrastamento 4 Arestas",
+        title: "Floating Action Bar with 4-Edge Snapping",
         status: "shipped",
         tags: ["ui/ux", "mobile"],
         version: "v1.1",
         files: "src/components/preview/CVPreviewContainer.tsx",
-        desc: "Barra de ações reposicionável com drag-and-drop magnético nas 4 arestas e layout responsivo compacto."
+        desc: "Floating action toolbar with magnetic docking to top, bottom, left, and right edges with mobile responsive layout."
       },
       {
         id: "FEAT-003",
-        title: "Modal de Avatar com Crop, Rotação e Drag & Drop",
+        title: "Avatar Modal with Crop, 90° Rotation & Drag-and-Drop",
         status: "shipped",
         tags: ["ui/ux", "media"],
         version: "v1.1",
         files: "src/components/builder/AvatarCropModal.tsx",
-        desc: "Upload direto sobre o avatar, feedback de hover, rotação a 90° e zoom digital antes de salvar."
+        desc: "Direct hover upload on avatar, full drag-and-drop support, 90° step rotation, and digital zoom canvas."
       },
       {
         id: "FEAT-004",
-        title: "Command Palette Inteligente (Cmd/Ctrl + K)",
+        title: "Smart Command Palette (Cmd/Ctrl + K)",
         status: "shipped",
         tags: ["ui/ux", "accessibility"],
         version: "v1.1",
         files: "src/components/builder/CommandPalette.tsx",
-        desc: "Pesquisa por categorias de templates, secções, ações e preferências com navegação por teclado."
+        desc: "Categorized command search across templates, sections, actions, and user preferences with keyboard navigation."
       },
       {
         id: "FEAT-005",
-        title: "Otimização Extrema de Top Bar em Mobile",
+        title: "Mobile Top Bar Extreme Optimization",
         status: "shipped",
         tags: ["mobile", "responsive"],
         version: "v1.1.2",
         files: "src/components/builder/BuilderHeader.tsx",
-        desc: "Eliminação total de overflow horizontal em ecrãs estreitos (320px-390px), largura reduzida para 272px."
+        desc: "Total elimination of horizontal overflow on small devices (320px-390px), footprint reduced from 435px to 272px."
       },
       {
         id: "FEAT-006",
-        title: "Seleção Interativa no Preview e Scroll Focus",
+        title: "Interactive Preview Targeting & Smooth Focus",
         status: "shipped",
         tags: ["preview", "editor"],
         version: "v1.1",
         files: "src/components/preview/CVPreviewContainer.tsx, src/app/page.tsx",
-        desc: "Clique direto num bloco do preview A4 abre e faz scroll suave até ao campo no formulário esquerdo."
+        desc: "Directly click any block on the live A4 preview to automatically open and scroll to the form field in the left editor."
       },
       {
         id: "FEAT-007",
-        title: "Motor de Exportação TeX (.tex) Bi-direcional",
+        title: "Bi-directional TeX (.tex) Export & Import Engine",
         status: "shipped",
         tags: ["latex", "export"],
         version: "v1.0",
         files: "src/lib/latexEngine.ts",
-        desc: "Exportação e importação de ficheiros TeX compatíveis com TeX Live e Overleaf com sanitização de caracteres."
+        desc: "Export and import compilable TeX files compatible with TeX Live and Overleaf with automated character escaping."
       },
       {
         id: "FEAT-008",
-        title: "Motor de PDF A4 com Hyperlinks Interativos",
+        title: "Precision A4 PDF Engine with Clickable Hyperlinks",
         status: "shipped",
         tags: ["pdf", "export"],
         version: "v1.0",
         files: "src/lib/pdfExport.ts",
-        desc: "Dimensões estritas A4 (794x1123px a 96DPI), prevenção de quebras a meio de linhas e links embutidos."
+        desc: "Locked standard A4 dimensions (794x1123px at 96 DPI), smart page break boundary detection, and clickable links."
       },
       {
         id: "FEAT-009",
-        title: "Linter de Qualidade e Auditoria ATS (0–100%)",
+        title: "Real-Time ATS Quality Audit & Linter (0–100%)",
         status: "shipped",
         tags: ["ats", "quality"],
         version: "v1.0",
         files: "src/lib/linter.ts, src/components/builder/linter/*",
-        desc: "Auditoria em tempo real de verbos de impacto, completude de dados e consistência temporal."
+        desc: "Real-time evaluation of action verbs, contact completeness, date ranges, and multilingual section parity."
       },
       {
         id: "FEAT-010",
-        title: "Skill de Automação para Agentes IA (cv-agent) & CLI",
+        title: "AI Agent Automation Skill (cv-agent) & CLI Suite",
         status: "shipped",
         tags: ["ai", "cli"],
         version: "v1.0",
         files: "scripts/cv-cli.ts, src/lib/cv-helper.ts",
-        desc: "Comandos CLI e biblioteca programática TypeScript para auditoria, mutação e exportação de CV sem browser."
+        desc: "CLI scripts and programmatic TypeScript API for auditing, translating, mutating, and exporting resumes without a browser."
       },
       {
         id: "FEAT-011",
-        title: "Pipeline CI/CD e Semantic PR Flow",
+        title: "Automated CI/CD Quality Gates & Semantic PR Flow",
         status: "shipped",
         tags: ["devops", "qa"],
         version: "v1.1",
         files: ".github/workflows/ci.yml",
-        desc: "Quality gates obrigatórios no GitHub Actions com testes E2E, verificação de tipos e preview builds na Vercel."
+        desc: "Enforced quality gates in GitHub Actions with E2E verification, strict type checks, and preview deployments on Vercel."
       },
       {
         id: "FEAT-012",
-        title: "Comparador Visual e Diff Semântico de CVs",
+        title: "Visual CV Comparator & Semantic Diff Engine",
         status: "progress",
         tags: ["diff", "ats"],
         version: "v1.2",
         files: "docs/CV_COMPARATOR_SPEC.md",
-        desc: "Comparação lado a lado com scroll sincronizado entre 2 versões de CV, diff intra-linha e métricas de palavras-chave."
+        desc: "Side-by-side synchronized scrolling between 2 CV versions, word-level inline diffs, and ATS keyword differentials."
       },
       {
         id: "FEAT-013",
-        title: "Indicador e Inserção Manual de Quebra de Página",
+        title: "Visual Page Break Guide & Manual Page Split",
         status: "progress",
         tags: ["pdf", "editor"],
         version: "v1.2",
         files: "src/components/preview/CVPreviewContainer.tsx",
-        desc: "Régua interativa que permite ao utilizador forçar uma quebra de página A4 onde preferir."
+        desc: "Interactive ruler allowing users to manually drag or trigger page splits where preferred."
       },
       {
         id: "FEAT-014",
-        title: "Pré-visualização Fiel de Impressão (CSS Print)",
+        title: "High-Fidelity Print Mode Preview (CSS Print)",
         status: "progress",
         tags: ["preview", "styles"],
         version: "v1.2",
         files: "src/app/globals.css",
-        desc: "Emulação precisa do modo de impressão nativo (Ctrl+P) com ocultação automática de controlos da interface."
+        desc: "Precise emulation of native browser print mode (Ctrl+P) automatically suppressing chrome and UI controls."
       },
       {
         id: "FEAT-015",
-        title: "Gerador de Cartas de Apresentação (Cover Letter)",
+        title: "Cover Letter Generator Engine",
         status: "backlog",
         tags: ["feature", "new-doc"],
         version: "v2.0",
         files: "src/components/cover-letter/*",
-        desc: "Geração de carta de apresentação coordenada esteticamente com cores, cabeçalho e tipografia do CV selecionado."
+        desc: "Coordinated cover letter generation matching the color accents, header geometry, and typography of the active CV."
       },
       {
         id: "FEAT-016",
-        title: "Assistente de Redação com Verbos de Ação Google XYZ",
+        title: "AI-Assisted Bullet Point Polisher (Google XYZ)",
         status: "backlog",
         tags: ["ai", "ats"],
         version: "v2.0",
         files: "src/lib/aiWritingAssistant.ts",
-        desc: "Sugestões de melhoria para bullet points passivos: 'Realizei [X], medido por [Y], através de [Z]'."
+        desc: "Actionable suggestions converting passive bullet points: 'Accomplished [X], measured by [Y], by doing [Z]'."
       },
       {
         id: "FEAT-017",
-        title: "Scanner de Vagas ATS (Keyword Matcher)",
+        title: "ATS Job Vacancy Keyword Matcher",
         status: "backlog",
         tags: ["ats", "recruiter"],
         version: "v2.0",
         files: "src/lib/atsScanner.ts",
-        desc: "Cole o texto de uma vaga de emprego e obtenha a pontuação de palavras-chave presentes e ausentes no CV."
+        desc: "Paste any job posting text and calculate instant ATS match rate and identify missing high-value technical keywords."
       },
       {
         id: "FEAT-018",
-        title: "Seletor de Famílias Tipográficas Editoriais",
+        title: "Editorial Typography Selector",
         status: "backlog",
         tags: ["styling", "typography"],
         version: "v2.0",
         files: "src/types/cv.ts, src/components/preview/*",
-        desc: "Escolha entre famílias Serifadas (Merriweather, Garamond) e Sans-Serif (Inter, Plus Jakarta Sans, JetBrains Mono)."
+        desc: "Curated typography pairings across Serif (Merriweather, Garamond) and Sans-Serif (Inter, Plus Jakarta Sans, JetBrains Mono)."
       },
       {
         id: "FEAT-019",
-        title: "Compatibilidade JSON Resume & Europass XML",
+        title: "JSON Resume & Europass XML Schema Interoperability",
         status: "backlog",
         tags: ["standards"],
         version: "v2.0",
         files: "src/lib/schemaConverter.ts",
-        desc: "Importação e exportação de esquemas abertos jsonresume.org e Europass XML."
+        desc: "Import and export interoperability with standard jsonresume.org schemas and Europass XML format."
       },
       {
         id: "FEAT-020",
-        title: "Widget Gerador de QR Code no Cabeçalho",
+        title: "Header Vector QR Code Generator",
         status: "backlog",
         tags: ["contact", "modern"],
         version: "v2.0",
         files: "src/components/preview/templates/*",
-        desc: "QR code vetorial apontando para o perfil LinkedIn, GitHub ou portfólio no cabeçalho do CV."
+        desc: "Embedded vector QR code in the resume header linking to personal portfolio, LinkedIn, or GitHub repository."
       },
       {
         id: "FEAT-021",
-        title: "Criptografia e Acessibilidade PDF/UA",
+        title: "PDF Encryption & PDF/UA Accessibility",
         status: "backlog",
         tags: ["pdf", "security"],
         version: "v2.0",
         files: "src/lib/pdfExport.ts",
-        desc: "Proteção por palavra-passe e anotações semânticas para conformidade com normas governamentais de acessibilidade."
+        desc: "Password protection encryption and semantic tagging for screen reader compliance under PDF/UA standards."
       },
       {
         id: "IDEA-001",
-        title: "Sincronização em Nuvem Privada (WebDAV/Nextcloud)",
+        title: "Private Cloud Sync (WebDAV / Nextcloud / Drive)",
         status: "icebox",
         tags: ["cloud", "privacy"],
         version: "v3.0",
         files: "src/lib/storageSync.ts",
-        desc: "Backup opcional e encriptado ponta-a-ponta na infraestrutura de cloud privada do próprio utilizador."
+        desc: "Optional end-to-end encrypted backup to private user cloud infrastructure while maintaining offline-first guarantees."
       },
       {
         id: "IDEA-002",
-        title: "Exportação em Formato Vetorial SVG",
+        title: "Vector SVG Export Engine",
         status: "icebox",
         tags: ["design", "export"],
         version: "v3.0",
         files: "src/lib/svgExport.ts",
-        desc: "Permite importar e afinar o CV diretamente no Figma ou Illustrator."
+        desc: "Direct vector export allowing visual design teams to refine resumes inside Figma or Illustrator."
       },
       {
         id: "IDEA-003",
-        title: "Tema Escuro em Exportação de PDF",
+        title: "Dark Mode PDF Export for Creative Portfolios",
         status: "icebox",
         tags: ["design", "creative"],
         version: "v3.0",
         files: "src/lib/pdfExport.ts",
-        desc: "Opção de PDF dark mode com fundo escuro elegante para designers e artistas digitais."
+        desc: "Dark background PDF export option tailored for multimedia designers and game developers."
       },
       {
         id: "IDEA-004",
-        title: "Gestão Multi-Perfil de Candidatura",
+        title: "Multi-Profile Resume Management",
         status: "icebox",
         tags: ["profile", "ux"],
         version: "v3.0",
         files: "src/context/CVContext.tsx",
-        desc: "Guarde e comute entre múltiplos perfis completos (ex: Perfil Engenharia vs Perfil Gestão Técnica)."
+        desc: "Manage and switch instantly between multiple full profiles (e.g. Senior Frontend profile vs Tech Lead profile)."
       }
     ];
 
-    let tasks = JSON.parse(localStorage.getItem("papyrus_board_tasks") || "null") || INITIAL_TASKS;
+    let tasks = JSON.parse(localStorage.getItem("papyrus_board_tasks_en") || "null") || INITIAL_TASKS;
     let currentFilterTag = "all";
     let searchQuery = "";
     let selectedTaskId = null;
 
     function saveTasks() {
-      localStorage.setItem("papyrus_board_tasks", JSON.stringify(tasks));
+      localStorage.setItem("papyrus_board_tasks_en", JSON.stringify(tasks));
       renderBoard();
       updateStats();
     }
@@ -819,7 +818,7 @@
     function filterByTag(tag) {
       currentFilterTag = tag;
       document.querySelectorAll(".tag-btn").forEach(btn => {
-        const isActive = btn.innerText.toLowerCase().includes(tag === "all" ? "todos" : tag);
+        const isActive = btn.innerText.toLowerCase().includes(tag === "all" ? "all" : tag);
         if (isActive) {
           btn.className = "tag-btn active px-2.5 py-1 rounded-lg font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30 whitespace-nowrap";
         } else {
@@ -872,7 +871,7 @@
         task.status = order[newIdx];
         saveTasks();
         openDetailModal(selectedTaskId);
-        showToast(`Tarefa movida para ${task.status}!`);
+        showToast(`Task moved to ${task.status}!`);
       }
     }
 
@@ -910,7 +909,7 @@
       saveTasks();
       closeAddTaskModal();
       document.getElementById("add-task-form").reset();
-      showToast(`Nova tarefa ${id} adicionada!`);
+      showToast(`New task ${id} added to board!`);
     }
 
     function copyMarkdownBoard() {
@@ -925,9 +924,9 @@
       });
 
       navigator.clipboard.writeText(md).then(() => {
-        showToast("Markdown do quadro copiado para a área de transferência!");
+        showToast("Board Markdown copied to clipboard!");
       }).catch(() => {
-        showToast("Quadro copiado!");
+        showToast("Board copied!");
       });
     }
 
