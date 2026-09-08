@@ -57,14 +57,14 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
 
   return (
     <div className="space-y-4 text-xs">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center pb-1 border-b border-stone-200 dark:border-[#30363d]">
         <span className="font-semibold text-stone-600 dark:text-[#c9d1d9]">
           {tr("builder.forms.certifications.title")} ({items.length})
         </span>
         <button
           type="button"
           onClick={handleAddItem}
-          className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
+          className="flex items-center gap-1.5 text-xs font-medium bg-amber-700 hover:bg-amber-800 text-white px-2.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
         >
           <Plus size={13} />
           <span>+ {tr("builder.forms.certifications.addCertification")}</span>
@@ -112,10 +112,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
             <div className="space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`cert-name-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.certifications.name")} ({lang.toUpperCase()}) *
                   </label>
                   <input
+                    id={`cert-name-${item.id}`}
                     type="text"
                     placeholder={tr("builder.forms.certifications.namePlaceholder")}
                     value={item.name?.[lang] || ""}
@@ -129,10 +130,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`cert-issuer-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.certifications.issuer")} *
                   </label>
                   <input
+                    id={`cert-issuer-${item.id}`}
                     type="text"
                     placeholder={tr("builder.forms.certifications.issuerPlaceholder")}
                     value={item.issuer}
@@ -144,10 +146,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`cert-date-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.certifications.date")}
                   </label>
                   <input
+                    id={`cert-date-${item.id}`}
                     type="text"
                     placeholder="2024"
                     value={item.date || ""}
@@ -157,10 +160,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`cert-url-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.certifications.url")}
                   </label>
                   <input
+                    id={`cert-url-${item.id}`}
                     type="url"
                     placeholder="https://credly.com/your-badge"
                     value={item.url || ""}
@@ -171,10 +175,11 @@ export function CertificationsForm({ section, lang, onChange }: Props) {
               </div>
 
               <div>
-                <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                <label htmlFor={`cert-notes-${item.id}`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                   {tr("builder.forms.certifications.notes")}
                 </label>
                 <input
+                  id={`cert-notes-${item.id}`}
                   type="text"
                   placeholder={tr("builder.forms.certifications.notesPlaceholder")}
                   value={item.notes?.[lang] || ""}

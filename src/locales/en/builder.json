@@ -12,6 +12,8 @@
     "hobbies": "Interests & Activities",
     "custom": "Custom Section",
     "titleField": "Section Title",
+    "customTitleLabel": "Custom Section Title (Optional)",
+    "customTitlePlaceholder": "e.g. Publications, Open Source, Awards",
     "confirmDelete": "Permanently delete this section?",
     "summaries": {
       "role_one": "1 role",
@@ -199,12 +201,123 @@
       "searchAria": "Search commands or actions",
       "clearAria": "Clear search",
       "noResults": "No matching commands found.",
+      "noResultsHint": "Try searching for 'latex', 'pdf', 'theme', 'lateralis' or a section.",
+      "footer": {
+        "navigate": "Navigate",
+        "execute": "Execute",
+        "brand": "PAPYRUS Actions"
+      },
       "categories": {
         "all": "All",
         "templates": "Templates & Style",
         "sections": "CV Sections",
         "actions": "Actions & Export",
         "preferences": "Preferences"
+      },
+      "commands": {
+        "tplLateralis": {
+          "title": "Lateralis Template (Modern split column)",
+          "subtitle": "Timeline layout with accent palette",
+          "keywords": "sidebar modern design lateralis"
+        },
+        "tplClassic": {
+          "title": "Classic Template (Minimalist TeX / ATS)",
+          "subtitle": "Engineering standard ATS-optimized",
+          "keywords": "latex ats classic minimalist"
+        },
+        "tplMatrix": {
+          "title": "Matrix Template (Executive grid)",
+          "subtitle": "Skills grid and CEFR language competence",
+          "keywords": "executive matrix grid cefr"
+        },
+        "densityCompact": {
+          "title": "Density: Compact",
+          "subtitle": "Tighter spacing to fit more content",
+          "keywords": "compact size spacing density"
+        },
+        "densityNormal": {
+          "title": "Density: Normal",
+          "subtitle": "Balanced standard spacing",
+          "keywords": "normal size spacing density"
+        },
+        "densitySpacious": {
+          "title": "Density: Spacious",
+          "subtitle": "Airy typography with generous margins",
+          "keywords": "spacious size spacing density"
+        },
+        "rerollDylan": {
+          "title": "Re-roll Dylan Avatar (DiceBear)",
+          "subtitle": "Generates a fresh artistic vector avatar",
+          "keywords": "dylan dicebear avatar photo random"
+        },
+        "exportPdf": {
+          "title": "Export Vector A4 PDF",
+          "subtitle": "Official vector document ready to submit",
+          "keywords": "pdf download export print",
+          "shortcut": "PDF"
+        },
+        "exportPng": {
+          "title": "Export High-Res PNG Image",
+          "subtitle": "Visual asset for instant sharing",
+          "keywords": "png image export photo"
+        },
+        "linter": {
+          "title": "Open Quality Linter & ATS Audit",
+          "subtitle": "Check ATS score, impact metrics and tips",
+          "keywords": "linter score ats audit quality"
+        },
+        "latex": {
+          "title": "View / Export LaTeX Code (.tex)",
+          "subtitle": "Compilable TeX source for Overleaf",
+          "keywords": "latex tex code overleaf"
+        },
+        "json": {
+          "title": "Download JSON Backup",
+          "subtitle": "Export raw CV document data as JSON",
+          "keywords": "json backup save data"
+        },
+        "navGrid": {
+          "title": "Toggle Alignment Grid (#)",
+          "subtitle": "Show/hide alignment grid on canvas",
+          "keywords": "grid alignment canvas"
+        },
+        "navResetCanvas": {
+          "title": "Reset Canvas View (Auto-Fit)",
+          "subtitle": "Centers the A4 document on screen",
+          "keywords": "reset zoom fit canvas"
+        },
+        "navBoard": {
+          "title": "Open Feature Board & Roadmap",
+          "subtitle": "Track tickets, backlog and milestones",
+          "keywords": "board roadmap tickets features"
+        },
+        "navGuide": {
+          "title": "Open Step-by-Step Guide",
+          "subtitle": "Interactive guide and feature tour",
+          "keywords": "guide tutorial help"
+        },
+        "secPersonal": {
+          "title": "Jump to: Personal Info & Photo",
+          "subtitle": "Name, contact details, links and bio",
+          "keywords": "personal name contact photo"
+        },
+        "secJumpPrefix": "Jump to: {{name}}",
+        "secSectionPrefix": "Section: {{type}}",
+        "prefLangPt": {
+          "title": "Interface Language: Portuguese (PT)",
+          "subtitle": "Switch app interface to Portuguese",
+          "keywords": "portuguese pt interface app language nationality"
+        },
+        "prefLangEn": {
+          "title": "Interface Language: English (EN)",
+          "subtitle": "Switch app interface to English",
+          "keywords": "english en interface app language nationality"
+        },
+        "prefTheme": {
+          "title": "Toggle Theme (Light / Dark)",
+          "subtitle": "Switch between light and dark mode",
+          "keywords": "theme dark light mode"
+        }
       }
     },
     "iconPicker": {
@@ -230,7 +343,46 @@
       "jsonHint": "Edits synchronize in real time to the A4 preview.",
       "latexHint": "Compatible with TeX Live, MacTeX and Overleaf.",
       "close": "Close code"
+    },
+    "cropModal": {
+      "title": "Crop & Rotate Photo",
+      "subtitle": "Drag to center, zoom or rotate",
+      "dragHint": "Drag to position",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomAria": "Photo zoom level",
+      "orientation": "Orientation:",
+      "rotate90": "Rotate 90°",
+      "cancel": "Cancel",
+      "apply": "Apply Photo",
+      "closeAria": "Close photo crop modal"
     }
+  },
+  "header": {
+    "guide": "Guide",
+    "guideTitle": "Step-by-step CV guide",
+    "board": "Board",
+    "boardTitle": "Feature Board & Roadmap",
+    "recentEdits": "Recent Edits",
+    "recentHistory": "Recent edit history",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "previousVersion": "Previous Version",
+    "restore": "Restore",
+    "versionRestored": "Previous version restored!",
+    "texDownloaded": "TeX file (.tex) downloaded successfully!",
+    "texError": "Error exporting TeX code.",
+    "jsonImported": "JSON document imported!",
+    "jsonInvalid": "Invalid JSON file.",
+    "presets": "Presets",
+    "downloadTex": "Download TeX (.tex)",
+    "importFileAria": "Upload CV JSON file",
+    "newDoc": "New / Setup",
+    "templates": "Templates",
+    "jsonBackup": "JSON Backup",
+    "avatarClickHint": "Click or drag photo here",
+    "avatarUpload": "Upload",
+    "avatarRerollAria": "Reroll Dylan avatar"
   },
   "iconPicker": {
     "title": "Choose Icon",

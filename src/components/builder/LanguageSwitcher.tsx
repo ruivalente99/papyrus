@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import type { SupportedLanguage } from "@/types/cv";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Globe, Plus, Check, ChevronDown, Search, Lock, X, Languages } from "lucide-react";
 
 interface Props {
@@ -51,7 +52,9 @@ export function LanguageSwitcher({
   const [customLabel, setCustomLabel] = useState("");
 
   const popoverRef = useRef<HTMLDivElement>(null);
-  const isPt = (uiLang || activeLang) === "pt";
+  const currentLang = uiLang || activeLang;
+  const isPt = currentLang === "pt";
+  const { t: tr } = useTranslation(currentLang);
 
   // Close on outside click
   useEffect(() => {
@@ -148,13 +151,13 @@ export function LanguageSwitcher({
         onClick={() => setIsOpen(!isOpen)}
         aria-label={
           variant === "cv"
-            ? (isPt ? "Idioma do CV (Conteúdo do Documento)" : "CV Document Language")
-            : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")
+            ? tr("common.languages.cvVariantTitle")
+            : tr("common.languages.uiVariantTitle")
         }
         title={
           variant === "cv"
-            ? (isPt ? "Idioma do CV (Conteúdo do Documento)" : "CV Document Language")
-            : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")
+            ? tr("common.languages.cvVariantTitle")
+            : tr("common.languages.uiVariantTitle")
         }
         className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs border shrink-0 ${
           isOpen
@@ -188,13 +191,13 @@ export function LanguageSwitcher({
           <div className="px-1.5 py-1 mb-2 border-b border-stone-100 dark:border-[#30363d]">
             <p className="text-[11px] font-bold text-stone-900 dark:text-[#f0f3f6]">
               {variant === "cv"
-                ? (isPt ? "Idioma do CV (Conteúdo)" : "CV Document Language")
-                : (isPt ? "Idioma da Aplicação / Nacionalidade" : "Interface Language & Nationality")}
+                ? tr("common.languages.cvVariantTitle")
+                : tr("common.languages.uiVariantTitle")}
             </p>
             <p className="text-[10px] text-stone-500 dark:text-[#8b949e] leading-tight">
               {variant === "cv"
-                ? (isPt ? "Altera o idioma de edição, pré-visualização e exportação do CV." : "Changes CV editing, preview, and export language.")
-                : (isPt ? "Altera o idioma dos botões, menus e ferramentas do papyrus." : "Changes papyrus buttons, menus, and tools language.")}
+                ? tr("common.languages.cvVariantDesc")
+                : tr("common.languages.uiVariantDesc")}
             </p>
           </div>
 
@@ -205,8 +208,8 @@ export function LanguageSwitcher({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              aria-label={isPt ? "Pesquisar país ou idioma" : "Search country or language"}
-              placeholder={isPt ? "Pesquisar país ou idioma..." : "Search country or language..."}
+              aria-label={tr("common.languages.searchPlaceholder")}
+              placeholder={tr("common.languages.searchPlaceholder")}
               className="w-full bg-transparent border-0 outline-none text-xs text-stone-900 dark:text-[#f0f3f6] placeholder-stone-400 dark:placeholder-[#6e7681]"
               autoFocus
             />
@@ -265,7 +268,7 @@ export function LanguageSwitcher({
                   {!isAvailable && (
                     <div className="flex items-center gap-1 text-[9px] font-mono font-medium px-2 py-0.5 rounded-md bg-stone-200/60 dark:bg-[#0d1117] text-stone-500 dark:text-[#8b949e] shrink-0 border border-stone-300/40 dark:border-[#363d47]/40">
                       <Lock size={9} />
-                      <span>{isPt ? "Brevemente" : "Soon"}</span>
+                      <span>{tr("common.languages.soon")}</span>
                     </div>
                   )}
                 </button>
@@ -283,7 +286,7 @@ export function LanguageSwitcher({
                   className="w-full text-left px-2 py-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800 flex items-center gap-1.5 transition-colors"
                 >
                   <Plus size={12} />
-                  <span>{isPt ? "Adicionar outro código ao CV" : "Add custom language to CV"}</span>
+                  <span>{tr("common.languages.addCustomToCV")}</span>
                 </button>
               ) : (
                 <form onSubmit={handleAddCustom} className="space-y-1.5 pt-1">
@@ -292,8 +295,8 @@ export function LanguageSwitcher({
                       type="text"
                       value={customCode}
                       onChange={(e) => setCustomCode(e.target.value)}
-                      aria-label={isPt ? "Código do idioma (ex: es)" : "Language code (e.g. es)"}
-                      placeholder="Código (ex: es)"
+                      aria-label={tr("common.languages.codeAria")}
+                      placeholder={tr("common.languages.codePlaceholder")}
                       maxLength={3}
                       required
                       className="w-20 px-2 py-1 rounded-lg border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-xs font-mono uppercase text-center"
@@ -302,14 +305,14 @@ export function LanguageSwitcher({
                       type="text"
                       value={customLabel}
                       onChange={(e) => setCustomLabel(e.target.value)}
-                      aria-label={isPt ? "Nome do idioma (ex: Español)" : "Language name (e.g. Spanish)"}
-                      placeholder="Nome (ex: Español)"
+                      aria-label={tr("common.languages.nameAria")}
+                      placeholder={tr("common.languages.namePlaceholder")}
                       required
                       className="flex-1 px-2 py-1 rounded-lg border border-stone-200 dark:border-[#363d47] dark:bg-[#0d1117] text-xs"
                     />
                     <button
                       type="submit"
-                      aria-label={isPt ? "Confirmar novo idioma" : "Confirm new language"}
+                      aria-label={tr("common.languages.confirmNewAria")}
                       className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs"
                     >
                       <Check size={12} />

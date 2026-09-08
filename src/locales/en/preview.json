@@ -45,5 +45,23 @@
     "close": "Close preview settings",
     "templates": "Layout Template",
     "appearance": "Visual Theme"
+  },
+  "toasts": {
+    "pdfError": "Error generating PDF.",
+    "pngSuccess": "PNG image exported successfully!",
+    "pngError": "Error exporting PNG."
+  },
+  "templates": {
+    "lateralis": "Lateralis",
+    "lateralisSub": "Modern split sidebar",
+    "classic": "Classic",
+    "classicSub": "Minimalist ATS & TeX",
+    "matrix": "Matrix",
+    "matrixSub": "Structured executive"
+  },
+  "densityDescriptions": {
+    "compact": "More content",
+    "normal": "Balanced",
+    "spacious": "Breathing room"
   }
 }

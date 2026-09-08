@@ -14,8 +14,7 @@ interface Props {
 }
 
 export function EducationForm({ section, lang, onChange }: Props) {
-  const { t: tr, lang: uiLang } = useTranslation();
-  const isPt = uiLang === "pt";
+  const { t: tr } = useTranslation();
 
   const handleAddItem = () => {
     const newItem: EducationItem = {
@@ -51,7 +50,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
     }));
   };
 
-  const handleToggleVisibility = (itemId: string) => {
+  const handleToggleItemVisibility = (itemId: string) => {
     onChange((sec) => ({
       ...sec,
       items: (sec.items || []).map((it) => (it.id === itemId ? { ...it, visible: !it.visible } : it)),
@@ -60,17 +59,17 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
   return (
     <div className="space-y-4 text-xs">
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-stone-600 dark:text-[#c9d1d9]">
-          {tr("builder.forms.education.title")} ({section.items.length})
+      <div className="flex items-center justify-between pb-1 border-b border-stone-200 dark:border-[#30363d]">
+        <span className="font-semibold text-stone-700 dark:text-[#c9d1d9]">
+          {tr("builder.forms.education.title")}
         </span>
         <button
           type="button"
           onClick={handleAddItem}
-          className="flex items-center gap-1.5 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-2xs"
+          className="flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-0.5 rounded-full transition-all active:scale-95 shadow-2xs"
         >
-          <Plus size={13} />
-          <span>+ {tr("builder.forms.education.addEducation")}</span>
+          <Plus size={12} />
+          <span>{tr("builder.forms.education.addEducation")}</span>
         </button>
       </div>
 
@@ -84,6 +83,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 : "bg-stone-100/70 dark:bg-[#161b22]/40 border-stone-200 dark:border-[#30363d]/60 opacity-60"
             }`}
           >
+            {/* Top Bar */}
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-[#30363d]">
               <span className="font-bold text-stone-700 dark:text-[#f0f3f6] text-xs">
                 #{index + 1} {item.degree?.[lang] || item.institution || tr("builder.forms.education.newDegree")}
@@ -92,7 +92,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
               <div className="flex items-center gap-1">
                 <button
                   type="button"
-                  onClick={() => handleToggleVisibility(item.id)}
+                  onClick={() => handleToggleItemVisibility(item.id)}
                   title={item.visible ? tr("common.actions.hideFromCV") : tr("common.actions.showOnCV")}
                   aria-label={item.visible ? tr("a11y.forms.hideEducation") : tr("a11y.forms.showEducation")}
                   className="text-stone-500 dark:text-[#8b949e] hover:text-stone-700 dark:hover:text-[#f0f3f6] p-1 rounded hover:bg-stone-100 dark:hover:bg-[#21262d] min-w-[24px] min-h-[24px] flex items-center justify-center"
@@ -112,13 +112,15 @@ export function EducationForm({ section, lang, onChange }: Props) {
               </div>
             </div>
 
+            {/* Fields */}
             <div className="space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`edu-${item.id}-degree`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.education.degree")} ({lang.toUpperCase()}) *
                   </label>
                   <input
+                    id={`edu-${item.id}-degree`}
                     type="text"
                     placeholder={tr("builder.forms.education.degreePlaceholder")}
                     value={item.degree?.[lang] || ""}
@@ -132,10 +134,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`edu-${item.id}-institution`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.education.institution")} *
                   </label>
                   <input
+                    id={`edu-${item.id}-institution`}
                     type="text"
                     placeholder={tr("builder.forms.education.institutionPlaceholder")}
                     value={item.institution}
@@ -147,10 +150,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                 <div className="sm:col-span-2">
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`edu-${item.id}-location`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.education.location")} ({lang.toUpperCase()})
                   </label>
                   <input
+                    id={`edu-${item.id}-location`}
                     type="text"
                     placeholder={tr("builder.forms.education.locationPlaceholder")}
                     value={item.location?.[lang] || ""}
@@ -164,10 +168,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`edu-${item.id}-start`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.education.startDate")} (YYYY)
                   </label>
                   <input
+                    id={`edu-${item.id}-start`}
                     type="text"
                     placeholder="2018"
                     value={item.startDate}
@@ -178,7 +183,7 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
                 <div>
                   <div className="flex justify-between items-center mb-0.5">
-                    <label className="font-medium text-stone-600 dark:text-[#c9d1d9]">
+                    <label htmlFor={`edu-${item.id}-end`} className="font-medium text-stone-600 dark:text-[#c9d1d9]">
                       {tr("builder.forms.education.endDate")}
                     </label>
                     <label className="flex items-center gap-1 text-[10.5px] text-amber-700 dark:text-amber-400 cursor-pointer">
@@ -197,8 +202,9 @@ export function EducationForm({ section, lang, onChange }: Props) {
                     </label>
                   </div>
                   <input
+                    id={`edu-${item.id}-end`}
                     type="text"
-                    placeholder={item.isCurrent ? (isPt ? "Presente" : "Present") : "2022"}
+                    placeholder={item.isCurrent ? tr("common.status.present") : "2022"}
                     disabled={item.isCurrent}
                     value={item.endDate || ""}
                     onChange={(e) => handleUpdateItem(item.id, { endDate: e.target.value })}
@@ -209,10 +215,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`edu-${item.id}-url`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.education.url")}
                   </label>
                   <input
+                    id={`edu-${item.id}-url`}
                     type="url"
                     placeholder="https://..."
                     value={item.url || ""}
@@ -222,10 +229,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`edu-${item.id}-qeq`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.education.qeq")}
                   </label>
                   <input
+                    id={`edu-${item.id}-qeq`}
                     type="text"
                     placeholder="e.g. Nível no QEQ: 6"
                     value={item.qeq || ""}
@@ -236,10 +244,11 @@ export function EducationForm({ section, lang, onChange }: Props) {
               </div>
 
               <div>
-                <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                <label htmlFor={`edu-${item.id}-details`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                   {tr("builder.forms.education.details")} ({lang.toUpperCase()})
                 </label>
                 <textarea
+                  id={`edu-${item.id}-details`}
                   rows={2}
                   placeholder={tr("builder.forms.education.detailsPlaceholder")}
                   value={item.details?.[lang] || ""}

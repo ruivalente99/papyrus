@@ -12,6 +12,8 @@
     "hobbies": "Interesses & Atividades",
     "custom": "Secção Personalizada",
     "titleField": "Título da Secção",
+    "customTitleLabel": "Título Personalizado da Secção (Opcional)",
+    "customTitlePlaceholder": "Ex: Publicações, Projetos Open-Source, Bolsas",
     "confirmDelete": "Eliminar esta secção permanentemente?",
     "summaries": {
       "role_one": "1 cargo profissional",
@@ -199,12 +201,122 @@
       "searchAria": "Pesquisar comandos ou ações",
       "clearAria": "Limpar pesquisa",
       "noResults": "Nenhum comando encontrado.",
+      "noResultsHint": "Tenta pesquisar por 'latex', 'pdf', 'tema', 'lateralis' ou uma secção.",
+      "footer": {
+        "navigate": "Navegar",
+        "execute": "Selecionar",
+        "brand": "PAPYRUS Actions"
+      },
       "categories": {
         "all": "Todos",
         "templates": "Modelos & Estilo",
         "sections": "Secções do CV",
         "actions": "Ações & Exportação",
         "preferences": "Preferências"
+      },
+      "commands": {
+        "tplLateralis": {
+          "title": "Modelo Lateralis (Barra lateral moderna)",
+          "subtitle": "Layout com timeline e paleta customizável",
+          "keywords": "sidebar modern design lateralis barra lateral"
+        },
+        "tplClassic": {
+          "title": "Modelo Classic (Minimalista TeX / ATS)",
+          "subtitle": "Padrão de engenharia otimizado para ATS",
+          "keywords": "latex ats classic minimalist engenharia"
+        },
+        "tplMatrix": {
+          "title": "Modelo Matrix (Grelha executiva)",
+          "subtitle": "Grelha de competências e línguas CEFR",
+          "keywords": "executive matrix grid cefr grelha"
+        },
+        "densityCompact": {
+          "title": "Densidade: Compacto",
+          "subtitle": "Entrelinha densa para incluir mais conteúdo",
+          "keywords": "compact size spacing densidade compacto"
+        },
+        "densityNormal": {
+          "title": "Densidade: Normal",
+          "subtitle": "Espaçamento padrão equilibrado",
+          "keywords": "normal size spacing densidade equilibrado"
+        },
+        "densitySpacious": {
+          "title": "Densidade: Espaçoso",
+          "subtitle": "Tipografia arejada com margens generosas",
+          "keywords": "spacious size spacing densidade espaçoso"
+        },
+        "rerollDylan": {
+          "title": "Sortear Novo Avatar Dylan (Re-roll)",
+          "subtitle": "Gera uma nova variação artística vetorial",
+          "keywords": "dylan dicebear avatar foto photo random sortear"
+        },
+        "exportPdf": {
+          "title": "Exportar PDF Vetorial A4",
+          "subtitle": "Documento oficial pronto a entregar (210×297mm)",
+          "keywords": "pdf download export imprimir vector"
+        },
+        "exportPng": {
+          "title": "Exportar Imagem PNG em Alta Resolução",
+          "subtitle": "Cartaz visual para partilha rápida",
+          "keywords": "png image export foto imagem"
+        },
+        "linter": {
+          "title": "Abrir Auditoria de Qualidade & Linter ATS",
+          "subtitle": "Verificar pontuação, métricas e avisos",
+          "keywords": "linter score ats auditoria qualidade"
+        },
+        "latex": {
+          "title": "Ver / Exportar Código LaTeX (.tex)",
+          "subtitle": "Código-fonte TeX compilável no Overleaf",
+          "keywords": "latex tex code overleaf codigo fonte"
+        },
+        "json": {
+          "title": "Descarregar Cópia de Segurança JSON",
+          "subtitle": "Exportar dados brutos do CV em formato JSON",
+          "keywords": "json backup save data copia dados"
+        },
+        "navGrid": {
+          "title": "Alternar Grelha de Alinhamento (#)",
+          "subtitle": "Ligar/desligar grelha milimétrica atrás da folha",
+          "keywords": "grid grelha alinhamento canvas"
+        },
+        "navResetCanvas": {
+          "title": "Repor Enquadramento do Canvas (Auto-Fit)",
+          "subtitle": "Centraliza a folha A4 no ecrã",
+          "keywords": "reset zoom fit canvas repor enquadramento"
+        },
+        "navBoard": {
+          "title": "Abrir Quadro de Funcionalidades & Roadmap",
+          "subtitle": "Acompanhar tarefas, backlog e marcos",
+          "keywords": "board roadmap tickets features tarefas quadro"
+        },
+        "navGuide": {
+          "title": "Abrir Guia de Utilização",
+          "subtitle": "Tutorial interativo e vídeos",
+          "keywords": "guide guia tutorial help ajuda"
+        },
+        "secPersonal": {
+          "title": "Saltar para: Dados Pessoais & Foto",
+          "subtitle": "Nome, contactos, links e biografia",
+          "keywords": "personal pessoal nome contacto foto avatar"
+        },
+        "secJumpPrefix": "Saltar para: {{name}}",
+        "secSectionPrefix": "Secção: {{type}}",
+        "prefLangPt": {
+          "title": "Idioma da Aplicação: Português (PT)",
+          "subtitle": "Altera o idioma dos botões e menus para Português",
+          "keywords": "portugues portuguese pt interface app idioma nacionalidade"
+        },
+        "prefLangEn": {
+          "title": "Idioma da Aplicação: Inglês (EN)",
+          "subtitle": "Altera o idioma dos botões e menus para Inglês",
+          "keywords": "ingles english en interface app idioma nationality"
+        },
+        "prefTheme": {
+          "title": "Alternar Tema (Claro / Escuro)",
+          "subtitle": "Muda entre modo dia e modo noite",
+          "keywords": "theme dark light tema escuro claro"
+        }
       }
     },
     "iconPicker": {
@@ -230,7 +342,46 @@
       "jsonHint": "Edição com reflexo em tempo real na folha A4.",
       "latexHint": "Compatível com TeX Live, MacTeX e Overleaf.",
       "close": "Fechar código"
+    },
+    "cropModal": {
+      "title": "Ajustar e Recortar Foto",
+      "subtitle": "Arrasta para centrar, faz zoom ou roda",
+      "dragHint": "Arrasta para posicionar",
+      "zoomIn": "Aumentar zoom",
+      "zoomOut": "Reduzir zoom",
+      "zoomAria": "Nível de zoom da foto",
+      "orientation": "Orientação:",
+      "rotate90": "Rodar 90°",
+      "cancel": "Cancelar",
+      "apply": "Aplicar Foto",
+      "closeAria": "Fechar modal de recorte de foto"
     }
+  },
+  "header": {
+    "guide": "Guia",
+    "guideTitle": "Como construir um CV passo a passo",
+    "board": "Board",
+    "boardTitle": "Quadro de Funcionalidades & Roadmap",
+    "recentEdits": "Últimas Edições",
+    "recentHistory": "Histórico de edições recentes",
+    "justNow": "Agora",
+    "minutesAgo": "há {{count}} min",
+    "previousVersion": "Versão Anterior",
+    "restore": "Reverter",
+    "versionRestored": "Versão anterior restaurada!",
+    "texDownloaded": "Ficheiro TeX (.tex) descarregado com sucesso!",
+    "texError": "Erro ao gerar código TeX.",
+    "jsonImported": "Documento JSON importado com sucesso!",
+    "jsonInvalid": "Ficheiro JSON inválido.",
+    "presets": "Modelos",
+    "downloadTex": "Descarregar TeX (.tex)",
+    "importFileAria": "Carregar ficheiro JSON de CV",
+    "newDoc": "Novo / Iniciar",
+    "templates": "Modelos",
+    "jsonBackup": "Cópia JSON",
+    "avatarClickHint": "Clica ou arrasta uma foto para aqui",
+    "avatarUpload": "Mudar",
+    "avatarRerollAria": "Gerar novo avatar Dylan aleatório"
   },
   "iconPicker": {
     "title": "Escolher Ícone",

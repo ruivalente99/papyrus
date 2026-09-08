@@ -73,10 +73,22 @@
   - GitHub Actions with strict linting, TypeScript type-checking, and end-to-end test validations.
   - Temporary Vercel preview builds for every pull request before merging into `main`.
 
+- [x] **[FEAT-022]** **Command Palette Full i18n Localization** `tags: i18n, ui/ux, accessibility`
+  - Extracted all command titles, subtitles, shortcuts, categories, search keywords, footer hints, and no-results prompts from inline ternaries into `src/locales/{en,pt}/builder.json`.
+  - Multi-language query matching against localized titles, subtitles, and search keywords.
+  - Standardized category labels and footer shortcut navigation in active UI language.
+- [x] **[FEAT-023]** **Comprehensive UI/UX Audit: A11y Form Labels, Element Deduplication & Spacing Scale Tokens** `tags: ui/ux, a11y, styling`
+  - 100% screen-reader accessibility with explicit `id` and `<label htmlFor="...">` across all CV form fields (`PersonalInfoForm`, `ExperienceForm`, `EducationForm`, `SkillsForm`, `LanguagesForm`, `CertificationsForm`, `HobbiesForm`, and `CustomSectionForm`).
+  - Accessible `aria-label` and `title` on all icon-only buttons (`Eye`, `Trash2`, `Move`, `Close`, zoom controls, theme toggles, and hidden file inputs).
+  - Deduplicated controls between top bar and dockable action bar.
+  - Harmonized card padding (`p-3.5 sm:p-4`), button pills, and responsive layout.
+- [x] **[FEAT-024]** **Design Tokens & i18n Hardcoded Strings Consolidation** `tags: refactor, tokens, i18n`
+  - Replaced inline `isPt ? ... : ...` ternaries and legacy `tUI(...)` calls across `ImageCropModal`, `BuilderHeader`, `CVPreviewContainer`, `PreviewSettingsSheet`, and `SectionCard` with unified `useTranslation` dictionary catalogs.
+  - Zero ESLint errors and zero TypeScript warnings on full production builds.
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.2)
-
 - [ ] **[FEAT-012]** **Visual CV Comparator & Semantic Diff Engine** `tags: diff, review, ats`
   - *Status:* Technical specification complete ([`docs/CV_COMPARATOR_SPEC.md`](docs/CV_COMPARATOR_SPEC.md)).
   - *Objective:* Side-by-side synchronized comparison between 2 CV versions (e.g. baseline generic CV vs job-tailored CV).
@@ -89,8 +101,6 @@
   - *Objective:* Allow users to drag or manually insert page break separators when document content exceeds one page.
 - [ ] **[FEAT-014]** **High-Fidelity Print Mode Preview (CSS Print Emulation)** `tags: preview, styles`
   - *Status:* Mapping `@media print` rules.
-  - *Objective:* Guarantee visual parity between on-screen live preview, browser native print dialog (`Ctrl+P`), and exported PDF.
-
 ---
 
 ### 📋 Priority Backlog (v1.3 - v2.0)

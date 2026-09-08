@@ -14,8 +14,7 @@ interface Props {
 }
 
 export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) {
-  const { t: tr, lang: uiLang } = useTranslation();
-  const isPt = uiLang === "pt";
+  const { t: tr } = useTranslation();
 
   const handleAddItem = () => {
     const newItem: ExperienceItem = {
@@ -178,10 +177,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
               <div className="space-y-2.5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                    <label htmlFor={`exp-${item.id}-role`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                       {tr("builder.forms.experience.role")} ({lang.toUpperCase()}) *
                     </label>
                     <input
+                      id={`exp-${item.id}-role`}
                       type="text"
                       placeholder={tr("builder.forms.experience.rolePlaceholder")}
                       value={item.role?.[lang] || ""}
@@ -195,10 +195,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                   </div>
 
                   <div>
-                    <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                    <label htmlFor={`exp-${item.id}-company`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                       {tr("builder.forms.experience.company")} *
                     </label>
                     <input
+                      id={`exp-${item.id}-company`}
                       type="text"
                       placeholder={tr("builder.forms.experience.companyPlaceholder")}
                       value={item.company}
@@ -210,10 +211,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
-                    <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                    <label htmlFor={`exp-${item.id}-location`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                       {tr("builder.forms.experience.location")} ({lang.toUpperCase()})
                     </label>
                     <input
+                      id={`exp-${item.id}-location`}
                       type="text"
                       placeholder={tr("builder.forms.experience.locationPlaceholder")}
                       value={item.location?.[lang] || ""}
@@ -227,10 +229,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                   </div>
 
                   <div>
-                    <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                    <label htmlFor={`exp-${item.id}-start`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                       {tr("builder.forms.experience.startDate")} (YYYY-MM)
                     </label>
                     <input
+                      id={`exp-${item.id}-start`}
                       type="text"
                       placeholder="2022-01"
                       value={item.startDate}
@@ -241,7 +244,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
 
                   <div>
                     <div className="flex justify-between items-center mb-0.5">
-                      <label className="font-medium text-stone-600 dark:text-[#c9d1d9]">
+                      <label htmlFor={`exp-${item.id}-end`} className="font-medium text-stone-600 dark:text-[#c9d1d9]">
                         {tr("builder.forms.experience.endDate")}
                       </label>
                       <label className="flex items-center gap-1 text-[10.5px] text-amber-700 dark:text-amber-400 cursor-pointer">
@@ -260,8 +263,9 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                       </label>
                     </div>
                     <input
+                      id={`exp-${item.id}-end`}
                       type="text"
-                      placeholder={item.isCurrent ? (isPt ? "Presente" : "Present") : "2024-05"}
+                      placeholder={item.isCurrent ? tr("common.status.present") : "2024-05"}
                       disabled={item.isCurrent}
                       value={item.endDate || ""}
                       onChange={(e) => handleUpdateItem(item.id, { endDate: e.target.value })}
@@ -271,10 +275,11 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                 </div>
 
                 <div>
-                  <label className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
+                  <label htmlFor={`exp-${item.id}-url`} className="block font-medium text-stone-600 dark:text-[#c9d1d9] mb-0.5">
                     {tr("builder.forms.experience.url")}
                   </label>
                   <input
+                    id={`exp-${item.id}-url`}
                     type="url"
                     placeholder="https://company.com"
                     value={item.url || ""}
