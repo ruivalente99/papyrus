@@ -29,6 +29,7 @@ import {
   HeartHandshake,
   Kanban,
   BookOpen,
+  GitCompare,
 } from "lucide-react";
 
 interface CommandItem {
@@ -54,6 +55,7 @@ interface Props {
   onResetCanvas?: () => void;
   onOpenLinter: () => void;
   onOpenLatex: () => void;
+  onOpenComparator?: () => void;
   onExportJson: () => void;
   onExportPdf: () => void;
   onExportPng: () => void;
@@ -74,6 +76,7 @@ export function CommandPalette({
   onResetCanvas,
   onOpenLinter,
   onOpenLatex,
+  onOpenComparator,
   onExportJson,
   onExportPdf,
   onExportPng,
@@ -219,6 +222,19 @@ export function CommandPalette({
         keywords: tr("builder.modals.commandPalette.commands.json.keywords").split(" "),
         action: onExportJson,
       },
+      ...(onOpenComparator
+        ? [
+            {
+              id: "act-compare",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.compare.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.compare.subtitle"),
+              icon: GitCompare,
+              keywords: (tr("builder.modals.commandPalette.commands.compare.keywords") || "diff compare semantic ats merge version").split(" "),
+              action: onOpenComparator,
+            },
+          ]
+        : []),
 
       // 🧭 Canvas & Navigation
       ...(onToggleGrid
@@ -346,6 +362,7 @@ export function CommandPalette({
     onResetCanvas,
     onOpenLinter,
     onOpenLatex,
+    onOpenComparator,
     onExportJson,
     onExportPdf,
     onExportPng,

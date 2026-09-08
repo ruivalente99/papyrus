@@ -245,6 +245,11 @@
           "subtitle": "Airy typography with generous margins",
           "keywords": "spacious size spacing density"
         },
+        "compare": {
+          "title": "Compare CV Versions (Diff Engine)",
+          "subtitle": "Side-by-side A4 comparison, semantic diff, and ATS audit",
+          "keywords": "diff compare comparator version ats semantic merge"
+        },
         "rerollDylan": {
           "title": "Re-roll Dylan Avatar (DiceBear)",
           "subtitle": "Generates a fresh artistic vector avatar",
@@ -363,6 +368,9 @@
     "guideTitle": "Step-by-step CV guide",
     "board": "Board",
     "boardTitle": "Feature Board & Roadmap",
+    "compare": "Compare",
+    "compareCV": "Compare",
+    "compareTitle": "Visual CV Comparator & Diff Engine",
     "recentEdits": "Recent Edits",
     "recentHistory": "Recent edit history",
     "justNow": "Just now",
@@ -396,5 +404,29 @@
     "design": "Design",
     "other": "Other",
     "noIcons": "No icons found"
+  },
+  "comparator": {
+    "title": "Visual CV Comparator & Diff Engine",
+    "subtitle": "Side-by-side synchronization, semantic diffing, and ATS audit matrix",
+    "changesCount": "{{count}} changes",
+    "sideBySide": "Side-by-Side",
+    "semanticDiff": "Semantic Diff",
+    "atsMatrix": "ATS Matrix",
+    "target": "Target:",
+    "uploadHint": "Upload JSON backup to compare",
+    "lockScroll": "Lock synchronized scroll",
+    "unlockScroll": "Unlock scroll",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "activeVersion": "Version A (Active CV)",
+    "compareVersion": "Version B (Compare Target)",
+    "totalChanges": "Total Changes",
+    "additions": "additions",
+    "modifications": "modifications",
+    "deletions": "deletions",
+    "applyToActive": "Apply to Active CV",
+    "applied": "Applied to Active CV",
+    "atsDelta": "ATS Score Delta",
+    "benchmarkMetrics": "Detailed Benchmark Metrics"
   }
 }

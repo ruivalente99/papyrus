@@ -9,6 +9,7 @@ import { CVPreviewContainer } from "@/components/preview/CVPreviewContainer";
 import { SetupScreen } from "@/components/setup/SetupScreen";
 import { CommandPalette } from "@/components/builder/CommandPalette";
 import { CodeEditorPane } from "@/components/builder/code/CodeEditorPane";
+import { CVCompareModal } from "@/components/comparator/CVCompareModal";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { I18nProvider } from "@/context/I18nContext";
 import { translate } from "@/locales";
@@ -18,6 +19,7 @@ export default function BuilderPage() {
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [editorMode, setEditorMode] = useState<"form" | "json" | "latex">("form");
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isComparatorOpen, setIsComparatorOpen] = useState(false);
   const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
   const [splitRatio, setSplitRatio] = useState<number>(50);
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
@@ -130,6 +132,7 @@ export default function BuilderPage() {
 
   const {
     cv,
+    setCv,
     uiLang,
     setUiLang,
     cvLang,
@@ -227,6 +230,7 @@ export default function BuilderPage() {
           history={history}
           onRestoreHistory={restoreHistoryEntry}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+          onOpenComparator={() => setIsComparatorOpen(true)}
         />
 
         {/* Split-Pane Main Body */}
@@ -447,6 +451,7 @@ export default function BuilderPage() {
           linterBadge?.click();
         }}
         onOpenLatex={() => setEditorMode("latex")}
+        onOpenComparator={() => setIsComparatorOpen(true)}
         onExportJson={exportJson}
         onExportPdf={() => {
           const pdfBtn = document.querySelector(
@@ -463,6 +468,15 @@ export default function BuilderPage() {
         onRerollDylan={handleRerollDylan}
         onJumpToSection={handleSelectSection}
         sections={cv.sections}
+      />
+
+      {/* Visual CV Comparator & Semantic Diff Modal */}
+      <CVCompareModal
+        activeCV={cv}
+        isOpen={isComparatorOpen}
+        onClose={() => setIsComparatorOpen(false)}
+        lang={cvLang}
+        onUpdateActiveCV={(updatedCV) => setCv(updatedCV)}
       />
     </div>
   </I18nProvider>

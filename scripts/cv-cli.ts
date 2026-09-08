@@ -11,6 +11,7 @@ import {
   exportCVToLatex,
   importCVFromLatex,
   validateCVSchema,
+  compareCVs,
 } from "../src/lib/cv-helper";
 import type { SupportedLanguage } from "../src/types/cv";
 
@@ -54,11 +55,15 @@ Commands:
   export [preset/file] --out=path.json
     Export clean JSON backup of the CV.
 
+  diff <preset/fileA> <preset/fileB> [--lang=en|pt] [--json]
+    Semantically compare two CV versions, highlighting field, bullet, and ATS differentials.
+
 Presets:
   lateralis | classic | matrix | empty
 
 Examples:
   npm run cv -- validate classic --json
+  npm run cv -- diff lateralis classic --lang=en
   npm run cv -- summary lateralis --lang=en
   npm run cv -- latex-export classic --out=resume.tex --lang=en
   npm run cv -- lint matrix --lang=en
@@ -206,6 +211,71 @@ async function main() {
       const outPath = (flags.out as string) || "cv-updated.json";
       saveCV(cv, outPath);
       console.log(`✅ Added experience "${roleEn} @ ${company}". Saved to ${outPath}`);
+      break;
+    }
+
+    case "diff": {
+      const sourceA = args[1] && !args[1].startsWith("--") ? args[1] : "classic";
+      const sourceB = args[2] && !args[2].startsWith("--") ? args[2] : "lateralis";
+
+      const cvA = loadCV(sourceA);
+      const cvB = loadCV(sourceB);
+      const result = compareCVs(cvA, cvB, lang);
+
+      if (flags.json) {
+        console.log(JSON.stringify(result, null, 2));
+      } else {
+        console.log(`\n======================================================`);
+        console.log(`  PAPYRUS CV COMPARATOR & SEMANTIC DIFF`);
+        console.log(`  Version A: ${sourceA}  vs  Version B: ${sourceB}`);
+        console.log(`  Language: ${lang.toUpperCase()}`);
+        console.log(`======================================================\n`);
+
+        console.log(`📊 ATS & QUALITY COMPARISON:`);
+        result.atsMetrics.forEach((m) => {
+          const status = m.improved === true ? "📈 IMPROVED" : m.improved === false ? "📉 REGRESSED" : "➖ EQUAL";
+          console.log(`  • ${m.name.padEnd(30)} [A: ${String(m.valueA).padEnd(6)}] -> [B: ${String(m.valueB).padEnd(6)}] (Diff: ${String(m.diff).padEnd(6)}) ${status}`);
+        });
+
+        console.log(`\n👤 PERSONAL INFO CHANGES:`);
+        const changedFields = result.personalInfoDiff.filter((d) => d.status !== "unchanged");
+        if (changedFields.length === 0) {
+          console.log(`  (No personal info differences)`);
+        } else {
+          changedFields.forEach((d) => {
+            const badge = d.status === "added" ? "[+ ADDED]" : d.status === "removed" ? "[- REMOVED]" : "[~ MODIFIED]";
+            console.log(`  ${badge} ${d.label}: "${d.valueA || ""}" -> "${d.valueB || ""}"`);
+          });
+        }
+
+        console.log(`\n📑 SECTIONS & CONTENT DIFF:`);
+        result.sectionsDiff.forEach((sec) => {
+          if (sec.status === "unchanged") return;
+          console.log(`\n  📂 [Section: ${sec.titleA || sec.titleB || sec.type}] (${sec.status.toUpperCase()})`);
+          sec.itemsDiff.forEach((it) => {
+            if (it.status === "unchanged") return;
+            const badge = it.status === "added" ? "[+]" : it.status === "removed" ? "[-]" : "[~]";
+            console.log(`    ${badge} ${it.title}${it.subtitle ? ` (${it.subtitle})` : ""}`);
+
+            if (it.fieldChanges && it.fieldChanges.length > 0) {
+              it.fieldChanges.forEach((fc) => {
+                console.log(`        • ${fc.label}: "${fc.valueA}" -> "${fc.valueB}"`);
+              });
+            }
+
+            if (it.bulletsDiff && it.bulletsDiff.length > 0) {
+              it.bulletsDiff.forEach((bd) => {
+                if (bd.type === "add") console.log(`        + ${bd.text}`);
+                else if (bd.type === "remove") console.log(`        - ${bd.text}`);
+              });
+            }
+          });
+        });
+
+        console.log(`\n------------------------------------------------------`);
+        console.log(`📈 SUMMARY: ${result.summary.totalChanges} total changes (${result.summary.additions} added, ${result.summary.deletions} removed, ${result.summary.modifications} modified)`);
+        console.log(`------------------------------------------------------\n`);
+      }
       break;
     }
 

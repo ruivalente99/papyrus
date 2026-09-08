@@ -28,6 +28,7 @@ import {
   Clock,
   Download,
   Kanban,
+  GitCompare,
 } from "lucide-react";
 
 interface Props {
@@ -52,6 +53,7 @@ interface Props {
   history?: HistoryEntry[];
   onRestoreHistory?: (id: string) => void;
   onOpenCommandPalette?: () => void;
+  onOpenComparator?: () => void;
   saveStatus?: "saved" | "saving";
 }
 
@@ -77,6 +79,7 @@ export function BuilderHeader({
   history = [],
   onRestoreHistory,
   onOpenCommandPalette,
+  onOpenComparator,
 }: Props) {
   const currentUiLang = uiLang || activeLang || "pt";
   const currentCvLang = cvLang || cv.currentLanguage || activeLang || "en";
@@ -321,6 +324,20 @@ export function BuilderHeader({
           <span className="hidden md:inline">{tr("builder.header.board")}</span>
         </Link>
 
+        {/* Visual CV Comparator Button */}
+        {onOpenComparator && (
+          <button
+            type="button"
+            onClick={onOpenComparator}
+            title={tr("builder.header.compareTitle")}
+            aria-label={tr("builder.header.compareTitle")}
+            className="flex items-center justify-center gap-1 text-xs font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-indigo-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
+          >
+            <GitCompare size={13} />
+            <span className="hidden md:inline">{tr("builder.header.compareCV")}</span>
+          </button>
+        )}
+
         {/* Setup / Home screen button (Desktop / Tablet only) */}
         {onOpenSetup && (
           <button
@@ -374,6 +391,18 @@ export function BuilderHeader({
                   <Kanban size={13} className="text-amber-700 dark:text-amber-400" />
                   <span>{tr("builder.header.boardTitle")}</span>
                 </Link>
+                {onOpenComparator && (
+                  <button
+                    onClick={() => {
+                      onOpenComparator();
+                      setShowPresets(false);
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <GitCompare size={13} className="text-indigo-600 dark:text-indigo-400" />
+                    <span>{tr("builder.header.compareTitle")}</span>
+                  </button>
+                )}
                 {onOpenSetup && (
                   <button
                     onClick={() => {
