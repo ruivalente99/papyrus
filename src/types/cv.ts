@@ -127,6 +127,7 @@ export interface BaseSectionConfig {
   title: MultiLangString;
   visible: boolean;
   order: number;
+  pageBreakBefore?: boolean;
 }
 
 export interface ExperienceSection extends BaseSectionConfig {

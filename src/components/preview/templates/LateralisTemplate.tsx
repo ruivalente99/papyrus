@@ -356,14 +356,23 @@ export function LateralisTemplate({ cv, lang, onSelectSection, highlightedSectio
         {/* Experience Timeline */}
         {expSection && (
           <div
+            data-section-id={expSection.id}
+            data-page-break-before={expSection.pageBreakBefore ? "true" : undefined}
             onClick={(e) => handleSectionClick(expSection.id, e)}
             className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+              expSection.pageBreakBefore ? "page-break-before pt-5 border-t border-dashed border-amber-500/60 relative" : ""
+            } ${
               highlightedSectionId === expSection.id
                 ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
                 : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
             }`}
             title={tr("a11y.templates.clickToEdit", { name: t(expSection.title, lang, cv.defaultLanguage) })}
           >
+            {expSection.pageBreakBefore && (
+              <div className="absolute -top-2.5 right-2 bg-amber-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-xs pointer-events-none select-none print:hidden flex items-center gap-1 z-10">
+                <span>\pagebreak</span>
+              </div>
+            )}
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-2 flex items-center gap-2 border-b"
@@ -441,14 +450,23 @@ export function LateralisTemplate({ cv, lang, onSelectSection, highlightedSectio
         {/* Education Timeline */}
         {eduSection && (
           <div
+            data-section-id={eduSection.id}
+            data-page-break-before={eduSection.pageBreakBefore ? "true" : undefined}
             onClick={(e) => handleSectionClick(eduSection.id, e)}
             className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+              eduSection.pageBreakBefore ? "page-break-before pt-5 border-t border-dashed border-amber-500/60 relative" : ""
+            } ${
               highlightedSectionId === eduSection.id
                 ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
                 : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
             }`}
             title={tr("a11y.templates.clickToEdit", { name: t(eduSection.title, lang, cv.defaultLanguage) })}
           >
+            {eduSection.pageBreakBefore && (
+              <div className="absolute -top-2.5 right-2 bg-amber-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-xs pointer-events-none select-none print:hidden flex items-center gap-1 z-10">
+                <span>\pagebreak</span>
+              </div>
+            )}
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-2 flex items-center gap-2 border-b"
@@ -523,14 +541,23 @@ export function LateralisTemplate({ cv, lang, onSelectSection, highlightedSectio
         {/* Certifications */}
         {certSection && (
           <div
+            data-section-id={certSection.id}
+            data-page-break-before={certSection.pageBreakBefore ? "true" : undefined}
             onClick={(e) => handleSectionClick(certSection.id, e)}
             className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+              certSection.pageBreakBefore ? "page-break-before pt-5 border-t border-dashed border-amber-500/60 relative" : ""
+            } ${
               highlightedSectionId === certSection.id
                 ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
                 : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
             }`}
             title={tr("a11y.templates.clickToEdit", { name: t(certSection.title, lang, cv.defaultLanguage) })}
           >
+            {certSection.pageBreakBefore && (
+              <div className="absolute -top-2.5 right-2 bg-amber-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-xs pointer-events-none select-none print:hidden flex items-center gap-1 z-10">
+                <span>\pagebreak</span>
+              </div>
+            )}
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b"
@@ -576,14 +603,23 @@ export function LateralisTemplate({ cv, lang, onSelectSection, highlightedSectio
         {/* Custom Section */}
         {customSection && (
           <div
+            data-section-id={customSection.id}
+            data-page-break-before={customSection.pageBreakBefore ? "true" : undefined}
             onClick={(e) => handleSectionClick(customSection.id, e)}
             className={`cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+              customSection.pageBreakBefore ? "page-break-before pt-5 border-t border-dashed border-amber-500/60 relative" : ""
+            } ${
               highlightedSectionId === customSection.id
                 ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
                 : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
             }`}
             title={tr("a11y.templates.clickToEdit", { name: t(customSection.title, lang, cv.defaultLanguage) })}
           >
+            {customSection.pageBreakBefore && (
+              <div className="absolute -top-2.5 right-2 bg-amber-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-xs pointer-events-none select-none print:hidden flex items-center gap-1 z-10">
+                <span>\pagebreak</span>
+              </div>
+            )}
             <h2
               data-page-break-avoid="true"
               className="text-[11px] font-bold uppercase tracking-wider pb-0.5 mb-1.5 border-b"

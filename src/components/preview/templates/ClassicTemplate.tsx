@@ -159,14 +159,23 @@ export function ClassicTemplate({ cv, lang, onSelectSection, highlightedSectionI
           return (
             <div
               key={section.id}
+              data-section-id={section.id}
+              data-page-break-before={section.pageBreakBefore ? "true" : undefined}
               onClick={(e) => handleSectionClick(section.id, e)}
               className={`mt-2.5 cv-section cursor-pointer transition-all duration-200 rounded-xs p-1 -m-1 ${
+                section.pageBreakBefore ? "page-break-before pt-5 border-t border-dashed border-amber-500/60 relative" : ""
+              } ${
                 highlightedSectionId === section.id
                   ? "outline-2 outline-amber-500 bg-amber-50/30 ring-2 ring-amber-500/20 shadow-xs"
                   : "hover:outline-2 hover:outline-dashed hover:outline-amber-500/60 hover:bg-amber-50/20"
               }`}
               title={tr("a11y.templates.clickToEdit", { name: sectionTitle })}
             >
+              {section.pageBreakBefore && (
+                <div className="absolute -top-2.5 right-2 bg-amber-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-xs pointer-events-none select-none print:hidden flex items-center gap-1 z-10">
+                  <span>\pagebreak</span>
+                </div>
+              )}
               <h2
                 data-page-break-avoid="true"
                 className="text-xs font-bold uppercase tracking-wider pb-0.5 border-b border-stone-300 mb-1.5"

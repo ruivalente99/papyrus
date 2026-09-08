@@ -30,13 +30,28 @@ export function calculateSmartPageBreaks(
   totalHeight: number,
   pageHeight: number = A4_H_PX
 ): number[] {
-  // If total height is within 1 page plus small tolerance (< 80px), fit into 1 page
-  if (totalHeight <= pageHeight + 80) {
-    return [totalHeight];
-  }
-
   const parentRect = el.getBoundingClientRect();
   const currentScale = parentRect.width / A4_W_PX || 1;
+
+  // Find all elements marked for mandatory/manual page break
+  const forcedBreakElements = Array.from(
+    el.querySelectorAll<HTMLElement>(
+      '[data-page-break-before="true"], .page-break-before, [data-break-before="true"]'
+    )
+  );
+
+  const forcedBreaks = forcedBreakElements
+    .map((item) => {
+      const r = item.getBoundingClientRect();
+      return Math.round((r.top - parentRect.top) / currentScale);
+    })
+    .filter((y) => y > 50 && y < totalHeight - 40)
+    .sort((a, b) => a - b);
+
+  // If total height fits in 1 page and no manual breaks are set, fit into 1 page
+  if (totalHeight <= pageHeight + 80 && forcedBreaks.length === 0) {
+    return [totalHeight];
+  }
 
   // Find all avoid-break elements
   const items = Array.from(
@@ -59,15 +74,29 @@ export function calculateSmartPageBreaks(
   const breaks: number[] = [];
   let currentY = 0;
 
-  while (currentY + pageHeight < totalHeight) {
+  while (currentY < totalHeight) {
+    // Check if there is a manual/forced page break ahead of currentY
+    const nextForced = forcedBreaks.find((fb) => fb > currentY + 40);
     const targetY = currentY + pageHeight;
+
+    if (nextForced && nextForced <= targetY) {
+      // Manual break requested before the page limit
+      breaks.push(nextForced);
+      currentY = nextForced;
+      continue;
+    }
+
+    // If remaining content to totalHeight is within normal page limit
+    if (currentY + pageHeight >= totalHeight) {
+      break;
+    }
 
     // If remaining content after target is negligible (< 70px), end here
     if (totalHeight - targetY < 70) {
       break;
     }
 
-    // Check if any element is intersected by targetY
+    // Smart automatic break detection avoiding slicing elements
     const intersectingItem = itemBoxes.find(
       (box) => box.top < targetY && box.bottom > targetY
     );

@@ -9,7 +9,9 @@
     "show": "Mostrar secção {{name}} no CV",
     "delete": "Eliminar secção {{name}}",
     "collapse": "Recolher secção {{name}}",
-    "expand": "Expandir secção {{name}}"
+    "expand": "Expandir secção {{name}}",
+    "insertPageBreak": "Inserir quebra de página antes de {{name}}",
+    "removePageBreak": "Remover quebra de página antes de {{name}}"
   },
   "sectionList": {
     "scrollLeft": "Deslocar secções para a esquerda",

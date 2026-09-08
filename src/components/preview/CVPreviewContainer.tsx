@@ -20,6 +20,7 @@ import {
   Pipette,
   GripVertical,
   Move,
+  Printer,
 } from "lucide-react";
 import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 import { useToast } from "@/context/ToastContext";
@@ -60,6 +61,7 @@ export function CVPreviewContainer({
   const [pageCount, setPageCount] = useState<number>(1);
   const [dockEdge, setDockEdge] = useState<"bottom" | "top" | "left" | "right">("bottom");
   const [isDraggingToolbar, setIsDraggingToolbar] = useState<boolean>(false);
+  const [isPrintEmulation, setIsPrintEmulation] = useState<boolean>(false);
   const pageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const { t: tr } = useTranslation(currentUiLang);
@@ -144,7 +146,9 @@ export function CVPreviewContainer({
     if (!pageRef.current) return;
     const height = pageRef.current.offsetHeight || A4_H_PX;
     setDocHeight(height);
-    const pages = height <= A4_H_PX + 70 ? 1 : Math.ceil(height / A4_H_PX);
+    const forcedCount = (cv.sections || []).filter((s) => s && s.pageBreakBefore && s.visible).length;
+    const basePages = height <= A4_H_PX + 70 && forcedCount === 0 ? 1 : Math.ceil(height / A4_H_PX);
+    const pages = Math.max(1 + forcedCount, basePages);
     setPageCount(pages);
   }, [cv, lang]);
 
@@ -420,7 +424,7 @@ export function CVPreviewContainer({
     }
   };
 
-  const actualDocHeight = Math.max(A4_H_PX, docHeight);
+  const actualDocHeight = Math.max(pageCount * A4_H_PX, docHeight);
 
   return (
     <div className="flex flex-col h-full bg-stone-200/50 dark:bg-[#0d1117] text-stone-800 dark:text-[#c9d1d9] transition-colors">
@@ -629,7 +633,9 @@ export function CVPreviewContainer({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onWheel={handleWheel}
-        className={`flex-1 relative overflow-hidden flex items-start justify-center charm-bg-dynamic min-h-0 select-none pt-4 sm:pt-6 pb-24 sm:pb-12 ${
+        className={`flex-1 relative overflow-hidden flex items-start justify-center min-h-0 select-none pt-4 sm:pt-6 pb-24 sm:pb-12 ${
+          isPrintEmulation ? "print-emulation" : "charm-bg-dynamic"
+        } ${
           isPanning
             ? "cursor-grabbing"
             : toolMode === "hand" || isSpacePressed
@@ -694,17 +700,59 @@ export function CVPreviewContainer({
               />
             )}
 
-            {/* Visual A4 Page Break Guide when document exceeds 1 page */}
-            {pageCount > 1 && (
+            {/* Visual Multi-Page Break Guides (FEAT-013) */}
+            {pageCount > 1 &&
+              Array.from({ length: pageCount - 1 }, (_, idx) => {
+                const p = idx + 1;
+                return (
+                  <div
+                    key={`page-guide-${p}`}
+                    data-testid={`page-break-guide-${p}`}
+                    className="absolute left-0 right-0 border-b-2 border-dashed border-amber-600 pointer-events-none flex items-center justify-between px-3 z-20 print:hidden"
+                    style={{ top: `${p * A4_H_PX}px` }}
+                  >
+                    <span className="bg-amber-700/90 text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-full -translate-y-1/2 shadow-xs">
+                      {tr("preview.toolbar.pageIndicator", { current: p, total: pageCount })}
+                    </span>
+                    <span className="bg-amber-700 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full -translate-y-1/2 shadow-xs">
+                      {tr("preview.toolbar.pageCutoff", { page: p })}
+                    </span>
+                  </div>
+                );
+              })}
+
+            {/* Page Watermark Badges */}
+            {Array.from({ length: pageCount }, (_, idx) => (
               <div
-                className="absolute left-0 right-0 border-b-2 border-dashed border-amber-600 pointer-events-none flex items-center justify-end px-3"
-                style={{ top: `${A4_H_PX}px` }}
+                key={`page-number-${idx + 1}`}
+                className={`absolute right-3 font-mono text-[9px] font-bold px-2 py-0.5 rounded-full select-none pointer-events-none print:hidden z-10 transition-opacity ${
+                  isPrintEmulation
+                    ? "bg-stone-900/85 text-white border border-stone-700 shadow-xs"
+                    : "bg-stone-100/90 dark:bg-[#21262d]/90 text-stone-500 dark:text-[#8b949e] border border-stone-200 dark:border-[#363d47]"
+                }`}
+                style={{ top: `${idx * A4_H_PX + 12}px` }}
               >
-                <span className="bg-amber-700 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full -translate-y-1/2 shadow-xs">
-                  {tr("preview.toolbar.pageLimitGuide")}
-                </span>
+                {tr("preview.toolbar.pageIndicator", { current: idx + 1, total: pageCount })}
               </div>
-            )}
+            ))}
+
+            {/* High-Fidelity Print Emulation Sheet Dividers (FEAT-014) */}
+            {isPrintEmulation &&
+              pageCount > 1 &&
+              Array.from({ length: pageCount - 1 }, (_, idx) => {
+                const p = idx + 1;
+                return (
+                  <div
+                    key={`print-sheet-divider-${p}`}
+                    className="absolute -left-6 -right-6 h-3 bg-[#2b2f36] pointer-events-none z-30 shadow-inner flex items-center justify-center border-y border-black/40"
+                    style={{ top: `${p * A4_H_PX - 6}px` }}
+                  >
+                    <span className="text-[8.5px] font-mono text-stone-400 font-bold tracking-wider uppercase bg-[#21262d] px-2 rounded-full border border-stone-600/50">
+                      Sheet {p} / {p + 1}
+                    </span>
+                  </div>
+                );
+              })}
           </div>
         </div>
 
@@ -858,6 +906,28 @@ export function CVPreviewContainer({
                 }`}
               >
                 <Grid size={12} />
+              </button>
+
+              {/* Print Emulation Toggle (FEAT-014) */}
+              <button
+                onClick={() => setIsPrintEmulation((prev) => !prev)}
+                title={
+                  isPrintEmulation
+                    ? tr("preview.toolbar.printEmulationActive")
+                    : tr("preview.toolbar.printEmulationTooltip")
+                }
+                aria-label={
+                  isPrintEmulation
+                    ? tr("preview.toolbar.printEmulationActive")
+                    : tr("preview.toolbar.printEmulation")
+                }
+                className={`p-1.5 rounded-full transition-colors min-w-[26px] min-h-[26px] flex items-center justify-center ${
+                  isPrintEmulation
+                    ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-bold ring-1 ring-amber-500 shadow-2xs"
+                    : "hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+                }`}
+              >
+                <Printer size={12} />
               </button>
 
               {/* Divider */}
