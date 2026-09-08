@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { NanoBananaLogo } from "@/components/common/NanoBananaLogo";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
@@ -13,276 +13,12 @@ import {
   Search,
   Copy,
   Check,
-  RotateCcw,
   X,
   ChevronLeft,
   ChevronRight,
+  RefreshCw,
 } from "lucide-react";
-
-export interface BoardTask {
-  id: string;
-  title: string;
-  status: "shipped" | "progress" | "backlog" | "icebox";
-  tags: string[];
-  version: string;
-  files: string;
-  desc: string;
-}
-
-const INITIAL_TASKS: BoardTask[] = [
-  {
-    id: "FEAT-001",
-    title: "Full Multilingual Decoupling (i18n)",
-    status: "shipped",
-    tags: ["i18n", "core"],
-    version: "v1.1",
-    files: "src/lib/i18n.ts, src/locales/*",
-    desc: "Strict separation between UI/nationality language (uiLang) and CV document content language (cvLang). Real-time search and 0 missing keys.",
-  },
-  {
-    id: "FEAT-002",
-    title: "Floating Action Bar with 4-Edge Snapping",
-    status: "shipped",
-    tags: ["ui/ux", "mobile"],
-    version: "v1.1",
-    files: "src/components/preview/CVPreviewContainer.tsx",
-    desc: "Floating action toolbar with magnetic docking to top, bottom, left, and right edges with mobile responsive layout.",
-  },
-  {
-    id: "FEAT-003",
-    title: "Avatar Modal with Crop, 90° Rotation & Drag-and-Drop",
-    status: "shipped",
-    tags: ["ui/ux", "media"],
-    version: "v1.1",
-    files: "src/components/builder/AvatarCropModal.tsx",
-    desc: "Direct hover upload on avatar, full drag-and-drop support, 90° step rotation, and digital zoom canvas.",
-  },
-  {
-    id: "FEAT-004",
-    title: "Smart Command Palette (Cmd/Ctrl + K)",
-    status: "shipped",
-    tags: ["ui/ux", "accessibility"],
-    version: "v1.1",
-    files: "src/components/builder/CommandPalette.tsx",
-    desc: "Categorized command search across templates, sections, actions, and user preferences with keyboard navigation.",
-  },
-  {
-    id: "FEAT-005",
-    title: "Mobile Top Bar Extreme Optimization",
-    status: "shipped",
-    tags: ["mobile", "responsive"],
-    version: "v1.1.2",
-    files: "src/components/builder/BuilderHeader.tsx",
-    desc: "Total elimination of horizontal overflow on small devices (320px-390px), footprint reduced from 435px to 272px.",
-  },
-  {
-    id: "FEAT-006",
-    title: "Interactive Preview Targeting & Smooth Focus",
-    status: "shipped",
-    tags: ["preview", "editor"],
-    version: "v1.1",
-    files: "src/components/preview/CVPreviewContainer.tsx, src/app/page.tsx",
-    desc: "Directly click any block on the live A4 preview to automatically open and scroll to the form field in the left editor.",
-  },
-  {
-    id: "FEAT-007",
-    title: "Bi-directional TeX (.tex) Export & Import Engine",
-    status: "shipped",
-    tags: ["latex", "export"],
-    version: "v1.0",
-    files: "src/lib/latexEngine.ts",
-    desc: "Export and import compilable TeX files compatible with TeX Live and Overleaf with automated character escaping.",
-  },
-  {
-    id: "FEAT-008",
-    title: "Precision A4 PDF Engine with Clickable Hyperlinks",
-    status: "shipped",
-    tags: ["pdf", "export"],
-    version: "v1.0",
-    files: "src/lib/pdfExport.ts",
-    desc: "Locked standard A4 dimensions (794x1123px at 96 DPI), smart page break boundary detection, and clickable links.",
-  },
-  {
-    id: "FEAT-009",
-    title: "Real-Time ATS Quality Audit & Linter (0–100%)",
-    status: "shipped",
-    tags: ["ats", "quality"],
-    version: "v1.0",
-    files: "src/lib/linter.ts, src/components/builder/linter/*",
-    desc: "Real-time evaluation of action verbs, contact completeness, date ranges, and multilingual section parity.",
-  },
-  {
-    id: "FEAT-010",
-    title: "AI Agent Automation Skill (cv-agent) & CLI Suite",
-    status: "shipped",
-    tags: ["ai", "cli"],
-    version: "v1.0",
-    files: "scripts/cv-cli.ts, src/lib/cv-helper.ts",
-    desc: "CLI scripts and programmatic TypeScript API for auditing, translating, mutating, and exporting resumes without a browser.",
-  },
-  {
-    id: "FEAT-011",
-    title: "Automated CI/CD Quality Gates & Semantic PR Flow",
-    status: "shipped",
-    tags: ["devops", "qa"],
-    version: "v1.1",
-    files: ".github/workflows/ci.yml",
-    desc: "Enforced quality gates in GitHub Actions with E2E verification, strict type checks, and preview deployments on Vercel.",
-  },
-  {
-    id: "FEAT-012",
-    title: "Visual CV Comparator & Semantic Diff Engine",
-    status: "progress",
-    tags: ["diff", "ats"],
-    version: "v1.2",
-    files: "docs/CV_COMPARATOR_SPEC.md",
-    desc: "Side-by-side synchronized scrolling between 2 CV versions, word-level inline diffs, and ATS keyword differentials.",
-  },
-  {
-    id: "FEAT-013",
-    title: "Visual Page Break Guide & Manual Page Split",
-    status: "progress",
-    tags: ["pdf", "editor"],
-    version: "v1.2",
-    files: "src/components/preview/CVPreviewContainer.tsx",
-    desc: "Interactive ruler allowing users to manually drag or trigger page splits where preferred.",
-  },
-  {
-    id: "FEAT-014",
-    title: "High-Fidelity Print Mode Preview (CSS Print)",
-    status: "progress",
-    tags: ["preview", "styles"],
-    version: "v1.2",
-    files: "src/app/globals.css",
-    desc: "Precise emulation of native browser print mode (Ctrl+P) automatically suppressing chrome and UI controls.",
-  },
-  {
-    id: "FEAT-022",
-    title: "Command Palette Full i18n Localization",
-    status: "shipped",
-    tags: ["i18n", "ui/ux", "accessibility"],
-    version: "v1.2",
-    files: "src/components/builder/CommandPalette.tsx, src/locales/*/builder.json",
-    desc: "100% dictionary-backed localization of command items, categories, shortcuts, and multilingual search querying.",
-  },
-  {
-    id: "FEAT-023",
-    title: "Comprehensive UI/UX Audit: A11y Form Labels & Spacing Tokens",
-    status: "shipped",
-    tags: ["ui/ux", "a11y", "styling"],
-    version: "v1.2",
-    files: "src/components/builder/forms/*, src/components/builder/*",
-    desc: "Explicit id and htmlFor on all CV form fields, aria-labels on icon buttons, top bar vs action bar deduplication, and standard spacing scale tokens.",
-  },
-  {
-    id: "FEAT-024",
-    title: "Design Tokens & i18n Hardcoded Strings Consolidation",
-    status: "shipped",
-    tags: ["refactor", "tokens", "i18n"],
-    version: "v1.2",
-    files: "src/components/builder/*, src/components/preview/*, src/app/globals.css",
-    desc: "Eliminate raw inline isPt ? ... : ... ternaries and legacy tUI in favor of useTranslation, replacing arbitrary dark-mode hexes with CSS variables.",
-  },
-  {
-    id: "FEAT-015",
-    title: "Cover Letter Generator Engine",
-    status: "backlog",
-    tags: ["feature", "new-doc"],
-    version: "v2.0",
-    files: "src/components/cover-letter/*",
-    desc: "Coordinated cover letter generation matching the color accents, header geometry, and typography of the active CV.",
-  },
-  {
-    id: "FEAT-016",
-    title: "AI-Assisted Bullet Point Polisher (Google XYZ)",
-    status: "backlog",
-    tags: ["ai", "ats"],
-    version: "v2.0",
-    files: "src/lib/aiWritingAssistant.ts",
-    desc: "Actionable suggestions converting passive bullet points: 'Accomplished [X], measured by [Y], by doing [Z]'.",
-  },
-  {
-    id: "FEAT-017",
-    title: "ATS Job Vacancy Keyword Matcher",
-    status: "backlog",
-    tags: ["ats", "recruiter"],
-    version: "v2.0",
-    files: "src/lib/atsScanner.ts",
-    desc: "Paste any job posting text and calculate instant ATS match rate and identify missing high-value technical keywords.",
-  },
-  {
-    id: "FEAT-018",
-    title: "Editorial Typography Selector",
-    status: "backlog",
-    tags: ["styling", "typography"],
-    version: "v2.0",
-    files: "src/types/cv.ts, src/components/preview/*",
-    desc: "Curated typography pairings across Serif (Merriweather, Garamond) and Sans-Serif (Inter, Plus Jakarta Sans, JetBrains Mono).",
-  },
-  {
-    id: "FEAT-019",
-    title: "JSON Resume & Europass XML Schema Interoperability",
-    status: "backlog",
-    tags: ["standards"],
-    version: "v2.0",
-    files: "src/lib/schemaConverter.ts",
-    desc: "Import and export interoperability with standard jsonresume.org schemas and Europass XML format.",
-  },
-  {
-    id: "FEAT-020",
-    title: "Header Vector QR Code Generator",
-    status: "backlog",
-    tags: ["contact", "modern"],
-    version: "v2.0",
-    files: "src/components/preview/templates/*",
-    desc: "Embedded vector QR code in the resume header linking to personal portfolio, LinkedIn, or GitHub repository.",
-  },
-  {
-    id: "FEAT-021",
-    title: "PDF Encryption & PDF/UA Accessibility",
-    status: "backlog",
-    tags: ["pdf", "security"],
-    version: "v2.0",
-    files: "src/lib/pdfExport.ts",
-    desc: "Password protection encryption and semantic tagging for screen reader compliance under PDF/UA standards.",
-  },
-  {
-    id: "IDEA-001",
-    title: "Private Cloud Sync (WebDAV / Nextcloud / Drive)",
-    status: "icebox",
-    tags: ["cloud", "privacy"],
-    version: "v3.0",
-    files: "src/lib/storageSync.ts",
-    desc: "Optional end-to-end encrypted backup to private user cloud infrastructure while maintaining offline-first guarantees.",
-  },
-  {
-    id: "IDEA-002",
-    title: "Vector SVG Export Engine",
-    status: "icebox",
-    tags: ["design", "export"],
-    version: "v3.0",
-    files: "src/lib/svgExport.ts",
-    desc: "Direct vector export allowing visual design teams to refine resumes inside Figma or Illustrator.",
-  },
-  {
-    id: "IDEA-003",
-    title: "Dark Mode PDF Export for Creative Portfolios",
-    status: "icebox",
-    tags: ["design", "creative"],
-    version: "v3.0",
-    files: "src/lib/pdfExport.ts",
-    desc: "Dark background PDF export option tailored for multimedia designers and game developers.",
-  },
-  {
-    id: "IDEA-004",
-    title: "Multi-Profile Resume Management",
-    status: "icebox",
-    tags: ["profile", "ux"],
-    version: "v3.0",
-    files: "src/context/CVContext.tsx",
-    desc: "Manage and switch instantly between multiple full profiles (e.g. Senior Frontend profile vs Tech Lead profile).",
-  },
-];
+import { BoardData, BoardTask, parseBoardMarkdown } from "@/lib/boardParser";
 
 const COLUMNS: { id: BoardTask["status"]; label: string; color: string; badgeColor: string }[] = [
   { id: "shipped", label: "Shipped (Completed)", color: "bg-emerald-500", badgeColor: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
@@ -292,7 +28,9 @@ const COLUMNS: { id: BoardTask["status"]; label: string; color: string; badgeCol
 ];
 
 export default function BoardPage() {
-  const [tasks, setTasks] = useState<BoardTask[]>(INITIAL_TASKS);
+  const [boardData, setBoardData] = useState<BoardData | null>(null);
+  const [tasks, setTasks] = useState<BoardTask[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState<"kanban" | "roadmap" | "metrics">("kanban");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -307,18 +45,37 @@ export default function BoardPage() {
   const [newTags, setNewTags] = useState("core, feature");
   const [newDesc, setNewDesc] = useState("");
 
-  // Load from localStorage if present and valid
-  useEffect(() => {
+  const loadBoard = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const stored = localStorage.getItem("papyrus_board_tasks_en");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setTasks(parsed);
-        }
+      const res = await fetch("/board.md", { cache: "no-store" });
+      if (res.ok) {
+        const text = await res.text();
+        const parsed = parseBoardMarkdown(text);
+        setBoardData(parsed);
+        setTasks(parsed.tasks);
+        setIsLoading(false);
+        return;
       }
     } catch {}
+
+    try {
+      const res = await fetch("/api/board", { cache: "no-store" });
+      if (res.ok) {
+        const parsed: BoardData = await res.json();
+        setBoardData(parsed);
+        setTasks(parsed.tasks);
+        setIsLoading(false);
+        return;
+      }
+    } catch {}
+
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    loadBoard();
+  }, [loadBoard]);
 
   const saveTasks = (newTaskList: BoardTask[]) => {
     setTasks(newTaskList);
@@ -328,7 +85,7 @@ export default function BoardPage() {
   };
 
   const handleResetToDefaults = () => {
-    saveTasks(INITIAL_TASKS);
+    loadBoard();
   };
 
   // Filter tasks
@@ -448,44 +205,47 @@ export default function BoardPage() {
               <h1 className="text-lg sm:text-xl font-black tracking-tight flex items-center gap-2">
                 <span>PAPYRUS Board</span>
                 <span className="text-xs font-mono font-normal px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                  v1.1.2
+                  {boardData?.stableVersion || "v1.1.2"}
                 </span>
               </h1>
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System Online" />
             </div>
           </div>
 
-          {/* Controls */}
+          {/* Controls Bar */}
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-between md:justify-end">
-            {/* View Mode Switcher */}
-            <div className="flex items-center bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] p-1 rounded-xl shadow-2xs">
+            {/* View Selector Tabs */}
+            <div className="flex items-center bg-stone-200/60 dark:bg-[#161b22] border border-stone-300 dark:border-[#30363d] p-1 rounded-xl shadow-2xs">
               <button
                 onClick={() => setActiveView("kanban")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   activeView === "kanban"
-                    ? "bg-amber-600 text-white shadow-xs"
-                    : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
+                    ? "bg-white dark:bg-[#090d13] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                 }`}
               >
                 <Kanban size={13} />
                 <span>Kanban</span>
               </button>
+
               <button
                 onClick={() => setActiveView("roadmap")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   activeView === "roadmap"
-                    ? "bg-amber-600 text-white shadow-xs"
-                    : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
+                    ? "bg-white dark:bg-[#090d13] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                 }`}
               >
                 <Map size={13} />
                 <span>Roadmap</span>
               </button>
+
               <button
                 onClick={() => setActiveView("metrics")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   activeView === "metrics"
-                    ? "bg-amber-600 text-white shadow-xs"
-                    : "text-stone-500 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
+                    ? "bg-white dark:bg-[#090d13] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
                 }`}
               >
                 <Activity size={13} />
@@ -493,39 +253,43 @@ export default function BoardPage() {
               </button>
             </div>
 
+            {/* Reload from board.md */}
+            <button
+              onClick={handleResetToDefaults}
+              title="Reload data directly from board.md"
+              className="flex items-center gap-1 px-3 py-1.5 bg-stone-100 hover:bg-stone-200 dark:bg-[#161b22] dark:hover:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] rounded-xl text-xs font-bold border border-stone-200 dark:border-[#30363d] transition-all shadow-2xs"
+            >
+              <RefreshCw size={13} className={isLoading ? "animate-spin" : ""} />
+              <span className="hidden sm:inline">Sync board.md</span>
+            </button>
+
+            {/* Copy Markdown */}
+            <button
+              onClick={copyMarkdown}
+              title="Copy Board Summary as Markdown"
+              className="flex items-center gap-1 px-3 py-1.5 bg-stone-100 hover:bg-stone-200 dark:bg-[#161b22] dark:hover:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] rounded-xl text-xs font-bold border border-stone-200 dark:border-[#30363d] transition-all shadow-2xs"
+            >
+              {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
+              <span className="hidden sm:inline">{copied ? "Copied!" : "Export MD"}</span>
+            </button>
+
+            {/* Add Task Button */}
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-xs transition-all active:scale-95"
+              className="flex items-center gap-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-amber-600/20"
             >
               <Plus size={14} />
               <span>New Task</span>
-            </button>
-
-            <button
-              onClick={copyMarkdown}
-              title="Copy Board state as Markdown"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#161b22] hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] border border-stone-200 dark:border-[#30363d] rounded-xl text-xs font-semibold transition-all shadow-2xs"
-            >
-              {copied ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
-              <span className="hidden sm:inline">{copied ? "Copied!" : "Copy MD"}</span>
-            </button>
-
-            <button
-              onClick={handleResetToDefaults}
-              title="Reset tasks to initial state"
-              className="p-2 bg-white dark:bg-[#161b22] hover:bg-stone-100 dark:hover:bg-[#21262d] text-stone-600 dark:text-[#8b949e] border border-stone-200 dark:border-[#30363d] rounded-xl text-xs transition-all shadow-2xs"
-            >
-              <RotateCcw size={13} />
             </button>
 
             <ThemeSelector />
           </div>
         </header>
 
-        {/* KPI Metrics Bar */}
-        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {/* Top Summary Metrics Strip */}
+        <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-white dark:bg-[#161b22] border border-stone-200/80 dark:border-[#30363d] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
-            <span className="text-xs font-semibold text-stone-500 dark:text-[#8b949e]">Shipped (Completed)</span>
+            <span className="text-xs font-semibold text-stone-500 dark:text-[#8b949e]">Shipped Features</span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{stats.shipped}</span>
               <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
@@ -535,11 +299,11 @@ export default function BoardPage() {
           </div>
 
           <div className="bg-white dark:bg-[#161b22] border border-stone-200/80 dark:border-[#30363d] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
-            <span className="text-xs font-semibold text-stone-500 dark:text-[#8b949e]">Current Sprint</span>
+            <span className="text-xs font-semibold text-stone-500 dark:text-[#8b949e]">In Progress</span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-2xl font-black text-amber-600 dark:text-amber-400">{stats.progress}</span>
               <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                v1.2
+                Sprint v1.2
               </span>
             </div>
           </div>
@@ -555,11 +319,11 @@ export default function BoardPage() {
           </div>
 
           <div className="bg-white dark:bg-[#161b22] border border-stone-200/80 dark:border-[#30363d] rounded-2xl p-3.5 flex flex-col justify-between shadow-2xs">
-            <span className="text-xs font-semibold text-stone-500 dark:text-[#8b949e]">Code Health & CI</span>
+            <span className="text-xs font-semibold text-stone-500 dark:text-[#8b949e]">Total Tracked</span>
             <div className="flex items-baseline justify-between mt-2">
-              <span className="text-2xl font-black text-emerald-500">100%</span>
-              <span className="text-xs font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                0 Bugs
+              <span className="text-2xl font-black text-stone-800 dark:text-stone-200">{stats.total}</span>
+              <span className="text-xs font-mono font-bold text-stone-500 bg-stone-100 dark:bg-[#21262d] px-2 py-0.5 rounded-full">
+                Tickets
               </span>
             </div>
           </div>
@@ -586,7 +350,7 @@ export default function BoardPage() {
           </div>
 
           <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 text-xs">
-            {["all", "i18n", "ui/ux", "pdf", "ats", "ai"].map((tag) => (
+            {["all", "i18n", "ui/ux", "pdf", "ats", "ai", "core"].map((tag) => (
               <button
                 key={tag}
                 onClick={() => setSelectedTag(tag)}
@@ -697,125 +461,97 @@ export default function BoardPage() {
           <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl p-6 shadow-2xs space-y-6">
             <h2 className="text-base font-bold flex items-center gap-2">
               <Map className="w-5 h-5 text-amber-500" />
-              Strategic Release Roadmap
+              Strategic Release Roadmap (from board.md)
             </h2>
 
             <div className="relative border-l-2 border-stone-200 dark:border-[#363d47] ml-4 space-y-8 py-2">
-              <div className="relative pl-6">
-                <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-white dark:ring-[#161b22]" />
-                <div className="bg-stone-50 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] p-4 rounded-xl space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-emerald-500">v1.0.0 • Initial Release (Completed)</span>
-                    <span className="text-[11px] text-stone-400">August 2026</span>
+              {boardData?.timeline && boardData.timeline.length > 0 ? (
+                boardData.timeline.map((group, idx) => (
+                  <div key={group.version} className="relative pl-6">
+                    <span
+                      className={`absolute -left-[9px] top-1.5 w-4 h-4 rounded-full ring-4 ring-white dark:ring-[#161b22] ${
+                        idx === 0 || idx === 1
+                          ? "bg-emerald-500"
+                          : idx === 2
+                          ? "bg-amber-500"
+                          : "bg-indigo-500"
+                      }`}
+                    />
+                    <div className="bg-stone-50 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] p-4 rounded-xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
+                          {group.version}
+                        </span>
+                        <span className="text-[11px] text-stone-400 font-mono">Milestone</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {group.items.map((item) => (
+                          <span
+                            key={item}
+                            className="px-2.5 py-1 bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-medium text-stone-700 dark:text-[#c9d1d9]"
+                          >
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="font-bold text-sm">Split-Pane Interactive Builder & TeX/PDF Engine</h3>
-                  <p className="text-xs text-stone-500 dark:text-[#8b949e]">
-                    MVP launch with 3 core resume templates (Lateralis, Classic, Matrix), live synchronized A4 preview, compilable TeX export/import, and dynamic 0–100% linter.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative pl-6">
-                <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-white dark:ring-[#161b22]" />
-                <div className="bg-stone-50 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] p-4 rounded-xl space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-emerald-500">v1.1.2 • Mobile UX & Stability (Completed)</span>
-                    <span className="text-[11px] text-stone-400">September 2026</span>
-                  </div>
-                  <h3 className="font-bold text-sm">Full i18n Decoupling, 4-Edge Action Bar & Avatar Crop</h3>
-                  <p className="text-xs text-stone-500 dark:text-[#8b949e]">
-                    Clean separation of UI/nationality language from CV document language, mobile top bar overflow fix, circular avatar crop & rotation, exhaustive 40 missing translation keys fix, and preview click-to-focus.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative pl-6">
-                <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-amber-500 ring-4 ring-white dark:ring-[#161b22]" />
-                <div className="bg-stone-50 dark:bg-[#0d1117] border border-amber-500/40 p-4 rounded-xl space-y-1 shadow-lg shadow-amber-500/5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-amber-500">v1.2.0 • Current Sprint (In Progress)</span>
-                    <span className="text-[11px] text-amber-600 dark:text-amber-400 font-bold">Active</span>
-                  </div>
-                  <h3 className="font-bold text-sm">Visual CV Comparator & Manual Page Breaks</h3>
-                  <p className="text-xs text-stone-500 dark:text-[#8b949e]">
-                    Side-by-side synchronized comparison with word-level semantic diff and ATS score matrix. Manual page break insertions (\pagebreak) and native print mode fidelity.
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative pl-6">
-                <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-indigo-500 ring-4 ring-white dark:ring-[#161b22]" />
-                <div className="bg-stone-50 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] p-4 rounded-xl space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-indigo-400">v2.0.0 • Unified Application Suite</span>
-                    <span className="text-[11px] text-stone-400">Planned Q4 2026</span>
-                  </div>
-                  <h3 className="font-bold text-sm">Cover Letters, ATS Vacancy Scanner & Typography Selector</h3>
-                  <p className="text-xs text-stone-500 dark:text-[#8b949e]">
-                    Thematically coordinated cover letter engine, ATS job description keyword matcher, open standard JSON Resume format compatibility, and curated font families.
-                  </p>
-                </div>
-              </div>
+                ))
+              ) : (
+                <p className="text-xs text-stone-400 italic">No roadmap items parsed from board.md.</p>
+              )}
             </div>
           </div>
         )}
 
         {/* VIEW 3: METRICS VIEW */}
         {activeView === "metrics" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl p-5 space-y-3 shadow-2xs">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">Automated Verification</h3>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-stone-100 dark:border-[#30363d]">
-                  <span>E2E Verification (5 Presets)</span>
-                  <span className="font-bold font-mono text-emerald-500">100% Pass</span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-stone-100 dark:border-[#30363d]">
-                  <span>Field Editing Stress Test</span>
-                  <span className="font-bold font-mono text-emerald-500">100% Pass</span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-stone-100 dark:border-[#30363d]">
-                  <span>TypeScript Strict Check</span>
-                  <span className="font-bold font-mono text-emerald-500">0 Errors</span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span>ESLint Code Quality</span>
-                  <span className="font-bold font-mono text-emerald-500">0 Errors</span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl p-5 space-y-4 shadow-2xs">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e] flex items-center justify-between">
+                <span>Project Health & Metrics (from board.md)</span>
+                <span className="text-[10px] font-mono lowercase bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full font-bold">
+                  {boardData?.systemStatus || "Active"}
+                </span>
+              </h3>
+              <div className="space-y-3 text-xs">
+                {boardData?.metrics && boardData.metrics.length > 0 ? (
+                  boardData.metrics.map((m) => (
+                    <div
+                      key={m.metric}
+                      className="flex justify-between items-center py-1.5 border-b border-stone-100 dark:border-[#30363d]"
+                    >
+                      <div>
+                        <div className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{m.metric}</div>
+                        <div className="text-[10px] text-stone-400 font-mono">Target: {m.target}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold font-mono text-stone-900 dark:text-[#f0f3f6]">{m.value}</div>
+                        <div className="text-[10px]">{m.status}</div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-stone-400 italic">No metrics parsed from board.md.</p>
+                )}
               </div>
             </div>
 
-            <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl p-5 space-y-3 shadow-2xs">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">Performance & Dimensions</h3>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-stone-100 dark:border-[#30363d]">
-                  <span>Next.js Build Time</span>
-                  <span className="font-bold font-mono text-amber-500">~2.8s</span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-stone-100 dark:border-[#30363d]">
-                  <span>First Load JS Bundle</span>
-                  <span className="font-bold font-mono text-emerald-500">336 kB</span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-stone-100 dark:border-[#30363d]">
-                  <span>A4 Dimension Accuracy</span>
-                  <span className="font-bold font-mono text-emerald-500">794 × 1123 px</span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span>PDF Export Resolution</span>
-                  <span className="font-bold font-mono text-stone-400">96 DPI / 210x297mm</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl p-5 space-y-3 shadow-2xs">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">Technology Stack</h3>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">Next.js 15</span>
+            <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl p-5 space-y-4 shadow-2xs">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
+                Core Architecture & Tech Stack
+              </h3>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">Next.js 15 (App Router)</span>
                 <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">React 19</span>
                 <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">TypeScript 5</span>
                 <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">Tailwind CSS 4</span>
-                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">jsPDF Links</span>
-                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">Radix UI</span>
+                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">jsPDF Links & Smart Breaks</span>
+                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">Radix UI Primitives</span>
+                <span className="px-2.5 py-1 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#30363d] rounded-lg text-xs font-semibold">Lucide Icons</span>
+              </div>
+              <div className="p-3 bg-stone-50 dark:bg-[#0d1117] rounded-xl border border-stone-200 dark:border-[#30363d] text-xs text-stone-600 dark:text-[#8b949e] leading-relaxed">
+                PAPYRUS parses <code className="text-amber-500 font-mono">board.md</code> as the project&apos;s single source of truth. Any commit to the markdown specification automatically synchronizes the visual board, live API routes, and release roadmap.
               </div>
             </div>
           </div>
@@ -851,58 +587,58 @@ export default function BoardPage() {
 
             <div className="space-y-3 text-xs">
               <div>
-                <span className="font-bold text-stone-400 dark:text-[#8b949e] uppercase tracking-wider text-[10px]">
-                  Description & Scope:
-                </span>
-                <p className="mt-1 text-stone-700 dark:text-[#c9d1d9] leading-relaxed">
-                  {selectedTask.desc}
-                </p>
+                <span className="font-semibold text-stone-500 dark:text-[#8b949e]">Milestone / Version</span>
+                <p className="font-mono text-stone-800 dark:text-[#f0f3f6] mt-0.5">{selectedTask.version}</p>
+              </div>
+
+              {selectedTask.files && (
+                <div>
+                  <span className="font-semibold text-stone-500 dark:text-[#8b949e]">Key Files & References</span>
+                  <p className="font-mono text-stone-800 dark:text-[#f0f3f6] mt-0.5">{selectedTask.files}</p>
+                </div>
+              )}
+
+              <div>
+                <span className="font-semibold text-stone-500 dark:text-[#8b949e]">Description</span>
+                <p className="text-stone-700 dark:text-[#c9d1d9] mt-0.5 leading-relaxed">{selectedTask.desc}</p>
               </div>
 
               <div>
-                <span className="font-bold text-stone-400 dark:text-[#8b949e] uppercase tracking-wider text-[10px]">
-                  Tags:
-                </span>
+                <span className="font-semibold text-stone-500 dark:text-[#8b949e]">Tags</span>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {selectedTask.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2 py-0.5 rounded-md text-[11px] font-mono bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#8b949e]"
+                      className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-stone-100 dark:bg-[#21262d] text-stone-600 dark:text-[#8b949e] border border-stone-200 dark:border-[#30363d]"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
-
-              <div>
-                <span className="font-bold text-stone-400 dark:text-[#8b949e] uppercase tracking-wider text-[10px]">
-                  Target Files & Modules:
-                </span>
-                <div className="font-mono text-[11px] text-amber-600 dark:text-amber-400 bg-stone-100 dark:bg-[#0d1117] p-2 rounded-xl border border-stone-200 dark:border-[#30363d] mt-1">
-                  {selectedTask.files}
-                </div>
-              </div>
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-stone-200 dark:border-[#30363d]">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 <button
                   onClick={() => moveTask(selectedTask.id, -1)}
-                  className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 dark:bg-[#21262d] dark:hover:bg-[#30363d] rounded-lg text-xs font-bold transition-all"
+                  className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 dark:bg-[#21262d] dark:hover:bg-[#30363d] rounded-lg text-xs font-medium flex items-center gap-1"
                 >
-                  ← Move Left
+                  <ChevronLeft size={13} />
+                  <span>Demote</span>
                 </button>
                 <button
                   onClick={() => moveTask(selectedTask.id, 1)}
-                  className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 dark:bg-[#21262d] dark:hover:bg-[#30363d] rounded-lg text-xs font-bold transition-all"
+                  className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 dark:bg-[#21262d] dark:hover:bg-[#30363d] rounded-lg text-xs font-medium flex items-center gap-1"
                 >
-                  Move Right →
+                  <span>Advance</span>
+                  <ChevronRight size={13} />
                 </button>
               </div>
+
               <button
                 onClick={() => setSelectedTask(null)}
-                className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all"
+                className="px-4 py-1.5 bg-stone-200 hover:bg-stone-300 dark:bg-[#30363d] dark:hover:bg-[#363d47] text-stone-800 dark:text-[#f0f3f6] rounded-xl text-xs font-bold"
               >
                 Close
               </button>
@@ -916,70 +652,73 @@ export default function BoardPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-150">
           <div className="bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-stone-200 dark:border-[#30363d] pb-3">
-              <h3 className="text-sm font-bold">Create New Task</h3>
-              <button onClick={() => setIsAddModalOpen(false)} className="text-stone-400 hover:text-stone-700 dark:hover:text-[#f0f3f6]">
+              <h3 className="text-sm font-bold text-stone-900 dark:text-[#f0f3f6]">Create New Board Task</h3>
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="text-stone-400 hover:text-stone-700 dark:hover:text-[#f0f3f6] p-1"
+              >
                 <X size={18} />
               </button>
             </div>
 
             <form onSubmit={handleAddTaskSubmit} className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold mb-1">Feature Title</label>
+                <label className="font-semibold text-stone-700 dark:text-[#c9d1d9] block mb-1">Title</label>
                 <input
                   type="text"
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Export resume as DOCX format"
-                  className="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-stone-900 dark:text-[#f0f3f6]"
+                  placeholder="e.g. Export to Docx format"
+                  className="w-full px-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block font-bold mb-1">Column / Status</label>
+                  <label className="font-semibold text-stone-700 dark:text-[#c9d1d9] block mb-1">Status</label>
                   <select
                     value={newStatus}
-                    onChange={(e) => setNewStatus(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-stone-900 dark:text-[#f0f3f6]"
+                    onChange={(e) => setNewStatus(e.target.value as BoardTask["status"])}
+                    className="w-full px-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500"
                   >
-                    <option value="backlog">Priority Backlog</option>
-                    <option value="progress">In Progress (v1.2)</option>
-                    <option value="shipped">Shipped (Completed)</option>
-                    <option value="icebox">Icebox / Future</option>
+                    <option value="progress">In Progress</option>
+                    <option value="backlog">Backlog</option>
+                    <option value="icebox">Icebox</option>
+                    <option value="shipped">Shipped</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Target Version</label>
+                  <label className="font-semibold text-stone-700 dark:text-[#c9d1d9] block mb-1">Version</label>
                   <input
                     type="text"
                     value={newVersion}
                     onChange={(e) => setNewVersion(e.target.value)}
                     placeholder="v1.3.0"
-                    className="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-stone-900 dark:text-[#f0f3f6]"
+                    className="w-full px-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold mb-1">Tags (comma-separated)</label>
+                <label className="font-semibold text-stone-700 dark:text-[#c9d1d9] block mb-1">Tags (comma-separated)</label>
                 <input
                   type="text"
                   value={newTags}
                   onChange={(e) => setNewTags(e.target.value)}
-                  placeholder="core, export, ui/ux"
-                  className="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-stone-900 dark:text-[#f0f3f6]"
+                  placeholder="export, word, core"
+                  className="w-full px-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block font-bold mb-1">Description / Acceptance Criteria</label>
+                <label className="font-semibold text-stone-700 dark:text-[#c9d1d9] block mb-1">Description</label>
                 <textarea
                   rows={3}
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  placeholder="Specification details and expected outcomes..."
-                  className="w-full px-3 py-2 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500 text-stone-900 dark:text-[#f0f3f6]"
+                  placeholder="Technical details and requirements..."
+                  className="w-full px-3 py-1.5 bg-stone-100 dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] rounded-xl text-xs focus:outline-hidden focus:border-amber-500"
                 />
               </div>
 
@@ -987,15 +726,15 @@ export default function BoardPage() {
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3 py-1.5 rounded-xl border border-stone-200 dark:border-[#363d47] font-semibold"
+                  className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 dark:bg-[#21262d] dark:hover:bg-[#30363d] rounded-xl text-xs font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold"
+                  className="px-4 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold transition-colors"
                 >
-                  Add to Board
+                  Create Task
                 </button>
               </div>
             </form>
