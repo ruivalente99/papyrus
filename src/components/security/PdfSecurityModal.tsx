@@ -20,6 +20,8 @@ import {
   Layers,
   Printer,
   Copy,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 interface PdfSecurityModalProps {
@@ -44,6 +46,9 @@ export function PdfSecurityModal({
 
   // PDF/UA Accessibility State
   const [enablePdfUa, setEnablePdfUa] = useState(true);
+
+  // PDF Color Theme State (Light vs Dark Mode)
+  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
   // Security / Password State
   const [enablePassword, setEnablePassword] = useState(false);
@@ -80,6 +85,7 @@ export function PdfSecurityModal({
       cv,
       lang,
       enablePdfUa,
+      colorMode,
       encryption: enablePassword
         ? {
             userPassword: password,
@@ -385,13 +391,45 @@ export function PdfSecurityModal({
 
         {/* Footer Actions */}
         <div className="p-4 sm:p-5 border-t border-stone-200 dark:border-[#30363d] bg-stone-50 dark:bg-[#0d1117] flex items-center justify-between flex-wrap gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 text-xs font-bold text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-white transition-colors"
-          >
-            {t("pdfSecurity.cancel")}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-3 py-1.5 text-xs font-bold text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-white transition-colors"
+            >
+              {t("pdfSecurity.cancel")}
+            </button>
+
+            {/* Theme Toggle Pill */}
+            <div className="flex items-center gap-0.5 bg-stone-200/70 dark:bg-[#21262d] p-0.5 rounded-xl border border-stone-200 dark:border-[#363d47]">
+              <button
+                type="button"
+                onClick={() => setColorMode("light")}
+                className={`px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                  colorMode === "light"
+                    ? "bg-white dark:bg-[#30363d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-stone-200"
+                }`}
+                title={t("pdfSecurity.lightModeTitle")}
+              >
+                <Sun size={12} className="text-amber-500" />
+                <span>{t("pdfSecurity.light")}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setColorMode("dark")}
+                className={`px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-all ${
+                  colorMode === "dark"
+                    ? "bg-stone-900 text-white shadow-xs dark:bg-amber-600 dark:text-white"
+                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-stone-200"
+                }`}
+                title={t("pdfSecurity.darkModeTitle")}
+              >
+                <Moon size={12} className={colorMode === "dark" ? "text-amber-300" : "text-indigo-400"} />
+                <span>{t("pdfSecurity.dark")}</span>
+              </button>
+            </div>
+          </div>
 
           <div className="flex items-center gap-2">
             {onExportPackage && (

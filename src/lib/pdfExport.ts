@@ -3,6 +3,7 @@ import { domToCanvas } from "modern-screenshot";
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 import { encryptPdf, type PdfEncryptionOptions } from "./pdfSecurity";
 import { enrichPdfWithPdfUa } from "./pdfUa";
+import { prepareDarkModeElement, getDarkPdfBackgroundColor } from "./pdfDarkMode";
 
 // Standard A4 dimensions at 96 DPI (210mm × 297mm)
 export const A4_W_PX = 794;
@@ -13,6 +14,7 @@ export interface ExportPdfOptions {
   lang?: SupportedLanguage;
   encryption?: PdfEncryptionOptions;
   enablePdfUa?: boolean;
+  colorMode?: "light" | "dark";
 }
 
 export interface CapturedPage {
@@ -205,86 +207,98 @@ export function extractLinkAnnotations(
 /**
  * Captures an HTML preview element into page-sized canvases with smart page-break boundaries.
  */
-export async function capturePreviewPages(el: HTMLElement): Promise<{
+export async function capturePreviewPages(
+  el: HTMLElement,
+  options?: { colorMode?: "light" | "dark" }
+): Promise<{
   pages: CapturedPage[];
   pageBreaks: number[];
 }> {
   await document.fonts.ready;
 
-  const contentHeight = Math.max(A4_H_PX, el.scrollHeight || el.offsetHeight);
-  const pageBreaks = calculateSmartPageBreaks(el, contentHeight, A4_H_PX);
+  const isDark = options?.colorMode === "dark";
+  const cleanupDark = isDark ? prepareDarkModeElement(el) : null;
 
-  // If fits in 1 page (or with tolerance), capture at exact A4 height
-  const isSinglePage = pageBreaks.length <= 1;
+  try {
+    const contentHeight = Math.max(A4_H_PX, el.scrollHeight || el.offsetHeight);
+    const pageBreaks = calculateSmartPageBreaks(el, contentHeight, A4_H_PX);
 
-  const full = await domToCanvas(el, {
-    scale: 2, // 2x Retina resolution
-    width: A4_W_PX,
-    height: isSinglePage ? A4_H_PX : contentHeight,
-    backgroundColor: "#ffffff",
-    style: {
-      transform: "none",
-      boxShadow: "none",
-      margin: "0",
-      width: `${A4_W_PX}px`,
-      minHeight: `${A4_H_PX}px`,
-      maxWidth: `${A4_W_PX}px`,
-    },
-  });
+    // If fits in 1 page (or with tolerance), capture at exact A4 height
+    const isSinglePage = pageBreaks.length <= 1;
 
-  if (isSinglePage) {
-    return {
-      pages: [
-        {
-          canvas: full,
-          index: 0,
-          dataUrl: full.toDataURL("image/jpeg", 0.96),
-        },
-      ],
-      pageBreaks: [contentHeight],
-    };
-  }
-
-  // Multi-page slicing using smart breaks
-  const pages: CapturedPage[] = [];
-
-  for (let i = 0; i < pageBreaks.length; i++) {
-    const startY = i === 0 ? 0 : pageBreaks[i - 1];
-    const endY = pageBreaks[i];
-    const sliceHeight = endY - startY;
-
-    const pageCanvas = document.createElement("canvas");
-    pageCanvas.width = full.width;
-    pageCanvas.height = A4_H_PX * 2;
-
-    const ctx = pageCanvas.getContext("2d")!;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-
-    // Draw the slice onto the page canvas
-    const srcY = startY * 2;
-    const srcH = Math.min(sliceHeight * 2, full.height - srcY);
-
-    ctx.drawImage(
-      full,
-      0,
-      srcY,
-      full.width,
-      srcH,
-      0,
-      0,
-      pageCanvas.width,
-      srcH
-    );
-
-    pages.push({
-      canvas: pageCanvas,
-      index: i,
-      dataUrl: pageCanvas.toDataURL("image/jpeg", 0.96),
+    const full = await domToCanvas(el, {
+      scale: 2, // 2x Retina resolution
+      width: A4_W_PX,
+      height: isSinglePage ? A4_H_PX : contentHeight,
+      backgroundColor: isDark ? getDarkPdfBackgroundColor() : "#ffffff",
+      style: {
+        transform: "none",
+        boxShadow: "none",
+        margin: "0",
+        width: `${A4_W_PX}px`,
+        minHeight: `${A4_H_PX}px`,
+        maxWidth: `${A4_W_PX}px`,
+      },
     });
-  }
 
-  return { pages, pageBreaks };
+    if (isSinglePage) {
+      return {
+        pages: [
+          {
+            canvas: full,
+            index: 0,
+            dataUrl: full.toDataURL("image/jpeg", 0.96),
+          },
+        ],
+        pageBreaks: [contentHeight],
+      };
+    }
+
+    // Multi-page slicing using smart breaks
+    const pages: CapturedPage[] = [];
+
+    for (let i = 0; i < pageBreaks.length; i++) {
+      const startY = i === 0 ? 0 : pageBreaks[i - 1];
+      const endY = pageBreaks[i];
+      const sliceHeight = endY - startY;
+
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = full.width;
+      pageCanvas.height = A4_H_PX * 2;
+
+      const ctx = pageCanvas.getContext("2d")!;
+      ctx.fillStyle = isDark ? getDarkPdfBackgroundColor() : "#ffffff";
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+
+      // Draw the slice onto the page canvas
+      const srcY = startY * 2;
+      const srcH = Math.min(sliceHeight * 2, full.height - srcY);
+
+      ctx.drawImage(
+        full,
+        0,
+        srcY,
+        full.width,
+        srcH,
+        0,
+        0,
+        pageCanvas.width,
+        srcH
+      );
+
+      pages.push({
+        canvas: pageCanvas,
+        index: i,
+        dataUrl: pageCanvas.toDataURL("image/jpeg", 0.96),
+      });
+    }
+
+    return { pages, pageBreaks };
+  } finally {
+    if (cleanupDark) {
+      cleanupDark();
+    }
+  }
 }
 
 /**
@@ -305,12 +319,13 @@ export async function pagesToPdfBlob(
   const cv = options?.cv;
   const lang = options?.lang || cv?.currentLanguage || "en";
   const fullName = cv?.personalInfo?.fullName || "Curriculum";
+  const isDark = options?.colorMode === "dark";
 
   pdf.setProperties({
-    title: `${fullName} - Curriculum Vitae`,
+    title: `${fullName} - Curriculum Vitae${isDark ? " (Dark Mode)" : ""}`,
     author: fullName,
-    subject: "Curriculum Vitae",
-    keywords: "curriculum vitae, resume, papyrus, pdf/ua, accessible",
+    subject: isDark ? "Curriculum Vitae (Creative Portfolio - Dark Mode)" : "Curriculum Vitae",
+    keywords: `curriculum vitae, resume, papyrus, pdf/ua, accessible${isDark ? ", dark mode, creative portfolio" : ""}`,
     creator: "PAPYRUS - Dynamic Multilingual Resume & CV Engine",
   });
 
@@ -375,7 +390,7 @@ export async function exportToPdf(
   filename: string = "curriculo.pdf",
   options?: ExportPdfOptions
 ): Promise<void> {
-  const { pages, pageBreaks } = await capturePreviewPages(element);
+  const { pages, pageBreaks } = await capturePreviewPages(element, { colorMode: options?.colorMode });
   const linkAnnotations = extractLinkAnnotations(element, pageBreaks);
   const pdfBlob = await pagesToPdfBlob(
     pages.map((p) => p.canvas),
@@ -383,6 +398,17 @@ export async function exportToPdf(
     options
   );
   triggerDownload(pdfBlob, filename);
+}
+
+/**
+ * Convenient helper to export element directly as Dark Mode PDF for creative portfolios
+ */
+export async function exportToDarkPdf(
+  element: HTMLElement,
+  filename: string = "curriculo-dark.pdf",
+  options?: Omit<ExportPdfOptions, "colorMode">
+): Promise<void> {
+  return exportToPdf(element, filename, { ...options, colorMode: "dark" });
 }
 
 /**
@@ -417,12 +443,13 @@ export async function exportApplicationPackagePdf(
   filename: string = "candidatura_completa.pdf",
   options?: ExportPdfOptions
 ): Promise<void> {
+  const captureOpts = { colorMode: options?.colorMode };
   // Capture Cover Letter pages and links (Page 1)
-  const { pages: clPages, pageBreaks: clBreaks } = await capturePreviewPages(coverLetterElement);
+  const { pages: clPages, pageBreaks: clBreaks } = await capturePreviewPages(coverLetterElement, captureOpts);
   const clLinks = extractLinkAnnotations(coverLetterElement, clBreaks);
 
   // Capture CV pages and links (Subsequent Pages)
-  const { pages: cvPages, pageBreaks: cvBreaks } = await capturePreviewPages(cvElement);
+  const { pages: cvPages, pageBreaks: cvBreaks } = await capturePreviewPages(cvElement, captureOpts);
   const cvLinks = extractLinkAnnotations(cvElement, cvBreaks);
 
   // Offset CV links by the number of cover letter pages

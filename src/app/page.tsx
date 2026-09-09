@@ -218,8 +218,13 @@ export default function BuilderPage() {
       : document.getElementById("offscreen-cv") || document.getElementById("cv-printable-page")) as HTMLElement;
     if (!pageEl) return;
     const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
-    const filename = activeDocTab === "cover-letter" ? `${baseName}_cover_letter.pdf` : `${baseName}_cv.pdf`;
+    const suffix = options.colorMode === "dark" ? "_dark" : "";
+    const filename = activeDocTab === "cover-letter" ? `${baseName}_cover_letter${suffix}.pdf` : `${baseName}_cv${suffix}.pdf`;
     await exportToPdf(pageEl, filename, options);
+  };
+
+  const handleExportDarkPdf = async () => {
+    await handleExportSecurePdf({ cv, lang: cvLang, colorMode: "dark" });
   };
 
   const handleExportSecurePackage = async (options: ExportPdfOptions) => {
@@ -295,6 +300,7 @@ export default function BuilderPage() {
           }}
           onExportCoverLetterPdf={handleExportCoverLetterPdf}
           onExportApplicationPackage={handleExportApplicationPackage}
+          onExportDarkPdf={handleExportDarkPdf}
           linterReport={linterReport}
           canUndo={canUndo}
           canRedo={canRedo}
@@ -568,6 +574,7 @@ export default function BuilderPage() {
           ) as HTMLElement;
           pdfBtn?.click();
         }}
+        onExportDarkPdf={handleExportDarkPdf}
         onExportPng={() => {
           const pngBtn = document.querySelector(
             'button[title*="PNG"], button:has-text("PNG")'
