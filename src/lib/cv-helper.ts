@@ -564,3 +564,11 @@ export {
   diffSections,
   diffATSMetrics,
 } from "@/lib/cvDiff";
+
+export {
+  exportToJsonResume,
+  importFromJsonResume,
+  exportToEuropassXml,
+  importFromEuropassXml,
+  detectResumeFormat,
+} from "@/lib/schemaInterop";

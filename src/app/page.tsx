@@ -151,6 +151,9 @@ export default function BuilderPage() {
     loadPreset,
     importJson,
     exportJson,
+    exportJsonResume,
+    exportEuropassXml,
+    importAnyResume,
     updateFromJson,
     undo,
     redo,
@@ -224,6 +227,9 @@ export default function BuilderPage() {
           onOpenSetup={openSetup}
           onImportJson={importJson}
           onExportJson={exportJson}
+          onExportJsonResume={exportJsonResume}
+          onExportEuropassXml={exportEuropassXml}
+          onImportAnyResume={importAnyResume}
           linterReport={linterReport}
           canUndo={canUndo}
           canRedo={canRedo}
@@ -458,6 +464,8 @@ export default function BuilderPage() {
         onOpenComparator={() => setIsComparatorOpen(true)}
         onOpenJobMatcher={() => setIsJobMatcherOpen(true)}
         onExportJson={exportJson}
+        onExportJsonResume={() => exportJsonResume(cvLang)}
+        onExportEuropassXml={() => exportEuropassXml(cvLang)}
         onExportPdf={() => {
           const pdfBtn = document.querySelector(
             'button[title*="PDF"], button:has-text("PDF")'

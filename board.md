@@ -126,19 +126,23 @@
   - Dedicated QR Code settings card in Personal Details form with autofill shortcuts, custom destination URL, localized captions, and real-time SVG preview.
   - Bi-directional LaTeX sync embedding `\usepackage{qrcode}` and `\qrcode` macros in `.tex` export/import.
 
+- [x] **[FEAT-019]** **JSON Resume & Europass XML Schema Interoperability** `tags: interoperability, standards, export`
+  - Bidirectional serialization between PAPYRUS and JSON Resume (`jsonresume.org`) standard schema v1.0.0.
+  - Complete European Union Europass XML curriculum schema export and parser.
+  - Automatic format detection (`papyrus`, `jsonresume`, `europass-xml`, `latex`) on file upload.
+  - Header export dropdown, Command Palette shortcuts (`Cmd+K`), and comprehensive CLI commands (`jsonresume-export`, `jsonresume-import`, `europass-export`, `europass-import`).
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.3)
-- [ ] **[FEAT-019]** **JSON Resume & Europass XML Schema Interoperability** `tags: interoperability, standards`
-  - *Status:* Implementing bidirectional conversion between PAPYRUS and JSON Resume (`jsonresume.org`) & Europass XML schemas.
-  - *Objective:* Seamless import and export of industry-standard CV schemas.
+- [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
+  - *Status:* Implementing coordinated cover letter document builder matching active CV typography and accent palette.
+  - *Objective:* Coordinated application packet with batch multi-page PDF generation.
+
 ---
 
 ### 📋 Priority Backlog (v1.3 - v2.0)
 
-- [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
-  - Coordinated cover letter generation matching the header, accent color, and typography of the active CV template.
-  - Batch export into a unified multi-page PDF application package.
 - [ ] **[FEAT-021]** **PDF Encryption & PDF/UA Accessibility Compliance** `tags: pdf, security`
   - Optional read-protection password encryption and screen-reader semantic tagging for government accessibility standards.
 

@@ -62,6 +62,8 @@ interface Props {
   onOpenComparator?: () => void;
   onOpenJobMatcher?: () => void;
   onExportJson: () => void;
+  onExportJsonResume?: () => void;
+  onExportEuropassXml?: () => void;
   onExportPdf: () => void;
   onExportPng: () => void;
   onRerollDylan?: () => void;
@@ -85,6 +87,8 @@ export function CommandPalette({
   onOpenComparator,
   onOpenJobMatcher,
   onExportJson,
+  onExportJsonResume,
+  onExportEuropassXml,
   onExportPdf,
   onExportPng,
   onRerollDylan,
@@ -242,6 +246,32 @@ export function CommandPalette({
         keywords: tr("builder.modals.commandPalette.commands.json.keywords").split(" "),
         action: onExportJson,
       },
+      ...(onExportJsonResume
+        ? [
+            {
+              id: "act-export-jsonresume",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.exportJsonResume.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.exportJsonResume.subtitle"),
+              icon: FileJson,
+              keywords: (tr("builder.modals.commandPalette.commands.exportJsonResume.keywords") || "export json resume jsonresume").split(" "),
+              action: onExportJsonResume,
+            },
+          ]
+        : []),
+      ...(onExportEuropassXml
+        ? [
+            {
+              id: "act-export-europass",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.exportEuropass.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.exportEuropass.subtitle"),
+              icon: FileCode2,
+              keywords: (tr("builder.modals.commandPalette.commands.exportEuropass.keywords") || "export europass xml europe").split(" "),
+              action: onExportEuropassXml,
+            },
+          ]
+        : []),
       ...(onOpenComparator
         ? [
             {
@@ -399,6 +429,8 @@ export function CommandPalette({
     onOpenComparator,
     onOpenJobMatcher,
     onExportJson,
+    onExportJsonResume,
+    onExportEuropassXml,
     onExportPdf,
     onExportPng,
     onRerollDylan,
