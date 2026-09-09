@@ -450,12 +450,16 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             </div>
           </div>
 
-          {/* Toggle Switch */}
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={!!data.qrCode?.enabled}
-              onChange={(e) =>
+          {/* Toggle Switch with Clear Visual Feedback & Badge */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              role="switch"
+              id="qr-code-toggle"
+              aria-checked={!!data.qrCode?.enabled}
+              aria-label={tr("builder.forms.personalInfo.qrCode.title")}
+              onClick={() => {
+                const nextEnabled = !data.qrCode?.enabled;
                 onChange((prev) => ({
                   ...prev,
                   qrCode: {
@@ -466,14 +470,59 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
                       showIcon: false,
                       iconType: "globe",
                     }),
-                    enabled: e.target.checked,
+                    enabled: nextEnabled,
                   },
-                }))
-              }
-              className="sr-only peer"
-            />
-            <div className="w-9 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer dark:bg-[#363d47] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-amber-600"></div>
-          </label>
+                }));
+              }}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-amber-500/40 focus:ring-offset-1 ${
+                data.qrCode?.enabled
+                  ? "bg-amber-600 dark:bg-amber-500"
+                  : "bg-stone-300 dark:bg-[#363d47]"
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                  data.qrCode?.enabled ? "translate-x-5.5" : "translate-x-0.5"
+                }`}
+              />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const nextEnabled = !data.qrCode?.enabled;
+                onChange((prev) => ({
+                  ...prev,
+                  qrCode: {
+                    ...(prev.qrCode || {
+                      url: prev.website || prev.links?.[0]?.url || "",
+                      label: { pt: "Perfil Digital", en: "Digital Profile" },
+                      style: "rounded",
+                      showIcon: false,
+                      iconType: "globe",
+                    }),
+                    enabled: nextEnabled,
+                  },
+                }));
+              }}
+              className={`cursor-pointer text-[11px] font-bold px-2 py-0.5 rounded-full border transition-all select-none flex items-center gap-1.5 ${
+                data.qrCode?.enabled
+                  ? "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-200/80 dark:border-amber-800/80 shadow-2xs"
+                  : "bg-stone-100 dark:bg-[#21262d] text-stone-500 dark:text-stone-400 border-stone-200 dark:border-[#363d47]"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  data.qrCode?.enabled
+                    ? "bg-amber-600 dark:bg-amber-400 animate-pulse"
+                    : "bg-stone-400 dark:bg-stone-500"
+                }`}
+              />
+              {data.qrCode?.enabled
+                ? (lang === "pt" ? "Ativo" : "Active")
+                : (lang === "pt" ? "Inativo" : "Off")}
+            </button>
+          </div>
         </div>
 
         {data.qrCode?.enabled && (

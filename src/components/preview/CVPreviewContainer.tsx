@@ -150,14 +150,33 @@ export function CVPreviewContainer({
 
   // Calculate live page count & actual height for scaling container
   useEffect(() => {
-    if (!pageRef.current) return;
-    const height = pageRef.current.offsetHeight || A4_H_PX;
-    setDocHeight(height);
-    const forcedCount = (cv.sections || []).filter((s) => s && s.pageBreakBefore && s.visible).length;
-    const basePages = height <= A4_H_PX + 70 && forcedCount === 0 ? 1 : Math.ceil(height / A4_H_PX);
-    const pages = Math.max(1 + forcedCount, basePages);
-    setPageCount(pages);
-  }, [cv, lang]);
+    const el = pageRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const innerCanvas = el.querySelector("#cover-letter-canvas") as HTMLElement | null;
+      const height = innerCanvas
+        ? Math.max(innerCanvas.scrollHeight, innerCanvas.offsetHeight, A4_H_PX)
+        : Math.max(el.scrollHeight, el.offsetHeight, A4_H_PX);
+
+      setDocHeight(height);
+      const forcedCount = activeDocTab === "cover-letter"
+        ? 0
+        : (cv.sections || []).filter((s) => s && s.pageBreakBefore && s.visible).length;
+      const basePages = height <= A4_H_PX + 40 && forcedCount === 0 ? 1 : Math.ceil(height / A4_H_PX);
+      const pages = Math.max(1 + forcedCount, basePages);
+      setPageCount(pages);
+    };
+
+    measure();
+
+    const ro = new ResizeObserver(() => {
+      measure();
+    });
+    ro.observe(el);
+
+    return () => ro.disconnect();
+  }, [cv, lang, coverLetter, activeDocTab]);
 
   const isAutoFitRef = useRef<boolean>(isAutoFit);
   useEffect(() => {
@@ -656,7 +675,7 @@ export function CVPreviewContainer({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onWheel={handleWheel}
-        className={`flex-1 relative overflow-hidden flex items-start justify-center min-h-0 select-none pt-4 sm:pt-6 pb-24 sm:pb-12 ${
+        className={`flex-1 relative overflow-hidden flex items-start justify-center min-h-0 select-none pt-4 sm:pt-6 pb-36 sm:pb-32 ${
           isPrintEmulation ? "print-emulation" : "charm-bg-dynamic"
         } ${
           isPanning
@@ -690,7 +709,7 @@ export function CVPreviewContainer({
             transform: `translate3d(${pan.x}px, ${pan.y}px, 0px)`,
             transition: isPanning ? "none" : "transform 0.15s ease-out",
           }}
-          className="relative shrink-0 flex items-center justify-center will-change-transform z-10"
+          className="relative shrink-0 flex items-center justify-center will-change-transform z-10 mb-20 sm:mb-16"
         >
           {/* A4 Page Container (Scale zoom from top-center) */}
           <div
@@ -709,6 +728,7 @@ export function CVPreviewContainer({
                   letter={coverLetter}
                   cv={cv}
                   lang={lang}
+                  pageCount={pageCount}
                 />
               </div>
             ) : (

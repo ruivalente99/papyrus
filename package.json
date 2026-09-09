@@ -18,10 +18,13 @@
     "test:qr": "tsx scripts/test-qr-code.ts",
     "test:interop": "tsx scripts/test-schema-interop.ts",
     "test:letter": "tsx scripts/test-cover-letter.ts",
+    "test:letter-pagination": "tsx scripts/test-cover-letter-pagination.ts",
     "test:security": "tsx scripts/test-pdf-security-a11y.ts",
     "test:profile": "tsx scripts/test-multi-profile.ts",
+    "test:dark-pdf": "tsx scripts/test-dark-mode-pdf.ts",
+    "test:i18n": "tsx scripts/test-i18n-erasing.ts",
     "test:playwright": "playwright test",
-    "test:all": "tsx scripts/test-board-parser.ts && tsx scripts/test-page-breaks.ts && tsx scripts/test-ats-matcher.ts && tsx scripts/test-typography.ts && tsx scripts/test-qr-code.ts && tsx scripts/test-schema-interop.ts && tsx scripts/test-cover-letter.ts && tsx scripts/test-pdf-security-a11y.ts && tsx scripts/test-multi-profile.ts && tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && tsx scripts/test-cv-diff.ts && playwright test"
+    "test:all": "tsx scripts/test-board-parser.ts && tsx scripts/test-page-breaks.ts && tsx scripts/test-ats-matcher.ts && tsx scripts/test-typography.ts && tsx scripts/test-qr-code.ts && tsx scripts/test-schema-interop.ts && tsx scripts/test-cover-letter.ts && tsx scripts/test-cover-letter-pagination.ts && tsx scripts/test-pdf-security-a11y.ts && tsx scripts/test-multi-profile.ts && tsx scripts/test-dark-mode-pdf.ts && tsx scripts/test-i18n-erasing.ts && tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && tsx scripts/test-cv-diff.ts && playwright test"
   },
   "dependencies": {
     "@dicebear/core": "^10.7.0",
