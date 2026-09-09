@@ -129,7 +129,7 @@ export function SkillsForm({ section, lang, defaultLang, onChange }: Props) {
             <div className="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-stone-100 dark:border-[#30363d]">
               <input
                 type="text"
-                value={cat.name?.[lang] || cat.name?.[defaultLang] || ""}
+                value={cat.name?.[lang] !== undefined ? cat.name[lang] : (cat.name?.[defaultLang] ?? "")}
                 onChange={(e) => handleUpdateCategoryName(cat.id, e.target.value)}
                 aria-label={tr("builder.forms.skills.categoryPlaceholder")}
                 placeholder={tr("builder.forms.skills.categoryPlaceholder")}

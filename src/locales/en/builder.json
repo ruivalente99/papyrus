@@ -351,6 +351,11 @@
           "subtitle": "Combined multi-page PDF with Cover Letter + CV",
           "keywords": "export package complete packet cover letter cv combined application"
         },
+        "exportDarkPdf": {
+          "title": "Export Dark Mode PDF",
+          "subtitle": "High-contrast dark theme for creative portfolios",
+          "keywords": "export dark mode pdf creative portfolio night theme"
+        },
         "navGrid": {
           "title": "Toggle Alignment Grid (#)",
           "subtitle": "Show/hide alignment grid on canvas",
@@ -464,6 +469,7 @@
     "exportEuropassXml": "Export Europass XML",
     "jsonResumeDownloaded": "JSON Resume (.json) exported successfully!",
     "europassDownloaded": "Europass XML (.xml) exported successfully!",
+    "darkPdfDownloaded": "Dark Mode PDF (.pdf) exported successfully!",
     "resumeImported": "Resume imported successfully ({{format}})!",
     "resumeImportError": "Unable to import resume. Unsupported or malformed format.",
     "avatarClickHint": "Click or drag photo here",
@@ -540,6 +546,11 @@
     "allowPrinting": "Allow Printing",
     "allowCopying": "Allow Text Copying (Recommended for ATS)",
     "allowModifying": "Allow Modification",
+    "colorTheme": "Color Theme",
+    "light": "Light",
+    "dark": "Dark Mode",
+    "lightModeTitle": "Standard white A4 canvas (ATS and printing standard)",
+    "darkModeTitle": "High-contrast dark mode canvas (Creative & digital portfolios)",
     "exportPdf": "Export Secure PDF",
     "exportPackage": "Export Application Packet",
     "cancel": "Cancel"

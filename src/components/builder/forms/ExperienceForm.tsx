@@ -80,7 +80,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
       items: sec.items.map((it) => {
         if (it.id !== itemId) return it;
         const highlights = it.highlights || {};
-        const rawBullets = highlights[lang] || highlights[defaultLang];
+        const rawBullets = (lang in highlights && highlights[lang] !== undefined) ? highlights[lang] : highlights[defaultLang];
         const currentBullets = Array.isArray(rawBullets) ? [...rawBullets] : [""];
         currentBullets[bulletIndex] = text;
         return {
@@ -122,7 +122,7 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
       items: sec.items.map((it) => {
         if (it.id !== itemId) return it;
         const highlights = it.highlights || {};
-        const rawBullets = highlights[lang] || highlights[defaultLang];
+        const rawBullets = (lang in highlights && highlights[lang] !== undefined) ? highlights[lang] : highlights[defaultLang];
         const currentBullets = Array.isArray(rawBullets) ? [...rawBullets] : [];
         return {
           ...it,
@@ -153,7 +153,9 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
 
       <div className="space-y-3">
         {section.items.map((item, index) => {
-          const rawBullets = item.highlights?.[lang] || item.highlights?.[defaultLang];
+          const rawBullets = (item.highlights && lang in item.highlights && item.highlights[lang] !== undefined)
+            ? item.highlights[lang]
+            : item.highlights?.[defaultLang];
           const bullets = Array.isArray(rawBullets) && rawBullets.length > 0 ? rawBullets : [""];
 
           return (

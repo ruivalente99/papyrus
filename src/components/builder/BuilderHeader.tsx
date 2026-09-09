@@ -34,6 +34,7 @@ import {
   Mail,
   ShieldCheck,
   Briefcase,
+  Moon,
 } from "lucide-react";
 import { ProfileSwitcherDropdown } from "@/components/profile/ProfileSwitcherDropdown";
 import type { CVProfileMeta } from "@/types/profile";
@@ -60,6 +61,7 @@ interface Props {
   onSelectDocTab?: (tab: "cv" | "cover-letter") => void;
   onExportCoverLetterPdf?: () => void;
   onExportApplicationPackage?: () => void;
+  onExportDarkPdf?: () => void;
   onOpenPdfSecurity?: () => void;
   profiles?: CVProfileMeta[];
   activeProfileId?: string;
@@ -100,6 +102,7 @@ export function BuilderHeader({
   onSelectDocTab,
   onExportCoverLetterPdf,
   onExportApplicationPackage,
+  onExportDarkPdf,
   onOpenPdfSecurity,
   linterReport,
   canUndo = false,
@@ -372,7 +375,7 @@ export function BuilderHeader({
       </div>
 
       {/* Center Controls: CV Language, UI Language / Nationality, Theme Selector, Linter Badge */}
-      <div className="flex items-center gap-1 sm:gap-2 shrink min-w-0 flex-nowrap">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0 flex-nowrap">
         {/* CV Document Content Language */}
         <LanguageSwitcher
           variant="cv"
@@ -383,20 +386,28 @@ export function BuilderHeader({
           onAddLanguage={handleAddCvLang}
         />
 
-        {/* App UI Language & Nationality */}
-        <LanguageSwitcher
-          variant="ui"
-          activeLang={currentUiLang}
-          uiLang={currentUiLang}
-          onSwitchLanguage={handleSwitchUiLang}
-        />
+        {/* App UI Language & Nationality (Desktop / Tablet) */}
+        <div className="hidden sm:flex items-center">
+          <LanguageSwitcher
+            variant="ui"
+            activeLang={currentUiLang}
+            uiLang={currentUiLang}
+            onSwitchLanguage={handleSwitchUiLang}
+          />
+        </div>
 
-        <ThemeSelector lang={currentUiLang} />
+        {/* Theme Selector (Desktop / Tablet) */}
+        <div className="hidden sm:flex items-center">
+          <ThemeSelector lang={currentUiLang} />
+        </div>
 
-        <LinterBadge
-          report={linterReport}
-          onClick={() => setShowLinterModal(true)}
-        />
+        {/* Linter Quality Badge (Desktop / Tablet) */}
+        <div className="hidden sm:flex items-center">
+          <LinterBadge
+            report={linterReport}
+            onClick={() => setShowLinterModal(true)}
+          />
+        </div>
       </div>
 
       {/* Actions: Presets, TeX, JSON */}
@@ -406,7 +417,7 @@ export function BuilderHeader({
           href="/guide"
           title={tr("builder.header.guideTitle")}
           aria-label={tr("builder.header.guideTitle")}
-          className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
+          className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
         >
           <BookOpen size={13} />
           <span className="hidden md:inline">{tr("builder.header.guide")}</span>
@@ -417,7 +428,7 @@ export function BuilderHeader({
           href="/board"
           title={tr("builder.header.boardTitle")}
           aria-label={tr("builder.header.boardTitle")}
-          className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
+          className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
         >
           <Kanban size={13} />
           <span className="hidden md:inline">{tr("builder.header.board")}</span>
@@ -430,7 +441,7 @@ export function BuilderHeader({
             onClick={onOpenComparator}
             title={tr("builder.header.compareTitle")}
             aria-label={tr("builder.header.compareTitle")}
-            className="flex items-center justify-center gap-1 text-xs font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-indigo-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
+            className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-indigo-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
           >
             <GitCompare size={13} />
             <span className="hidden md:inline">{tr("builder.header.compareCV")}</span>
@@ -444,7 +455,7 @@ export function BuilderHeader({
             onClick={onOpenJobMatcher}
             title={tr("builder.header.jobMatcherTitle")}
             aria-label={tr("builder.header.jobMatcherTitle")}
-            className="flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
+            className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
           >
             <Target size={13} />
             <span className="hidden md:inline">{tr("builder.header.jobMatcher")}</span>
@@ -477,7 +488,63 @@ export function BuilderHeader({
           </button>
 
           {showPresets && (
-            <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100">
+            <div className="absolute right-0 mt-1.5 w-64 sm:w-60 max-w-[90vw] bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-2 z-50 animate-in fade-in duration-100 max-h-[85vh] overflow-y-auto">
+              {/* Mobile Preferences & Quality Audit Score */}
+              <div className="sm:hidden space-y-1.5 mb-2 pb-2 border-b border-stone-150 dark:border-[#363d47]">
+                {/* Quality Audit Score Banner */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowLinterModal(true);
+                    setShowPresets(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl bg-stone-50 dark:bg-[#161b22] hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold border border-stone-200/60 dark:border-[#30363d]"
+                >
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
+                    <span>{tr("builder.header.qualityAudit")}</span>
+                  </div>
+                  <span
+                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full font-mono ${
+                      linterReport.score >= 90
+                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400"
+                        : linterReport.score >= 70
+                        ? "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400"
+                        : "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-400"
+                    }`}
+                  >
+                    {linterReport.score}%
+                  </span>
+                </button>
+
+                {/* UI Language & Theme Quick Switcher */}
+                <div className="flex items-center justify-between p-2 rounded-xl bg-stone-50 dark:bg-[#161b22] border border-stone-200/60 dark:border-[#30363d]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-bold text-stone-500 uppercase">UI:</span>
+                    <LanguageSwitcher
+                      variant="ui"
+                      activeLang={currentUiLang}
+                      uiLang={currentUiLang}
+                      onSwitchLanguage={handleSwitchUiLang}
+                    />
+                  </div>
+                  <ThemeSelector lang={currentUiLang} />
+                </div>
+
+                {/* Profile Switcher on Mobile (if profiles configured) */}
+                {profiles && profiles.length > 0 && activeProfileId && onSwitchProfile && onOpenProfileManager && (
+                  <div className="pt-1">
+                    <ProfileSwitcherDropdown
+                      profiles={profiles}
+                      activeProfileId={activeProfileId}
+                      onSwitchProfile={onSwitchProfile}
+                      onOpenProfileManager={onOpenProfileManager}
+                      onCreateProfile={() => (onCreateProfile ? onCreateProfile("New Profile") : onOpenProfileManager())}
+                    />
+                  </div>
+                )}
+              </div>
+
               <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
                 {tr("builder.header.presets")}
               </p>
@@ -496,6 +563,14 @@ export function BuilderHeader({
 
               {/* Mobile Extended Actions inside Dropdown */}
               <div className="sm:hidden border-t border-stone-150 dark:border-[#363d47] my-1 pt-1 space-y-0.5">
+                <Link
+                  href="/guide"
+                  onClick={() => setShowPresets(false)}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                >
+                  <BookOpen size={13} className="text-amber-700 dark:text-amber-400" />
+                  <span>{tr("builder.header.guide")}</span>
+                </Link>
                 <Link
                   href="/board"
                   onClick={() => setShowPresets(false)}
@@ -620,6 +695,19 @@ export function BuilderHeader({
                   >
                     <Layers size={13} className="text-emerald-600 dark:text-emerald-400" />
                     <span>{tr("builder.coverLetter.exportPackage")}</span>
+                  </button>
+                )}
+                {onExportDarkPdf && (
+                  <button
+                    onClick={() => {
+                      onExportDarkPdf();
+                      setShowPresets(false);
+                      showToast(tr("builder.header.darkPdfDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <Moon size={13} className="text-indigo-500 dark:text-indigo-400" />
+                    <span>{tr("builder.modals.commandPalette.commands.exportDarkPdf.title")}</span>
                   </button>
                 )}
                 {onOpenPdfSecurity && (

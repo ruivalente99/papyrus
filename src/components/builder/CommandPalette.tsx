@@ -33,6 +33,7 @@ import {
   Target,
   Type,
   Mail,
+  Moon,
 } from "lucide-react";
 import { FONT_CATALOG, type FontFamilyId } from "@/lib/typography";
 import type { CVProfileMeta } from "@/types/profile";
@@ -75,6 +76,7 @@ interface Props {
   activeProfileId?: string;
   onSwitchProfile?: (id: string) => void;
   onExportPdf: () => void;
+  onExportDarkPdf?: () => void;
   onExportPng: () => void;
   onRerollDylan?: () => void;
   onJumpToSection?: (sectionId: string) => void;
@@ -108,6 +110,7 @@ export function CommandPalette({
   activeProfileId,
   onSwitchProfile,
   onExportPdf,
+  onExportDarkPdf,
   onExportPng,
   onRerollDylan,
   onJumpToSection,
@@ -227,6 +230,18 @@ export function CommandPalette({
         keywords: tr("builder.modals.commandPalette.commands.exportPdf.keywords").split(" "),
         shortcut: "PDF",
         action: onExportPdf,
+      },
+      {
+        id: "act-export-dark-pdf",
+        category: "actions",
+        title: tr("builder.modals.commandPalette.commands.exportDarkPdf.title") || "Export Dark Mode PDF",
+        subtitle: tr("builder.modals.commandPalette.commands.exportDarkPdf.subtitle") || "High-contrast dark theme for creative portfolios",
+        icon: Moon,
+        keywords: (tr("builder.modals.commandPalette.commands.exportDarkPdf.keywords") || "export dark mode pdf creative portfolio night theme").split(" "),
+        action: () => {
+          if (onExportDarkPdf) onExportDarkPdf();
+          else onExportPdf();
+        },
       },
       {
         id: "act-export-png",
@@ -541,6 +556,7 @@ export function CommandPalette({
     activeProfileId,
     onSwitchProfile,
     onExportPdf,
+    onExportDarkPdf,
     onExportPng,
     onRerollDylan,
     onJumpToSection,

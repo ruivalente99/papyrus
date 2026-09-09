@@ -12,6 +12,7 @@ interface CoverLetterPreviewProps {
   cv: CVDocument;
   lang: SupportedLanguage;
   scale?: number;
+  pageCount?: number;
 }
 
 export function CoverLetterPreview({
@@ -19,17 +20,53 @@ export function CoverLetterPreview({
   cv,
   lang,
   scale = 1,
+  pageCount = 1,
 }: CoverLetterPreviewProps) {
   const { personalInfo, theme } = cv;
   const { recipient, content } = letter;
 
   const t = (val: { [k: string]: string | undefined } | undefined): string => {
     if (!val) return "";
-    return val[lang] || val[cv.defaultLanguage] || val.en || Object.values(val)[0] || "";
+    if (lang in val && val[lang] !== undefined) return val[lang] ?? "";
+    if (cv.defaultLanguage in val && val[cv.defaultLanguage] !== undefined) return val[cv.defaultLanguage] ?? "";
+    if ("en" in val && val.en !== undefined) return val.en ?? "";
+    return Object.values(val)[0] || "";
   };
 
   const fontFamilyCss = getFontFamilyCss(theme.fontFamily);
   const primaryColor = theme.primaryColor || "#004f90";
+
+  // Density Spacing presets matching CV controls (cv.theme.fontSize)
+  const spacing = cv.theme.fontSize || "normal";
+  const spacingStyles = {
+    compact: {
+      padding: "p-8 sm:p-10",
+      headerPb: "pb-4 mb-5",
+      recipientMb: "mb-5",
+      bodySpacing: "space-y-2.5 text-[12.5px] leading-normal",
+      footerMt: "mt-5 pt-3",
+    },
+    normal: {
+      padding: "p-12 sm:p-14",
+      headerPb: "pb-6 mb-7",
+      recipientMb: "mb-7",
+      bodySpacing: "space-y-3.5 text-[13.5px] leading-relaxed",
+      footerMt: "mt-8 pt-4",
+    },
+    spacious: {
+      padding: "p-14 sm:p-16",
+      headerPb: "pb-7 mb-9",
+      recipientMb: "mb-9",
+      bodySpacing: "space-y-4 text-[14px] leading-loose",
+      footerMt: "mt-10 pt-5",
+    },
+  }[spacing] || {
+    padding: "p-12 sm:p-14",
+    headerPb: "pb-6 mb-7",
+    recipientMb: "mb-7",
+    bodySpacing: "space-y-3.5 text-[13.5px] leading-relaxed",
+    footerMt: "mt-8 pt-4",
+  };
 
   // Format date if ISO string (YYYY-MM-DD)
   const formatDate = (rawDate?: string) => {
@@ -63,10 +100,10 @@ export function CoverLetterPreview({
     <div
       data-testid="cover-letter-preview"
       id="cover-letter-canvas"
-      className="bg-white text-stone-900 shadow-2xl relative select-text overflow-hidden transition-all duration-200 print:shadow-none print:m-0"
+      className="bg-white text-stone-900 shadow-2xl relative select-text transition-all duration-200 print:shadow-none print:m-0"
       style={{
         width: 794,
-        minHeight: 1123,
+        minHeight: Math.max(1123, pageCount * 1123),
         fontFamily: fontFamilyCss,
         transform: scale !== 1 ? `scale(${scale})` : undefined,
         transformOrigin: "top center",
@@ -78,11 +115,11 @@ export function CoverLetterPreview({
         style={{ backgroundColor: primaryColor }}
       />
 
-      <div className="p-12 sm:p-14 flex flex-col justify-between min-h-[1115px]">
+      <div className={`${spacingStyles.padding} flex flex-col ${pageCount === 1 ? "justify-between" : "justify-start"} min-h-[1115px]`}>
         {/* Top Section: Sender Header & Contact Row */}
         <div>
           {letter.showSenderHeader && (
-            <header className="border-b border-stone-200/80 pb-6 mb-8 flex items-start justify-between gap-6">
+            <header className={`border-b border-stone-200/80 ${spacingStyles.headerPb} flex items-start justify-between gap-6`}>
               <div className="flex-1">
                 <h1
                   className="text-3xl font-extrabold tracking-tight text-stone-950"
@@ -183,7 +220,7 @@ export function CoverLetterPreview({
           )}
 
           {/* Date & Recipient Details */}
-          <div className="grid grid-cols-2 gap-6 mb-8 text-xs">
+          <div className={`grid grid-cols-2 gap-6 ${spacingStyles.recipientMb} text-xs`}>
             {/* Left: Recipient Information */}
             <div className="space-y-1 text-stone-800">
               {recipient.hiringManagerName && (
@@ -213,7 +250,7 @@ export function CoverLetterPreview({
           </div>
 
           {/* Letter Body */}
-          <main className="space-y-4 text-[13.5px] leading-relaxed text-stone-800 text-justify">
+          <main className={`${spacingStyles.bodySpacing} text-stone-800 text-justify`}>
             {/* Salutation */}
             {t(content.salutation) && (
               <p className="font-bold text-stone-950 mb-3">{t(content.salutation)}</p>
@@ -243,7 +280,7 @@ export function CoverLetterPreview({
         </div>
 
         {/* Bottom Section: Sign-off & Signature */}
-        <footer className="mt-8 pt-4" data-page-break-avoid="true">
+        <footer className={spacingStyles.footerMt} data-page-break-avoid="true">
           {t(content.signOff) && (
             <p className="text-[13.5px] font-medium text-stone-800 mb-6">
               {t(content.signOff)}

@@ -12,16 +12,20 @@ export function t(
   if (typeof field === "string") return field;
   if (typeof field !== "object") return String(field);
 
-  const langVal = field[lang];
-  if (langVal !== undefined && langVal !== null) {
-    const str = String(langVal);
-    if (str.trim().length > 0) return str;
+  // If the target language exists explicitly on the field (even if empty string ""), respect it
+  if (lang in field) {
+    const langVal = field[lang];
+    if (langVal !== undefined && langVal !== null) {
+      return String(langVal);
+    }
   }
 
-  const defVal = field[defaultLang];
-  if (defVal !== undefined && defVal !== null) {
-    const str = String(defVal);
-    if (str.trim().length > 0) return str;
+  // Fallback to default language if target language key was not set
+  if (defaultLang in field) {
+    const defVal = field[defaultLang];
+    if (defVal !== undefined && defVal !== null) {
+      return String(defVal);
+    }
   }
 
   const keys = Object.keys(field);
@@ -47,14 +51,18 @@ export function tArray(
   if (Array.isArray(field)) return field.map(String);
   if (typeof field !== "object") return [String(field)];
 
-  const langArr = (field as any)[lang];
-  if (Array.isArray(langArr) && langArr.length > 0) {
-    return langArr.map(String);
+  if (lang in (field as any)) {
+    const langArr = (field as any)[lang];
+    if (Array.isArray(langArr)) {
+      return langArr.map(String);
+    }
   }
 
-  const defArr = (field as any)[defaultLang];
-  if (Array.isArray(defArr) && defArr.length > 0) {
-    return defArr.map(String);
+  if (defaultLang in (field as any)) {
+    const defArr = (field as any)[defaultLang];
+    if (Array.isArray(defArr)) {
+      return defArr.map(String);
+    }
   }
 
   const keys = Object.keys(field);

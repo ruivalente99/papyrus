@@ -28,7 +28,8 @@ export function CoverLetterForm({ letter, onChange, lang }: CoverLetterFormProps
 
   const getLocalized = (val?: { [k: string]: string | undefined }) => {
     if (!val) return "";
-    return val[lang] || val.en || "";
+    if (lang in val && val[lang] !== undefined) return val[lang] ?? "";
+    return val.en ?? "";
   };
 
   const updateRecipient = (field: keyof typeof recipient, value: any) => {

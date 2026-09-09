@@ -582,3 +582,15 @@ export {
   generatePdfUaXmp,
   enrichPdfWithUaCompliance,
 } from "@/lib/pdfUa";
+
+export {
+  prepareDarkModeElement,
+  getDarkPdfBackgroundColor,
+  isDarkModePdfSupported,
+  DARK_PDF_BG_COLOR,
+} from "@/lib/pdfDarkMode";
+
+export {
+  exportToDarkPdf,
+} from "@/lib/pdfExport";
+
