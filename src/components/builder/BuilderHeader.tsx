@@ -27,7 +27,6 @@ import {
   History,
   Clock,
   Download,
-  Kanban,
   GitCompare,
   Target,
   FileText,
@@ -423,16 +422,6 @@ export function BuilderHeader({
           <span className="hidden md:inline">{tr("builder.header.guide")}</span>
         </Link>
 
-        {/* Board / Roadmap Link */}
-        <Link
-          href="/board"
-          title={tr("builder.header.boardTitle")}
-          aria-label={tr("builder.header.boardTitle")}
-          className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
-        >
-          <Kanban size={13} />
-          <span className="hidden md:inline">{tr("builder.header.board")}</span>
-        </Link>
 
         {/* Visual CV Comparator Button */}
         {onOpenComparator && (
@@ -571,14 +560,7 @@ export function BuilderHeader({
                   <BookOpen size={13} className="text-amber-700 dark:text-amber-400" />
                   <span>{tr("builder.header.guide")}</span>
                 </Link>
-                <Link
-                  href="/board"
-                  onClick={() => setShowPresets(false)}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                >
-                  <Kanban size={13} className="text-amber-700 dark:text-amber-400" />
-                  <span>{tr("builder.header.boardTitle")}</span>
-                </Link>
+
                 {onOpenComparator && (
                   <button
                     onClick={() => {

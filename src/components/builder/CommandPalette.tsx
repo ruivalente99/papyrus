@@ -422,17 +422,21 @@ export function CommandPalette({
         : []),
 
       // Navigation: External Pages
-      {
-        id: "nav-board",
-        category: "navigation" as const,
-        title: tr("builder.modals.commandPalette.commands.navBoard.title"),
-        subtitle: tr("builder.modals.commandPalette.commands.navBoard.subtitle"),
-        icon: Kanban,
-        keywords: tr("builder.modals.commandPalette.commands.navBoard.keywords").split(" "),
-        action: () => {
-          window.location.href = "/board";
-        },
-      },
+      ...(process.env.NODE_ENV === "development" || process.env.ENABLE_DEV_BOARD === "true"
+        ? [
+            {
+              id: "nav-board",
+              category: "navigation" as const,
+              title: tr("builder.modals.commandPalette.commands.navBoard.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.navBoard.subtitle"),
+              icon: Kanban,
+              keywords: tr("builder.modals.commandPalette.commands.navBoard.keywords").split(" "),
+              action: () => {
+                window.location.href = "/board";
+              },
+            },
+          ]
+        : []),
       {
         id: "nav-guide",
         category: "navigation" as const,
