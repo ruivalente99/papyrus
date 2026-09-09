@@ -86,7 +86,14 @@
       "highlights": "Principais Conquistas e Responsabilidades",
       "addBullet": "Adicionar ponto",
       "bulletPlaceholder": "Descreva uma conquista ou responsabilidade...",
-      "deleteBullet": "Eliminar ponto"
+      "deleteBullet": "Eliminar ponto",
+      "xyzGuide": "Fórmula Google XYZ",
+      "xyzComplete": "XYZ 100% (X + Y + Z)",
+      "xyzNeedsMetric": "Falta Métrica [Y]",
+      "xyzNeedsMethod": "Falta Método [Z]",
+      "xyzPassive": "Verbo Passivo",
+      "xyzExample": "Inserir Exemplo XYZ",
+      "xyzReplaceWith": "Substituir por \"{{verb}}\""
     },
     "education": {
       "title": "Habilitações e Formação",
@@ -252,6 +259,11 @@
           "subtitle": "Comparação A4 lado a lado, diff semântico e auditoria ATS",
           "keywords": "diff comparar comparador versao ats semantico merge"
         },
+        "jobMatcher": {
+          "title": "Correspondência ATS de Vagas de Emprego",
+          "subtitle": "Analisar requisitos da vaga e adicionar termos em falta",
+          "keywords": "vaga emprego ats requisitos scanner palavras match correspondencia"
+        },
         "rerollDylan": {
           "title": "Sortear Novo Avatar Dylan (Re-roll)",
           "subtitle": "Gera uma nova variação artística vetorial",
@@ -372,6 +384,8 @@
     "compare": "Comparar",
     "compareCV": "Comparar",
     "compareTitle": "Comparador Visual de CVs & Motor de Diff",
+    "jobMatcher": "Vagas ATS",
+    "jobMatcherTitle": "Correspondência ATS de Vagas de Emprego",
     "recentEdits": "Últimas Edições",
     "recentHistory": "Histórico de edições recentes",
     "justNow": "Agora",

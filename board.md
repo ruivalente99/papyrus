@@ -100,6 +100,17 @@
   - High-fidelity print preview emulation with page sheet separators, paper shadows, and watermarked page badges.
   - Dedicated print emulation toggle in floating toolbar (`Printer` icon) with bilingual accessibility tooltips.
   - Complete CSS `@media print` and `.print-emulation` styling guaranteeing pixel-perfect physical print parity.
+- [x] **[FEAT-016]** **AI-Assisted Bullet Point Polisher (Google XYZ Formula)** `tags: ai, linter, formatting`
+  - Automated analysis of resume bullets based on Google's high-impact formula: *"Accomplished [X], measured by [Y], by doing [Z]"*.
+  - Inline XYZ badge indicators (`✓ XYZ 100%`, `⚠️ XYZ 60% Missing Metric [Y]`, `⚠️ Weak Verb`) beneath each bullet in the experience editor.
+  - 1-click active verb replacement suggestions swapping passive verbs ("worked on", "responsible for") with impactful past-tense alternatives ("engineered", "spearheaded").
+  - Integrated into the real-time quality linter to audit passive phrasing across all job roles.
+- [x] **[FEAT-017]** **ATS Job Vacancy Keyword Matcher** `tags: ats, recruiter, analysis`
+  - 100% client-side, offline ATS keyword extraction comparing job listings against active CV content.
+  - Radial overall match score (0-100%) with rating tiers (*Excellent*, *Good*, *Moderate*, *Needs Tailoring*).
+  - Categorized missing keyword tags (Technical, Soft, Domain) with 1-click skill injection into the active CV's Skills section.
+  - Job vs CV keyword density and frequency distribution matrix.
+  - Integrated into header actions, mobile menu, and Command Palette (`Cmd+K`).
 
 ---
 
@@ -114,10 +125,6 @@
 - [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
   - Coordinated cover letter generation matching the header, accent color, and typography of the active CV template.
   - Batch export into a unified multi-page PDF application package.
-- [ ] **[FEAT-016]** **AI-Assisted Bullet Point Polisher (Google XYZ Formula)** `tags: ai, linter`
-  - Intelligent suggestions converting passive descriptions into quantified accomplishments (*"Accomplished [X], measured by [Y], by doing [Z]"*).
-- [ ] **[FEAT-017]** **ATS Job Vacancy Keyword Matcher** `tags: ats, recruiter`
-  - Text area to paste job descriptions; analyzes keyword intersection and highlights missing high-value technical terms.
 - [ ] **[FEAT-018]** **Editorial Typography Selector** `tags: styling, typography`
   - Curated font families optimized for ATS readability and aesthetics:
     - *Serif:* Merriweather, EB Garamond, Source Serif.

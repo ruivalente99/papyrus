@@ -10,6 +10,7 @@ import { SetupScreen } from "@/components/setup/SetupScreen";
 import { CommandPalette } from "@/components/builder/CommandPalette";
 import { CodeEditorPane } from "@/components/builder/code/CodeEditorPane";
 import { CVCompareModal } from "@/components/comparator/CVCompareModal";
+import { JobMatcherModal } from "@/components/matcher/JobMatcherModal";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { I18nProvider } from "@/context/I18nContext";
 import { translate } from "@/locales";
@@ -20,6 +21,7 @@ export default function BuilderPage() {
   const [editorMode, setEditorMode] = useState<"form" | "json" | "latex">("form");
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isComparatorOpen, setIsComparatorOpen] = useState(false);
+  const [isJobMatcherOpen, setIsJobMatcherOpen] = useState(false);
   const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
   const [splitRatio, setSplitRatio] = useState<number>(50);
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
@@ -231,6 +233,7 @@ export default function BuilderPage() {
           onRestoreHistory={restoreHistoryEntry}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
           onOpenComparator={() => setIsComparatorOpen(true)}
+          onOpenJobMatcher={() => setIsJobMatcherOpen(true)}
         />
 
         {/* Split-Pane Main Body */}
@@ -452,6 +455,7 @@ export default function BuilderPage() {
         }}
         onOpenLatex={() => setEditorMode("latex")}
         onOpenComparator={() => setIsComparatorOpen(true)}
+        onOpenJobMatcher={() => setIsJobMatcherOpen(true)}
         onExportJson={exportJson}
         onExportPdf={() => {
           const pdfBtn = document.querySelector(
@@ -477,6 +481,15 @@ export default function BuilderPage() {
         onClose={() => setIsComparatorOpen(false)}
         lang={cvLang}
         onUpdateActiveCV={(updatedCV) => setCv(updatedCV)}
+      />
+
+      {/* ATS Job Vacancy Keyword Matcher Modal */}
+      <JobMatcherModal
+        cv={cv}
+        isOpen={isJobMatcherOpen}
+        onClose={() => setIsJobMatcherOpen(false)}
+        lang={cvLang}
+        onUpdateCV={(updatedCV) => setCv(updatedCV)}
       />
     </div>
   </I18nProvider>

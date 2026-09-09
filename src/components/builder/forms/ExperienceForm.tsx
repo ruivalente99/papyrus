@@ -4,7 +4,8 @@ import React from "react";
 import type { ExperienceSection, ExperienceItem, SupportedLanguage } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
-import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { analyzeXYZBullet, getXYZExample } from "@/lib/xyzEngine";
+import { Plus, Trash2, Eye, EyeOff, Sparkles, CheckCircle2, AlertTriangle } from "lucide-react";
 
 interface Props {
   section: ExperienceSection;
@@ -108,6 +109,26 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
           highlights: {
             ...highlights,
             [lang]: currentBullets,
+          },
+        };
+      }),
+    }));
+  };
+
+  const handleInsertXYZExample = (itemId: string) => {
+    const example = getXYZExample(lang);
+    onChange((sec) => ({
+      ...sec,
+      items: sec.items.map((it) => {
+        if (it.id !== itemId) return it;
+        const highlights = it.highlights || {};
+        const rawBullets = highlights[lang] || highlights[defaultLang];
+        const currentBullets = Array.isArray(rawBullets) ? [...rawBullets] : [];
+        return {
+          ...it,
+          highlights: {
+            ...highlights,
+            [lang]: [...currentBullets.filter((b) => b.trim().length > 0), example],
           },
         };
       }),
@@ -294,39 +315,112 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                     <label className="font-semibold text-stone-600 dark:text-[#c9d1d9]">
                       {tr("builder.forms.experience.highlights")} ({lang.toUpperCase()})
                     </label>
-                    <button
-                      type="button"
-                      onClick={() => handleAddBullet(item.id)}
-                      className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800"
-                    >
-                      + {tr("builder.forms.experience.addBullet")}
-                    </button>
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => handleInsertXYZExample(item.id)}
+                        className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800 flex items-center gap-1 transition-colors"
+                        title={tr("builder.forms.experience.xyzExample")}
+                      >
+                        <Sparkles size={11} />
+                        <span>{tr("builder.forms.experience.xyzExample")}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleAddBullet(item.id)}
+                        className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-800"
+                      >
+                        + {tr("builder.forms.experience.addBullet")}
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="space-y-1.5">
-                    {bullets.map((bullet, bIdx) => (
-                      <div key={bIdx} className="flex items-start gap-1.5">
-                        <span className="text-stone-400 dark:text-[#8b949e] font-bold mt-1">•</span>
-                        <textarea
-                          rows={2}
-                          value={bullet}
-                          onChange={(e) => handleUpdateBullet(item.id, bIdx, e.target.value)}
-                          placeholder={tr("builder.forms.experience.bulletPlaceholder")}
-                          className="flex-1 min-w-0 border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 resize-y"
-                        />
-                        {bullets.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteBullet(item.id, bIdx)}
-                            title={tr("a11y.forms.deleteBullet")}
-                            aria-label={tr("a11y.forms.deleteBullet")}
-                            className="text-stone-500 dark:text-[#8b949e] hover:text-red-500 dark:hover:text-red-400 mt-1 p-1 min-w-[24px] min-h-[24px] flex items-center justify-center rounded"
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
+                  <div className="space-y-2.5">
+                    {bullets.map((bullet, bIdx) => {
+                      const xyz = bullet.trim() ? analyzeXYZBullet(bullet, lang) : null;
+                      return (
+                        <div key={bIdx} className="space-y-1">
+                          <div className="flex items-start gap-1.5">
+                            <span className="text-stone-400 dark:text-[#8b949e] font-bold mt-1">•</span>
+                            <textarea
+                              rows={2}
+                              value={bullet}
+                              onChange={(e) => handleUpdateBullet(item.id, bIdx, e.target.value)}
+                              placeholder={tr("builder.forms.experience.bulletPlaceholder")}
+                              className="flex-1 min-w-0 border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded p-1.5 text-xs focus:ring-1 focus:ring-amber-500 resize-y"
+                            />
+                            {bullets.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteBullet(item.id, bIdx)}
+                                title={tr("a11y.forms.deleteBullet")}
+                                aria-label={tr("a11y.forms.deleteBullet")}
+                                className="text-stone-500 dark:text-[#8b949e] hover:text-red-500 dark:hover:text-red-400 mt-1 p-1 min-w-[24px] min-h-[24px] flex items-center justify-center rounded"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Google XYZ Formula Live Analysis Badge & Actions */}
+                          {xyz && (
+                            <div className="pl-4 flex flex-wrap items-center gap-1.5 text-[10.5px]">
+                              {xyz.score === 100 ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-semibold shadow-2xs">
+                                  <CheckCircle2 size={10} className="text-emerald-600 dark:text-emerald-400" />
+                                  <span>{tr("builder.forms.experience.xyzComplete")}</span>
+                                </span>
+                              ) : (
+                                <>
+                                  <span
+                                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-bold border shadow-2xs ${
+                                      xyz.score >= 60
+                                        ? "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700/60"
+                                        : "bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-700/60"
+                                    }`}
+                                  >
+                                    <AlertTriangle size={10} />
+                                    <span>XYZ {xyz.score}%</span>
+                                  </span>
+
+                                  {xyz.isWeakAction && xyz.actionAlternative && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const altStr = xyz.actionAlternative;
+                                        if (!altStr) return;
+                                        const re = new RegExp(`\\b${xyz.actionVerb}\\b`, "i");
+                                        const isCap = /^[A-Z]/.test(xyz.actionVerb || "");
+                                        const alt = isCap
+                                          ? altStr.charAt(0).toUpperCase() + altStr.slice(1)
+                                          : altStr;
+                                        handleUpdateBullet(item.id, bIdx, bullet.replace(re, alt));
+                                      }}
+                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/40 dark:hover:bg-amber-800/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700 font-semibold cursor-pointer transition-colors shadow-2xs"
+                                      title={tr("builder.forms.experience.xyzReplaceWith", { verb: xyz.actionAlternative })}
+                                    >
+                                      <span>⚡ {tr("builder.forms.experience.xyzReplaceWith", { verb: xyz.actionAlternative })}</span>
+                                    </button>
+                                  )}
+
+                                  {!xyz.hasMetric && (
+                                    <span className="text-stone-500 dark:text-[#8b949e] italic">
+                                      {tr("builder.forms.experience.xyzNeedsMetric")}
+                                    </span>
+                                  )}
+
+                                  {!xyz.hasMethodology && (
+                                    <span className="text-stone-500 dark:text-[#8b949e] italic">
+                                      {tr("builder.forms.experience.xyzNeedsMethod")}
+                                    </span>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
