@@ -1,11 +1,19 @@
-"use client";
-
 import { jsPDF } from "jspdf";
 import { domToCanvas } from "modern-screenshot";
+import type { CVDocument, SupportedLanguage } from "@/types/cv";
+import { encryptPdf, type PdfEncryptionOptions } from "./pdfSecurity";
+import { enrichPdfWithPdfUa } from "./pdfUa";
 
 // Standard A4 dimensions at 96 DPI (210mm × 297mm)
 export const A4_W_PX = 794;
 export const A4_H_PX = 1123;
+
+export interface ExportPdfOptions {
+  cv?: CVDocument;
+  lang?: SupportedLanguage;
+  encryption?: PdfEncryptionOptions;
+  enablePdfUa?: boolean;
+}
 
 export interface CapturedPage {
   canvas: HTMLCanvasElement;
@@ -280,16 +288,30 @@ export async function capturePreviewPages(el: HTMLElement): Promise<{
 }
 
 /**
- * Converts captured pages and link annotations into an exact A4 PDF Blob with clickable links
+ * Converts captured pages and link annotations into an exact A4 PDF Blob with clickable links,
+ * PDF/UA-1 accessibility compliance metadata, and optional password encryption.
  */
 export async function pagesToPdfBlob(
   pages: HTMLCanvasElement[],
-  links: PdfLinkAnnotation[] = []
+  links: PdfLinkAnnotation[] = [],
+  options?: ExportPdfOptions
 ): Promise<Blob> {
   const pdf = new jsPDF({
     unit: "mm",
     format: "a4",
     orientation: "portrait",
+  });
+
+  const cv = options?.cv;
+  const lang = options?.lang || cv?.currentLanguage || "en";
+  const fullName = cv?.personalInfo?.fullName || "Curriculum";
+
+  pdf.setProperties({
+    title: `${fullName} - Curriculum Vitae`,
+    author: fullName,
+    subject: "Curriculum Vitae",
+    keywords: "curriculum vitae, resume, papyrus, pdf/ua, accessible",
+    creator: "PAPYRUS - Dynamic Multilingual Resume & CV Engine",
   });
 
   for (let i = 0; i < pages.length; i++) {
@@ -308,7 +330,27 @@ export async function pagesToPdfBlob(
     }
   });
 
-  return pdf.output("blob");
+  let rawBytes: any = new Uint8Array(pdf.output("arraybuffer"));
+
+  // Apply PDF/UA-1 accessibility enrichment if requested (default: true when cv provided)
+  if (cv && options?.enablePdfUa !== false) {
+    try {
+      rawBytes = enrichPdfWithPdfUa(rawBytes, cv, lang);
+    } catch (e) {
+      console.warn("PDF/UA enrichment skipped:", e);
+    }
+  }
+
+  // Apply encryption if user provided password
+  if (options?.encryption?.userPassword || options?.encryption?.ownerPassword) {
+    try {
+      rawBytes = encryptPdf(rawBytes, options.encryption);
+    } catch (e) {
+      console.warn("PDF encryption skipped:", e);
+    }
+  }
+
+  return new Blob([rawBytes], { type: "application/pdf" });
 }
 
 /**
@@ -330,13 +372,15 @@ export function triggerDownload(blob: Blob, filename: string) {
  */
 export async function exportToPdf(
   element: HTMLElement,
-  filename: string = "curriculo.pdf"
+  filename: string = "curriculo.pdf",
+  options?: ExportPdfOptions
 ): Promise<void> {
   const { pages, pageBreaks } = await capturePreviewPages(element);
   const linkAnnotations = extractLinkAnnotations(element, pageBreaks);
   const pdfBlob = await pagesToPdfBlob(
     pages.map((p) => p.canvas),
-    linkAnnotations
+    linkAnnotations,
+    options
   );
   triggerDownload(pdfBlob, filename);
 }
@@ -370,7 +414,8 @@ export function printCV() {
 export async function exportApplicationPackagePdf(
   coverLetterElement: HTMLElement,
   cvElement: HTMLElement,
-  filename: string = "candidatura_completa.pdf"
+  filename: string = "candidatura_completa.pdf",
+  options?: ExportPdfOptions
 ): Promise<void> {
   // Capture Cover Letter pages and links (Page 1)
   const { pages: clPages, pageBreaks: clBreaks } = await capturePreviewPages(coverLetterElement);
@@ -389,7 +434,7 @@ export async function exportApplicationPackagePdf(
   const allPages = [...clPages.map((p) => p.canvas), ...cvPages.map((p) => p.canvas)];
   const allLinks = [...clLinks, ...offsetCvLinks];
 
-  const pdfBlob = await pagesToPdfBlob(allPages, allLinks);
+  const pdfBlob = await pagesToPdfBlob(allPages, allLinks, options);
   triggerDownload(pdfBlob, filename);
 }
 

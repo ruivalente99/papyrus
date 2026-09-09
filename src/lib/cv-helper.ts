@@ -572,3 +572,13 @@ export {
   importFromEuropassXml,
   detectResumeFormat,
 } from "@/lib/schemaInterop";
+
+export {
+  encryptPdf,
+  auditPdfAccessibility,
+} from "@/lib/pdfSecurity";
+
+export {
+  generatePdfUaXmp,
+  enrichPdfWithUaCompliance,
+} from "@/lib/pdfUa";

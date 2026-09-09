@@ -32,6 +32,7 @@ import {
   Target,
   FileText,
   Mail,
+  ShieldCheck,
 } from "lucide-react";
 
 interface Props {
@@ -55,6 +56,7 @@ interface Props {
   onSelectDocTab?: (tab: "cv" | "cover-letter") => void;
   onExportCoverLetterPdf?: () => void;
   onExportApplicationPackage?: () => void;
+  onOpenPdfSecurity?: () => void;
   linterReport: LinterReport;
   canUndo?: boolean;
   canRedo?: boolean;
@@ -89,6 +91,7 @@ export function BuilderHeader({
   onSelectDocTab,
   onExportCoverLetterPdf,
   onExportApplicationPackage,
+  onOpenPdfSecurity,
   linterReport,
   canUndo = false,
   canRedo = false,
@@ -592,6 +595,18 @@ export function BuilderHeader({
                     <span>{tr("builder.coverLetter.exportPackage")}</span>
                   </button>
                 )}
+                {onOpenPdfSecurity && (
+                  <button
+                    onClick={() => {
+                      onOpenPdfSecurity();
+                      setShowPresets(false);
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold border-t border-stone-200/60 dark:border-[#363d47] mt-1 pt-2"
+                  >
+                    <ShieldCheck size={13} className="text-amber-600 dark:text-amber-400" />
+                    <span>{tr("pdfSecurity.modalTitle")}</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -713,6 +728,18 @@ export function BuilderHeader({
                 >
                   <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.coverLetter.exportPackage")}</span>
                   <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">Package</span>
+                </button>
+              )}
+              {onOpenPdfSecurity && (
+                <button
+                  onClick={() => {
+                    onOpenPdfSecurity();
+                    setShowExportMenu(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between border-t border-stone-200/60 dark:border-[#363d47] mt-1 pt-2"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("pdfSecurity.modalTitle")}</span>
+                  <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">PDF/UA</span>
                 </button>
               )}
             </div>
