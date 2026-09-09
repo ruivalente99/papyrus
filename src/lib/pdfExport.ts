@@ -362,3 +362,34 @@ export async function exportToPng(
 export function printCV() {
   window.print();
 }
+
+/**
+ * Exports a unified multi-page application package PDF (Cover Letter + CV or CV + Cover Letter)
+ * with all vector link annotations mapped across respective page boundaries.
+ */
+export async function exportApplicationPackagePdf(
+  coverLetterElement: HTMLElement,
+  cvElement: HTMLElement,
+  filename: string = "candidatura_completa.pdf"
+): Promise<void> {
+  // Capture Cover Letter pages and links (Page 1)
+  const { pages: clPages, pageBreaks: clBreaks } = await capturePreviewPages(coverLetterElement);
+  const clLinks = extractLinkAnnotations(coverLetterElement, clBreaks);
+
+  // Capture CV pages and links (Subsequent Pages)
+  const { pages: cvPages, pageBreaks: cvBreaks } = await capturePreviewPages(cvElement);
+  const cvLinks = extractLinkAnnotations(cvElement, cvBreaks);
+
+  // Offset CV links by the number of cover letter pages
+  const offsetCvLinks = cvLinks.map((l) => ({
+    ...l,
+    pageIndex: l.pageIndex + clPages.length,
+  }));
+
+  const allPages = [...clPages.map((p) => p.canvas), ...cvPages.map((p) => p.canvas)];
+  const allLinks = [...clLinks, ...offsetCvLinks];
+
+  const pdfBlob = await pagesToPdfBlob(allPages, allLinks);
+  triggerDownload(pdfBlob, filename);
+}
+

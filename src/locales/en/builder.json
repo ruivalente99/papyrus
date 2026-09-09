@@ -331,6 +331,26 @@
           "subtitle": "European Union Europass XML curriculum schema",
           "keywords": "export europass xml european union standard schema"
         },
+        "docCv": {
+          "title": "Switch to Resume / CV Document",
+          "subtitle": "Edit professional curriculum vitae",
+          "keywords": "switch cv resume curriculum document"
+        },
+        "docCoverLetter": {
+          "title": "Switch to Cover Letter Document",
+          "subtitle": "Edit coordinated letter of application",
+          "keywords": "switch cover letter application letter document"
+        },
+        "exportCoverLetter": {
+          "title": "Export Cover Letter (PDF)",
+          "subtitle": "Download vector PDF of cover letter",
+          "keywords": "export cover letter pdf application"
+        },
+        "exportPackage": {
+          "title": "Export Complete Application Package (PDF)",
+          "subtitle": "Combined multi-page PDF with Cover Letter + CV",
+          "keywords": "export package complete packet cover letter cv combined application"
+        },
         "navGrid": {
           "title": "Toggle Alignment Grid (#)",
           "subtitle": "Show/hide alignment grid on canvas",
@@ -449,6 +469,14 @@
     "avatarClickHint": "Click or drag photo here",
     "avatarUpload": "Upload",
     "avatarRerollAria": "Reroll Dylan avatar"
+  },
+  "coverLetter": {
+    "tabTitle": "Cover Letter",
+    "cvTab": "Curriculum Vitae",
+    "exportPdf": "Export Cover Letter (PDF)",
+    "exportPackage": "Export Application Packet (Letter + CV)",
+    "packageDownloaded": "Application package (.pdf) generated successfully!",
+    "letterDownloaded": "Cover letter (.pdf) exported successfully!"
   },
   "iconPicker": {
     "title": "Choose Icon",

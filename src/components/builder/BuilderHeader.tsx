@@ -30,6 +30,8 @@ import {
   Kanban,
   GitCompare,
   Target,
+  FileText,
+  Mail,
 } from "lucide-react";
 
 interface Props {
@@ -49,6 +51,10 @@ interface Props {
   onExportJsonResume?: (lang?: SupportedLanguage) => void;
   onExportEuropassXml?: (lang?: SupportedLanguage) => void;
   onImportAnyResume?: (content: string, defaultLang?: SupportedLanguage) => { success: boolean; format?: string; error?: string };
+  activeDocTab?: "cv" | "cover-letter";
+  onSelectDocTab?: (tab: "cv" | "cover-letter") => void;
+  onExportCoverLetterPdf?: () => void;
+  onExportApplicationPackage?: () => void;
   linterReport: LinterReport;
   canUndo?: boolean;
   canRedo?: boolean;
@@ -79,6 +85,10 @@ export function BuilderHeader({
   onExportJsonResume,
   onExportEuropassXml,
   onImportAnyResume,
+  activeDocTab = "cv",
+  onSelectDocTab,
+  onExportCoverLetterPdf,
+  onExportApplicationPackage,
   linterReport,
   canUndo = false,
   canRedo = false,
@@ -189,6 +199,35 @@ export function BuilderHeader({
             papyrus
           </span>
         </Link>
+
+        {/* Document Switcher: Resume / CV vs Cover Letter */}
+        <div className="flex items-center p-0.5 bg-stone-100 dark:bg-[#21262d] rounded-lg border border-stone-200 dark:border-[#363d47]">
+          <button
+            type="button"
+            onClick={() => onSelectDocTab?.("cv")}
+            className={`px-2 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeDocTab === "cv"
+                ? "bg-white dark:bg-[#30363d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"
+            }`}
+          >
+            <FileText size={12} className={activeDocTab === "cv" ? "text-amber-600 dark:text-amber-400" : ""} />
+            <span>CV</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onSelectDocTab?.("cover-letter")}
+            className={`px-2 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeDocTab === "cover-letter"
+                ? "bg-white dark:bg-[#30363d] text-stone-900 dark:text-[#f0f3f6] shadow-2xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"
+            }`}
+          >
+            <Mail size={12} className={activeDocTab === "cover-letter" ? "text-amber-600 dark:text-amber-400" : ""} />
+            <span className="hidden md:inline">{tr("builder.coverLetter.tabTitle")}</span>
+            <span className="md:hidden">Letter</span>
+          </button>
+        </div>
 
         {/* Undo / Redo / History Controls (Desktop / Tablet) */}
         {onUndo && onRedo && (
@@ -527,6 +566,32 @@ export function BuilderHeader({
                     <span>{tr("builder.header.exportEuropassXml")}</span>
                   </button>
                 )}
+                {onExportCoverLetterPdf && (
+                  <button
+                    onClick={() => {
+                      onExportCoverLetterPdf();
+                      setShowPresets(false);
+                      showToast(tr("builder.coverLetter.letterDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <Mail size={13} className="text-amber-600 dark:text-amber-400" />
+                    <span>{tr("builder.coverLetter.exportPdf")}</span>
+                  </button>
+                )}
+                {onExportApplicationPackage && (
+                  <button
+                    onClick={() => {
+                      onExportApplicationPackage();
+                      setShowPresets(false);
+                      showToast(tr("builder.coverLetter.packageDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <Layers size={13} className="text-emerald-600 dark:text-emerald-400" />
+                    <span>{tr("builder.coverLetter.exportPackage")}</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -624,6 +689,32 @@ export function BuilderHeader({
                 <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">LaTeX / TeX</span>
                 <span className="text-[10px] font-mono text-stone-400 dark:text-[#8b949e]">.tex</span>
               </button>
+              {onExportCoverLetterPdf && (
+                <button
+                  onClick={() => {
+                    onExportCoverLetterPdf();
+                    setShowExportMenu(false);
+                    showToast(tr("builder.coverLetter.letterDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.coverLetter.exportPdf")}</span>
+                  <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">PDF</span>
+                </button>
+              )}
+              {onExportApplicationPackage && (
+                <button
+                  onClick={() => {
+                    onExportApplicationPackage();
+                    setShowExportMenu(false);
+                    showToast(tr("builder.coverLetter.packageDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.coverLetter.exportPackage")}</span>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">Package</span>
+                </button>
+              )}
             </div>
           )}
         </div>

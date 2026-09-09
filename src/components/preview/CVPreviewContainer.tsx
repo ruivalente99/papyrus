@@ -21,12 +21,17 @@ import {
   GripVertical,
   Move,
   Printer,
+  Mail,
 } from "lucide-react";
 import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
+import { CoverLetterPreview } from "./CoverLetterPreview";
+import type { CoverLetterDocument } from "@/types/coverLetter";
 import { useToast } from "@/context/ToastContext";
 
 interface Props {
   cv: CVDocument;
+  coverLetter?: CoverLetterDocument;
+  activeDocTab?: "cv" | "cover-letter";
   lang: SupportedLanguage;
   uiLang?: SupportedLanguage;
   onSetTemplate: (t: TemplateId) => void;
@@ -39,6 +44,8 @@ interface Props {
 
 export function CVPreviewContainer({
   cv,
+  coverLetter,
+  activeDocTab = "cv",
   lang,
   uiLang,
   onSetTemplate,
@@ -399,7 +406,8 @@ export function CVPreviewContainer({
     if (!pageRef.current || isExporting) return;
     setIsExporting("pdf");
     try {
-      const filename = `${(cv.personalInfo.fullName || "curriculum").toLowerCase().replace(/\s+/g, "_")}_cv.pdf`;
+      const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+      const filename = activeDocTab === "cover-letter" ? `${baseName}_cover_letter.pdf` : `${baseName}_cv.pdf`;
       await exportToPdf(pageRef.current, filename);
     } catch (e) {
       console.error("PDF export error:", e);
@@ -413,7 +421,8 @@ export function CVPreviewContainer({
     if (!pageRef.current || isExporting) return;
     setIsExporting("png");
     try {
-      const filename = `${(cv.personalInfo.fullName || "curriculum").toLowerCase().replace(/\s+/g, "_")}_cv.png`;
+      const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+      const filename = activeDocTab === "cover-letter" ? `${baseName}_cover_letter.png` : `${baseName}_cv.png`;
       await exportToPng(pageRef.current, filename);
       showToast(tr("preview.toasts.pngSuccess"), "success");
     } catch (e) {
@@ -432,39 +441,46 @@ export function CVPreviewContainer({
       <div className="bg-white/90 dark:bg-[#161b22]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-[#30363d] px-3 sm:px-4 py-2 shadow-2xs transition-colors shrink-0">
         {/* MOBILE TOOLBAR: Style & Template Selection Only */}
         <div className="flex sm:hidden items-center justify-between gap-1.5 w-full overflow-x-auto no-scrollbar py-0.5">
-          {/* Left: Template Selector */}
-          <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-0.5 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-            <button
-              onClick={() => onSetTemplate("lateralis")}
-              className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
-                cv.template === "lateralis" || cv.template === "canva"
-                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                  : "text-stone-500 dark:text-[#8b949e]"
-              }`}
-            >
-              {tr("preview.templates.lateralis")}
-            </button>
-            <button
-              onClick={() => onSetTemplate("classic")}
-              className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
-                cv.template === "classic" || cv.template === "latex"
-                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                  : "text-stone-500 dark:text-[#8b949e]"
-              }`}
-            >
-              {tr("preview.templates.classic")}
-            </button>
-            <button
-              onClick={() => onSetTemplate("matrix")}
-              className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
-                cv.template === "matrix" || cv.template === "europass"
-                  ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                  : "text-stone-500 dark:text-[#8b949e]"
-              }`}
-            >
-              {tr("preview.templates.matrix")}
-            </button>
-          </div>
+          {/* Left: Template Selector or Cover Letter Badge */}
+          {activeDocTab === "cover-letter" ? (
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-900 dark:text-amber-300 rounded-full border border-amber-500/20 text-xs font-bold shadow-2xs shrink-0">
+              <Mail size={12} className="text-amber-600 dark:text-amber-400" />
+              <span>{tr("builder.coverLetter.tabTitle")}</span>
+            </div>
+          ) : (
+            <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-0.5 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
+              <button
+                onClick={() => onSetTemplate("lateralis")}
+                className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
+                  cv.template === "lateralis" || cv.template === "canva"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e]"
+                }`}
+              >
+                {tr("preview.templates.lateralis")}
+              </button>
+              <button
+                onClick={() => onSetTemplate("classic")}
+                className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
+                  cv.template === "classic" || cv.template === "latex"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e]"
+                }`}
+              >
+                {tr("preview.templates.classic")}
+              </button>
+              <button
+                onClick={() => onSetTemplate("matrix")}
+                className={`px-2 py-1 text-[11px] font-bold rounded-full transition-all ${
+                  cv.template === "matrix" || cv.template === "europass"
+                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                    : "text-stone-500 dark:text-[#8b949e]"
+                }`}
+              >
+                {tr("preview.templates.matrix")}
+              </button>
+            </div>
+          )}
 
           {/* Right: Estilo/Style Drawer Trigger */}
           <div className="flex items-center gap-1.5 shrink-0">
@@ -485,41 +501,48 @@ export function CVPreviewContainer({
 
         {/* DESKTOP TOOLBAR: Dedicated Exclusively to Styles & Document Appearance */}
         <div className="hidden sm:flex items-center justify-between gap-3">
-          {/* Template Selector */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-              <button
-                onClick={() => onSetTemplate("lateralis")}
-                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                  cv.template === "lateralis" || cv.template === "canva"
-                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
-                }`}
-              >
-                {tr("preview.templates.lateralis")}
-              </button>
-              <button
-                onClick={() => onSetTemplate("classic")}
-                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                  cv.template === "classic" || cv.template === "latex"
-                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
-                }`}
-              >
-                {tr("preview.templates.classic")}
-              </button>
-              <button
-                onClick={() => onSetTemplate("matrix")}
-                className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
-                  cv.template === "matrix" || cv.template === "europass"
-                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
-                }`}
-              >
-                {tr("preview.templates.matrix")}
-              </button>
+          {/* Template Selector or Cover Letter Badge */}
+          {activeDocTab === "cover-letter" ? (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 text-amber-900 dark:text-amber-300 rounded-full border border-amber-500/20 text-xs font-bold shadow-2xs shrink-0">
+              <Mail size={13} className="text-amber-600 dark:text-amber-400" />
+              <span>{tr("builder.coverLetter.tabTitle")} (A4)</span>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
+                <button
+                  onClick={() => onSetTemplate("lateralis")}
+                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                    cv.template === "lateralis" || cv.template === "canva"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
+                  }`}
+                >
+                  {tr("preview.templates.lateralis")}
+                </button>
+                <button
+                  onClick={() => onSetTemplate("classic")}
+                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                    cv.template === "classic" || cv.template === "latex"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
+                  }`}
+                >
+                  {tr("preview.templates.classic")}
+                </button>
+                <button
+                  onClick={() => onSetTemplate("matrix")}
+                  className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
+                    cv.template === "matrix" || cv.template === "europass"
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
+                  }`}
+                >
+                  {tr("preview.templates.matrix")}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Right: Density, Palette Colors, Custom Picker & Full Settings Trigger */}
           <div className="flex items-center gap-2.5 shrink-0">
@@ -680,13 +703,23 @@ export function CVPreviewContainer({
             }}
             className="relative shadow-2xl rounded-xs bg-white dark:bg-[#161b22] dark:shadow-[0_12px_44px_rgba(0,0,0,0.8)] dark:ring-1 dark:ring-white/10"
           >
-            <CVPage
-              ref={pageRef}
-              cv={cv}
-              lang={lang}
-              highlightedSectionId={highlightedSectionId}
-              onSelectSection={handleSectionSelect}
-            />
+            {activeDocTab === "cover-letter" && coverLetter ? (
+              <div ref={pageRef} id="cover-letter-preview-wrapper">
+                <CoverLetterPreview
+                  letter={coverLetter}
+                  cv={cv}
+                  lang={lang}
+                />
+              </div>
+            ) : (
+              <CVPage
+                ref={pageRef}
+                cv={cv}
+                lang={lang}
+                highlightedSectionId={highlightedSectionId}
+                onSelectSection={handleSectionSelect}
+              />
+            )}
 
             {/* Alignment Grid Overlay on Document itself */}
             {showGrid && (

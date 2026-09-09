@@ -11,6 +11,10 @@ import { CommandPalette } from "@/components/builder/CommandPalette";
 import { CodeEditorPane } from "@/components/builder/code/CodeEditorPane";
 import { CVCompareModal } from "@/components/comparator/CVCompareModal";
 import { JobMatcherModal } from "@/components/matcher/JobMatcherModal";
+import { CoverLetterForm } from "@/components/builder/forms/CoverLetterForm";
+import { CoverLetterPreview } from "@/components/preview/CoverLetterPreview";
+import { CVPage } from "@/components/preview/CVPage";
+import { exportToPdf, exportApplicationPackagePdf } from "@/lib/pdfExport";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { I18nProvider } from "@/context/I18nContext";
 import { translate } from "@/locales";
@@ -155,6 +159,10 @@ export default function BuilderPage() {
     exportEuropassXml,
     importAnyResume,
     updateFromJson,
+    coverLetter,
+    updateCoverLetter,
+    activeDocTab,
+    setActiveDocTab,
     undo,
     redo,
     canUndo,
@@ -171,6 +179,21 @@ export default function BuilderPage() {
     hasCachedDoc,
     completeSetup,
   } = useCV();
+
+  const handleExportCoverLetterPdf = async () => {
+    const clEl = document.getElementById("offscreen-cover-letter") || document.getElementById("cover-letter-preview-wrapper");
+    if (!clEl) return;
+    const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+    await exportToPdf(clEl as HTMLElement, `${baseName}_cover_letter.pdf`);
+  };
+
+  const handleExportApplicationPackage = async () => {
+    const clEl = document.getElementById("offscreen-cover-letter");
+    const cvEl = document.getElementById("offscreen-cv");
+    if (!clEl || !cvEl) return;
+    const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+    await exportApplicationPackagePdf(clEl as HTMLElement, cvEl as HTMLElement, `${baseName}_application_package.pdf`);
+  };
 
   const handleRerollDylan = () => {
     const baseName = cv.personalInfo?.fullName?.trim() || "Luna";
@@ -230,6 +253,13 @@ export default function BuilderPage() {
           onExportJsonResume={exportJsonResume}
           onExportEuropassXml={exportEuropassXml}
           onImportAnyResume={importAnyResume}
+          activeDocTab={activeDocTab}
+          onSelectDocTab={(tab) => {
+            setActiveDocTab(tab);
+            if (tab === "cover-letter") setEditorMode("form");
+          }}
+          onExportCoverLetterPdf={handleExportCoverLetterPdf}
+          onExportApplicationPackage={handleExportApplicationPackage}
           linterReport={linterReport}
           canUndo={canUndo}
           canRedo={canRedo}
@@ -269,56 +299,68 @@ export default function BuilderPage() {
               <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 dark:text-[#c9d1d9]">
-                    {translate("builder.sections.title", uiLang)}
+                    {activeDocTab === "cover-letter"
+                      ? translate("builder.coverLetter.tabTitle", uiLang)
+                      : translate("builder.sections.title", uiLang)}
                   </span>
                   <span className="text-[10px] font-mono font-bold bg-stone-200/80 dark:bg-[#21262d] dark:border dark:border-[#363d47] text-stone-700 dark:text-[#f0f3f6] px-2 py-0.5 rounded-full">
-                    {translate("builder.sections.counter", uiLang, { count: cv.sections.length + 1 })}
+                    {activeDocTab === "cover-letter"
+                      ? (coverLetter.preset ? coverLetter.preset.toUpperCase() : "A4")
+                      : translate("builder.sections.counter", uiLang, { count: cv.sections.length + 1 })}
                   </span>
                 </div>
 
-                {/* Editor Mode Selector: [ Form ] | [ JSON ] | [ LaTeX ] */}
-                <div className="flex items-center bg-stone-200/80 dark:bg-[#0d1117] p-0.5 rounded-lg border border-stone-300/70 dark:border-[#363d47] text-[11px] font-mono">
-                  <button
-                    type="button"
-                    onClick={() => setEditorMode("form")}
-                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
-                      editorMode === "form"
-                        ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-[#f0f3f6] shadow-xs dark:border dark:border-[#484f58]"
-                        : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-                    }`}
-                  >
-                    <FileText size={12} />
-                    <span>{translate("builder.modes.form", uiLang)}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditorMode("json")}
-                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
-                      editorMode === "json"
-                        ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs dark:border dark:border-[#484f58]"
-                        : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-                    }`}
-                  >
-                    <FileJson size={12} />
-                    <span>{translate("builder.modes.json", uiLang)}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditorMode("latex")}
-                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
-                      editorMode === "latex"
-                        ? "bg-white dark:bg-[#21262d] text-cyan-700 dark:text-cyan-400 shadow-xs dark:border dark:border-[#484f58]"
-                        : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
-                    }`}
-                  >
-                    <Code2 size={12} />
-                    <span>{translate("builder.modes.latex", uiLang)}</span>
-                  </button>
-                </div>
+                {/* Editor Mode Selector: [ Form ] | [ JSON ] | [ LaTeX ] (for CV mode) */}
+                {activeDocTab === "cv" && (
+                  <div className="flex items-center bg-stone-200/80 dark:bg-[#0d1117] p-0.5 rounded-lg border border-stone-300/70 dark:border-[#363d47] text-[11px] font-mono">
+                    <button
+                      type="button"
+                      onClick={() => setEditorMode("form")}
+                      className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
+                        editorMode === "form"
+                          ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-[#f0f3f6] shadow-xs dark:border dark:border-[#484f58]"
+                          : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
+                      }`}
+                    >
+                      <FileText size={12} />
+                      <span>{translate("builder.modes.form", uiLang)}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditorMode("json")}
+                      className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
+                        editorMode === "json"
+                          ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs dark:border dark:border-[#484f58]"
+                          : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
+                      }`}
+                    >
+                      <FileJson size={12} />
+                      <span>{translate("builder.modes.json", uiLang)}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditorMode("latex")}
+                      className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-bold ${
+                        editorMode === "latex"
+                          ? "bg-white dark:bg-[#21262d] text-cyan-700 dark:text-cyan-400 shadow-xs dark:border dark:border-[#484f58]"
+                          : "text-stone-600 hover:text-stone-900 dark:text-[#8b949e] dark:hover:text-[#f0f3f6]"
+                      }`}
+                    >
+                      <Code2 size={12} />
+                      <span>{translate("builder.modes.latex", uiLang)}</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
-            {/* Content: Form View or Split Code Editor */}
-            {editorMode === "form" ? (
+            {/* Content: Cover Letter Form, CV Form, or Split Code Editor */}
+            {activeDocTab === "cover-letter" ? (
+              <CoverLetterForm
+                letter={coverLetter}
+                onChange={updateCoverLetter}
+                lang={cvLang}
+              />
+            ) : editorMode === "form" ? (
               <SectionList
                 cv={cv}
                 lang={cvLang}
@@ -392,6 +434,8 @@ export default function BuilderPage() {
         >
           <CVPreviewContainer
             cv={cv}
+            coverLetter={coverLetter}
+            activeDocTab={activeDocTab}
             lang={cvLang}
             uiLang={uiLang}
             highlightedSectionId={highlightedSectionId}
@@ -466,6 +510,12 @@ export default function BuilderPage() {
         onExportJson={exportJson}
         onExportJsonResume={() => exportJsonResume(cvLang)}
         onExportEuropassXml={() => exportEuropassXml(cvLang)}
+        onExportCoverLetterPdf={handleExportCoverLetterPdf}
+        onExportApplicationPackage={handleExportApplicationPackage}
+        onSwitchDocumentTab={(tab) => {
+          setActiveDocTab(tab);
+          if (tab === "cover-letter") setEditorMode("form");
+        }}
         onExportPdf={() => {
           const pdfBtn = document.querySelector(
             'button[title*="PDF"], button:has-text("PDF")'
@@ -500,6 +550,21 @@ export default function BuilderPage() {
         lang={cvLang}
         onUpdateCV={(updatedCV) => setCv(updatedCV)}
       />
+
+      {/* Hidden offscreen container for reliable combined PDF package generation */}
+      <div
+        id="offscreen-package-nodes"
+        className="fixed -left-[9999px] top-0 pointer-events-none opacity-0 overflow-hidden"
+        aria-hidden="true"
+        tabIndex={-1}
+      >
+        <div id="offscreen-cover-letter">
+          <CoverLetterPreview letter={coverLetter} cv={cv} lang={cvLang} />
+        </div>
+        <div id="offscreen-cv">
+          <CVPage cv={cv} lang={cvLang} />
+        </div>
+      </div>
     </div>
   </I18nProvider>
 );

@@ -330,6 +330,26 @@
           "subtitle": "Esquema curricular Europass XML da União Europeia",
           "keywords": "exportar europass xml uniao europeia padrao esquema"
         },
+        "docCv": {
+          "title": "Mudar para Documento de Currículo / CV",
+          "subtitle": "Editar o currículo vitae profissional",
+          "keywords": "mudar cv curriculo vitae documento alternar"
+        },
+        "docCoverLetter": {
+          "title": "Mudar para Carta de Apresentação",
+          "subtitle": "Editar carta de motivação coordenada",
+          "keywords": "mudar carta apresentacao motivacao documento alternar"
+        },
+        "exportCoverLetter": {
+          "title": "Exportar Carta de Apresentação (PDF)",
+          "subtitle": "Descarregar PDF vetorial da carta",
+          "keywords": "exportar carta apresentacao pdf candidatura"
+        },
+        "exportPackage": {
+          "title": "Exportar Candidatura Completa (PDF)",
+          "subtitle": "PDF multi-página unificado com Carta + CV",
+          "keywords": "exportar candidatura completa pacote carta cv combinado unificado"
+        },
         "navGrid": {
           "title": "Alternar Grelha de Alinhamento (#)",
           "subtitle": "Ligar/desligar grelha milimétrica atrás da folha",
@@ -448,6 +468,14 @@
     "avatarClickHint": "Clica ou arrasta uma foto para aqui",
     "avatarUpload": "Mudar",
     "avatarRerollAria": "Gerar novo avatar Dylan aleatório"
+  },
+  "coverLetter": {
+    "tabTitle": "Carta",
+    "cvTab": "Curriculum Vitae",
+    "exportPdf": "Exportar Carta (PDF)",
+    "exportPackage": "Exportar Candidatura Completa (Carta + CV)",
+    "packageDownloaded": "Candidatura completa (.pdf) gerada com sucesso!",
+    "letterDownloaded": "Carta de apresentação (.pdf) exportada com sucesso!"
   },
   "iconPicker": {
     "title": "Escolher Ícone",

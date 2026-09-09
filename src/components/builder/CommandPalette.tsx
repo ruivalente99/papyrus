@@ -32,6 +32,7 @@ import {
   GitCompare,
   Target,
   Type,
+  Mail,
 } from "lucide-react";
 import { FONT_CATALOG, type FontFamilyId } from "@/lib/typography";
 
@@ -64,6 +65,9 @@ interface Props {
   onExportJson: () => void;
   onExportJsonResume?: () => void;
   onExportEuropassXml?: () => void;
+  onExportCoverLetterPdf?: () => void;
+  onExportApplicationPackage?: () => void;
+  onSwitchDocumentTab?: (tab: "cv" | "cover-letter") => void;
   onExportPdf: () => void;
   onExportPng: () => void;
   onRerollDylan?: () => void;
@@ -89,6 +93,9 @@ export function CommandPalette({
   onExportJson,
   onExportJsonResume,
   onExportEuropassXml,
+  onExportCoverLetterPdf,
+  onExportApplicationPackage,
+  onSwitchDocumentTab,
   onExportPdf,
   onExportPng,
   onRerollDylan,
@@ -272,6 +279,54 @@ export function CommandPalette({
             },
           ]
         : []),
+      ...(onSwitchDocumentTab
+        ? [
+            {
+              id: "act-switch-cv",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.docCv.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.docCv.subtitle"),
+              icon: FileText,
+              keywords: (tr("builder.modals.commandPalette.commands.docCv.keywords") || "cv resume").split(" "),
+              action: () => onSwitchDocumentTab("cv"),
+            },
+            {
+              id: "act-switch-cover-letter",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.docCoverLetter.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.docCoverLetter.subtitle"),
+              icon: Mail,
+              keywords: (tr("builder.modals.commandPalette.commands.docCoverLetter.keywords") || "cover letter application").split(" "),
+              action: () => onSwitchDocumentTab("cover-letter"),
+            },
+          ]
+        : []),
+      ...(onExportCoverLetterPdf
+        ? [
+            {
+              id: "act-export-cover-letter",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.exportCoverLetter.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.exportCoverLetter.subtitle"),
+              icon: Mail,
+              keywords: (tr("builder.modals.commandPalette.commands.exportCoverLetter.keywords") || "export cover letter pdf").split(" "),
+              action: onExportCoverLetterPdf,
+            },
+          ]
+        : []),
+      ...(onExportApplicationPackage
+        ? [
+            {
+              id: "act-export-package",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.exportPackage.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.exportPackage.subtitle"),
+              icon: Layers,
+              keywords: (tr("builder.modals.commandPalette.commands.exportPackage.keywords") || "export package letter cv combined").split(" "),
+              action: onExportApplicationPackage,
+            },
+          ]
+        : []),
       ...(onOpenComparator
         ? [
             {
@@ -431,6 +486,9 @@ export function CommandPalette({
     onExportJson,
     onExportJsonResume,
     onExportEuropassXml,
+    onExportCoverLetterPdf,
+    onExportApplicationPackage,
+    onSwitchDocumentTab,
     onExportPdf,
     onExportPng,
     onRerollDylan,
