@@ -12,6 +12,7 @@ import type {
   HobbiesSection,
 } from "@/types/cv";
 import { t, tArray } from "@/lib/i18n";
+import { getFontFamilyCss } from "@/lib/typography";
 import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -51,12 +52,7 @@ export function MatrixTemplate({ cv, lang, onSelectSection, highlightedSectionId
         isCompact ? "p-5" : isSpacious ? "p-8" : "p-6"
       }`}
       style={{
-        fontFamily:
-          theme.fontFamily === "merriweather"
-            ? "Merriweather, serif"
-            : theme.fontFamily === "roboto-mono"
-            ? "monospace"
-            : "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        fontFamily: getFontFamilyCss(theme.fontFamily),
       }}
     >
       {/* Top Header */}

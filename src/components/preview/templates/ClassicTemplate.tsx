@@ -3,6 +3,7 @@
 import React from "react";
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 import { t, tArray } from "@/lib/i18n";
+import { getFontFamilyCss } from "@/lib/typography";
 import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -34,12 +35,7 @@ export function ClassicTemplate({ cv, lang, onSelectSection, highlightedSectionI
         isCompact ? "p-6" : isSpacious ? "p-10" : "p-8"
       }`}
       style={{
-        fontFamily:
-          theme.fontFamily === "merriweather"
-            ? "Merriweather, serif"
-            : theme.fontFamily === "roboto-mono"
-            ? "monospace"
-            : "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        fontFamily: getFontFamilyCss(theme.fontFamily),
       }}
     >
       {/* Header */}

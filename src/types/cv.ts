@@ -177,10 +177,24 @@ export type CVSection =
 // Latin & generic visual template identifiers
 export type TemplateId = "lateralis" | "classic" | "matrix" | "canva" | "latex" | "europass";
 
+export type FontFamilyId =
+  | "inter"
+  | "roboto"
+  | "outfit"
+  | "plus-jakarta-sans"
+  | "raleway"
+  | "merriweather"
+  | "eb-garamond"
+  | "lora"
+  | "source-serif"
+  | "jetbrains-mono"
+  | "fira-code"
+  | "roboto-mono";
+
 export interface CVTheme {
   primaryColor: string; // e.g. "#004f90" or "#047857" or "#292524"
   secondaryColor?: string;
-  fontFamily: "inter" | "merriweather" | "roboto-mono" | "raleway" | "lora";
+  fontFamily: FontFamilyId;
   fontSize: "compact" | "normal" | "spacious";
   sidebarPosition?: "left" | "right";
 }

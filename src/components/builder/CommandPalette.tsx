@@ -31,7 +31,9 @@ import {
   BookOpen,
   GitCompare,
   Target,
+  Type,
 } from "lucide-react";
+import { FONT_CATALOG, type FontFamilyId } from "@/lib/typography";
 
 interface CommandItem {
   id: string;
@@ -50,6 +52,7 @@ interface Props {
   lang: SupportedLanguage;
   onSelectTemplate: (id: TemplateId) => void;
   onSetDensity: (density: "compact" | "normal" | "spacious") => void;
+  onSelectFont?: (fontId: FontFamilyId) => void;
   onSwitchLanguage: (lang: SupportedLanguage) => void;
   onToggleTheme: () => void;
   onToggleGrid?: () => void;
@@ -72,6 +75,7 @@ export function CommandPalette({
   lang,
   onSelectTemplate,
   onSetDensity,
+  onSelectFont,
   onSwitchLanguage,
   onToggleTheme,
   onToggleGrid,
@@ -164,6 +168,19 @@ export function CommandPalette({
         keywords: tr("builder.modals.commandPalette.commands.densitySpacious.keywords").split(" "),
         action: () => onSetDensity("spacious"),
       },
+
+      // 🔤 Typography Fonts
+      ...(onSelectFont
+        ? FONT_CATALOG.map((f) => ({
+            id: `font-${f.id}`,
+            category: "templates" as const,
+            title: `${tr("preview.typography.title")}: ${f.name}`,
+            subtitle: `${f.category.toUpperCase()} • ${f.atsRating === "optimal" ? "Optimal ATS" : "Standard ATS"} • ${f.sampleText}`,
+            icon: Type,
+            keywords: ["font", "fonte", "typography", "tipografia", f.name.toLowerCase(), f.category],
+            action: () => onSelectFont(f.id),
+          }))
+        : []),
 
       // ⚡ Quick Actions
       ...(onRerollDylan
@@ -372,6 +389,7 @@ export function CommandPalette({
     sections,
     onSelectTemplate,
     onSetDensity,
+    onSelectFont,
     onSwitchLanguage,
     onToggleTheme,
     onToggleGrid,

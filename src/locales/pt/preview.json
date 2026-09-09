@@ -49,7 +49,23 @@
     "subtitle": "Personalize o modelo, densidade e cores",
     "close": "Fechar definições de pré-visualização",
     "templates": "Modelo de Layout",
-    "appearance": "Tema Visual"
+    "appearance": "Tema Visual",
+    "typography": "Tipografia Editorial"
+  },
+  "typography": {
+    "title": "Tipografia",
+    "subtitle": "Famílias tipográficas otimizadas para ATS",
+    "all": "Todas",
+    "sans": "Sans-Serif",
+    "serif": "Serifada",
+    "mono": "Monoespaçada",
+    "optimalAts": "ATS Otimizado",
+    "standardAts": "Padrão",
+    "categories": {
+      "sans": "Sans-Serif (Moderno e Limpo)",
+      "serif": "Serifada (Editorial e Clássico)",
+      "mono": "Monoespaçada (Técnico e Código)"
+    }
   },
   "toasts": {
     "pdfError": "Erro ao gerar PDF.",

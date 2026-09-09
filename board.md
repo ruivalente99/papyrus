@@ -112,12 +112,19 @@
   - Job vs CV keyword density and frequency distribution matrix.
   - Integrated into header actions, mobile menu, and Command Palette (`Cmd+K`).
 
+- [x] **[FEAT-018]** **Editorial Typography Selector** `tags: styling, typography, ats`
+  - Curated collection of 12 ATS-optimized font families categorized into Sans-Serif (Inter, Roboto, Outfit, Plus Jakarta Sans, Raleway), Serif (Merriweather, EB Garamond, Lora, Source Serif 4), and Monospace (JetBrains Mono, Fira Code, Roboto Mono).
+  - Clean live typography switcher in Preview Settings Sheet with category filters, ATS compatibility indicators (`ATS ✓`), bilingual font descriptions, and real-time font specimen rendering.
+  - Bidirectional LaTeX sync: injects LaTeX font packages (`sourcesanspro`, `roboto`, `ebgaramond`, `merriweather`, `lora`, `jetbrainsmono`, etc.) in `exportToLatex` and detects active font family in `importFromLatex`.
+  - Global Command Palette (`Cmd+K`) integration enabling instant typography switching by keyboard.
+  - Template parity across Lateralis, Classic, and Matrix layouts with Google Fonts integration in `globals.css`.
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.3)
-- [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
-  - *Status:* Scoping layout and typography parity with CV templates.
-  - *Objective:* Unified generation and multi-page bundling of cover letter with active resume.
+- [ ] **[FEAT-020]** **Header Vector QR Code Generator** `tags: contact, modern, vector`
+  - *Status:* Implementing customizable SVG vector QR code for CV headers.
+  - *Objective:* Embed interactive vector QR code linking to LinkedIn, GitHub, or online portfolio.
 ---
 
 ### 📋 Priority Backlog (v1.3 - v2.0)
@@ -125,11 +132,6 @@
 - [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
   - Coordinated cover letter generation matching the header, accent color, and typography of the active CV template.
   - Batch export into a unified multi-page PDF application package.
-- [ ] **[FEAT-018]** **Editorial Typography Selector** `tags: styling, typography`
-  - Curated font families optimized for ATS readability and aesthetics:
-    - *Serif:* Merriweather, EB Garamond, Source Serif.
-    - *Sans-Serif:* Inter, Roboto, Outfit, Plus Jakarta Sans.
-    - *Mono:* JetBrains Mono, Fira Code.
 - [ ] **[FEAT-019]** **JSON Resume & Europass XML Schema Interoperability** `tags: interoperability, standards`
   - Import and export support for standard `jsonresume.org` open schemas and Europass XML format.
 - [ ] **[FEAT-020]** **Header Vector QR Code Generator** `tags: contact, modern`

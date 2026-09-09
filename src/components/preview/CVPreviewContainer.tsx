@@ -974,6 +974,7 @@ export function CVPreviewContainer({
         currentTemplate={cv.template}
         currentDensity={cv.theme.fontSize}
         currentColor={cv.theme.primaryColor}
+        currentFont={cv.theme.fontFamily || "inter"}
         onSetTemplate={onSetTemplate}
         onUpdateTheme={onUpdateTheme}
       />

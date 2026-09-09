@@ -8,9 +8,11 @@ import type {
   CertificationsSection,
   HobbiesSection,
   CustomSection,
+  FontFamilyId,
 } from "@/types/cv";
 import { t, tArray } from "@/lib/i18n";
 import { generateId } from "@/lib/utils";
+import { getLatexFontPackage } from "@/lib/typography";
 
 /**
  * Escapes LaTeX special characters in plain text strings
@@ -48,6 +50,7 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
 \\documentclass[10pt,a4paper]{article}
 \\usepackage[utf8]{inputenc}
 \\usepackage[margin=1.5cm]{geometry}
+${getLatexFontPackage(cv.theme?.fontFamily)}
 \\usepackage{hyperref}
 \\usepackage{xcolor}
 \\usepackage{enumitem}
@@ -438,8 +441,34 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
     }
   }
 
+  // Extract Font Family
+  let detectedFont: FontFamilyId | undefined = undefined;
+  if (clean.includes("jetbrainsmono")) detectedFont = "jetbrains-mono";
+  else if (clean.includes("FiraMono")) detectedFont = "fira-code";
+  else if (clean.includes("roboto-mono")) detectedFont = "roboto-mono";
+  else if (clean.includes("merriweather")) detectedFont = "merriweather";
+  else if (clean.includes("ebgaramond")) detectedFont = "eb-garamond";
+  else if (clean.includes("lora")) detectedFont = "lora";
+  else if (clean.includes("sourceserifpro")) detectedFont = "source-serif";
+  else if (clean.includes("raleway")) detectedFont = "raleway";
+  else if (clean.includes("FiraSans")) detectedFont = "outfit";
+  else if (clean.includes("roboto")) detectedFont = "roboto";
+  else if (clean.includes("sourcesanspro")) detectedFont = "inter";
+
+  // Extract Primary Color
+  let primaryHex = "#004f90";
+  const colorMatch = clean.match(/\\definecolor\{primaryColor\}\{HTML\}\{([0-9a-fA-F]{6})\}/i);
+  if (colorMatch) {
+    primaryHex = `#${colorMatch[1]}`;
+  }
+
   return {
     title: `CV de ${fullName}`,
+    theme: {
+      primaryColor: primaryHex,
+      fontFamily: detectedFont || "inter",
+      fontSize: "normal",
+    },
     personalInfo: {
       fullName,
       headline: { pt: headline, en: headline },
