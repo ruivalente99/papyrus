@@ -12,7 +12,9 @@ import {
   Palette,
   Sparkles,
   Pipette,
+  Type,
 } from "lucide-react";
+import { FONT_CATALOG, type FontCategory, type FontFamilyId } from "@/lib/typography";
 
 export const ACCENT_COLORS = [
   { name: "Teal (Lateralis)", hex: "#005555" },
@@ -31,6 +33,7 @@ interface Props {
   currentTemplate: TemplateId;
   currentDensity?: "compact" | "normal" | "spacious";
   currentColor?: string;
+  currentFont?: FontFamilyId;
   onSetTemplate: (template: TemplateId) => void;
   onUpdateTheme: (theme: Partial<CVDocument["theme"]>) => void;
 }
@@ -42,10 +45,17 @@ export function PreviewSettingsSheet({
   currentTemplate,
   currentDensity = "normal",
   currentColor = "#005555",
+  currentFont = "inter",
   onSetTemplate,
   onUpdateTheme,
 }: Props) {
   const { t: tr } = useTranslation(lang);
+  const [selectedCategory, setSelectedCategory] = React.useState<"all" | FontCategory>("all");
+
+  const filteredFonts = React.useMemo(() => {
+    if (selectedCategory === "all") return FONT_CATALOG;
+    return FONT_CATALOG.filter((f) => f.category === selectedCategory);
+  }, [selectedCategory]);
 
   // Handle ESC key to close
   useEffect(() => {
@@ -275,6 +285,94 @@ export function PreviewSettingsSheet({
                 <Pipette size={13} className="text-stone-500 dark:text-[#8b949e]" />
                 <span>{tr("preview.colors.custom")}</span>
               </label>
+            </div>
+          </div>
+
+          {/* 4. Editorial Typography Selection */}
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="flex items-center gap-1.5">
+                <Type size={14} className="text-amber-600 dark:text-amber-400" />
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
+                  {tr("preview.typography.title")}
+                </span>
+              </div>
+              <span className="text-[11px] font-mono font-bold text-amber-700 dark:text-amber-400">
+                {FONT_CATALOG.find((f) => f.id === currentFont)?.name || "Inter"}
+              </span>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-1.5 mb-3 bg-stone-100/90 dark:bg-[#0d1117] p-1 rounded-xl border border-stone-200/80 dark:border-[#363d47]">
+              {(["all", "sans", "serif", "mono"] as const).map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`flex-1 py-1 px-2 rounded-lg text-[11px] font-bold transition-all text-center ${
+                    selectedCategory === cat
+                      ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                      : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
+                  }`}
+                >
+                  {cat === "all"
+                    ? tr("preview.typography.all")
+                    : cat === "sans"
+                    ? tr("preview.typography.sans")
+                    : cat === "serif"
+                    ? tr("preview.typography.serif")
+                    : tr("preview.typography.mono")}
+                </button>
+              ))}
+            </div>
+
+            {/* Fonts Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
+              {filteredFonts.map((font) => {
+                const isSelected = (currentFont || "inter") === font.id;
+                const desc = lang === "pt" ? font.description.pt : font.description.en;
+                return (
+                  <button
+                    key={font.id}
+                    type="button"
+                    onClick={() => onUpdateTheme({ fontFamily: font.id })}
+                    className={`text-left p-3 rounded-2xl border transition-all active:scale-[0.98] relative flex flex-col justify-between ${
+                      isSelected
+                        ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-600 dark:border-amber-500 text-stone-900 dark:text-[#f0f3f6] shadow-xs ring-1 ring-amber-500/30"
+                        : "bg-stone-50/80 dark:bg-[#21262d] border-stone-200/80 dark:border-[#363d47] text-stone-600 dark:text-[#c9d1d9] hover:bg-stone-100 dark:hover:bg-[#30363d]"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="font-bold text-sm text-stone-900 dark:text-[#f0f3f6] flex items-center gap-1.5">
+                          {font.name}
+                          {font.atsRating === "optimal" && (
+                            <span className="text-[9px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.2 rounded-full border border-emerald-300 dark:border-emerald-800">
+                              ATS ✓
+                            </span>
+                          )}
+                        </span>
+                        {isSelected && (
+                          <span className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0">
+                            <Check size={12} strokeWidth={3} />
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-stone-500 dark:text-[#8b949e] line-clamp-2 leading-relaxed">
+                        {desc}
+                      </p>
+                    </div>
+
+                    {/* Live Font Sample rendering in actual typeface */}
+                    <div
+                      className="mt-2 pt-2 border-t border-stone-200/60 dark:border-[#30363d] text-base text-stone-800 dark:text-[#e6edf3] font-medium tracking-normal"
+                      style={{ fontFamily: font.stack }}
+                    >
+                      {font.sampleText}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -49,7 +49,23 @@
     "subtitle": "Customize layout, spacing, and typography",
     "close": "Close preview settings",
     "templates": "Layout Template",
-    "appearance": "Visual Theme"
+    "appearance": "Visual Theme",
+    "typography": "Editorial Typography"
+  },
+  "typography": {
+    "title": "Typography",
+    "subtitle": "Curated ATS-optimized typefaces",
+    "all": "All",
+    "sans": "Sans-Serif",
+    "serif": "Serif",
+    "mono": "Monospace",
+    "optimalAts": "Optimal ATS",
+    "standardAts": "Standard",
+    "categories": {
+      "sans": "Sans-Serif (Modern & Clean)",
+      "serif": "Serif (Editorial & Classic)",
+      "mono": "Monospace (Technical & Code)"
+    }
   },
   "toasts": {
     "pdfError": "Error generating PDF.",

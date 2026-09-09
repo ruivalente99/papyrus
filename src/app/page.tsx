@@ -435,6 +435,7 @@ export default function BuilderPage() {
         lang={uiLang}
         onSelectTemplate={setTemplate}
         onSetDensity={(d) => updateTheme({ fontSize: d })}
+        onSelectFont={(f) => updateTheme({ fontFamily: f })}
         onSwitchLanguage={setUiLang}
         onToggleTheme={toggleTheme}
         onToggleGrid={() => {
