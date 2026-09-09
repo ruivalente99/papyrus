@@ -18,6 +18,7 @@ import {
   exportToEuropassXml,
   importFromEuropassXml,
 } from "../src/lib/cv-helper";
+import { encryptPdf, auditPdfAccessibility } from "../src/lib/pdfSecurity";
 import type { SupportedLanguage } from "../src/types/cv";
 
 const args = process.argv.slice(2);
@@ -74,6 +75,12 @@ Commands:
 
   diff <preset/fileA> <preset/fileB> [--lang=en|pt] [--json]
     Semantically compare two CV versions, highlighting field, bullet, and ATS differentials.
+
+  encrypt-pdf <input.pdf> --password=<pass> [--owner=<pass>] [--out=output.pdf] [--no-print] [--no-copy] [--no-modify]
+    Encrypt a PDF file with standard 128-bit PDF security and permission flags.
+
+  audit-a11y [preset/file] [--lang=en|pt] [--json]
+    Audit CV structure against PDF/UA (ISO 14289-1) and WCAG 2.1 AA accessibility guidelines.
 
 Presets:
   lateralis | classic | matrix | empty
@@ -344,6 +351,61 @@ async function main() {
       const outPath = (flags.out as string) || "imported-cv.json";
       saveCV(cv, outPath);
       console.log(`✓ Imported Europass XML into PAPYRUS format: ${outPath}`);
+      break;
+    }
+
+    case "encrypt-pdf": {
+      const inputPath = args[1];
+      if (!inputPath) {
+        console.error("❌ Error: Input PDF file required. Usage: npm run cv -- encrypt-pdf <input.pdf> --password=<pass>");
+        process.exit(1);
+      }
+      if (!flags.user && !flags.password) {
+        console.error("❌ Error: Password required (--password=secret or --user=secret)");
+        process.exit(1);
+      }
+      const userPassword = (flags.password as string) || (flags.user as string);
+      const ownerPassword = (flags.owner as string) || undefined;
+      const outPath = (flags.out as string) || inputPath.replace(/\.pdf$/i, "-encrypted.pdf");
+      const allowPrinting = flags["no-print"] ? false : true;
+      const allowCopying = flags["no-copy"] ? false : true;
+      const allowModifying = flags["no-modify"] ? false : true;
+
+      const raw = fs.readFileSync(inputPath);
+      const encryptedBytes = encryptPdf(new Uint8Array(raw), {
+        userPassword,
+        ownerPassword,
+        permissions: {
+          printing: allowPrinting,
+          copying: allowCopying,
+          modifying: allowModifying,
+        },
+      });
+      fs.writeFileSync(outPath, Buffer.from(encryptedBytes));
+      console.log(`✓ Encrypted PDF written to: ${outPath}`);
+      break;
+    }
+
+    case "audit-a11y": {
+      const cv = loadCV(targetSource);
+      const targetLang = ((flags.lang as string) || lang) as SupportedLanguage;
+      const report = auditPdfAccessibility(cv, targetLang);
+
+      if (flags.json) {
+        console.log(JSON.stringify(report, null, 2));
+      } else {
+        console.log(`\n=== PDF/UA & WCAG 2.1 AA ACCESSIBILITY AUDIT ===`);
+        console.log(`Compliance Score: ${report.overallScore}%`);
+        console.log(`Passed: ${report.passedCount}/${report.totalCount}`);
+        console.log(`Status: ${report.status.toUpperCase()}\n`);
+
+        report.items.forEach((c) => {
+          const icon = c.status === "pass" ? "✅" : c.status === "warn" ? "⚠️" : "❌";
+          console.log(`${icon} [${c.category.toUpperCase()}] ${c.title}`);
+          console.log(`   ${c.details}`);
+        });
+        console.log();
+      }
       break;
     }
 

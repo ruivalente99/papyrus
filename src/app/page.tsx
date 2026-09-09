@@ -14,7 +14,8 @@ import { JobMatcherModal } from "@/components/matcher/JobMatcherModal";
 import { CoverLetterForm } from "@/components/builder/forms/CoverLetterForm";
 import { CoverLetterPreview } from "@/components/preview/CoverLetterPreview";
 import { CVPage } from "@/components/preview/CVPage";
-import { exportToPdf, exportApplicationPackagePdf } from "@/lib/pdfExport";
+import { PdfSecurityModal } from "@/components/security/PdfSecurityModal";
+import { exportToPdf, exportApplicationPackagePdf, type ExportPdfOptions } from "@/lib/pdfExport";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { I18nProvider } from "@/context/I18nContext";
 import { translate } from "@/locales";
@@ -26,6 +27,7 @@ export default function BuilderPage() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isComparatorOpen, setIsComparatorOpen] = useState(false);
   const [isJobMatcherOpen, setIsJobMatcherOpen] = useState(false);
+  const [isPdfSecurityOpen, setIsPdfSecurityOpen] = useState(false);
   const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
   const [splitRatio, setSplitRatio] = useState<number>(50);
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
@@ -192,7 +194,29 @@ export default function BuilderPage() {
     const cvEl = document.getElementById("offscreen-cv");
     if (!clEl || !cvEl) return;
     const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
-    await exportApplicationPackagePdf(clEl as HTMLElement, cvEl as HTMLElement, `${baseName}_application_package.pdf`);
+    await exportApplicationPackagePdf(clEl as HTMLElement, cvEl as HTMLElement, `${baseName}_application_package.pdf`, {
+      cv,
+      lang: cvLang,
+      enablePdfUa: true,
+    });
+  };
+
+  const handleExportSecurePdf = async (options: ExportPdfOptions) => {
+    const pageEl = (activeDocTab === "cover-letter"
+      ? document.getElementById("offscreen-cover-letter") || document.getElementById("cover-letter-preview-wrapper")
+      : document.getElementById("offscreen-cv") || document.getElementById("cv-printable-page")) as HTMLElement;
+    if (!pageEl) return;
+    const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+    const filename = activeDocTab === "cover-letter" ? `${baseName}_cover_letter.pdf` : `${baseName}_cv.pdf`;
+    await exportToPdf(pageEl, filename, options);
+  };
+
+  const handleExportSecurePackage = async (options: ExportPdfOptions) => {
+    const clEl = document.getElementById("offscreen-cover-letter");
+    const cvEl = document.getElementById("offscreen-cv");
+    if (!clEl || !cvEl) return;
+    const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+    await exportApplicationPackagePdf(clEl as HTMLElement, cvEl as HTMLElement, `${baseName}_application_package.pdf`, options);
   };
 
   const handleRerollDylan = () => {
@@ -270,6 +294,7 @@ export default function BuilderPage() {
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
           onOpenComparator={() => setIsComparatorOpen(true)}
           onOpenJobMatcher={() => setIsJobMatcherOpen(true)}
+          onOpenPdfSecurity={() => setIsPdfSecurityOpen(true)}
         />
 
         {/* Split-Pane Main Body */}
@@ -516,6 +541,7 @@ export default function BuilderPage() {
           setActiveDocTab(tab);
           if (tab === "cover-letter") setEditorMode("form");
         }}
+        onOpenPdfSecurity={() => setIsPdfSecurityOpen(true)}
         onExportPdf={() => {
           const pdfBtn = document.querySelector(
             'button[title*="PDF"], button:has-text("PDF")'
@@ -549,6 +575,16 @@ export default function BuilderPage() {
         onClose={() => setIsJobMatcherOpen(false)}
         lang={cvLang}
         onUpdateCV={(updatedCV) => setCv(updatedCV)}
+      />
+
+      {/* PDF Encryption & PDF/UA Accessibility Modal */}
+      <PdfSecurityModal
+        isOpen={isPdfSecurityOpen}
+        onClose={() => setIsPdfSecurityOpen(false)}
+        cv={cv}
+        lang={cvLang}
+        onExportPdf={handleExportSecurePdf}
+        onExportPackage={handleExportSecurePackage}
       />
 
       {/* Hidden offscreen container for reliable combined PDF package generation */}

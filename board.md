@@ -1,7 +1,7 @@
 # 📋 PAPYRUS — Project Board & Strategic Roadmap
 
 > **Product, Engineering & Roadmap Tracking Center**  
-> *Last Updated:* 2026-09-09 • *Status:* Active • *Stable Version:* v1.2.0
+> *Last Updated:* 2026-09-09 • *Status:* Active • *Stable Version:* v1.3.0
 
 ---
 
@@ -28,10 +28,11 @@
 
 | Metric | Current Value | Target / Benchmark | Status |
 | :--- | :--- | :--- | :--- |
-| **E2E Verification Suite** | 5/5 Test Suites Passing (100%) | 100% Continuous Pass | 🟢 Excellent |
+| **E2E Verification Suite** | 6/6 Test Suites Passing (100%) | 100% Continuous Pass | 🟢 Excellent |
 | **Field Editing Suite** | 2 Seed Profiles Stress-tested (100%) | Zero Mutation Regressions | 🟢 Excellent |
 | **Missing Translation Keys** | 0 missing keys (100% covered) | 0 missing keys | 🟢 Perfect |
 | **Base ATS Score** | 100% on Lateralis & Classic presets | >= 95% across all templates | 🟢 Excellent |
+| **PDF/UA Accessibility** | 100% Compliance (ISO 14289-1) | >= 85% across all templates | 🟢 Excellent |
 | **Static Build Time** | ~2.8s on Next.js 15 | < 5.0s | 🟢 Fast |
 | **CI/CD Pipeline** | GitHub Actions + Vercel + GitGuardian | Automated PR & Production Gate | 🟢 Operational |
 
@@ -139,12 +140,18 @@
   - Unified multi-page application package generator combining Cover Letter (Page 1) and CV (Pages 2+) into a single cohesive PDF with mapped page-offset link annotations.
   - Header tab navigation switcher, Command Palette (`Cmd+K`) integration, and starter seed presets (Software Engineer, Executive Leadership).
 
+- [x] **[FEAT-021]** **PDF Encryption & PDF/UA Accessibility Compliance** `tags: pdf, security, a11y`
+  - Zero-dependency PDF Standard Security handler (ISO 32000-1 / PDF 1.7) implementing 128-bit encryption with user password protection, owner administration, and granular permission bitmasks (printing, text extraction/copying, document modifying).
+  - Automated PDF/UA (ISO 14289-1) and WCAG 2.1 AA accessibility tagger injecting PDF/UA-1 identification schemas, Dublin Core metadata, `/ViewerPreferences << /DisplayDocTitle true >>`, `/MarkInfo << /Marked true >>`, and BCP-47 language identifiers.
+  - Real-time accessibility audit engine scoring CVs across 7 key compliance metrics (title, language, creator, contrast ratio, alt text, structure, hyperlinks).
+  - Bilingual interactive Security & Accessibility modal in header and Command Palette (`Cmd+K`), with password strength meter, permissions switches, and compliance checklist.
+  - Full CLI support (`npm run cv -- encrypt-pdf <file> --password=<pass>` and `npm run cv -- audit-a11y <preset>`).
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.3)
-- [ ] **[FEAT-021]** **PDF Encryption & PDF/UA Accessibility Compliance** `tags: pdf, security, a11y`
-  - *Status:* Implementing optional PDF read protection password encryption and PDF/UA semantic structure tags.
-  - *Objective:* Enhanced privacy protection and PDF/UA compliance for screen-reader and regulatory accessibility.
+
+*(All sprint backlog tickets completed!)*
 
 ---
 

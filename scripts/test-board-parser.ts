@@ -118,8 +118,18 @@ if (!f15 || f15.status !== "shipped") {
 }
 
 const f21 = data.tasks.find((t) => t.id === "FEAT-021");
-if (!f21 || f21.status !== "progress") {
+if (!f21 || f21.status !== "shipped") {
   console.error("❌ FEAT-021 assertion failed", f21);
+  process.exit(1);
+}
+
+if (progress.length !== 0) {
+  console.error("❌ Expected 0 tasks in progress, got", progress.length);
+  process.exit(1);
+}
+
+if (backlog.length !== 0) {
+  console.error("❌ Expected 0 tasks in priority backlog, got", backlog.length);
   process.exit(1);
 }
 
@@ -129,4 +139,4 @@ if (!idea1 || idea1.status !== "icebox") {
   process.exit(1);
 }
 
-console.log("🎉 ALL BOARD PARSER TESTS PASSED (100% SUCCESS)!");
+console.log("🎉 ALL BOARD PARSER TESTS PASSED (100% SUCCESS — ENTIRE SPRINT BOARD SHIPPED)!");

@@ -68,6 +68,7 @@ interface Props {
   onExportCoverLetterPdf?: () => void;
   onExportApplicationPackage?: () => void;
   onSwitchDocumentTab?: (tab: "cv" | "cover-letter") => void;
+  onOpenPdfSecurity?: () => void;
   onExportPdf: () => void;
   onExportPng: () => void;
   onRerollDylan?: () => void;
@@ -96,6 +97,7 @@ export function CommandPalette({
   onExportCoverLetterPdf,
   onExportApplicationPackage,
   onSwitchDocumentTab,
+  onOpenPdfSecurity,
   onExportPdf,
   onExportPng,
   onRerollDylan,
@@ -327,6 +329,19 @@ export function CommandPalette({
             },
           ]
         : []),
+      ...(onOpenPdfSecurity
+        ? [
+            {
+              id: "act-pdf-security",
+              category: "actions" as const,
+              title: tr("pdfSecurity.modalTitle"),
+              subtitle: tr("pdfSecurity.modalSubtitle"),
+              icon: ShieldCheck,
+              keywords: ["pdf", "security", "password", "encrypt", "a11y", "pdf/ua", "accessibility"],
+              action: onOpenPdfSecurity,
+            },
+          ]
+        : []),
       ...(onOpenComparator
         ? [
             {
@@ -489,6 +504,7 @@ export function CommandPalette({
     onExportCoverLetterPdf,
     onExportApplicationPackage,
     onSwitchDocumentTab,
+    onOpenPdfSecurity,
     onExportPdf,
     onExportPng,
     onRerollDylan,
