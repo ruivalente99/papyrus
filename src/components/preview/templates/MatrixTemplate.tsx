@@ -18,6 +18,7 @@ import { renderPlatformIcon } from "@/lib/iconMap";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Mail, Phone, MapPin, Globe, Briefcase, GraduationCap, Languages } from "lucide-react";
+import { HeaderQrCode } from "@/components/common/HeaderQrCode";
 
 interface Props {
   cv: CVDocument;
@@ -158,6 +159,21 @@ export function MatrixTemplate({ cv, lang, onSelectSection, highlightedSectionId
               })}
           </div>
         </div>
+
+        {/* Header Vector QR Code */}
+        {personalInfo.qrCode?.enabled && (personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url) && (
+          <div className="shrink-0 self-center pl-2">
+            <HeaderQrCode
+              url={personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url}
+              label={t(personalInfo.qrCode.label, lang, cv.defaultLanguage) || ""}
+              size={isCompact ? 52 : 60}
+              color={primaryColor}
+              style={personalInfo.qrCode.style || "rounded"}
+              showIcon={personalInfo.qrCode.showIcon}
+              iconType={personalInfo.qrCode.iconType || "globe"}
+            />
+          </div>
+        )}
       </div>
 
       {/* Grid Layout */}

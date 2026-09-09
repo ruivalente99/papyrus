@@ -15,8 +15,9 @@
     "test:breaks": "tsx scripts/test-page-breaks.ts",
     "test:matcher": "tsx scripts/test-ats-matcher.ts",
     "test:typography": "tsx scripts/test-typography.ts",
+    "test:qr": "tsx scripts/test-qr-code.ts",
     "test:playwright": "playwright test",
-    "test:all": "tsx scripts/test-board-parser.ts && tsx scripts/test-page-breaks.ts && tsx scripts/test-ats-matcher.ts && tsx scripts/test-typography.ts && tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && tsx scripts/test-cv-diff.ts && playwright test"
+    "test:all": "tsx scripts/test-board-parser.ts && tsx scripts/test-page-breaks.ts && tsx scripts/test-ats-matcher.ts && tsx scripts/test-typography.ts && tsx scripts/test-qr-code.ts && tsx scripts/test-e2e.ts && tsx scripts/test-field-editing.ts && tsx scripts/test-cv-diff.ts && playwright test"
   },
   "dependencies": {
     "@dicebear/core": "^10.7.0",
@@ -34,6 +35,7 @@
     "lucide-react": "^0.475.0",
     "modern-screenshot": "^4.5.5",
     "next": "^15.2.0",
+    "qrcode-generator": "^2.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.1"

@@ -8,6 +8,7 @@ import { formatDateRange } from "@/lib/utils";
 import { renderPlatformIcon } from "@/lib/iconMap";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Globe, Mail, Phone, MapPin } from "lucide-react";
+import { HeaderQrCode } from "@/components/common/HeaderQrCode";
 
 interface Props {
   cv: CVDocument;
@@ -49,18 +50,24 @@ export function ClassicTemplate({ cv, lang, onSelectSection, highlightedSectionI
         }`}
         title={tr("a11y.templates.clickToEditPersonal")}
       >
-        <h1
-          className="text-2xl font-bold tracking-tight uppercase break-words"
-          style={{ color: primaryColor }}
-        >
-          {personalInfo.fullName}
-        </h1>
+        <div className="flex items-center justify-between gap-3">
+          {personalInfo.qrCode?.enabled && (personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url) && (
+            <div className="w-14 shrink-0 hidden sm:block pointer-events-none" />
+          )}
 
-        {personalInfo.headline && (
-          <p className="text-xs font-semibold text-stone-600 mt-0.5 uppercase tracking-wider break-words">
-            {t(personalInfo.headline, lang, cv.defaultLanguage)}
-          </p>
-        )}
+          <div className="flex-1 text-center min-w-0">
+            <h1
+              className="text-2xl font-bold tracking-tight uppercase break-words"
+              style={{ color: primaryColor }}
+            >
+              {personalInfo.fullName}
+            </h1>
+
+            {personalInfo.headline && (
+              <p className="text-xs font-semibold text-stone-600 mt-0.5 uppercase tracking-wider break-words">
+                {t(personalInfo.headline, lang, cv.defaultLanguage)}
+              </p>
+            )}
 
         {/* Contact info bar */}
         <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-xs text-stone-600 mt-1.5">
@@ -119,6 +126,23 @@ export function ClassicTemplate({ cv, lang, onSelectSection, highlightedSectionI
               </a>
             );
           })}
+            </div>
+          </div>
+
+          {/* Header Vector QR Code */}
+          {personalInfo.qrCode?.enabled && (personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url) && (
+            <div className="shrink-0 self-center">
+              <HeaderQrCode
+                url={personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url}
+                label={t(personalInfo.qrCode.label, lang, cv.defaultLanguage) || ""}
+                size={isCompact ? 48 : 56}
+                color={primaryColor}
+                style={personalInfo.qrCode.style || "rounded"}
+                showIcon={personalInfo.qrCode.showIcon}
+                iconType={personalInfo.qrCode.iconType || "globe"}
+              />
+            </div>
+          )}
         </div>
       </div>
 

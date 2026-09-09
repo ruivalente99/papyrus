@@ -19,6 +19,7 @@ import { renderPlatformIcon } from "@/lib/iconMap";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
+import { HeaderQrCode } from "@/components/common/HeaderQrCode";
 
 interface Props {
   cv: CVDocument;
@@ -193,6 +194,21 @@ export function LateralisTemplate({ cv, lang, onSelectSection, highlightedSectio
                 );
               })}
             </div>
+
+            {/* Header Vector QR Code */}
+            {personalInfo.qrCode?.enabled && (personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url) && (
+              <div data-page-break-avoid="true" className="pt-2 flex flex-col items-center justify-center">
+                <HeaderQrCode
+                  url={personalInfo.qrCode.url || personalInfo.website || personalInfo.links?.[0]?.url}
+                  label={t(personalInfo.qrCode.label, lang, cv.defaultLanguage) || ""}
+                  size={isCompact ? 54 : 62}
+                  color={primaryColor}
+                  style={personalInfo.qrCode.style || "rounded"}
+                  showIcon={personalInfo.qrCode.showIcon}
+                  iconType={personalInfo.qrCode.iconType || "globe"}
+                />
+              </div>
+            )}
           </div>
 
           {/* Languages Sidebar */}

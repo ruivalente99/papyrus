@@ -4,10 +4,11 @@ import React, { useState, useRef } from "react";
 import type { PersonalInfo, SupportedLanguage, SocialLink } from "@/types/cv";
 import { generateId } from "@/lib/utils";
 import { IconPicker } from "../IconPicker";
-import { Plus, Trash2, Dices, Camera, Upload, RotateCcw } from "lucide-react";
+import { Plus, Trash2, Dices, Camera, Upload, RotateCcw, QrCode } from "lucide-react";
 import { resolveAvatarUrl, createDylanAvatarDataUri } from "@/lib/avatar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { ImageCropModal } from "./ImageCropModal";
+import { HeaderQrCode } from "@/components/common/HeaderQrCode";
 
 interface Props {
   data: PersonalInfo;
@@ -430,6 +431,234 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Header Vector QR Code Card */}
+      <div className="border border-stone-200 dark:border-[#30363d] rounded-2xl p-3.5 sm:p-4 bg-stone-50/50 dark:bg-[#161b22]/50 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+              <QrCode size={15} />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-stone-900 dark:text-[#f0f3f6]">
+                {tr("builder.forms.personalInfo.qrCode.title")}
+              </h3>
+              <p className="text-[11px] text-stone-500 dark:text-[#8b949e]">
+                {tr("builder.forms.personalInfo.qrCode.subtitle")}
+              </p>
+            </div>
+          </div>
+
+          {/* Toggle Switch */}
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={!!data.qrCode?.enabled}
+              onChange={(e) =>
+                onChange((prev) => ({
+                  ...prev,
+                  qrCode: {
+                    ...(prev.qrCode || {
+                      url: prev.website || prev.links?.[0]?.url || "",
+                      label: { pt: "Perfil Digital", en: "Digital Profile" },
+                      style: "rounded",
+                      showIcon: false,
+                      iconType: "globe",
+                    }),
+                    enabled: e.target.checked,
+                  },
+                }))
+              }
+              className="sr-only peer"
+            />
+            <div className="w-9 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer dark:bg-[#363d47] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-amber-600"></div>
+          </label>
+        </div>
+
+        {data.qrCode?.enabled && (
+          <div className="pt-2 border-t border-stone-200/80 dark:border-[#30363d] space-y-3 animate-in fade-in duration-200">
+            {/* Top row: URL Input & Autofill Chips */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-semibold text-stone-700 dark:text-[#c9d1d9]">
+                  {tr("builder.forms.personalInfo.qrCode.url")}
+                </label>
+                {/* Autofill quick action pills */}
+                <div className="flex items-center gap-1">
+                  {data.website && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onChange((prev) => ({
+                          ...prev,
+                          qrCode: { ...(prev.qrCode || { enabled: true }), url: prev.website },
+                        }))
+                      }
+                      className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-stone-200/70 dark:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] hover:bg-amber-100 dark:hover:bg-amber-950/60 hover:text-amber-800 dark:hover:text-amber-300 transition-colors"
+                    >
+                      {tr("builder.forms.personalInfo.qrCode.useWebsite")}
+                    </button>
+                  )}
+                  {data.links?.find((l) => l.platform === "linkedin")?.url && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const liUrl = data.links?.find((l) => l.platform === "linkedin")?.url;
+                        if (liUrl) {
+                          onChange((prev) => ({
+                            ...prev,
+                            qrCode: { ...(prev.qrCode || { enabled: true }), url: liUrl, iconType: "linkedin", showIcon: true },
+                          }));
+                        }
+                      }}
+                      className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-stone-200/70 dark:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] hover:bg-amber-100 dark:hover:bg-amber-950/60 hover:text-amber-800 dark:hover:text-amber-300 transition-colors"
+                    >
+                      {tr("builder.forms.personalInfo.qrCode.useLinkedin")}
+                    </button>
+                  )}
+                  {data.links?.find((l) => l.platform === "github")?.url && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const ghUrl = data.links?.find((l) => l.platform === "github")?.url;
+                        if (ghUrl) {
+                          onChange((prev) => ({
+                            ...prev,
+                            qrCode: { ...(prev.qrCode || { enabled: true }), url: ghUrl, iconType: "github", showIcon: true },
+                          }));
+                        }
+                      }}
+                      className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-stone-200/70 dark:bg-[#21262d] text-stone-700 dark:text-[#c9d1d9] hover:bg-amber-100 dark:hover:bg-amber-950/60 hover:text-amber-800 dark:hover:text-amber-300 transition-colors"
+                    >
+                      {tr("builder.forms.personalInfo.qrCode.useGithub")}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <input
+                type="url"
+                value={data.qrCode.url || ""}
+                onChange={(e) =>
+                  onChange((prev) => ({
+                    ...prev,
+                    qrCode: { ...(prev.qrCode || { enabled: true }), url: e.target.value },
+                  }))
+                }
+                placeholder={tr("builder.forms.personalInfo.qrCode.urlPlaceholder")}
+                className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+              />
+            </div>
+
+            {/* Label and Live Preview side-by-side */}
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="flex-1 w-full space-y-3">
+                {/* Caption / Label Input */}
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-[#c9d1d9] mb-1">
+                    {tr("builder.forms.personalInfo.qrCode.label")} ({lang.toUpperCase()})
+                  </label>
+                  <input
+                    type="text"
+                    value={data.qrCode.label?.[lang] || ""}
+                    onChange={(e) =>
+                      onChange((prev) => ({
+                        ...prev,
+                        qrCode: {
+                          ...(prev.qrCode || { enabled: true }),
+                          label: {
+                            ...(typeof prev.qrCode?.label === "object" ? prev.qrCode.label : {}),
+                            [lang]: e.target.value,
+                          },
+                        },
+                      }))
+                    }
+                    placeholder={tr("builder.forms.personalInfo.qrCode.labelPlaceholder")}
+                    className="w-full border border-stone-300 dark:border-[#363d47] dark:bg-[#0d1117] dark:placeholder-[#6e7681] text-stone-900 dark:text-[#f0f3f6] rounded-lg px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                {/* Module Style & Center Icon */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="block text-[11px] font-semibold text-stone-600 dark:text-[#8b949e] mb-1">
+                      {tr("builder.forms.personalInfo.qrCode.style")}
+                    </span>
+                    <div className="flex bg-stone-200/60 dark:bg-[#0d1117] p-0.5 rounded-lg">
+                      {(["classic", "dots", "rounded"] as const).map((st) => (
+                        <button
+                          key={st}
+                          type="button"
+                          onClick={() =>
+                            onChange((prev) => ({
+                              ...prev,
+                              qrCode: { ...(prev.qrCode || { enabled: true }), style: st },
+                            }))
+                          }
+                          className={`flex-1 py-1 text-[10px] font-bold rounded-md transition-all ${
+                            (data.qrCode?.style || "rounded") === st
+                              ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                              : "text-stone-500 dark:text-[#8b949e]"
+                          }`}
+                        >
+                          {tr(`builder.forms.personalInfo.qrCode.styles.${st}`)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="block text-[11px] font-semibold text-stone-600 dark:text-[#8b949e] mb-1">
+                      {tr("builder.forms.personalInfo.qrCode.centerIcon")}
+                    </span>
+                    <div className="flex bg-stone-200/60 dark:bg-[#0d1117] p-0.5 rounded-lg">
+                      {(["none", "globe", "linkedin", "github"] as const).map((ic) => {
+                        const isNone = ic === "none";
+                        const isSelected = isNone ? !data.qrCode?.showIcon : (data.qrCode?.showIcon && data.qrCode.iconType === ic);
+                        return (
+                          <button
+                            key={ic}
+                            type="button"
+                            onClick={() =>
+                              onChange((prev) => ({
+                                ...prev,
+                                qrCode: {
+                                  ...(prev.qrCode || { enabled: true }),
+                                  showIcon: !isNone,
+                                  iconType: isNone ? "globe" : ic,
+                                },
+                              }))
+                            }
+                            className={`flex-1 py-1 text-[10px] font-bold rounded-md transition-all ${
+                              isSelected
+                                ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
+                                : "text-stone-500 dark:text-[#8b949e]"
+                            }`}
+                          >
+                            {tr(`builder.forms.personalInfo.qrCode.icons.${ic}`)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mini Preview Box */}
+              <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-white dark:bg-[#0d1117] border border-stone-200 dark:border-[#363d47] shrink-0 self-center sm:self-end">
+                <HeaderQrCode
+                  url={data.qrCode.url || data.website || "https://github.com"}
+                  label={data.qrCode.label?.[lang] || ""}
+                  size={72}
+                  style={data.qrCode.style || "rounded"}
+                  showIcon={data.qrCode.showIcon}
+                  iconType={data.qrCode.iconType || "globe"}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Summary / About */}

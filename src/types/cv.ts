@@ -15,6 +15,15 @@ export interface SocialLink {
   url: string;
 }
 
+export interface HeaderQrCodeConfig {
+  enabled: boolean;
+  url?: string;
+  label?: MultiLangString;
+  style?: "classic" | "dots" | "rounded";
+  showIcon?: boolean;
+  iconType?: "globe" | "linkedin" | "github" | "qr";
+}
+
 export interface PersonalInfo {
   fullName: string;
   headline: MultiLangString;
@@ -29,6 +38,7 @@ export interface PersonalInfo {
   showPhoto: boolean;
   links: SocialLink[];
   summary: MultiLangString;
+  qrCode?: HeaderQrCodeConfig;
 }
 
 export interface ExperienceItem {
