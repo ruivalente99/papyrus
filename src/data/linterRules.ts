@@ -1,5 +1,6 @@
 import type { CVDocument, LinterReport, LinterIssue, SupportedLanguage } from "@/types/cv";
 import { t, tArray } from "@/lib/i18n";
+import { analyzeXYZBullet } from "@/lib/xyzEngine";
 
 export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport {
   const issues: LinterIssue[] = [];
@@ -192,6 +193,30 @@ export function analyzeCV(cv: CVDocument, lang: SupportedLanguage): LinterReport
         },
         `exp-metrics-${item.id}`
       );
+
+      // Google XYZ formula: detect weak action verbs
+      const weakBullet = bullets.find((b) => {
+        if (!b || typeof b !== "string") return false;
+        const analysis = analyzeXYZBullet(b, lang);
+        return analysis.isWeakAction;
+      });
+
+      if (weakBullet) {
+        const analysis = analyzeXYZBullet(weakBullet, lang);
+        check(
+          false,
+          {
+            level: "warning",
+            sectionId: expSection.id,
+            title: lang === "pt" ? `Verbo de ação fraco em "${role || item.company}"` : `Weak action verb in "${role || item.company}"`,
+            message:
+              lang === "pt"
+                ? `Substitua a expressão passiva "${analysis.actionVerb}" por um verbo de ação mais forte como "${analysis.actionAlternative}" (fórmula Google XYZ).`
+                : `Replace passive phrase "${analysis.actionVerb}" with an active verb like "${analysis.actionAlternative}" (Google XYZ formula).`,
+          },
+          `exp-xyz-verb-${item.id}`
+        );
+      }
     });
   }
 

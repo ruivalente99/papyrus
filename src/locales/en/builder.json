@@ -86,7 +86,14 @@
       "highlights": "Key Achievements & Responsibilities",
       "addBullet": "Add bullet point",
       "bulletPlaceholder": "Describe an achievement or responsibility...",
-      "deleteBullet": "Delete bullet point"
+      "deleteBullet": "Delete bullet point",
+      "xyzGuide": "Google XYZ Formula",
+      "xyzComplete": "XYZ 100% (X + Y + Z)",
+      "xyzNeedsMetric": "Missing Metric [Y]",
+      "xyzNeedsMethod": "Missing Method [Z]",
+      "xyzPassive": "Passive Verb",
+      "xyzExample": "Insert XYZ Example",
+      "xyzReplaceWith": "Replace with \"{{verb}}\""
     },
     "education": {
       "title": "Education & Qualifications",
@@ -252,6 +259,11 @@
           "subtitle": "Side-by-side A4 comparison, semantic diff, and ATS audit",
           "keywords": "diff compare comparator version ats semantic merge"
         },
+        "jobMatcher": {
+          "title": "ATS Job Vacancy Keyword Matcher",
+          "subtitle": "Scan vacancy requirements and inject missing keywords",
+          "keywords": "job vacancy ats match keyword scanner requirements vaga"
+        },
         "rerollDylan": {
           "title": "Re-roll Dylan Avatar (DiceBear)",
           "subtitle": "Generates a fresh artistic vector avatar",
@@ -373,6 +385,8 @@
     "compare": "Compare",
     "compareCV": "Compare",
     "compareTitle": "Visual CV Comparator & Diff Engine",
+    "jobMatcher": "Job Matcher",
+    "jobMatcherTitle": "ATS Job Vacancy Keyword Matcher",
     "recentEdits": "Recent Edits",
     "recentHistory": "Recent edit history",
     "justNow": "Just now",

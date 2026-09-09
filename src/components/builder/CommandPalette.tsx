@@ -30,6 +30,7 @@ import {
   Kanban,
   BookOpen,
   GitCompare,
+  Target,
 } from "lucide-react";
 
 interface CommandItem {
@@ -56,6 +57,7 @@ interface Props {
   onOpenLinter: () => void;
   onOpenLatex: () => void;
   onOpenComparator?: () => void;
+  onOpenJobMatcher?: () => void;
   onExportJson: () => void;
   onExportPdf: () => void;
   onExportPng: () => void;
@@ -77,6 +79,7 @@ export function CommandPalette({
   onOpenLinter,
   onOpenLatex,
   onOpenComparator,
+  onOpenJobMatcher,
   onExportJson,
   onExportPdf,
   onExportPng,
@@ -235,6 +238,19 @@ export function CommandPalette({
             },
           ]
         : []),
+      ...(onOpenJobMatcher
+        ? [
+            {
+              id: "act-job-matcher",
+              category: "actions" as const,
+              title: tr("builder.modals.commandPalette.commands.jobMatcher.title"),
+              subtitle: tr("builder.modals.commandPalette.commands.jobMatcher.subtitle"),
+              icon: Target,
+              keywords: (tr("builder.modals.commandPalette.commands.jobMatcher.keywords") || "job vacancy ats match keyword scanner requirements vaga").split(" "),
+              action: onOpenJobMatcher,
+            },
+          ]
+        : []),
 
       // 🧭 Canvas & Navigation
       ...(onToggleGrid
@@ -363,6 +379,7 @@ export function CommandPalette({
     onOpenLinter,
     onOpenLatex,
     onOpenComparator,
+    onOpenJobMatcher,
     onExportJson,
     onExportPdf,
     onExportPng,
