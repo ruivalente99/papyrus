@@ -100,8 +100,14 @@ if (!f18 || f18.status !== "shipped") {
 }
 
 const f20 = data.tasks.find((t) => t.id === "FEAT-020");
-if (!f20 || f20.status !== "progress") {
+if (!f20 || f20.status !== "shipped") {
   console.error("❌ FEAT-020 assertion failed", f20);
+  process.exit(1);
+}
+
+const f19 = data.tasks.find((t) => t.id === "FEAT-019");
+if (!f19 || f19.status !== "progress") {
+  console.error("❌ FEAT-019 assertion failed", f19);
   process.exit(1);
 }
 

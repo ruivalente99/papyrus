@@ -67,7 +67,33 @@
       "addSocialLink": "Adicionar ligação",
       "network": "Rede",
       "username": "Nome de utilizador",
-      "url": "URL"
+      "url": "URL",
+      "qrCode": {
+        "title": "Código QR Vetorial de Cabeçalho",
+        "subtitle": "Incorporar um código QR vetorial interativo com ligação ao portefólio ou LinkedIn",
+        "enable": "Ativar Código QR no Cabeçalho",
+        "url": "URL de Destino",
+        "urlPlaceholder": "https://linkedin.com/in/... ou https://oseuportefolio.com",
+        "label": "Legenda / Texto Curto",
+        "labelPlaceholder": "ex: Portefólio Digital",
+        "useWebsite": "Usar Website",
+        "useLinkedin": "Usar LinkedIn",
+        "useGithub": "Usar GitHub",
+        "style": "Estilo dos Módulos",
+        "styles": {
+          "classic": "Quadrado",
+          "dots": "Pontos",
+          "rounded": "Suave"
+        },
+        "centerIcon": "Ícone Central",
+        "icons": {
+          "none": "Nenhum",
+          "globe": "Globo",
+          "linkedin": "LinkedIn",
+          "github": "GitHub"
+        },
+        "preview": "Pré-visualização do QR"
+      }
     },
     "experience": {
       "title": "Experiência Profissional",

@@ -9,6 +9,7 @@ import type {
   HobbiesSection,
   CustomSection,
   FontFamilyId,
+  HeaderQrCodeConfig,
 } from "@/types/cv";
 import { t, tArray } from "@/lib/i18n";
 import { generateId } from "@/lib/utils";
@@ -52,7 +53,7 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
 \\usepackage[margin=1.5cm]{geometry}
 ${getLatexFontPackage(cv.theme?.fontFamily)}
 \\usepackage{hyperref}
-\\usepackage{xcolor}
+${p.qrCode?.enabled ? "\\usepackage{qrcode}\n" : ""}\\usepackage{xcolor}
 \\usepackage{enumitem}
 \\usepackage{titlesec}
 \\usepackage{parskip}
@@ -99,7 +100,19 @@ ${getLatexFontPackage(cv.theme?.fontFamily)}
     contactItems.push(`\\href{${link.url}}{${escapeLatex(label)}}`);
   });
 
-  tex += `    ${contactItems.join(" $\\cdot$ ")}\n    }\n\\end{center}\n\\vspace{-6pt}\n`;
+  tex += `    ${contactItems.join(" $\\cdot$ ")}\n    }\n`;
+
+  if (p.qrCode?.enabled && (p.qrCode.url || p.website)) {
+    const qrUrl = (p.qrCode.url || p.website || "").trim();
+    const qrLabel = t(p.qrCode.label, lang, cv.defaultLanguage);
+    tex += `    \\vspace{6pt}\\\\\n`;
+    tex += `    \\qrcode[height=1.2cm]{${qrUrl}}\\\\\n`;
+    if (qrLabel) {
+      tex += `    {\\scriptsize \\color{darkgray} ${escapeLatex(qrLabel)}}\\\\\n`;
+    }
+  }
+
+  tex += `\\end{center}\n\\vspace{-6pt}\n`;
 
   // Summary / Profile
   if (summary) {
@@ -455,6 +468,20 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
   else if (clean.includes("roboto")) detectedFont = "roboto";
   else if (clean.includes("sourcesanspro")) detectedFont = "inter";
 
+  // Extract QR Code
+  let qrCodeConfig: HeaderQrCodeConfig | undefined = undefined;
+  const qrMatch = clean.match(/\\qrcode(?:\[[^\]]*\])?\{([^}]+)\}/);
+  if (qrMatch) {
+    qrCodeConfig = {
+      enabled: true,
+      url: qrMatch[1].trim(),
+      label: { pt: "Perfil Digital", en: "Digital Profile" },
+      style: "rounded",
+      showIcon: false,
+      iconType: "globe",
+    };
+  }
+
   // Extract Primary Color
   let primaryHex = "#004f90";
   const colorMatch = clean.match(/\\definecolor\{primaryColor\}\{HTML\}\{([0-9a-fA-F]{6})\}/i);
@@ -481,6 +508,7 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
       showPhoto: false,
       links: [],
       summary: { pt: "", en: "" },
+      qrCode: qrCodeConfig,
     },
     sections: sections.length > 0 ? sections : undefined,
   };

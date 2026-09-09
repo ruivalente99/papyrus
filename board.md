@@ -119,12 +119,19 @@
   - Global Command Palette (`Cmd+K`) integration enabling instant typography switching by keyboard.
   - Template parity across Lateralis, Classic, and Matrix layouts with Google Fonts integration in `globals.css`.
 
+- [x] **[FEAT-020]** **Header Vector QR Code Generator** `tags: contact, modern, vector`
+  - Zero-dependency client-side vector SVG QR code generator (`src/lib/qrCode.ts`) with custom styling (square, dots, rounded), auto-sizing, and error correction.
+  - Interactive clickable QR code embedded in CV headers across Lateralis, Classic, and Matrix templates linking to LinkedIn, GitHub, or online portfolio.
+  - Embedded vector badge overlays for popular professional networks (Globe, LinkedIn, GitHub).
+  - Dedicated QR Code settings card in Personal Details form with autofill shortcuts, custom destination URL, localized captions, and real-time SVG preview.
+  - Bi-directional LaTeX sync embedding `\usepackage{qrcode}` and `\qrcode` macros in `.tex` export/import.
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.3)
-- [ ] **[FEAT-020]** **Header Vector QR Code Generator** `tags: contact, modern, vector`
-  - *Status:* Implementing customizable SVG vector QR code for CV headers.
-  - *Objective:* Embed interactive vector QR code linking to LinkedIn, GitHub, or online portfolio.
+- [ ] **[FEAT-019]** **JSON Resume & Europass XML Schema Interoperability** `tags: interoperability, standards`
+  - *Status:* Implementing bidirectional conversion between PAPYRUS and JSON Resume (`jsonresume.org`) & Europass XML schemas.
+  - *Objective:* Seamless import and export of industry-standard CV schemas.
 ---
 
 ### 📋 Priority Backlog (v1.3 - v2.0)
@@ -132,10 +139,6 @@
 - [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
   - Coordinated cover letter generation matching the header, accent color, and typography of the active CV template.
   - Batch export into a unified multi-page PDF application package.
-- [ ] **[FEAT-019]** **JSON Resume & Europass XML Schema Interoperability** `tags: interoperability, standards`
-  - Import and export support for standard `jsonresume.org` open schemas and Europass XML format.
-- [ ] **[FEAT-020]** **Header Vector QR Code Generator** `tags: contact, modern`
-  - Optional customizable vector QR code embedded in the CV header linking to LinkedIn, GitHub, or online portfolio.
 - [ ] **[FEAT-021]** **PDF Encryption & PDF/UA Accessibility Compliance** `tags: pdf, security`
   - Optional read-protection password encryption and screen-reader semantic tagging for government accessibility standards.
 

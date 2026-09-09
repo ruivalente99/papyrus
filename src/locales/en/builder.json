@@ -67,7 +67,33 @@
       "addSocialLink": "Add link",
       "network": "Network",
       "username": "Username",
-      "url": "URL"
+      "url": "URL",
+      "qrCode": {
+        "title": "Header Vector QR Code",
+        "subtitle": "Embed a scannable vector QR code linking to your portfolio or LinkedIn",
+        "enable": "Enable Header QR Code",
+        "url": "Target Destination URL",
+        "urlPlaceholder": "https://linkedin.com/in/... or https://yourportfolio.com",
+        "label": "Caption / Label",
+        "labelPlaceholder": "e.g. Scan for Portfolio",
+        "useWebsite": "Use Website",
+        "useLinkedin": "Use LinkedIn",
+        "useGithub": "Use GitHub",
+        "style": "QR Code Style",
+        "styles": {
+          "classic": "Square",
+          "dots": "Dots",
+          "rounded": "Rounded"
+        },
+        "centerIcon": "Center Badge Icon",
+        "icons": {
+          "none": "None",
+          "globe": "Globe",
+          "linkedin": "LinkedIn",
+          "github": "GitHub"
+        },
+        "preview": "Live QR Preview"
+      }
     },
     "experience": {
       "title": "Work Experience",
