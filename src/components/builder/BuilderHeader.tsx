@@ -33,7 +33,11 @@ import {
   FileText,
   Mail,
   ShieldCheck,
+  Briefcase,
 } from "lucide-react";
+import { ProfileSwitcherDropdown } from "@/components/profile/ProfileSwitcherDropdown";
+import type { CVProfileMeta } from "@/types/profile";
+import type { TemplateId } from "@/types/cv";
 
 interface Props {
   cv: CVDocument;
@@ -57,6 +61,11 @@ interface Props {
   onExportCoverLetterPdf?: () => void;
   onExportApplicationPackage?: () => void;
   onOpenPdfSecurity?: () => void;
+  profiles?: CVProfileMeta[];
+  activeProfileId?: string;
+  onSwitchProfile?: (id: string) => void;
+  onOpenProfileManager?: () => void;
+  onCreateProfile?: (name: string, templateId?: TemplateId, fromCurrent?: boolean) => void;
   linterReport: LinterReport;
   canUndo?: boolean;
   canRedo?: boolean;
@@ -102,6 +111,11 @@ export function BuilderHeader({
   onOpenCommandPalette,
   onOpenComparator,
   onOpenJobMatcher,
+  profiles,
+  activeProfileId,
+  onSwitchProfile,
+  onOpenProfileManager,
+  onCreateProfile,
 }: Props) {
   const currentUiLang = uiLang || activeLang || "pt";
   const currentCvLang = cvLang || cv.currentLanguage || activeLang || "en";
@@ -231,6 +245,19 @@ export function BuilderHeader({
             <span className="md:hidden">Letter</span>
           </button>
         </div>
+
+        {/* Profile Switcher Dropdown */}
+        {profiles && profiles.length > 0 && activeProfileId && onSwitchProfile && onOpenProfileManager && (
+          <div className="hidden sm:block">
+            <ProfileSwitcherDropdown
+              profiles={profiles}
+              activeProfileId={activeProfileId}
+              onSwitchProfile={onSwitchProfile}
+              onOpenProfileManager={onOpenProfileManager}
+              onCreateProfile={() => (onCreateProfile ? onCreateProfile("New Profile") : onOpenProfileManager())}
+            />
+          </div>
+        )}
 
         {/* Undo / Redo / History Controls (Desktop / Tablet) */}
         {onUndo && onRedo && (
@@ -605,6 +632,18 @@ export function BuilderHeader({
                   >
                     <ShieldCheck size={13} className="text-amber-600 dark:text-amber-400" />
                     <span>{tr("pdfSecurity.modalTitle")}</span>
+                  </button>
+                )}
+                {onOpenProfileManager && (
+                  <button
+                    onClick={() => {
+                      onOpenProfileManager();
+                      setShowPresets(false);
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <Briefcase size={13} className="text-primary" />
+                    <span>{tr("profiles.modalTitle")}</span>
                   </button>
                 )}
               </div>

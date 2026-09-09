@@ -28,6 +28,19 @@ import {
 import { importFromLatex } from "@/lib/latexEngine";
 import type { CoverLetterDocument } from "@/types/coverLetter";
 import { softwareEngineerCoverLetter } from "@/data/seeds/coverLetterSeeds";
+import type { CVProfileMeta, MultiProfileBundle } from "@/types/profile";
+import {
+  initProfiles,
+  loadProfile,
+  saveProfileData,
+  createNewProfile as createProfileStorage,
+  duplicateProfile as duplicateProfileStorage,
+  renameProfile as renameProfileStorage,
+  deleteProfile as deleteProfileStorage,
+  exportAllProfilesBundle,
+  importProfilesBundle as importProfilesBundleStorage,
+  ACTIVE_PROFILE_KEY,
+} from "@/lib/profileStorage";
 
 const STORAGE_KEY = "papyrus_active_document";
 const COVER_LETTER_STORAGE_KEY = "papyrus_active_cover_letter";
@@ -53,6 +66,11 @@ export function useCV() {
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving">("saved");
   const [coverLetter, setCoverLetter] = useState<CoverLetterDocument>(softwareEngineerCoverLetter);
   const [activeDocTab, setActiveDocTab] = useState<"cv" | "cover-letter">("cv");
+  const [profiles, setProfiles] = useState<CVProfileMeta[]>([]);
+  const [activeProfileId, setActiveProfileId] = useState<string>("profile-default");
+
+  const activeProfileIdRef = useRef(activeProfileId);
+  activeProfileIdRef.current = activeProfileId;
 
   const cvRef = useRef(cv);
   cvRef.current = cv;
@@ -210,12 +228,25 @@ export function useCV() {
         setUiLangState(savedUiLang);
       }
 
-      const isCompleted = localStorage.getItem(SETUP_COMPLETED_KEY);
-      const saved =
-        localStorage.getItem(STORAGE_KEY) ||
-        localStorage.getItem("curricula_active_document") ||
-        localStorage.getItem("cvana_active_document");
+      // Initialize Profiles
+      const { activeId, profiles: loadedProfiles } = initProfiles(
+        technicalLatexSeed,
+        softwareEngineerCoverLetter
+      );
+      setProfiles(loadedProfiles);
+      setActiveProfileId(activeId);
 
+      const activeProfileData = loadProfile(activeId);
+      if (activeProfileData) {
+        setCvState(activeProfileData.cv);
+        cvRef.current = activeProfileData.cv;
+        if (activeProfileData.coverLetter) {
+          setCoverLetter(activeProfileData.coverLetter);
+        }
+        setHasCachedDoc(true);
+      }
+
+      const isCompleted = localStorage.getItem(SETUP_COMPLETED_KEY);
       const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
       const forceSkipSetup =
         urlParams?.get("skipSetup") === "1" ||
@@ -227,35 +258,13 @@ export function useCV() {
         try {
           localStorage.setItem(SETUP_COMPLETED_KEY, "true");
         } catch {}
-      } else if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && parsed.id && parsed.sections) {
-          setCv(parsed);
-          setHasCachedDoc(true);
-          setIsSetupOpen(false);
-          try {
-            localStorage.setItem(SETUP_COMPLETED_KEY, "true");
-          } catch {}
-        } else if (!isCompleted) {
-          setIsSetupOpen(true);
-        } else {
-          setIsSetupOpen(false);
-        }
+      } else if (activeProfileData) {
+        setIsSetupOpen(false);
       } else if (!isCompleted) {
         // First visit: open Setup Screen
         setIsSetupOpen(true);
       } else {
         setIsSetupOpen(false);
-      }
-      // Load Cover Letter from LocalStorage if present
-      const savedCoverLetter = localStorage.getItem(COVER_LETTER_STORAGE_KEY);
-      if (savedCoverLetter) {
-        try {
-          const parsedLetter = JSON.parse(savedCoverLetter);
-          if (parsedLetter && parsedLetter.recipient && parsedLetter.content) {
-            setCoverLetter(parsedLetter);
-          }
-        } catch {}
       }
     } catch (e) {
       console.warn("Failed to load CV from localStorage:", e);
@@ -263,7 +272,7 @@ export function useCV() {
     } finally {
       setIsLoaded(true);
     }
-  }, [setCv]);
+  }, []);
 
   // Auto-save to LocalStorage on update
   useEffect(() => {
@@ -273,6 +282,13 @@ export function useCV() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCv));
       localStorage.setItem(SETUP_COMPLETED_KEY, "true");
       localStorage.setItem(COVER_LETTER_STORAGE_KEY, JSON.stringify(coverLetter));
+
+      const { profiles: updatedProfiles } = saveProfileData(
+        activeProfileIdRef.current,
+        updatedCv,
+        coverLetter
+      );
+      setProfiles(updatedProfiles);
       setHasCachedDoc(true);
     } catch (e) {
       console.warn("Failed to save CV to localStorage:", e);
@@ -706,6 +722,136 @@ export function useCV() {
     [setCv]
   );
 
+  // Profile Management Handlers
+  const switchProfile = useCallback((profileId: string) => {
+    if (profileId === activeProfileIdRef.current) return;
+    try {
+      saveProfileData(activeProfileIdRef.current, cvRef.current, coverLetter);
+    } catch {}
+
+    const targetData = loadProfile(profileId);
+    if (!targetData) return;
+
+    setActiveProfileId(profileId);
+    setCvState(targetData.cv);
+    cvRef.current = targetData.cv;
+    if (targetData.coverLetter) {
+      setCoverLetter(targetData.coverLetter);
+    }
+    setPast([]);
+    setFuture([]);
+    setHistory([]);
+
+    try {
+      localStorage.setItem(ACTIVE_PROFILE_KEY, profileId);
+    } catch {}
+  }, [coverLetter]);
+
+  const createProfile = useCallback(
+    (name: string, templateId?: TemplateId, fromCurrent?: boolean) => {
+      let baseCv = technicalLatexSeed;
+      if (fromCurrent) {
+        baseCv = cvRef.current;
+      } else if (templateId) {
+        const found = PRESET_SEEDS.find((p) => p.id === templateId);
+        if (found) baseCv = found.cv;
+      }
+
+      const { meta, profiles: updatedProfiles } = createProfileStorage(
+        name,
+        baseCv,
+        fromCurrent ? coverLetter : undefined
+      );
+
+      setProfiles(updatedProfiles);
+      setActiveProfileId(meta.id);
+      setCvState({ ...baseCv, title: meta.name, id: `cv-${Date.now()}` });
+      setPast([]);
+      setFuture([]);
+      setHistory([]);
+      return meta;
+    },
+    [coverLetter]
+  );
+
+  const duplicateProfile = useCallback(
+    (sourceId?: string, customName?: string) => {
+      const targetId = sourceId || activeProfileIdRef.current;
+      const res = duplicateProfileStorage(targetId, customName);
+      if (!res) return null;
+
+      setProfiles(res.profiles);
+      setActiveProfileId(res.meta.id);
+      const loaded = loadProfile(res.meta.id);
+      if (loaded) {
+        setCvState(loaded.cv);
+        cvRef.current = loaded.cv;
+        if (loaded.coverLetter) {
+          setCoverLetter(loaded.coverLetter);
+        }
+      }
+      setPast([]);
+      setFuture([]);
+      setHistory([]);
+      return res.meta;
+    },
+    []
+  );
+
+  const renameProfile = useCallback((profileId: string, newName: string) => {
+    const updatedProfiles = renameProfileStorage(profileId, newName);
+    setProfiles(updatedProfiles);
+    if (profileId === activeProfileIdRef.current) {
+      setCvState((prev) => ({ ...prev, title: newName.trim() || prev.title }));
+    }
+  }, []);
+
+  const deleteProfile = useCallback((profileId: string) => {
+    const { nextActiveId, profiles: updatedProfiles } = deleteProfileStorage(
+      profileId,
+      activeProfileIdRef.current,
+      technicalLatexSeed
+    );
+    setProfiles(updatedProfiles);
+
+    if (profileId === activeProfileIdRef.current) {
+      setActiveProfileId(nextActiveId);
+      const nextData = loadProfile(nextActiveId);
+      if (nextData) {
+        setCvState(nextData.cv);
+        cvRef.current = nextData.cv;
+        if (nextData.coverLetter) {
+          setCoverLetter(nextData.coverLetter);
+        }
+      }
+      setPast([]);
+      setFuture([]);
+      setHistory([]);
+    }
+  }, []);
+
+  const exportProfilesBundle = useCallback(() => {
+    return exportAllProfilesBundle(activeProfileIdRef.current);
+  }, []);
+
+  const importProfilesBundle = useCallback((bundle: MultiProfileBundle) => {
+    const { activeId, profiles: updatedProfiles } = importProfilesBundleStorage(bundle);
+    setProfiles(updatedProfiles);
+    setActiveProfileId(activeId);
+    const activeData = loadProfile(activeId);
+    if (activeData) {
+      setCvState(activeData.cv);
+      cvRef.current = activeData.cv;
+      if (activeData.coverLetter) {
+        setCoverLetter(activeData.coverLetter);
+      }
+    }
+    setPast([]);
+    setFuture([]);
+    setHistory([]);
+    return { activeId, profiles: updatedProfiles };
+  }, []);
+
   // Global Keyboard Shortcuts: Cmd+Z (undo), Cmd+Shift+Z / Ctrl+Y (redo)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -788,5 +934,14 @@ export function useCV() {
     deleteCV,
     hasCachedDoc,
     completeSetup,
+    profiles,
+    activeProfileId,
+    switchProfile,
+    createProfile,
+    duplicateProfile,
+    renameProfile,
+    deleteProfile,
+    exportProfilesBundle,
+    importProfilesBundle,
   };
 }

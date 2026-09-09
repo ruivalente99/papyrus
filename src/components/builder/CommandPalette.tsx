@@ -35,14 +35,15 @@ import {
   Mail,
 } from "lucide-react";
 import { FONT_CATALOG, type FontFamilyId } from "@/lib/typography";
+import type { CVProfileMeta } from "@/types/profile";
 
 interface CommandItem {
   id: string;
-  category: "templates" | "actions" | "navigation" | "preferences";
+  category: "templates" | "actions" | "navigation" | "preferences" | "sections";
   title: string;
-  subtitle?: string;
-  icon: React.ElementType;
-  keywords?: string[];
+  subtitle: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  keywords: string[];
   shortcut?: string;
   action: () => void;
 }
@@ -69,6 +70,10 @@ interface Props {
   onExportApplicationPackage?: () => void;
   onSwitchDocumentTab?: (tab: "cv" | "cover-letter") => void;
   onOpenPdfSecurity?: () => void;
+  onOpenProfileManager?: () => void;
+  profiles?: CVProfileMeta[];
+  activeProfileId?: string;
+  onSwitchProfile?: (id: string) => void;
   onExportPdf: () => void;
   onExportPng: () => void;
   onRerollDylan?: () => void;
@@ -98,6 +103,10 @@ export function CommandPalette({
   onExportApplicationPackage,
   onSwitchDocumentTab,
   onOpenPdfSecurity,
+  onOpenProfileManager,
+  profiles = [],
+  activeProfileId,
+  onSwitchProfile,
   onExportPdf,
   onExportPng,
   onRerollDylan,
@@ -453,6 +462,28 @@ export function CommandPalette({
       }),
 
       // 🌐 Preferences
+      ...(onOpenProfileManager
+        ? [
+            {
+              id: "act-manage-profiles",
+              category: "preferences" as const,
+              title: tr("profiles.modalTitle"),
+              subtitle: tr("profiles.modalSubtitle"),
+              icon: Briefcase,
+              keywords: ["profile", "perfil", "profiles", "perfis", "manage", "gerir"],
+              action: onOpenProfileManager,
+            },
+          ]
+        : []),
+      ...profiles.map((p) => ({
+        id: `switch-profile-${p.id}`,
+        category: "preferences" as const,
+        title: `${tr("profiles.switch")}: ${p.name}`,
+        subtitle: `${p.template.toUpperCase()} • ${p.targetRole || "CV Profile"}${p.id === activeProfileId ? ` (${tr("profiles.active")})` : ""}`,
+        icon: Briefcase,
+        keywords: ["profile", "perfil", "switch", "mudar", p.name.toLowerCase()],
+        action: () => onSwitchProfile?.(p.id),
+      })),
       {
         id: "pref-lang-pt",
         category: "preferences",
@@ -505,6 +536,10 @@ export function CommandPalette({
     onExportApplicationPackage,
     onSwitchDocumentTab,
     onOpenPdfSecurity,
+    onOpenProfileManager,
+    profiles,
+    activeProfileId,
+    onSwitchProfile,
     onExportPdf,
     onExportPng,
     onRerollDylan,
