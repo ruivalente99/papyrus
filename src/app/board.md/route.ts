@@ -5,6 +5,10 @@ import path from "path";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  if (process.env.NODE_ENV !== "development" && process.env.ENABLE_DEV_BOARD !== "true") {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
   try {
     const filePath = path.join(process.cwd(), "board.md");
     if (!fs.existsSync(filePath)) {
