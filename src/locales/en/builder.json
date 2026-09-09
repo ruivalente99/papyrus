@@ -321,6 +321,16 @@
           "subtitle": "Export raw CV document data as JSON",
           "keywords": "json backup save data"
         },
+        "exportJsonResume": {
+          "title": "Export JSON Resume (jsonresume.org)",
+          "subtitle": "Standard v1.0 open schema format",
+          "keywords": "export json resume jsonresume standard schema interoperability"
+        },
+        "exportEuropass": {
+          "title": "Export Europass XML (Standard)",
+          "subtitle": "European Union Europass XML curriculum schema",
+          "keywords": "export europass xml european union standard schema"
+        },
         "navGrid": {
           "title": "Toggle Alignment Grid (#)",
           "subtitle": "Show/hide alignment grid on canvas",
@@ -426,10 +436,16 @@
     "jsonInvalid": "Invalid JSON file.",
     "presets": "Presets",
     "downloadTex": "Download TeX (.tex)",
-    "importFileAria": "Upload CV JSON file",
+    "importFileAria": "Upload CV document (JSON, XML, TeX)",
     "newDoc": "New / Setup",
     "templates": "Templates",
     "jsonBackup": "JSON Backup",
+    "exportJsonResume": "Export JSON Resume",
+    "exportEuropassXml": "Export Europass XML",
+    "jsonResumeDownloaded": "JSON Resume (.json) exported successfully!",
+    "europassDownloaded": "Europass XML (.xml) exported successfully!",
+    "resumeImported": "Resume imported successfully ({{format}})!",
+    "resumeImportError": "Unable to import resume. Unsupported or malformed format.",
     "avatarClickHint": "Click or drag photo here",
     "avatarUpload": "Upload",
     "avatarRerollAria": "Reroll Dylan avatar"

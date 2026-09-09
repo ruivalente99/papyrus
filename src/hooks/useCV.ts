@@ -18,6 +18,14 @@ import {
 } from "@/data/seeds";
 import { analyzeCV } from "@/data/linterRules";
 import { generateId } from "@/lib/utils";
+import {
+  exportToJsonResume,
+  importFromJsonResume,
+  exportToEuropassXml,
+  importFromEuropassXml,
+  detectResumeFormat,
+} from "@/lib/schemaInterop";
+import { importFromLatex } from "@/lib/latexEngine";
 
 const STORAGE_KEY = "papyrus_active_document";
 const SETUP_COMPLETED_KEY = "papyrus_setup_completed";
@@ -510,6 +518,111 @@ export function useCV() {
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
   }, [cv]);
 
+  const exportJsonResume = useCallback(
+    (lang?: SupportedLanguage) => {
+      const targetLang = lang || cvLang;
+      const jsonResumeObj = exportToJsonResume(cv, targetLang);
+      const jsonResumeStr = JSON.stringify(jsonResumeObj, null, 2);
+      const blob = new Blob([jsonResumeStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const safeName = (cv.personalInfo.fullName || "resume").toLowerCase().replace(/\s+/g, "_");
+      a.download = `${safeName}_jsonresume.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    },
+    [cv, cvLang]
+  );
+
+  const exportEuropassXml = useCallback(
+    (lang?: SupportedLanguage) => {
+      const targetLang = lang || cvLang;
+      const xmlStr = exportToEuropassXml(cv, targetLang);
+      const blob = new Blob([xmlStr], { type: "application/xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const safeName = (cv.personalInfo.fullName || "resume").toLowerCase().replace(/\s+/g, "_");
+      a.download = `${safeName}_europass.xml`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    },
+    [cv, cvLang]
+  );
+
+  const importAnyResume = useCallback(
+    (
+      content: string,
+      defaultLang?: SupportedLanguage
+    ): { success: boolean; format?: string; error?: string } => {
+      try {
+        const detected = detectResumeFormat(content);
+        let importedDoc: CVDocument | null = null;
+        const targetLang = defaultLang || cvLang;
+
+        switch (detected) {
+          case "jsonresume":
+            importedDoc = importFromJsonResume(content, targetLang);
+            break;
+          case "europass-xml":
+            importedDoc = importFromEuropassXml(content, targetLang);
+            break;
+          case "latex": {
+            const parsedLatex = importFromLatex(content);
+            importedDoc = {
+              ...technicalLatexSeed,
+              ...parsedLatex,
+              id: generateId(),
+              personalInfo: {
+                ...technicalLatexSeed.personalInfo,
+                ...(parsedLatex.personalInfo || {}),
+              },
+              sections: (parsedLatex.sections && parsedLatex.sections.length > 0)
+                ? (parsedLatex.sections as CVSection[])
+                : technicalLatexSeed.sections,
+              updatedAt: new Date().toISOString(),
+            };
+            break;
+          }
+          case "papyrus":
+          default: {
+            try {
+              const parsed = JSON.parse(content);
+              if (parsed && parsed.id && parsed.sections) {
+                importedDoc = parsed;
+              } else {
+                importedDoc = importFromJsonResume(content, targetLang);
+              }
+            } catch {
+              return { success: false, error: "Invalid or unsupported format" };
+            }
+            break;
+          }
+        }
+
+        if (importedDoc && importedDoc.sections) {
+          setCv(importedDoc);
+          setIsSetupOpen(false);
+          try {
+            localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(importedDoc));
+            setHasCachedDoc(true);
+          } catch {}
+          return { success: true, format: detected };
+        }
+        return { success: false, error: "Unable to parse resume document" };
+      } catch (err: any) {
+        return { success: false, error: err.message || "Failed to parse resume document" };
+      }
+    },
+    [cvLang, setCv]
+  );
+
   // Setup Screen handlers: Resume, Duplicate, Delete, Complete
   const openSetup = useCallback(() => {
     setIsSetupOpen(true);
@@ -623,6 +736,9 @@ export function useCV() {
     loadPreset,
     importJson,
     exportJson,
+    exportJsonResume,
+    exportEuropassXml,
+    importAnyResume,
     updateFromJson,
     undo,
     redo,

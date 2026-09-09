@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 
+import fs from "fs";
 import {
   loadCV,
   saveCV,
@@ -12,6 +13,10 @@ import {
   importCVFromLatex,
   validateCVSchema,
   compareCVs,
+  exportToJsonResume,
+  importFromJsonResume,
+  exportToEuropassXml,
+  importFromEuropassXml,
 } from "../src/lib/cv-helper";
 import type { SupportedLanguage } from "../src/types/cv";
 
@@ -45,6 +50,18 @@ Commands:
 
   latex-import <path.tex> [--out=path.json]
     Parse and import a LaTeX CV into a valid PAPYRUS JSON document.
+
+  jsonresume-export [preset/file] [--out=path.json] [--lang=en|pt]
+    Export CV to standard jsonresume.org open schema JSON.
+
+  jsonresume-import <path.json> [--out=path.json]
+    Import a jsonresume.org JSON document into PAPYRUS format.
+
+  europass-export [preset/file] [--out=path.xml] [--lang=en|pt]
+    Export CV to standard Europass XML format.
+
+  europass-import <path.xml> [--out=path.json]
+    Import a Europass XML resume into PAPYRUS format.
 
   add-skill [preset/file] --cat-en="..." --cat-pt="..." --skill="..." [--out=path.json]
     Add a skill tag to a category.
@@ -276,6 +293,57 @@ async function main() {
         console.log(`📈 SUMMARY: ${result.summary.totalChanges} total changes (${result.summary.additions} added, ${result.summary.deletions} removed, ${result.summary.modifications} modified)`);
         console.log(`------------------------------------------------------\n`);
       }
+      break;
+    }
+
+    case "jsonresume-export": {
+      const target = args[1] || "lateralis";
+      const cv = loadCV(target);
+      const targetLang = ((flags.lang as string) || lang) as SupportedLanguage;
+      const outPath = (flags.out as string) || "resume.json";
+      const jsonResume = exportToJsonResume(cv, targetLang);
+      fs.writeFileSync(outPath, JSON.stringify(jsonResume, null, 2), "utf-8");
+      console.log(`✓ Exported CV to JSON Resume: ${outPath} (${targetLang.toUpperCase()})`);
+      break;
+    }
+
+    case "jsonresume-import": {
+      const filePath = args[1];
+      if (!filePath) {
+        console.error("❌ Error: Path to JSON Resume file required. Usage: npm run cv -- jsonresume-import <path.json>");
+        process.exit(1);
+      }
+      const raw = fs.readFileSync(filePath, "utf-8");
+      const parsed = JSON.parse(raw);
+      const cv = importFromJsonResume(parsed, "en");
+      const outPath = (flags.out as string) || "imported-cv.json";
+      saveCV(cv, outPath);
+      console.log(`✓ Imported JSON Resume into PAPYRUS format: ${outPath}`);
+      break;
+    }
+
+    case "europass-export": {
+      const target = args[1] || "matrix";
+      const cv = loadCV(target);
+      const targetLang = ((flags.lang as string) || lang) as SupportedLanguage;
+      const outPath = (flags.out as string) || "europass.xml";
+      const xml = exportToEuropassXml(cv, targetLang);
+      fs.writeFileSync(outPath, xml, "utf-8");
+      console.log(`✓ Exported CV to Europass XML: ${outPath} (${targetLang.toUpperCase()})`);
+      break;
+    }
+
+    case "europass-import": {
+      const filePath = args[1];
+      if (!filePath) {
+        console.error("❌ Error: Path to Europass XML required. Usage: npm run cv -- europass-import <path.xml>");
+        process.exit(1);
+      }
+      const xml = fs.readFileSync(filePath, "utf-8");
+      const cv = importFromEuropassXml(xml, "en");
+      const outPath = (flags.out as string) || "imported-cv.json";
+      saveCV(cv, outPath);
+      console.log(`✓ Imported Europass XML into PAPYRUS format: ${outPath}`);
       break;
     }
 

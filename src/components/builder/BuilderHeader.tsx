@@ -46,6 +46,9 @@ interface Props {
   onOpenSetup?: () => void;
   onImportJson: (data: CVDocument) => void;
   onExportJson: () => void;
+  onExportJsonResume?: (lang?: SupportedLanguage) => void;
+  onExportEuropassXml?: (lang?: SupportedLanguage) => void;
+  onImportAnyResume?: (content: string, defaultLang?: SupportedLanguage) => { success: boolean; format?: string; error?: string };
   linterReport: LinterReport;
   canUndo?: boolean;
   canRedo?: boolean;
@@ -73,6 +76,9 @@ export function BuilderHeader({
   onOpenSetup,
   onImportJson,
   onExportJson,
+  onExportJsonResume,
+  onExportEuropassXml,
+  onImportAnyResume,
   linterReport,
   canUndo = false,
   canRedo = false,
@@ -91,6 +97,7 @@ export function BuilderHeader({
   const handleAddCvLang = onAddCvLanguage || onAddLanguage || (() => {});
 
   const [showPresets, setShowPresets] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
   const [showLinterModal, setShowLinterModal] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -130,8 +137,28 @@ export function BuilderHeader({
 
     const reader = new FileReader();
     reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (!content) return;
+
+      if (onImportAnyResume) {
+        const res = onImportAnyResume(content, currentCvLang);
+        if (res.success) {
+          showToast(
+            tr("builder.header.resumeImported", { format: (res.format || "OK").toUpperCase() }),
+            "success"
+          );
+          return;
+        } else {
+          showToast(
+            res.error || tr("builder.header.resumeImportError"),
+            "error"
+          );
+          return;
+        }
+      }
+
       try {
-        const parsed = JSON.parse(event.target?.result as string);
+        const parsed = JSON.parse(content);
         onImportJson(parsed);
         showToast(
           tr("builder.header.jsonImported"),
@@ -474,6 +501,32 @@ export function BuilderHeader({
                   <FileDown size={13} />
                   <span>{tr("builder.header.jsonBackup")}</span>
                 </button>
+                {onExportJsonResume && (
+                  <button
+                    onClick={() => {
+                      onExportJsonResume(currentCvLang);
+                      setShowPresets(false);
+                      showToast(tr("builder.header.jsonResumeDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <FileDown size={13} className="text-amber-600 dark:text-amber-400" />
+                    <span>{tr("builder.header.exportJsonResume")}</span>
+                  </button>
+                )}
+                {onExportEuropassXml && (
+                  <button
+                    onClick={() => {
+                      onExportEuropassXml(currentCvLang);
+                      setShowPresets(false);
+                      showToast(tr("builder.header.europassDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <FileDown size={13} className="text-blue-600 dark:text-blue-400" />
+                    <span>{tr("builder.header.exportEuropassXml")}</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -491,7 +544,7 @@ export function BuilderHeader({
           <span className="hidden lg:inline">.tex</span>
         </button>
 
-        {/* Import JSON (Desktop / Tablet) */}
+        {/* Import Document (JSON, XML, TeX) (Desktop / Tablet) */}
         <button
           onClick={() => fileInputRef.current?.click()}
           title={tr("common.actions.import")}
@@ -503,21 +556,77 @@ export function BuilderHeader({
         <input
           ref={fileInputRef}
           type="file"
-          accept=".json,application/json"
+          accept=".json,.xml,.tex,application/json,text/xml,application/xml,application/x-tex"
           onChange={handleFileUpload}
           aria-label={tr("builder.header.importFileAria")}
           className="hidden"
         />
 
-        {/* Export JSON (Desktop / Tablet) */}
-        <button
-          onClick={onExportJson}
-          title={tr("common.actions.export")}
-          aria-label={tr("a11y.actions.exportJson")}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
-        >
-          <FileDown size={13} />
-        </button>
+        {/* Export Dropdown Menu (Desktop / Tablet) */}
+        <div className="relative hidden sm:block">
+          <button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            title={tr("common.actions.export")}
+            aria-label={tr("a11y.actions.exportJson")}
+            className="flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
+          >
+            <FileDown size={13} />
+          </button>
+
+          {showExportMenu && (
+            <div className="absolute right-0 mt-1.5 w-56 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100">
+              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
+                {tr("common.actions.export")}
+              </p>
+              <button
+                onClick={() => {
+                  onExportJson();
+                  setShowExportMenu(false);
+                }}
+                className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+              >
+                <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.jsonBackup")}</span>
+                <span className="text-[10px] font-mono text-stone-400 dark:text-[#8b949e]">.json</span>
+              </button>
+              {onExportJsonResume && (
+                <button
+                  onClick={() => {
+                    onExportJsonResume(currentCvLang);
+                    setShowExportMenu(false);
+                    showToast(tr("builder.header.jsonResumeDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.exportJsonResume")}</span>
+                  <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">JSON Resume</span>
+                </button>
+              )}
+              {onExportEuropassXml && (
+                <button
+                  onClick={() => {
+                    onExportEuropassXml(currentCvLang);
+                    setShowExportMenu(false);
+                    showToast(tr("builder.header.europassDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.exportEuropassXml")}</span>
+                  <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">.xml</span>
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  handleDownloadTex();
+                  setShowExportMenu(false);
+                }}
+                className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+              >
+                <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">LaTeX / TeX</span>
+                <span className="text-[10px] font-mono text-stone-400 dark:text-[#8b949e]">.tex</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modals */}
