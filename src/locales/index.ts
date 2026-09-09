@@ -52,6 +52,23 @@ function getNestedValue(obj: any, path: string): any {
 }
 
 /**
+ * Searches for a key directly in the dictionary or in any of its top-level sub-dictionaries.
+ */
+function findInDict(dict: any, key: string): string | undefined {
+  if (!dict || typeof dict !== "object") return undefined;
+  const direct = getNestedValue(dict, key);
+  if (typeof direct === "string") return direct;
+
+  for (const sub of Object.values(dict)) {
+    if (sub && typeof sub === "object") {
+      const nested = getNestedValue(sub, key);
+      if (typeof nested === "string") return nested;
+    }
+  }
+  return undefined;
+}
+
+/**
  * Resolves a translation key in the given locale with variable interpolation and fallback.
  */
 export function translate(
@@ -63,10 +80,10 @@ export function translate(
   const targetDict = dictionaries[targetLocale];
   const fallbackDict = dictionaries.en;
 
-  let template = getNestedValue(targetDict, key);
+  let template = findInDict(targetDict, key);
 
   if (typeof template !== "string") {
-    template = getNestedValue(fallbackDict, key);
+    template = findInDict(fallbackDict, key);
   }
 
   if (typeof template !== "string") {

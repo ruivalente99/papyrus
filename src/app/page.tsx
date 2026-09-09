@@ -15,6 +15,7 @@ import { CoverLetterForm } from "@/components/builder/forms/CoverLetterForm";
 import { CoverLetterPreview } from "@/components/preview/CoverLetterPreview";
 import { CVPage } from "@/components/preview/CVPage";
 import { PdfSecurityModal } from "@/components/security/PdfSecurityModal";
+import { ProfileManagerModal } from "@/components/profile/ProfileManagerModal";
 import { exportToPdf, exportApplicationPackagePdf, type ExportPdfOptions } from "@/lib/pdfExport";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { I18nProvider } from "@/context/I18nContext";
@@ -28,6 +29,7 @@ export default function BuilderPage() {
   const [isComparatorOpen, setIsComparatorOpen] = useState(false);
   const [isJobMatcherOpen, setIsJobMatcherOpen] = useState(false);
   const [isPdfSecurityOpen, setIsPdfSecurityOpen] = useState(false);
+  const [isProfileManagerOpen, setIsProfileManagerOpen] = useState(false);
   const [highlightedSectionId, setHighlightedSectionId] = useState<string | null>(null);
   const [splitRatio, setSplitRatio] = useState<number>(50);
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
@@ -180,6 +182,15 @@ export default function BuilderPage() {
     deleteCV,
     hasCachedDoc,
     completeSetup,
+    profiles,
+    activeProfileId,
+    switchProfile,
+    createProfile,
+    duplicateProfile,
+    renameProfile,
+    deleteProfile,
+    exportProfilesBundle,
+    importProfilesBundle,
   } = useCV();
 
   const handleExportCoverLetterPdf = async () => {
@@ -295,6 +306,11 @@ export default function BuilderPage() {
           onOpenComparator={() => setIsComparatorOpen(true)}
           onOpenJobMatcher={() => setIsJobMatcherOpen(true)}
           onOpenPdfSecurity={() => setIsPdfSecurityOpen(true)}
+          profiles={profiles}
+          activeProfileId={activeProfileId}
+          onSwitchProfile={switchProfile}
+          onOpenProfileManager={() => setIsProfileManagerOpen(true)}
+          onCreateProfile={(name, templateId, fromCurrent) => createProfile(name, templateId, fromCurrent)}
         />
 
         {/* Split-Pane Main Body */}
@@ -542,6 +558,10 @@ export default function BuilderPage() {
           if (tab === "cover-letter") setEditorMode("form");
         }}
         onOpenPdfSecurity={() => setIsPdfSecurityOpen(true)}
+        onOpenProfileManager={() => setIsProfileManagerOpen(true)}
+        profiles={profiles}
+        activeProfileId={activeProfileId}
+        onSwitchProfile={switchProfile}
         onExportPdf={() => {
           const pdfBtn = document.querySelector(
             'button[title*="PDF"], button:has-text("PDF")'
@@ -585,6 +605,21 @@ export default function BuilderPage() {
         lang={cvLang}
         onExportPdf={handleExportSecurePdf}
         onExportPackage={handleExportSecurePackage}
+      />
+
+      {/* Multi-Profile CV Manager Modal */}
+      <ProfileManagerModal
+        isOpen={isProfileManagerOpen}
+        onClose={() => setIsProfileManagerOpen(false)}
+        profiles={profiles}
+        activeProfileId={activeProfileId}
+        onSwitchProfile={switchProfile}
+        onCreateProfile={createProfile}
+        onDuplicateProfile={duplicateProfile}
+        onRenameProfile={renameProfile}
+        onDeleteProfile={deleteProfile}
+        onExportBundle={exportProfilesBundle}
+        onImportBundle={importProfilesBundle}
       />
 
       {/* Hidden offscreen container for reliable combined PDF package generation */}

@@ -123,6 +123,12 @@ if (!f21 || f21.status !== "shipped") {
   process.exit(1);
 }
 
+const f25 = data.tasks.find((t) => t.id === "FEAT-025");
+if (!f25 || f25.status !== "shipped") {
+  console.error("❌ FEAT-025 assertion failed", f25);
+  process.exit(1);
+}
+
 if (progress.length !== 0) {
   console.error("❌ Expected 0 tasks in progress, got", progress.length);
   process.exit(1);

@@ -147,6 +147,13 @@
   - Bilingual interactive Security & Accessibility modal in header and Command Palette (`Cmd+K`), with password strength meter, permissions switches, and compliance checklist.
   - Full CLI support (`npm run cv -- encrypt-pdf <file> --password=<pass>` and `npm run cv -- audit-a11y <preset>`).
 
+- [x] **[FEAT-025]** **Multi-Profile CV Management & Profile Switcher** `tags: profiles, storage, ui/ux`
+  - Multi-profile data store and manager engine with auto-migration from legacy single document localStorage storage.
+  - Seamless profile switching, custom duplication, instant inline renaming, and safe deletion with fallback protection.
+  - Accessible, zero-dependency header profile dropdown (`ProfileSwitcherDropdown`) and full profile management modal (`ProfileManagerModal`).
+  - Command Palette (`Cmd+K`) integration for switching profiles, creating new tailored resumes, and launching manager modal.
+  - Multi-profile bundle export and import roundtrip in self-contained `.json` package with automated test suite.
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.3)
@@ -169,8 +176,6 @@
   - Export resume layers as vector SVG for fine-tuning in Figma or Adobe Illustrator.
 - [ ] **[IDEA-003]** **Dark Mode PDF Export for Creative Portfolios**
   - High-contrast dark background PDF option tailored for digital media and game design portfolios.
-- [ ] **[IDEA-004]** **Multi-Profile CV Management**
-  - Store and toggle between multiple profiles (e.g., Software Engineer profile vs Engineering Manager profile).
 
 ---
 
