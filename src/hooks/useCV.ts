@@ -26,8 +26,11 @@ import {
   detectResumeFormat,
 } from "@/lib/schemaInterop";
 import { importFromLatex } from "@/lib/latexEngine";
+import type { CoverLetterDocument } from "@/types/coverLetter";
+import { softwareEngineerCoverLetter } from "@/data/seeds/coverLetterSeeds";
 
 const STORAGE_KEY = "papyrus_active_document";
+const COVER_LETTER_STORAGE_KEY = "papyrus_active_cover_letter";
 const SETUP_COMPLETED_KEY = "papyrus_setup_completed";
 const UI_LANG_STORAGE_KEY = "papyrus_ui_lang";
 
@@ -48,6 +51,8 @@ export function useCV() {
   const [future, setFuture] = useState<CVDocument[]>([]);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving">("saved");
+  const [coverLetter, setCoverLetter] = useState<CoverLetterDocument>(softwareEngineerCoverLetter);
+  const [activeDocTab, setActiveDocTab] = useState<"cv" | "cover-letter">("cv");
 
   const cvRef = useRef(cv);
   cvRef.current = cv;
@@ -242,6 +247,16 @@ export function useCV() {
       } else {
         setIsSetupOpen(false);
       }
+      // Load Cover Letter from LocalStorage if present
+      const savedCoverLetter = localStorage.getItem(COVER_LETTER_STORAGE_KEY);
+      if (savedCoverLetter) {
+        try {
+          const parsedLetter = JSON.parse(savedCoverLetter);
+          if (parsedLetter && parsedLetter.recipient && parsedLetter.content) {
+            setCoverLetter(parsedLetter);
+          }
+        } catch {}
+      }
     } catch (e) {
       console.warn("Failed to load CV from localStorage:", e);
       setIsSetupOpen(false);
@@ -257,11 +272,23 @@ export function useCV() {
       const updatedCv = { ...cv, currentLanguage: cvLang, updatedAt: new Date().toISOString() };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCv));
       localStorage.setItem(SETUP_COMPLETED_KEY, "true");
+      localStorage.setItem(COVER_LETTER_STORAGE_KEY, JSON.stringify(coverLetter));
       setHasCachedDoc(true);
     } catch (e) {
       console.warn("Failed to save CV to localStorage:", e);
     }
-  }, [cv, cvLang, isLoaded, isSetupOpen]);
+  }, [cv, cvLang, coverLetter, isLoaded, isSetupOpen]);
+
+  const updateCoverLetter = useCallback(
+    (updater: CoverLetterDocument | ((prev: CoverLetterDocument) => CoverLetterDocument)) => {
+      setCoverLetter((prev) => (typeof updater === "function" ? updater(prev) : updater));
+    },
+    []
+  );
+
+  const resetCoverLetter = useCallback(() => {
+    setCoverLetter(softwareEngineerCoverLetter);
+  }, []);
 
   // Set UI / application interface language (does not alter CV content)
   const setUiLang = useCallback((lang: SupportedLanguage) => {
@@ -740,6 +767,11 @@ export function useCV() {
     exportEuropassXml,
     importAnyResume,
     updateFromJson,
+    coverLetter,
+    updateCoverLetter,
+    resetCoverLetter,
+    activeDocTab,
+    setActiveDocTab,
     undo,
     redo,
     canUndo,

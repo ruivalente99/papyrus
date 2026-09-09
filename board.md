@@ -1,7 +1,7 @@
 # 📋 PAPYRUS — Project Board & Strategic Roadmap
 
 > **Product, Engineering & Roadmap Tracking Center**  
-> *Last Updated:* 2026-09-08 • *Status:* Active • *Stable Version:* v1.2.0
+> *Last Updated:* 2026-09-09 • *Status:* Active • *Stable Version:* v1.2.0
 
 ---
 
@@ -132,19 +132,25 @@
   - Automatic format detection (`papyrus`, `jsonresume`, `europass-xml`, `latex`) on file upload.
   - Header export dropdown, Command Palette shortcuts (`Cmd+K`), and comprehensive CLI commands (`jsonresume-export`, `jsonresume-import`, `europass-export`, `europass-import`).
 
+- [x] **[FEAT-015]** **Cover Letter Generator Engine & Unified PDF Application Package** `tags: feature, new-doc, pdf`
+  - Coordinated cover letter document generator matching active CV typography, font size, and accent color palette.
+  - Dedicated Cover Letter form editor with bilingual recipient and content fields (salutation, opening, body paragraphs, closing, sign-off, signature).
+  - High-precision standard A4 canvas preview with coordinated sender header, vector QR code, and clickable hyperlinks.
+  - Unified multi-page application package generator combining Cover Letter (Page 1) and CV (Pages 2+) into a single cohesive PDF with mapped page-offset link annotations.
+  - Header tab navigation switcher, Command Palette (`Cmd+K`) integration, and starter seed presets (Software Engineer, Executive Leadership).
+
 ---
 
 ### 🔄 In Progress / Current Sprint (v1.3)
-- [ ] **[FEAT-015]** **Cover Letter Generator Engine** `tags: feature, new-doc`
-  - *Status:* Implementing coordinated cover letter document builder matching active CV typography and accent palette.
-  - *Objective:* Coordinated application packet with batch multi-page PDF generation.
+- [ ] **[FEAT-021]** **PDF Encryption & PDF/UA Accessibility Compliance** `tags: pdf, security, a11y`
+  - *Status:* Implementing optional PDF read protection password encryption and PDF/UA semantic structure tags.
+  - *Objective:* Enhanced privacy protection and PDF/UA compliance for screen-reader and regulatory accessibility.
 
 ---
 
 ### 📋 Priority Backlog (v1.3 - v2.0)
 
-- [ ] **[FEAT-021]** **PDF Encryption & PDF/UA Accessibility Compliance** `tags: pdf, security`
-  - Optional read-protection password encryption and screen-reader semantic tagging for government accessibility standards.
+*(All sprint backlog tickets completed!)*
 
 ---
 
