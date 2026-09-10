@@ -883,7 +883,7 @@ export function CVPreviewContainer({
           const isPt = currentUiLang === "pt";
 
           return (
-            <div className="relative">
+            <>
               <div
                 data-testid="canvas-floating-toolbar"
                 onPointerDown={(e) => e.stopPropagation()}
@@ -892,7 +892,7 @@ export function CVPreviewContainer({
                 onTouchEnd={(e) => e.stopPropagation()}
                 className={`absolute z-20 flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl select-none ${
                   dockEdge === "bottom"
-                    ? "bottom-20 sm:bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
+                    ? "bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
                     : dockEdge === "top"
                     ? "top-14 sm:top-16 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
                     : dockEdge === "left"
@@ -1140,12 +1140,12 @@ export function CVPreviewContainer({
                 <div
                   className={`absolute z-30 bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-3 w-72 max-w-[90vw] text-xs animate-in fade-in zoom-in-95 duration-100 ${
                     dockEdge === "bottom"
-                      ? "bottom-32 sm:bottom-16 left-1/2 -translate-x-1/2"
+                      ? "bottom-16 left-1/2 -translate-x-1/2"
                       : dockEdge === "top"
-                      ? "top-28 sm:top-28 left-1/2 -translate-x-1/2"
+                      ? "top-28 left-1/2 -translate-x-1/2"
                       : dockEdge === "left"
-                      ? "left-16 top-1/2 -translate-y-1/2"
-                      : "right-16 top-1/2 -translate-y-1/2"
+                      ? "left-14 top-1/2 -translate-y-1/2"
+                      : "right-14 top-1/2 -translate-y-1/2"
                   }`}
                 >
                   <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-stone-150 dark:border-[#30363d]">
@@ -1222,7 +1222,7 @@ export function CVPreviewContainer({
                   </div>
                 </div>
               )}
-            </div>
+            </>
           );
         })()}
       </div>
