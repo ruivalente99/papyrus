@@ -16,7 +16,7 @@ import { CoverLetterPreview } from "@/components/preview/CoverLetterPreview";
 import { CVPage } from "@/components/preview/CVPage";
 import { PdfSecurityModal } from "@/components/security/PdfSecurityModal";
 import { ProfileManagerModal } from "@/components/profile/ProfileManagerModal";
-import { exportToPdf, exportApplicationPackagePdf, type ExportPdfOptions } from "@/lib/pdfExport";
+import { exportToPdf, exportToSvg, exportApplicationPackagePdf, type ExportPdfOptions } from "@/lib/pdfExport";
 import { createDylanAvatarDataUri } from "@/lib/avatar";
 import { I18nProvider } from "@/context/I18nContext";
 import { translate } from "@/locales";
@@ -227,6 +227,16 @@ export default function BuilderPage() {
     await handleExportSecurePdf({ cv, lang: cvLang, colorMode: "dark" });
   };
 
+  const handleExportSvg = async () => {
+    const pageEl = (activeDocTab === "cover-letter"
+      ? document.getElementById("offscreen-cover-letter") || document.getElementById("cover-letter-preview-wrapper")
+      : document.getElementById("offscreen-cv") || document.getElementById("cv-printable-page")) as HTMLElement;
+    if (!pageEl) return;
+    const baseName = (cv.personalInfo.fullName || "document").toLowerCase().replace(/\s+/g, "_");
+    const filename = activeDocTab === "cover-letter" ? `${baseName}_cover_letter.svg` : `${baseName}_cv.svg`;
+    await exportToSvg(pageEl, filename);
+  };
+
   const handleExportSecurePackage = async (options: ExportPdfOptions) => {
     const clEl = document.getElementById("offscreen-cover-letter");
     const cvEl = document.getElementById("offscreen-cv");
@@ -301,6 +311,7 @@ export default function BuilderPage() {
           onExportCoverLetterPdf={handleExportCoverLetterPdf}
           onExportApplicationPackage={handleExportApplicationPackage}
           onExportDarkPdf={handleExportDarkPdf}
+          onExportSvg={handleExportSvg}
           linterReport={linterReport}
           canUndo={canUndo}
           canRedo={canRedo}
@@ -584,6 +595,7 @@ export default function BuilderPage() {
           ) as HTMLElement;
           pngBtn?.click();
         }}
+        onExportSvg={handleExportSvg}
         onRerollDylan={handleRerollDylan}
         onJumpToSection={handleSelectSection}
         sections={cv.sections}

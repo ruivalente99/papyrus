@@ -135,7 +135,7 @@ if (!f26 || f26.status !== "shipped") {
   process.exit(1);
 }
 
-for (const id of ["FEAT-027", "FEAT-028", "FEAT-029", "FEAT-030", "FEAT-031"]) {
+for (const id of ["FEAT-027", "FEAT-028", "FEAT-029", "FEAT-030", "FEAT-031", "FEAT-032", "FEAT-033"]) {
   const task = data.tasks.find((t) => t.id === id);
   if (!task || task.status !== "shipped") {
     console.error(`❌ ${id} assertion failed: task not found or not shipped on board`, task);
@@ -143,8 +143,8 @@ for (const id of ["FEAT-027", "FEAT-028", "FEAT-029", "FEAT-030", "FEAT-031"]) {
   }
 }
 
-if (shipped.length !== 31) {
-  console.error("❌ Expected 31 shipped tasks, got", shipped.length);
+if (shipped.length !== 33) {
+  console.error("❌ Expected 33 shipped tasks, got", shipped.length);
   process.exit(1);
 }
 

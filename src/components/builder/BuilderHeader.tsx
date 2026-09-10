@@ -55,6 +55,7 @@ interface Props {
   onExportJson: () => void;
   onExportJsonResume?: (lang?: SupportedLanguage) => void;
   onExportEuropassXml?: (lang?: SupportedLanguage) => void;
+  onExportSvg?: () => void;
   onImportAnyResume?: (content: string, defaultLang?: SupportedLanguage) => { success: boolean; format?: string; error?: string };
   activeDocTab?: "cv" | "cover-letter";
   onSelectDocTab?: (tab: "cv" | "cover-letter") => void;
@@ -96,6 +97,7 @@ export function BuilderHeader({
   onExportJson,
   onExportJsonResume,
   onExportEuropassXml,
+  onExportSvg,
   onImportAnyResume,
   activeDocTab = "cv",
   onSelectDocTab,
@@ -594,6 +596,19 @@ export function BuilderHeader({
                     <span>{tr("builder.header.exportEuropassXml")}</span>
                   </button>
                 )}
+                {onExportSvg && (
+                  <button
+                    onClick={() => {
+                      onExportSvg();
+                      setShowPresets(false);
+                      showToast(tr("builder.header.svgDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <Code2 size={13} className="text-violet-600 dark:text-violet-400" />
+                    <span>{tr("builder.header.exportSvg")}</span>
+                  </button>
+                )}
                 {onExportCoverLetterPdf && (
                   <button
                     onClick={() => {
@@ -859,6 +874,19 @@ export function BuilderHeader({
                 >
                   <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.exportEuropassXml")}</span>
                   <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">.xml</span>
+                </button>
+              )}
+              {onExportSvg && (
+                <button
+                  onClick={() => {
+                    onExportSvg();
+                    setShowExportMenu(false);
+                    showToast(tr("builder.header.svgDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.exportSvg")}</span>
+                  <span className="text-[10px] font-mono text-violet-600 dark:text-violet-400 font-bold">.svg</span>
                 </button>
               )}
               <button

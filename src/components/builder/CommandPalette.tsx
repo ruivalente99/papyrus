@@ -9,6 +9,7 @@ import {
   Layers,
   Sparkles,
   Download,
+  Code2,
   FileCode2,
   FileJson,
   ShieldCheck,
@@ -78,6 +79,7 @@ interface Props {
   onExportPdf: () => void;
   onExportDarkPdf?: () => void;
   onExportPng: () => void;
+  onExportSvg?: () => void;
   onRerollDylan?: () => void;
   onJumpToSection?: (sectionId: string) => void;
   sections?: CVSection[];
@@ -112,6 +114,7 @@ export function CommandPalette({
   onExportPdf,
   onExportDarkPdf,
   onExportPng,
+  onExportSvg,
   onRerollDylan,
   onJumpToSection,
   sections = [],
@@ -251,6 +254,19 @@ export function CommandPalette({
         icon: Download,
         keywords: tr("builder.modals.commandPalette.commands.exportPng.keywords").split(" "),
         action: onExportPng,
+      },
+      {
+        id: "act-export-svg",
+        category: "actions",
+        title: tr("builder.header.exportSvg") || "Export Vector SVG (.svg)",
+        subtitle: tr("builder.header.svgDownloaded") || "Scalable vector graphics for Figma & Illustrator",
+        icon: Code2,
+        keywords: ["export", "svg", "vector", "figma", "illustrator"],
+        shortcut: "SVG",
+        action: () => {
+          if (onExportSvg) onExportSvg();
+          else onExportPdf();
+        },
       },
       {
         id: "act-linter",
@@ -562,6 +578,7 @@ export function CommandPalette({
     onExportPdf,
     onExportDarkPdf,
     onExportPng,
+    onExportSvg,
     onRerollDylan,
     onJumpToSection,
   ]);
