@@ -495,35 +495,38 @@ export default function BuilderPage() {
         </div>
       </main>
 
-      {/* Mobile Floating Bottom Bar - Centered Floating Capsule */}
-      <div className="fixed md:hidden bottom-3 left-0 right-0 z-30 flex items-center justify-center pointer-events-none px-4 pb-safe">
-        <div className="pointer-events-auto flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl p-1 rounded-full border border-stone-200/90 dark:border-[#363d47] shadow-xl w-[270px] max-w-[90vw]">
+      {/* Mobile Docked Bottom Bar - Clean Docked Navigation */}
+      <nav
+        aria-label={translate("a11y.mobileNavigation", uiLang)}
+        className="fixed md:hidden bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl border-t border-stone-200/90 dark:border-[#363d47] px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] shadow-lg flex items-center justify-center"
+      >
+        <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] p-1 rounded-full border border-stone-200/80 dark:border-[#30363d] w-full max-w-[320px]">
           <button
             type="button"
             onClick={() => setMobileTab("edit")}
-            className={`w-1/2 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+            className={`w-1/2 py-2 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-2 active:scale-95 ${
               mobileTab === "edit"
-                ? "bg-stone-100 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200 dark:border-[#484f58]"
+                ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200/80 dark:border-[#484f58]"
                 : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
-            <Pencil size={13} />
+            <Pencil size={14} className={mobileTab === "edit" ? "text-amber-600 dark:text-amber-400" : ""} />
             <span>{translate("common.tabs.editor", uiLang)}</span>
           </button>
           <button
             type="button"
             onClick={() => setMobileTab("preview")}
-            className={`w-1/2 py-1.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 active:scale-95 ${
+            className={`w-1/2 py-2 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-2 active:scale-95 ${
               mobileTab === "preview"
-                ? "bg-stone-100 dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200 dark:border-[#484f58]"
+                ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200/80 dark:border-[#484f58]"
                 : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
-            <Eye size={13} />
+            <Eye size={14} className={mobileTab === "preview" ? "text-amber-600 dark:text-amber-400" : ""} />
             <span>{translate("common.tabs.preview", uiLang)}</span>
           </button>
         </div>
-      </div>
+      </nav>
 
       {/* Global Command Palette (Cmd + K / Ctrl + K) */}
       <CommandPalette

@@ -11,8 +11,9 @@ interface Props {
   onSwitchLanguage: (lang: SupportedLanguage) => void;
   onAddLanguage?: (code: string, label: string) => void;
   allowAll?: boolean;
-  variant?: "ui" | "cv";
+  variant?: "ui" | "cv" | "unified";
   uiLang?: SupportedLanguage;
+  onSwitchUiLang?: (lang: SupportedLanguage) => void;
 }
 
 interface LanguageMeta {
@@ -44,6 +45,7 @@ export function LanguageSwitcher({
   allowAll = false,
   variant = "ui",
   uiLang,
+  onSwitchUiLang,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -52,9 +54,9 @@ export function LanguageSwitcher({
   const [customLabel, setCustomLabel] = useState("");
 
   const popoverRef = useRef<HTMLDivElement>(null);
-  const currentLang = uiLang || activeLang;
-  const isPt = currentLang === "pt";
-  const { t: tr } = useTranslation(currentLang);
+  const currentUiLang = uiLang || (variant === "ui" ? activeLang : "pt");
+  const isPt = currentUiLang === "pt";
+  const { t: tr } = useTranslation(currentUiLang);
 
   // Close on outside click
   useEffect(() => {
@@ -150,12 +152,16 @@ export function LanguageSwitcher({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label={
-          variant === "cv"
+          variant === "unified"
+            ? (isPt ? "Selecionar Idioma (Documento e Interface)" : "Select Language (Document & Interface)")
+            : variant === "cv"
             ? tr("common.languages.cvVariantTitle")
             : tr("common.languages.uiVariantTitle")
         }
         title={
-          variant === "cv"
+          variant === "unified"
+            ? (isPt ? "Selecionar Idioma" : "Select Language")
+            : variant === "cv"
             ? tr("common.languages.cvVariantTitle")
             : tr("common.languages.uiVariantTitle")
         }
@@ -178,7 +184,7 @@ export function LanguageSwitcher({
               {activeLang}
             </>
           ) : (
-            <span className="hidden xs:inline">{activeLang}</span>
+            <span className="inline">{activeLang}</span>
           )}
         </span>
         <ChevronDown size={11} className={`text-stone-400 transition-transform hidden sm:inline ${isOpen ? "rotate-180" : ""}`} />
@@ -187,15 +193,59 @@ export function LanguageSwitcher({
       {/* Rich Dropdown Popover */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] rounded-2xl shadow-2xl p-2.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-100">
+          {/* Unified UI Language Selector (if onSwitchUiLang is provided) */}
+          {variant === "unified" && onSwitchUiLang && (
+            <div className="px-2 py-2 mb-2 bg-stone-50 dark:bg-[#0d1117] rounded-xl border border-stone-200/70 dark:border-[#363d47]">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
+                  {isPt ? "Idioma da Aplicação" : "Interface Language"}
+                </span>
+                <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 uppercase">
+                  UI: {currentUiLang}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onSwitchUiLang("pt")}
+                  className={`py-1 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                    currentUiLang === "pt"
+                      ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-white shadow-xs font-bold border border-stone-200 dark:border-[#484f58]"
+                      : "text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-white"
+                  }`}
+                >
+                  <span>🇵🇹</span>
+                  <span>Português</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onSwitchUiLang("en")}
+                  className={`py-1 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                    currentUiLang === "en"
+                      ? "bg-white dark:bg-[#21262d] text-stone-950 dark:text-white shadow-xs font-bold border border-stone-200 dark:border-[#484f58]"
+                      : "text-stone-600 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-white"
+                  }`}
+                >
+                  <span>🇬🇧</span>
+                  <span>English</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Header Description */}
           <div className="px-1.5 py-1 mb-2 border-b border-stone-100 dark:border-[#30363d]">
             <p className="text-[11px] font-bold text-stone-900 dark:text-[#f0f3f6]">
-              {variant === "cv"
+              {variant === "unified"
+                ? (isPt ? "Idioma do Documento (CV & Carta)" : "Document Language (CV & Letter)")
+                : variant === "cv"
                 ? tr("common.languages.cvVariantTitle")
                 : tr("common.languages.uiVariantTitle")}
             </p>
             <p className="text-[10px] text-stone-500 dark:text-[#8b949e] leading-tight">
-              {variant === "cv"
+              {variant === "unified"
+                ? (isPt ? "Alterne o idioma dos textos do seu documento ou adicione uma nova tradução." : "Switch the language of your document content or add a new translation.")
+                : variant === "cv"
                 ? tr("common.languages.cvVariantDesc")
                 : tr("common.languages.uiVariantDesc")}
             </p>

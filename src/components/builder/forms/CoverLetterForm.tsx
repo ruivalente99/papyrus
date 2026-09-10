@@ -159,7 +159,7 @@ export function CoverLetterForm({ letter, onChange, lang }: CoverLetterFormProps
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Preset Starter Loader */}
       <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 dark:bg-amber-500/10 flex flex-wrap items-center justify-between gap-3">
         <div>
@@ -189,7 +189,7 @@ export function CoverLetterForm({ letter, onChange, lang }: CoverLetterFormProps
       </div>
 
       {/* Recipient Information Card */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] shadow-2xs space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] shadow-2xs space-y-4">
         <div className="flex items-center justify-between border-b border-stone-100 dark:border-[#21262d] pb-2.5">
           <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <Building2 size={15} className="text-amber-600 dark:text-amber-400" />
@@ -289,7 +289,7 @@ export function CoverLetterForm({ letter, onChange, lang }: CoverLetterFormProps
       </div>
 
       {/* Letter Content & Flow */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] shadow-2xs space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] shadow-2xs space-y-4">
         <div className="flex items-center justify-between border-b border-stone-100 dark:border-[#21262d] pb-2.5">
           <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <FileText size={15} className="text-amber-600 dark:text-amber-400" />
@@ -517,7 +517,7 @@ export function CoverLetterForm({ letter, onChange, lang }: CoverLetterFormProps
       </div>
 
       {/* Header & Coordinated Styling Options */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] shadow-2xs space-y-3">
+      <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#161b22] border border-stone-200 dark:border-[#30363d] shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Layout size={15} className="text-amber-600 dark:text-amber-400" />
