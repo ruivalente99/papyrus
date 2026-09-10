@@ -56,6 +56,8 @@ export function HeaderQrCode({
       title={targetUrl}
       className={`group inline-flex flex-col items-center justify-center p-1 rounded-xl transition-all hover:scale-105 active:scale-95 ${className}`}
       data-testid="header-qr-code"
+      data-preserve-color="true"
+      data-qr-code="true"
     >
       <div
         className="rounded-lg p-1 bg-white/95 shadow-2xs border border-stone-200/90 dark:border-stone-700/60 overflow-hidden flex items-center justify-center"

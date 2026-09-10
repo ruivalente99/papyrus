@@ -40,6 +40,8 @@ export function prepareDarkModeElement(element: HTMLElement): () => void {
       .papyrus-dark-pdf img,
       .papyrus-dark-pdf [data-preserve-color="true"],
       .papyrus-dark-pdf [data-qr-code="true"],
+      .papyrus-dark-pdf [data-testid="header-qr-code"],
+      .papyrus-dark-pdf [data-testid="header-qr-code"] svg,
       .papyrus-dark-pdf [role="img"] {
         filter: invert(1) hue-rotate(180deg) contrast(1.06) !important;
       }

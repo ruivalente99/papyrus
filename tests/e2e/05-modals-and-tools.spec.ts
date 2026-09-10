@@ -7,10 +7,16 @@ test.describe("PAPYRUS Modals & Export Engine", () => {
     await expect(page.locator("#section-personal")).toBeVisible();
   });
 
-  test("opens Quality Linter modal and shows score audit", async ({ page }) => {
+  test("opens Quality Linter modal and shows score audit", async ({ page, isMobile }) => {
     // Click on linter score button in header
-    const linterBadge = page.getByTestId("linter-badge");
-    await linterBadge.click();
+    if (isMobile) {
+      const presetsBtn = page.locator("header").first().locator("button").filter({ has: page.locator("svg.lucide-layers") }).first();
+      await presetsBtn.click();
+      await page.getByRole("button", { name: /Auditoria|Quality/i }).click();
+    } else {
+      const linterBadge = page.getByTestId("linter-badge");
+      await linterBadge.click();
+    }
 
     // Verify modal appears with score card and full viewport size
     const dialog = page.getByRole("dialog");
@@ -34,14 +40,14 @@ test.describe("PAPYRUS Modals & Export Engine", () => {
   });
 
   test("opens Add Section modal and displays section options", async ({ page }) => {
-    const addSectionBtn = page.getByRole("button", { name: /Adicionar Secção|Add Section/i });
+    const addSectionBtn = page.getByRole("button", { name: /Adicionar Secção|Add Section/i }).first();
     await addSectionBtn.scrollIntoViewIfNeeded();
     await addSectionBtn.click();
 
     // Verify Add Section modal is visible
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByRole("dialog").getByText(/Experiência|Experience/i)).toBeVisible();
-    await expect(page.getByRole("dialog").getByText(/Educação|Education/i)).toBeVisible();
+    await expect(page.getByRole("dialog").getByText(/Formação|Educação|Education/i)).toBeVisible();
 
     // Close modal
     const closeBtn = page.getByRole("dialog").locator("button").first();
@@ -52,43 +58,33 @@ test.describe("PAPYRUS Modals & Export Engine", () => {
     // Set dark theme on html
     await page.evaluate(() => document.documentElement.classList.add("dark"));
 
-    const addSectionBtn = page.getByRole("button", { name: /Adicionar Secção|Add Section/i });
+    const addSectionBtn = page.getByRole("button", { name: /Adicionar Secção|Add Section/i }).first();
     await addSectionBtn.scrollIntoViewIfNeeded();
     await addSectionBtn.click();
 
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
 
-    // Verify option button has dark:bg-stone-800 class and not raw white
-    const unselectedOption = dialog.locator('button:has-text("Educação"), button:has-text("Education")').first();
+    // Verify option button has dark:bg-[#21262d] class and not raw white
+    const unselectedOption = dialog.locator('button:has-text("Formação"), button:has-text("Educação"), button:has-text("Education")').first();
     await expect(unselectedOption).toBeVisible();
     const classList = await unselectedOption.getAttribute("class");
-    expect(classList).toContain("dark:bg-stone-800/60");
+    expect(classList).toMatch(/dark:bg-\[#21262d\]|dark:bg-stone-800/);
 
     // Close modal
     const closeBtn = dialog.locator("button").first();
     await closeBtn.click();
   });
 
-  test("opens TeX Modal and presents compilable LaTeX code", async ({ page, isMobile }) => {
-    if (isMobile) {
-      // On mobile, TeX is inside Presets / Modelos dropdown
-      const presetsBtn = page.locator("header").locator("button").filter({ has: page.locator("svg.lucide-layers") }).first();
-      await presetsBtn.click();
-      const texOption = page.getByRole("button", { name: /TeX Import \/ Export/i });
-      await texOption.click();
-    } else {
-      // Desktop: TeX button is in header
-      const texBtn = page.locator('button[title="TeX Management"]');
-      await texBtn.click();
-    }
-
-    // Modal dialog is open
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("dialog").getByText(/TeX/i).first()).toBeVisible();
+  test("opens LaTeX Code Editor and presents compilable LaTeX code", async ({ page }) => {
+    const latexTab = page.locator('button:has-text("LaTeX")').first();
+    await expect(latexTab).toBeVisible();
+    await latexTab.click();
 
     // Code area contains document structure
-    const codeArea = page.getByRole("dialog").locator("pre, textarea, code").first();
+    const codeArea = page.locator('textarea[spellcheck="false"]').first();
     await expect(codeArea).toBeVisible();
+    const latexContent = await codeArea.inputValue();
+    expect(latexContent).toContain("\\documentclass");
   });
 });

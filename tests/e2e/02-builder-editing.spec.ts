@@ -13,10 +13,10 @@ test.describe("PAPYRUS Field Editing & Live Preview Synchronization", () => {
 
     if (isMobile) {
       // Switch to preview tab on mobile to inspect preview
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
     }
 
-    const preview = page.locator("#cv-printable-page");
+    const preview = page.locator("#cv-printable-page").first();
     await expect(preview.getByText("Dra. Beatriz Santos")).toBeVisible();
   });
 
@@ -25,10 +25,10 @@ test.describe("PAPYRUS Field Editing & Live Preview Synchronization", () => {
     await emailInput.fill("beatriz.santos@exemplo.pt");
 
     if (isMobile) {
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
     }
 
-    const preview = page.locator("#cv-printable-page");
+    const preview = page.locator("#cv-printable-page").first();
     await expect(preview.getByText("beatriz.santos@exemplo.pt")).toBeVisible();
   });
 
@@ -60,7 +60,7 @@ test.describe("PAPYRUS Field Editing & Live Preview Synchronization", () => {
   });
 
   test("generates and re-rolls DiceBear Dylan avatar in Personal Info form", async ({ page }) => {
-    const rerollBtn = page.locator('button:has-text("Re-roll Dylan")').first();
+    const rerollBtn = page.locator('[data-testid="avatar-reroll"], button:has-text("Re-roll Dylan"), button[title*="Dylan"], button[aria-label*="Dylan"]').first();
     await expect(rerollBtn).toBeVisible();
     const avatarImg = page.locator("#section-personal img").first();
     await expect(avatarImg).toBeVisible();

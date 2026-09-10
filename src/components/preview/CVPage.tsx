@@ -12,16 +12,17 @@ interface Props {
   lang: SupportedLanguage;
   onSelectSection?: (sectionId: string) => void;
   highlightedSectionId?: string | null;
+  id?: string;
 }
 
 export const CVPage = forwardRef<HTMLDivElement, Props>(
-  ({ cv, lang, onSelectSection, highlightedSectionId }, ref) => {
+  ({ cv, lang, onSelectSection, highlightedSectionId, id = "cv-printable-page" }, ref) => {
     const { template } = cv;
 
     return (
       <div
         ref={ref}
-        id="cv-printable-page"
+        id={id}
         data-template={template}
         className={`cv-sheet cv-template-${template} bg-white shadow-2xl rounded-xs mx-auto overflow-hidden relative select-none`}
         style={{

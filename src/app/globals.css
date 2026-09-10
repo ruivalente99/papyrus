@@ -231,9 +231,17 @@
   }
 }
 
-/* Page break utilities */
-.page-break-before,
-[data-page-break-before="true"] {
+/* Page break utilities: scoped strictly to physical print and print emulation */
+@media print {
+  .page-break-before,
+  [data-page-break-before="true"] {
+    break-before: page;
+    page-break-before: always;
+  }
+}
+
+.print-emulation .page-break-before,
+.print-emulation [data-page-break-before="true"] {
   break-before: page;
   page-break-before: always;
 }

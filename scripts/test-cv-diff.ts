@@ -139,6 +139,18 @@ console.log("\n6. Testing mergeItemIntoCV (Selective merge)...");
     (reExpSec as any).items.find((it: any) => it.id === "exp-merge-test-1")?.company === "Acme Global Cloud",
     "Successfully updated existing item on re-merge"
   );
+
+  // Merge Language item
+  const newLang = {
+    id: "lang-merge-test-1",
+    language: { en: "Japanese", pt: "Japonês" },
+    level: { en: "Conversational", pt: "Conversacional" },
+    cefr: "B1" as const,
+  };
+  const withLangCV = mergeItemIntoCV(reMergedCV, "languages", newLang);
+  const langSec = withLangCV.sections.find((s) => s.type === "languages");
+  assert(!!langSec, "Languages section created/found in target CV");
+  assert((langSec as any).items.some((it: any) => it.id === "lang-merge-test-1"), "Merged language item exists in target CV");
 }
 
 console.log("\n🎉 All CV Diff Engine Unit Tests Passed Successfully!\n");

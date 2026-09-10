@@ -281,6 +281,7 @@ export function SectionList({
         >
           <button
             type="button"
+            data-testid="jump-personal"
             onClick={() => {
               if (!hasDragged.current) handleJumpTo("personal");
             }}

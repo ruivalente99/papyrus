@@ -640,7 +640,7 @@ export default function BuilderPage() {
           <CoverLetterPreview letter={coverLetter} cv={cv} lang={cvLang} />
         </div>
         <div id="offscreen-cv">
-          <CVPage cv={cv} lang={cvLang} />
+          <CVPage cv={cv} lang={cvLang} id="offscreen-cv-page" />
         </div>
       </div>
     </div>

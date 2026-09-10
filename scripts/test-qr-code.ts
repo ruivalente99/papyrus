@@ -59,8 +59,8 @@ function runTests() {
   console.log("  ✓ Generated valid SVG for classic, dots, and rounded styles.\n");
 
   // Test 4: SVG Center Icon Overlays
-  console.log("Test 4: Center Badges (LinkedIn, GitHub, Globe)");
-  const icons = ["globe", "linkedin", "github"] as const;
+  console.log("Test 4: Center Badges (LinkedIn, GitHub, Globe, QR)");
+  const icons = ["globe", "linkedin", "github", "qr"] as const;
   for (const ic of icons) {
     const svg = generateQrSvgString({
       url,
@@ -68,8 +68,8 @@ function runTests() {
       showIcon: true,
       iconType: ic,
     });
-    if (!svg.includes("<rect") || !svg.includes("badge")) {
-      // White badge background
+    if (!svg.includes('fill="#ffffff"')) {
+      throw new Error(`Missing center badge background <rect> for ${ic}`);
     }
     if (!svg.includes("<g transform=")) {
       throw new Error(`Missing icon group for ${ic}`);

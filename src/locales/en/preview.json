@@ -20,6 +20,9 @@
     "pageCutoff": "A4 Page Cutoff (Page {{page}})",
     "pageIndicator": "Page {{current}} of {{total}}"
   },
+  "print": {
+    "sheetDivider": "Sheet {{current}} / {{next}}"
+  },
   "canvas": {
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",

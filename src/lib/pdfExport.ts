@@ -55,7 +55,7 @@ export function calculateSmartPageBreaks(
       const r = item.getBoundingClientRect();
       return Math.round((r.top - parentRect.top) / currentScale);
     })
-    .filter((y) => y > 50 && y < totalHeight - 40)
+    .filter((y) => y > 10 && y < totalHeight - 10)
     .sort((a, b) => a - b);
 
   // If total height fits in 1 page and no manual breaks are set, fit into 1 page
@@ -86,7 +86,7 @@ export function calculateSmartPageBreaks(
 
   while (currentY < totalHeight) {
     // Check if there is a manual/forced page break ahead of currentY
-    const nextForced = forcedBreaks.find((fb) => fb > currentY + 40);
+    const nextForced = forcedBreaks.find((fb) => fb > currentY + 15);
     const targetY = currentY + pageHeight;
 
     if (nextForced && nextForced <= targetY) {
@@ -427,6 +427,13 @@ export async function exportToPng(
 }
 
 /**
+ * Options for application package PDF generation
+ */
+export interface ApplicationPackagePdfOptions extends ExportPdfOptions {
+  order?: "letter-first" | "cv-first";
+}
+
+/**
  * Direct print using browser print dialog
  */
 export function printCV() {
@@ -441,25 +448,30 @@ export async function exportApplicationPackagePdf(
   coverLetterElement: HTMLElement,
   cvElement: HTMLElement,
   filename: string = "candidatura_completa.pdf",
-  options?: ExportPdfOptions
+  options?: ApplicationPackagePdfOptions
 ): Promise<void> {
   const captureOpts = { colorMode: options?.colorMode };
-  // Capture Cover Letter pages and links (Page 1)
-  const { pages: clPages, pageBreaks: clBreaks } = await capturePreviewPages(coverLetterElement, captureOpts);
-  const clLinks = extractLinkAnnotations(coverLetterElement, clBreaks);
+  const order = options?.order ?? "letter-first";
 
-  // Capture CV pages and links (Subsequent Pages)
-  const { pages: cvPages, pageBreaks: cvBreaks } = await capturePreviewPages(cvElement, captureOpts);
-  const cvLinks = extractLinkAnnotations(cvElement, cvBreaks);
+  const firstElement = order === "cv-first" ? cvElement : coverLetterElement;
+  const secondElement = order === "cv-first" ? coverLetterElement : cvElement;
 
-  // Offset CV links by the number of cover letter pages
-  const offsetCvLinks = cvLinks.map((l) => ({
+  // Capture First section pages and links
+  const { pages: firstPages, pageBreaks: firstBreaks } = await capturePreviewPages(firstElement, captureOpts);
+  const firstLinks = extractLinkAnnotations(firstElement, firstBreaks);
+
+  // Capture Second section pages and links
+  const { pages: secondPages, pageBreaks: secondBreaks } = await capturePreviewPages(secondElement, captureOpts);
+  const secondLinks = extractLinkAnnotations(secondElement, secondBreaks);
+
+  // Offset second links by the number of first pages
+  const offsetSecondLinks = secondLinks.map((l) => ({
     ...l,
-    pageIndex: l.pageIndex + clPages.length,
+    pageIndex: l.pageIndex + firstPages.length,
   }));
 
-  const allPages = [...clPages.map((p) => p.canvas), ...cvPages.map((p) => p.canvas)];
-  const allLinks = [...clLinks, ...offsetCvLinks];
+  const allPages = [...firstPages.map((p) => p.canvas), ...secondPages.map((p) => p.canvas)];
+  const allLinks = [...firstLinks, ...offsetSecondLinks];
 
   const pdfBlob = await pagesToPdfBlob(allPages, allLinks, options);
   triggerDownload(pdfBlob, filename);

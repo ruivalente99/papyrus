@@ -171,6 +171,7 @@ export function PreviewSettingsSheet({
                 return (
                   <button
                     key={tmpl.id}
+                    data-template-btn={tmpl.id}
                     onClick={() => onSetTemplate(tmpl.id)}
                     className={`flex flex-col items-center justify-center text-center p-3 rounded-2xl border transition-all active:scale-95 ${
                       isSelected

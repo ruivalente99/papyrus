@@ -52,13 +52,13 @@ test.describe("PAPYRUS Guide Page, Alignment Grid & Pointer/Drag Switching", () 
     await page.waitForLoadState("networkidle");
 
     // If onboarding is open, click Demo
-    const demoBtn = page.getByRole("button", { name: /Demo/i });
+    const demoBtn = page.getByRole("button", { name: /Demo|Exemplo/i });
     if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await demoBtn.click();
     }
 
     if (isMobile) {
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
     }
 
     await expect(page.locator("#cv-printable-page")).toBeVisible();
@@ -82,7 +82,7 @@ test.describe("PAPYRUS Guide Page, Alignment Grid & Pointer/Drag Switching", () 
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    const demoBtn = page.getByRole("button", { name: /Demo/i });
+    const demoBtn = page.getByRole("button", { name: /Demo|Exemplo/i });
     if (await demoBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await demoBtn.click();
     }
@@ -90,8 +90,8 @@ test.describe("PAPYRUS Guide Page, Alignment Grid & Pointer/Drag Switching", () 
     await expect(page.locator("#cv-printable-page")).toBeVisible();
 
     const canvasToolbar = page.getByTestId("canvas-floating-toolbar");
-    const handBtn = canvasToolbar.getByTitle(/Modo Mão|Hand tool/i);
-    const pointerBtn = canvasToolbar.getByTitle(/Modo Seleção|Selection mode/i);
+    const handBtn = canvasToolbar.locator('[data-testid="tool-mode-hand"]').or(canvasToolbar.getByTitle(/Pan|Panorâmica|Modo Mão|Hand/i)).first();
+    const pointerBtn = canvasToolbar.locator('[data-testid="tool-mode-pointer"]').or(canvasToolbar.getByTitle(/Seleção|Selection|Pointer/i)).first();
 
     // Switch to Hand mode
     await handBtn.click();

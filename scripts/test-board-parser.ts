@@ -129,8 +129,27 @@ if (!f25 || f25.status !== "shipped") {
   process.exit(1);
 }
 
+const f26 = data.tasks.find((t) => t.id === "FEAT-026");
+if (!f26 || f26.status !== "shipped") {
+  console.error("❌ FEAT-026 assertion failed", f26);
+  process.exit(1);
+}
+
+for (const id of ["FEAT-027", "FEAT-028", "FEAT-029", "FEAT-030", "FEAT-031"]) {
+  const task = data.tasks.find((t) => t.id === id);
+  if (!task || task.status !== "shipped") {
+    console.error(`❌ ${id} assertion failed: task not found or not shipped on board`, task);
+    process.exit(1);
+  }
+}
+
+if (shipped.length !== 31) {
+  console.error("❌ Expected 31 shipped tasks, got", shipped.length);
+  process.exit(1);
+}
+
 if (progress.length !== 0) {
-  console.error("❌ Expected 0 tasks in progress, got", progress.length);
+  console.error("❌ Expected 0 tasks in progress (sprint v1.4 complete), got", progress.length);
   process.exit(1);
 }
 
@@ -145,4 +164,4 @@ if (!idea1 || idea1.status !== "icebox") {
   process.exit(1);
 }
 
-console.log("🎉 ALL BOARD PARSER TESTS PASSED (100% SUCCESS — ENTIRE SPRINT BOARD SHIPPED)!");
+console.log("🎉 ALL BOARD PARSER TESTS PASSED (100% SUCCESS — SPRINT v1.4 ACTIVE WITH 5 TASKS)!");

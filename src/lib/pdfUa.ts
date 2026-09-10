@@ -1,12 +1,24 @@
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 
 /**
+ * XML-escapes text for safe inclusion in XMP RDF blocks
+ */
+function escapeXml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+/**
  * Generates ISO 14289-1 (PDF/UA-1) XMP metadata XML string
  */
 export function generatePdfUaXmp(cv: CVDocument, lang: SupportedLanguage): string {
   const name = cv.personalInfo?.fullName || "Candidate";
-  const title = `${name} - Curriculum Vitae`;
-  const author = name;
+  const title = escapeXml(`${name} - Curriculum Vitae`);
+  const author = escapeXml(name);
   const isoLang = lang === "pt" ? "pt-PT" : "en-US";
   const dateStr = new Date().toISOString();
 

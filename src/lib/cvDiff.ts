@@ -592,7 +592,12 @@ export function diffATSMetrics(
       name: "Active Sections",
       valueA: (cvA.sections || []).filter((s) => s.visible).length,
       valueB: (cvB.sections || []).filter((s) => s.visible).length,
-      diff: (cvB.sections || []).length - (cvA.sections || []).length,
+      diff: (() => {
+        const d =
+          (cvB.sections || []).filter((s) => s.visible).length -
+          (cvA.sections || []).filter((s) => s.visible).length;
+        return d >= 0 ? `+${d}` : `${d}`;
+      })(),
       positiveBetter: true,
       improved: null,
     },
@@ -709,6 +714,15 @@ export function mergeItemIntoCV(
       existingCat.skills = Array.from(new Set([...(existingCat.skills || []), ...(sourceItem.skills || [])]));
     } else {
       skillSec.categories.push(JSON.parse(JSON.stringify(sourceItem)));
+    }
+  } else if (section && section.type === "languages") {
+    const langSec = section as LanguagesSection;
+    if (!langSec.items) langSec.items = [];
+    const existingIdx = langSec.items.findIndex((it) => it.id === sourceItem.id);
+    if (existingIdx !== -1) {
+      langSec.items[existingIdx] = JSON.parse(JSON.stringify(sourceItem));
+    } else {
+      langSec.items.push(JSON.parse(JSON.stringify(sourceItem)));
     }
   }
 
