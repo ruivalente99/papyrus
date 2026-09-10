@@ -37,15 +37,15 @@ console.log("✓ Sample matched terms:", matchedTerms.slice(0, 5));
 const missingTerms = matchResult.missingKeywords.map((m) => m.term);
 console.log("✓ Sample missing terms:", missingTerms.slice(0, 5));
 
-if (!missingTerms.includes("graphql") && !missingTerms.includes("redis")) {
-  console.error("❌ Expected 'graphql' or 'redis' to be identified as missing keywords");
+if (!missingTerms.includes("kubernetes") && !missingTerms.includes("redis")) {
+  console.error("❌ Expected 'kubernetes' or 'redis' to be identified as missing keywords");
   process.exit(1);
 }
 console.log("✓ Missing high-value skills identified accurately");
 
 // Test 2: 1-Click Skill Injection
 const initialScore = matchResult.overallScore;
-const skillToInject = "GraphQL";
+const skillToInject = "Kubernetes";
 const updatedCV = injectMissingSkill(cv, skillToInject);
 
 const updatedMatchResult = matchJobVacancy(updatedCV, sampleJobDescription, "en");
@@ -57,8 +57,8 @@ if (updatedMatchResult.overallScore < initialScore) {
 }
 
 const updatedMatchedTerms = updatedMatchResult.matchedKeywords.map((m) => m.term);
-if (!updatedMatchedTerms.includes("graphql")) {
-  console.error("❌ 'graphql' should now be in matched keywords list after injection");
+if (!updatedMatchedTerms.includes("kubernetes")) {
+  console.error("❌ 'kubernetes' should now be in matched keywords list after injection");
   process.exit(1);
 }
 console.log("✓ Successfully injected missing skill into CVDocument and verified score increase");

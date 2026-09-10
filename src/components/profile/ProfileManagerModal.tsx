@@ -163,7 +163,7 @@ export function ProfileManagerModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common.actions.close") || "Close"}
             className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors"
           >
             <X size={18} />

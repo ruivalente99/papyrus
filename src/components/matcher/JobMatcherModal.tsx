@@ -78,8 +78,9 @@ export function JobMatcherModal({
 
   // Keyboard shortcut: ESC to close
   useEffect(() => {
+    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === "Escape") {
         onClose();
       }
     };

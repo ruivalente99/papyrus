@@ -200,7 +200,7 @@ export function CommandPalette({
             id: `font-${f.id}`,
             category: "templates" as const,
             title: `${tr("preview.typography.title")}: ${f.name}`,
-            subtitle: `${f.category.toUpperCase()} • ${f.atsRating === "optimal" ? "Optimal ATS" : "Standard ATS"} • ${f.sampleText}`,
+            subtitle: `${f.category.toUpperCase()} • ${f.atsRating === "optimal" ? tr("preview.typography.optimalAts") : tr("preview.typography.standardAts")} • ${f.sampleText}`,
             icon: Type,
             keywords: ["font", "fonte", "typography", "tipografia", f.name.toLowerCase(), f.category],
             action: () => onSelectFont(f.id),
@@ -674,6 +674,7 @@ export function CommandPalette({
             <Search size={18} className="text-amber-600 dark:text-amber-400 shrink-0" />
             <input
               ref={inputRef}
+              data-testid="command-palette-input"
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}

@@ -392,7 +392,8 @@ export function ExperienceForm({ section, lang, defaultLang, onChange }: Props) 
                                         const altStr = xyz.actionAlternative;
                                         if (!altStr) return;
                                         const re = new RegExp(`\\b${xyz.actionVerb}\\b`, "i");
-                                        const isCap = /^[A-Z]/.test(xyz.actionVerb || "");
+                                        const match = bullet.match(re);
+                                        const isCap = match ? /^\p{Lu}/u.test(match[0]) : false;
                                         const alt = isCap
                                           ? altStr.charAt(0).toUpperCase() + altStr.slice(1)
                                           : altStr;

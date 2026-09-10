@@ -183,7 +183,7 @@ export function ImageCropModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label={tr("builder.cropModal.close")}
+            aria-label={tr("builder.cropModal.closeAria") || tr("builder.cropModal.close")}
             className="p-1 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-[#f0f3f6] hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors min-w-[24px] min-h-[24px] flex items-center justify-center"
           >
             <X size={16} />

@@ -756,7 +756,7 @@ export function BuilderHeader({
           <button
             onClick={() => setShowExportMenu(!showExportMenu)}
             title={tr("common.actions.export")}
-            aria-label={tr("a11y.actions.exportJson")}
+            aria-label={tr("common.actions.export")}
             className="flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
           >
             <FileDown size={13} />

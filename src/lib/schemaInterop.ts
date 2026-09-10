@@ -182,10 +182,11 @@ export function exportToJsonResume(cv: CVDocument, lang: SupportedLanguage = "en
     phone: p.phone,
     url: p.website || "",
     summary,
-    location: {
-      city: location,
-      countryCode: lang === "pt" ? "PT" : "US",
-    },
+    location: location
+      ? {
+          city: location,
+        }
+      : undefined,
     profiles,
   };
 
@@ -486,6 +487,7 @@ export function importFromJsonResume(
     availableLanguages: [
       { code: "en", label: "English" },
       { code: "pt", label: "Português" },
+      ...(defaultLang !== "en" && defaultLang !== "pt" ? [{ code: defaultLang, label: defaultLang.toUpperCase() }] : []),
     ],
     template: "classic",
     theme: {
@@ -870,6 +872,7 @@ export function importFromEuropassXml(
     availableLanguages: [
       { code: "en", label: "English" },
       { code: "pt", label: "Português" },
+      ...(defaultLang !== "en" && defaultLang !== "pt" ? [{ code: defaultLang, label: defaultLang.toUpperCase() }] : []),
     ],
     template: "matrix",
     theme: {

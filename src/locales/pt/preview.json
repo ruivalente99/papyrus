@@ -20,6 +20,9 @@
     "pageCutoff": "Limite da Folha A4 (Página {{page}})",
     "pageIndicator": "Página {{current}} de {{total}}"
   },
+  "print": {
+    "sheetDivider": "Folha {{current}} / {{next}}"
+  },
   "canvas": {
     "zoomIn": "Aumentar zoom",
     "zoomOut": "Reduzir zoom",

@@ -10,7 +10,7 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
   test("clicking section in preview highlights and focuses editor card (Click-to-Edit)", async ({ page, isMobile }) => {
     if (isMobile) {
       // Switch to preview tab first
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
 
       // Click on personal info header text in preview
@@ -34,7 +34,7 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
 
   test("switches templates using preview toolbar buttons", async ({ page, isMobile }) => {
     if (isMobile) {
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
 
       // Open Style sheet
@@ -43,34 +43,34 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
       await expect(page.getByRole("dialog")).toBeVisible();
 
       // Click Classic template
-      await page.getByRole("dialog").getByRole("button", { name: /^Classic/i }).click();
+      await page.getByRole("dialog").locator('button[data-template-btn="classic"]').click();
 
       // Click Matrix template
-      await page.getByRole("dialog").getByRole("button", { name: /^Matrix/i }).click();
+      await page.getByRole("dialog").locator('button[data-template-btn="matrix"]').click();
 
       // Close sheet
       await page.getByRole("dialog").getByRole("button", { name: /Concluído|Done/i }).click();
-      await expect(page.locator("#cv-printable-page")).toBeVisible();
+      await expect(page.locator("#cv-printable-page").first()).toBeVisible();
     } else {
       // Switch to Classic Tech template
-      const classicBtn = page.getByRole("button", { name: "Classic (Minimal ATS)" });
+      const classicBtn = page.locator('button[data-template-tab="classic"]');
       if (await classicBtn.isVisible()) {
         await classicBtn.click();
-        await expect(page.locator("#cv-printable-page")).toBeVisible();
+        await expect(page.locator("#cv-printable-page").first()).toBeVisible();
       }
 
       // Switch to Matrix template
-      const matrixBtn = page.getByRole("button", { name: "Matrix (Executive Grid)" });
+      const matrixBtn = page.locator('button[data-template-tab="matrix"]');
       if (await matrixBtn.isVisible()) {
         await matrixBtn.click();
-        await expect(page.locator("#cv-printable-page")).toBeVisible();
+        await expect(page.locator("#cv-printable-page").first()).toBeVisible();
       }
     }
   });
 
   test("toggles font size density between compact, normal and spacious", async ({ page, isMobile }) => {
     if (isMobile) {
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
       await expect(page.locator("#cv-printable-page")).toBeVisible();
 
       // Open Style sheet
@@ -82,7 +82,7 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
       await page.getByRole("dialog").getByRole("button", { name: /Compact/i }).click();
 
       // Click spacious density
-      await page.getByRole("dialog").getByRole("button", { name: /Spacious/i }).click();
+      await page.getByRole("dialog").getByRole("button", { name: /Spacious|Espaçoso/i }).click();
 
       // Close sheet
       await page.getByRole("dialog").getByRole("button", { name: /Concluído|Done/i }).click();
@@ -96,7 +96,7 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
       }
 
       // Click spacious density
-      const spaciousBtn = page.getByRole("button", { name: /Spacious/i });
+      const spaciousBtn = page.getByRole("button", { name: /Spacious|Espaçoso/i });
       if (await spaciousBtn.isVisible()) {
         await spaciousBtn.click();
         await expect(page.locator("#cv-printable-page")).toBeVisible();
@@ -127,7 +127,7 @@ test.describe("PAPYRUS Preview Interactions & Click-to-Edit", () => {
 
   test("provides Miro-style canvas pan and zoom toolbar controls", async ({ page, isMobile }) => {
     if (isMobile) {
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
     }
     await expect(page.locator("#cv-printable-page")).toBeVisible();
 

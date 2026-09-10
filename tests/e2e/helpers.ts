@@ -16,7 +16,7 @@ export async function enterBuilder(page: Page) {
     return;
   }
 
-  const demoBtn = page.getByRole("button", { name: /Demo/i });
+  const demoBtn = page.getByRole("button", { name: /Demo|Exemplo/i });
   if (await demoBtn.isVisible()) {
     await demoBtn.click();
     await expect(page.locator("#section-personal")).toBeVisible();

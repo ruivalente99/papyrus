@@ -157,6 +157,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
           {/* Dylan Dice Button - Directly on Avatar */}
           <button
             type="button"
+            data-testid="avatar-reroll"
             onClick={handleRerollDylanAvatar}
             title={tr("builder.header.avatarRerollAria")}
             aria-label={tr("builder.header.avatarRerollAria")}
@@ -170,7 +171,7 @@ export function PersonalInfoForm({ data, lang, onChange }: Props) {
             ref={photoInputRef}
             type="file"
             accept="image/*"
-            aria-label={tr("builder.header.importFileAria")}
+            aria-label={tr("builder.forms.personalInfo.importPhoto") || "Upload Photo"}
             onChange={handlePhotoUpload}
             className="hidden"
           />

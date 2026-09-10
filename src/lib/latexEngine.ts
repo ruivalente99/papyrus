@@ -53,7 +53,7 @@ export function exportToLatex(cv: CVDocument, lang: SupportedLanguage = "pt"): s
 \\usepackage[margin=1.5cm]{geometry}
 ${getLatexFontPackage(cv.theme?.fontFamily)}
 \\usepackage{hyperref}
-${p.qrCode?.enabled ? "\\usepackage{qrcode}\n" : ""}\\usepackage{xcolor}
+${p.qrCode?.enabled && (p.qrCode.url || p.website || p.links?.[0]?.url) ? "\\usepackage{qrcode}\n" : ""}\\usepackage{xcolor}
 \\usepackage{enumitem}
 \\usepackage{titlesec}
 \\usepackage{parskip}
@@ -102,11 +102,13 @@ ${p.qrCode?.enabled ? "\\usepackage{qrcode}\n" : ""}\\usepackage{xcolor}
 
   tex += `    ${contactItems.join(" $\\cdot$ ")}\n    }\n`;
 
-  if (p.qrCode?.enabled && (p.qrCode.url || p.website)) {
-    const qrUrl = (p.qrCode.url || p.website || "").trim();
+  const qrFallbackUrl = p.qrCode?.url || p.website || p.links?.[0]?.url || "";
+  if (p.qrCode?.enabled && qrFallbackUrl.trim()) {
+    const qrUrl = qrFallbackUrl.trim();
     const qrLabel = t(p.qrCode.label, lang, cv.defaultLanguage);
+    const escapedQrUrl = qrUrl.replace(/([%#&_])/g, "\\$1");
     tex += `    \\vspace{6pt}\\\\\n`;
-    tex += `    \\qrcode[height=1.2cm]{${qrUrl}}\\\\\n`;
+    tex += `    \\qrcode[height=1.2cm]{${escapedQrUrl}}\\\\\n`;
     if (qrLabel) {
       tex += `    {\\scriptsize \\color{darkgray} ${escapeLatex(qrLabel)}}\\\\\n`;
     }
@@ -313,7 +315,7 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
     const secTitle = sectionSplits[i].trim();
     const secBody = sectionSplits[i + 1] || "";
     const priorText = sectionSplits[i - 1] || "";
-    const hasPageBreak = /\\newpage|\\pagebreak/.test(priorText);
+    const hasPageBreak = /(?:\\newpage|\\pagebreak)\s*$/i.test(priorText.trim());
     const lower = secTitle.toLowerCase();
 
     if (
@@ -456,17 +458,18 @@ export function importFromLatex(tex: string): Partial<CVDocument> {
 
   // Extract Font Family
   let detectedFont: FontFamilyId | undefined = undefined;
-  if (clean.includes("jetbrainsmono")) detectedFont = "jetbrains-mono";
-  else if (clean.includes("FiraMono")) detectedFont = "fira-code";
-  else if (clean.includes("roboto-mono")) detectedFont = "roboto-mono";
-  else if (clean.includes("merriweather")) detectedFont = "merriweather";
-  else if (clean.includes("ebgaramond")) detectedFont = "eb-garamond";
-  else if (clean.includes("lora")) detectedFont = "lora";
-  else if (clean.includes("sourceserifpro")) detectedFont = "source-serif";
-  else if (clean.includes("raleway")) detectedFont = "raleway";
-  else if (clean.includes("FiraSans")) detectedFont = "outfit";
-  else if (clean.includes("roboto")) detectedFont = "roboto";
-  else if (clean.includes("sourcesanspro")) detectedFont = "inter";
+  const cleanLower = clean.toLowerCase();
+  if (cleanLower.includes("jetbrainsmono") || cleanLower.includes("jetbrains-mono")) detectedFont = "jetbrains-mono";
+  else if (cleanLower.includes("firamono") || cleanLower.includes("fira-mono")) detectedFont = "fira-code";
+  else if (cleanLower.includes("roboto-mono")) detectedFont = "roboto-mono";
+  else if (cleanLower.includes("merriweather")) detectedFont = "merriweather";
+  else if (cleanLower.includes("ebgaramond") || cleanLower.includes("eb-garamond")) detectedFont = "eb-garamond";
+  else if (cleanLower.includes("lora")) detectedFont = "lora";
+  else if (cleanLower.includes("sourceserifpro") || cleanLower.includes("source-serif")) detectedFont = "source-serif";
+  else if (cleanLower.includes("raleway")) detectedFont = "raleway";
+  else if (cleanLower.includes("firasans")) detectedFont = "outfit";
+  else if (cleanLower.includes("roboto")) detectedFont = "roboto";
+  else if (cleanLower.includes("sourcesanspro")) detectedFont = "inter";
 
   // Extract QR Code
   let qrCodeConfig: HeaderQrCodeConfig | undefined = undefined;

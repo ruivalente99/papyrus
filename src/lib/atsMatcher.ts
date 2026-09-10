@@ -114,11 +114,14 @@ function extractTokens(text: string): Map<string, number> {
   // Normalized raw text
   const clean = text
     .toLowerCase()
-    .replace(/[^\w\s.#+\-/]/g, " ")
+    .replace(/[^\p{L}\p{N}\s.#+\-/'’]/gu, " ")
     .replace(/\s+/g, " ");
 
-  // 1. Single word tokens
-  const words = clean.split(" ").map((w) => w.trim()).filter((w) => w.length >= 2);
+  // 1. Single word tokens (strip surrounding punctuation while preserving internal dots/hyphens like next.js, c++)
+  const words = clean
+    .split(" ")
+    .map((w) => w.trim().replace(/^[\s.,;:!?'’"()[\]{}]+|[\s.,;:!?'’"()[\]{}]+$/gu, ""))
+    .filter((w) => w.length >= 2);
 
   for (let i = 0; i < words.length; i++) {
     const word = words[i];

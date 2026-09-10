@@ -121,7 +121,13 @@ export function loadProfile(id: string): StoredProfileData | null {
   try {
     const raw = storage.getItem(`${PROFILE_DATA_PREFIX}${id}`);
     if (!raw) return null;
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    if (!data || typeof data !== "object") return null;
+    // Sanitize cover letter bodyParagraphs if present
+    if (data.coverLetter?.content && !Array.isArray(data.coverLetter.content.bodyParagraphs)) {
+      data.coverLetter.content.bodyParagraphs = [];
+    }
+    return data;
   } catch {
     return null;
   }
@@ -289,7 +295,7 @@ export function deleteProfile(
   fallbackCv: CVDocument
 ): { nextActiveId: string; profiles: CVProfileMeta[] } {
   const storage = getStorage();
-  if (!storage) return { nextActiveId: id, profiles: [] };
+  if (!storage) return { nextActiveId: currentActiveId, profiles: [] };
 
   let profiles: CVProfileMeta[] = [];
   try {
@@ -326,7 +332,16 @@ export function deleteProfile(
  */
 export function exportAllProfilesBundle(activeId: string): MultiProfileBundle {
   const storage = getStorage();
-  const profilesMeta = storage ? JSON.parse(storage.getItem(PROFILES_META_KEY) || "[]") : [];
+  let profilesMeta: CVProfileMeta[] = [];
+  if (storage) {
+    try {
+      const raw = storage.getItem(PROFILES_META_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) profilesMeta = parsed;
+      }
+    } catch {}
+  }
 
   const profilesData: StoredProfileData[] = [];
   for (const meta of profilesMeta) {

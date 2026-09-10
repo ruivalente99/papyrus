@@ -201,6 +201,17 @@ function toUtf8(str: string): Uint8Array {
 }
 
 /**
+ * Decodes a Latin-1 string back to raw byte values without UTF-8 re-encoding.
+ */
+function toLatin1(str: string): Uint8Array {
+  const bytes = new Uint8Array(str.length);
+  for (let i = 0; i < str.length; i++) {
+    bytes[i] = str.charCodeAt(i) & 0xff;
+  }
+  return bytes;
+}
+
+/**
  * Pad password to exactly 32 bytes using Standard PDF Padding
  */
 function padPassword(pwd: string): Uint8Array {
@@ -435,7 +446,7 @@ export function encryptPdf(pdfBytes: Uint8Array, options: PdfEncryptionOptions):
     const genNum = parseInt(sMatch[2], 10);
     const preHeader = pdfText.slice(lastIndex, sMatch.index);
     const objHeader = `${sMatch[1]} ${sMatch[2]} obj${sMatch[3]}stream\n`;
-    const streamData = toUtf8(sMatch[4]);
+    const streamData = toLatin1(sMatch[4]);
     const encryptedStream = encryptObjectData(streamData, encKey, objNum, genNum);
 
     parts.push(preHeader);
@@ -535,8 +546,9 @@ function getContrastRatio(hex1: string, hex2: string = "#FFFFFF"): number {
 /**
  * Audits a PAPYRUS CVDocument against PDF/UA (ISO 14289-1) & WCAG 2.1 AA rules
  */
-export function auditPdfAccessibility(cv: CVDocument, lang: SupportedLanguage = "en"): PdfUaAuditReport {
+export function auditPdfAccessibility(cv: CVDocument, lang?: SupportedLanguage): PdfUaAuditReport {
   const items: PdfUaAuditItem[] = [];
+  const effectiveLang = lang || cv.currentLanguage || cv.defaultLanguage || "en";
 
   // Rule 1: Document Title
   const hasTitle = !!cv.personalInfo?.fullName?.trim();
@@ -551,14 +563,14 @@ export function auditPdfAccessibility(cv: CVDocument, lang: SupportedLanguage = 
   });
 
   // Rule 2: Primary Natural Language
-  const hasLang = !!(lang || cv.currentLanguage || cv.defaultLanguage);
+  const hasLang = !!effectiveLang;
   items.push({
     id: "ua-primary-language",
     title: "Primary Natural Language Specified (/Lang)",
     category: "metadata",
     status: hasLang ? "pass" : "fail",
     details: hasLang
-      ? `Primary language is set to "${lang.toUpperCase()}" with BCP-47 ISO mapping.`
+      ? `Primary language is set to "${effectiveLang.toUpperCase()}" with BCP-47 ISO mapping.`
       : "Language tag missing in document catalog.",
   });
 
@@ -619,15 +631,23 @@ export function auditPdfAccessibility(cv: CVDocument, lang: SupportedLanguage = 
 
   // Rule 7: Hyperlink Destinations
   const links = cv.personalInfo?.links || [];
-  const invalidLinks = links.filter((l) => !l.url?.startsWith("http://") && !l.url?.startsWith("https://") && !l.url?.startsWith("mailto:"));
+  let invalidLinkCount = links.filter(
+    (l) => !l.url?.startsWith("http://") && !l.url?.startsWith("https://") && !l.url?.startsWith("mailto:")
+  ).length;
+  if (cv.personalInfo?.website) {
+    const ws = cv.personalInfo.website;
+    if (!ws.startsWith("http://") && !ws.startsWith("https://")) {
+      invalidLinkCount++;
+    }
+  }
   items.push({
     id: "ua-hyperlink-targets",
     title: "Clickable Link Accessibility",
     category: "content",
-    status: invalidLinks.length === 0 ? "pass" : "warn",
-    details: invalidLinks.length === 0
+    status: invalidLinkCount === 0 ? "pass" : "warn",
+    details: invalidLinkCount === 0
       ? `All ${links.length + (cv.personalInfo?.website ? 1 : 0)} hyperlinks have valid protocol prefixes.`
-      : `${invalidLinks.length} links lack http/https protocol prefix.`,
+      : `${invalidLinkCount} links lack http/https protocol prefix.`,
   });
 
   const passedCount = items.filter((i) => i.status === "pass").length;

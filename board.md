@@ -1,7 +1,7 @@
 # 📋 PAPYRUS — Project Board & Strategic Roadmap
 
 > **Product, Engineering & Roadmap Tracking Center**  
-> *Last Updated:* 2026-09-09 • *Status:* Active • *Stable Version:* v1.3.0
+> *Last Updated:* 2026-09-10 • *Status:* Active • *Stable Version:* v1.4.0
 
 ---
 
@@ -121,7 +121,7 @@
   - Template parity across Lateralis, Classic, and Matrix layouts with Google Fonts integration in `globals.css`.
 
 - [x] **[FEAT-020]** **Header Vector QR Code Generator** `tags: contact, modern, vector`
-  - Zero-dependency client-side vector SVG QR code generator (`src/lib/qrCode.ts`) with custom styling (square, dots, rounded), auto-sizing, and error correction.
+  - Client-side vector SVG QR code generator (`src/lib/qrCode.ts` powered by lightweight `qrcode-generator`) with custom styling (square, dots, rounded), auto-sizing, and error correction.
   - Interactive clickable QR code embedded in CV headers across Lateralis, Classic, and Matrix templates linking to LinkedIn, GitHub, or online portfolio.
   - Embedded vector badge overlays for popular professional networks (Globe, LinkedIn, GitHub).
   - Dedicated QR Code settings card in Personal Details form with autofill shortcuts, custom destination URL, localized captions, and real-time SVG preview.
@@ -154,17 +154,60 @@
   - Command Palette (`Cmd+K`) integration for switching profiles, creating new tailored resumes, and launching manager modal.
   - Multi-profile bundle export and import roundtrip in self-contained `.json` package with automated test suite.
 
+- [x] **[FEAT-026]** **Dark Mode PDF Export for Creative Portfolios** `tags: pdf, styling, creative`
+  - High-contrast dark background PDF option tailored for digital media, technical engineering, and creative portfolios.
+  - CSS filter DOM preparation engine (`papyrus-dark-pdf`) with background tone preservation and instant cleanup.
+  - Integrated into Header actions, Command Palette (`Cmd+K`), and PDF Security modal with filename auto-tagging (`_dark.pdf`).
+
 ---
 
-### 🔄 In Progress / Current Sprint (v1.3)
+- [x] **[FEAT-027]** **PDF & Print Engine Hardening** `tags: pdf, export, security`
+  - Prevent dark-mode PDF from inverting QR codes by tagging QR wrapper with `data-preserve-color="true"` and `data-qr-code="true"`.
+  - Scope `.page-break-before` and `[data-page-break-before="true"]` strictly to `@media print` and `.print-emulation` in `globals.css`.
+  - Preserve binary byte fidelity in PDF encryption stream encoding instead of re-encoding as UTF-8.
+  - Escape XML special characters in PDF/UA XMP metadata (`fullName`, `title`, `author`).
+  - Fine-tune forced page break boundary filtering thresholds from 50px to 10px.
 
-*(All sprint backlog tickets completed!)*
+- [x] **[FEAT-028]** **Multi-Profile Data Store & Deterministic Cover Letter Sync** `tags: profiles, storage, bugfix`
+  - Deterministically set cover letter state on profile switch, creation, duplication, deletion, and bundle import.
+  - Safeguard `deleteProfile` fallback ID when localStorage is unavailable.
+  - Guard `exportAllProfilesBundle` against corrupted JSON metadata.
+  - Validate `content.bodyParagraphs` array integrity on profile hydration.
+  - Localize close button `aria-label` in `ProfileManagerModal.tsx`.
+
+- [x] **[FEAT-029]** **Resume Schema Interoperability & Accessibility Hardening** `tags: interoperability, i18n, schema`
+  - Omit `format: "unknown"` in `importAnyResume` to avoid surfacing odd toasts.
+  - Omit guessed `countryCode` in `exportToJsonResume` when no country is defined.
+  - Guarantee `defaultLanguage` is always included in `availableLanguages` in JSON Resume & Europass XML imports.
+  - Localize export button `aria-label` in `BuilderHeader.tsx`.
+  - Localize print emulation sheet divider label (`Folha/Sheet X / Y`) in `CVPreviewContainer.tsx`.
+
+- [x] **[FEAT-030]** **ATS Vacancy Matcher & XYZ Polish Linguistic Refinements** `tags: ats, linter, text`
+  - Dynamically preserve title-case capitalization on suggested XYZ action verbs based on matched bullet casing.
+  - Enable Unicode diacritics (`\p{L}`) in `atsMatcher.ts` tokenizer for Portuguese words and handle apostrophe contractions.
+  - Detach global Escape keydown listener in `JobMatcherModal.tsx` when modal is not open.
+  - Localize font ATS tier subtitles ("Optimal ATS" / "Standard ATS") in `CommandPalette.tsx`.
+
+- [x] **[FEAT-031]** **Semantic CV Comparator, Vector QR Glyphs & LaTeX TeX Reliability** `tags: diff, latex, qr`
+  - Add `id="compare-modal-title"` and `aria-labelledby="compare-modal-title"` to `CVCompareModal.tsx`.
+  - Decouple preset target selection from display title string parsing in `CVCompareModal.tsx`.
+  - Compute "Active Sections" diff delta strictly using visible sections.
+  - Add selective merge support for `languages` section in `cvDiff.ts`.
+  - Render distinct QR scan icon glyph when `iconType === "qr"` in `qrCode.ts`.
+  - LaTeX-safe escaping of QR URLs in `\qrcode{...}` and support `p.links[0].url` fallback.
+  - Correct photo upload file input `aria-label` in `PersonalInfoForm.tsx` and crop modal close aria key.
 
 ---
 
-### 📋 Priority Backlog (v1.3 - v2.0)
+### 🔄 In Progress / Current Sprint (v1.4)
 
-*(All sprint backlog tickets completed!)*
+*(Sprint v1.4 code review hardening completed and shipped!)*
+
+---
+
+### 📋 Priority Backlog (v1.4 - v2.0)
+
+*(All sprint backlog tickets active in current sprint!)*
 
 ---
 
@@ -174,8 +217,6 @@
   - Optional end-to-end encrypted backup to the user's private cloud storage while preserving the offline-first architecture.
 - [ ] **[IDEA-002]** **Vector SVG Export Engine**
   - Export resume layers as vector SVG for fine-tuning in Figma or Adobe Illustrator.
-- [ ] **[IDEA-003]** **Dark Mode PDF Export for Creative Portfolios**
-  - High-contrast dark background PDF option tailored for digital media and game design portfolios.
 
 ---
 

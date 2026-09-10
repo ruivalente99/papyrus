@@ -530,6 +530,7 @@ export function CVPreviewContainer({
             <div className="flex items-center gap-2 shrink-0">
               <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
                 <button
+                  data-template-tab="lateralis"
                   onClick={() => onSetTemplate("lateralis")}
                   className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                     cv.template === "lateralis" || cv.template === "canva"
@@ -540,6 +541,7 @@ export function CVPreviewContainer({
                   {tr("preview.templates.lateralis")}
                 </button>
                 <button
+                  data-template-tab="classic"
                   onClick={() => onSetTemplate("classic")}
                   className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                     cv.template === "classic" || cv.template === "latex"
@@ -550,6 +552,7 @@ export function CVPreviewContainer({
                   {tr("preview.templates.classic")}
                 </button>
                 <button
+                  data-template-tab="matrix"
                   onClick={() => onSetTemplate("matrix")}
                   className={`px-3 py-1 text-xs font-bold rounded-full transition-all ${
                     cv.template === "matrix" || cv.template === "europass"
@@ -723,7 +726,7 @@ export function CVPreviewContainer({
             className="relative shadow-2xl rounded-xs bg-white dark:bg-[#161b22] dark:shadow-[0_12px_44px_rgba(0,0,0,0.8)] dark:ring-1 dark:ring-white/10"
           >
             {activeDocTab === "cover-letter" && coverLetter ? (
-              <div ref={pageRef} id="cover-letter-preview-wrapper">
+              <div ref={pageRef} id="cover-letter-preview-wrapper" style={{ width: "794px" }}>
                 <CoverLetterPreview
                   letter={coverLetter}
                   cv={cv}
@@ -801,7 +804,7 @@ export function CVPreviewContainer({
                     style={{ top: `${p * A4_H_PX - 6}px` }}
                   >
                     <span className="text-[8.5px] font-mono text-stone-400 font-bold tracking-wider uppercase bg-[#21262d] px-2 rounded-full border border-stone-600/50">
-                      Sheet {p} / {p + 1}
+                      {tr("preview.print.sheetDivider", { current: p, next: p + 1 })}
                     </span>
                   </div>
                 );
@@ -922,6 +925,7 @@ export function CVPreviewContainer({
               {/* Pointer / Hand Tool Mode */}
               <div className={`flex items-center ${isVertical ? "flex-col gap-1" : "gap-1"}`}>
                 <button
+                  data-testid="tool-mode-pointer"
                   onClick={() => handleSetToolMode("pointer")}
                   title={tr("preview.canvas.selectionMode")}
                   aria-label={tr("preview.canvas.selectionMode")}
@@ -934,6 +938,7 @@ export function CVPreviewContainer({
                   <MousePointer size={12} />
                 </button>
                 <button
+                  data-testid="tool-mode-hand"
                   onClick={() => handleSetToolMode("hand")}
                   title={tr("preview.canvas.panMode")}
                   aria-label={tr("preview.canvas.panMode")}

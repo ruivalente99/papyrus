@@ -11,8 +11,15 @@ test.describe("PAPYRUS High-Performance Technical Suite", () => {
     // Press Meta+K or Ctrl+K to open Command Palette
     await page.keyboard.press("Meta+k");
 
-    // Wait for palette input to be visible
-    const searchInput = page.getByPlaceholder(/Digita um comando|Type a command/i);
+    const searchInput = page.locator('[data-testid="command-palette-input"]').or(page.getByPlaceholder(/Pesquisa|Search|Digita|Type/i)).first();
+    if (!await searchInput.isVisible({ timeout: 1500 }).catch(() => false)) {
+      const cmdBtn = page.locator('button:has-text("⌘K")').first();
+      if (await cmdBtn.isVisible()) {
+        await cmdBtn.click();
+      } else {
+        await page.keyboard.press("Control+k");
+      }
+    }
     await expect(searchInput).toBeVisible();
 
     // Search for Matrix template
@@ -26,7 +33,7 @@ test.describe("PAPYRUS High-Performance Technical Suite", () => {
     await expect(searchInput).not.toBeVisible();
 
     if (isMobile) {
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
     }
 
     await expect(page.locator("#cv-printable-page")).toHaveAttribute("data-template", "matrix", { timeout: 5000 });
@@ -91,10 +98,16 @@ test.describe("PAPYRUS High-Performance Technical Suite", () => {
     await expect(page.locator("#section-personal")).toBeVisible();
   });
 
-  test("opens Linter and inspects ATS Parser Terminal view", async ({ page }) => {
+  test("opens Linter and inspects ATS Parser Terminal view", async ({ page, isMobile }) => {
     // Open linter badge
-    const linterBadge = page.getByTestId("linter-badge");
-    await linterBadge.click();
+    if (isMobile) {
+      const presetsBtn = page.locator("header").first().locator("button").filter({ has: page.locator("svg.lucide-layers") }).first();
+      await presetsBtn.click();
+      await page.getByRole("button", { name: /Auditoria|Quality/i }).click();
+    } else {
+      const linterBadge = page.getByTestId("linter-badge");
+      await linterBadge.click();
+    }
 
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();

@@ -17,7 +17,7 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
 
   test("mobile header renders without excessive wrapping height", async ({ page, isMobile }) => {
     test.skip(!isMobile, "Mobile specific test");
-    const header = page.locator("header");
+    const header = page.locator("header").first();
     const headerHeight = await header.evaluate((el) => el.getBoundingClientRect().height);
 
     // Single-line header stays below 70px including safe area padding
@@ -27,7 +27,7 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
   test("mobile bottom navigation tab bar switches between editor and preview", async ({ page, isMobile }) => {
     test.skip(!isMobile, "Mobile specific test");
     const editBtn = page.getByRole("button", { name: /Editar|Edit/i });
-    const previewBtn = page.getByRole("button", { name: /Pré-visualização|Preview/i });
+    const previewBtn = page.getByRole("button", { name: /Pré-visualiz|Preview/i });
 
     // Initially in Edit mode
     await expect(page.locator(".builder-form-pane")).toBeVisible();
@@ -50,7 +50,7 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
 
   test("mobile preview sheet is fully visible, centered, and not cut off on the left", async ({ page, isMobile }) => {
     test.skip(!isMobile, "Mobile specific test");
-    const previewBtn = page.getByRole("button", { name: /Pré-visualização|Preview/i });
+    const previewBtn = page.getByRole("button", { name: /Pré-visualiz|Preview/i });
     await previewBtn.click();
     await expect(page.locator("#cv-printable-page")).toBeVisible();
 
@@ -70,7 +70,7 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
 
   test("mobile preview style sheet opens and allows customizing colors and templates", async ({ page, isMobile }) => {
     test.skip(!isMobile, "Mobile specific test");
-    const previewBtn = page.getByRole("button", { name: /Pré-visualização|Preview/i });
+    const previewBtn = page.getByRole("button", { name: /Pré-visualiz|Preview/i });
     await previewBtn.click();
     await expect(page.locator("#cv-printable-page")).toBeVisible();
 
@@ -95,7 +95,13 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
   test("mobile linter modal opens as bottom sheet and score is fully visible without clipping", async ({ page, isMobile }) => {
     test.skip(!isMobile, "Mobile specific test");
     const linterBadge = page.getByTestId("linter-badge");
-    await linterBadge.click();
+    if (await linterBadge.isVisible()) {
+      await linterBadge.click();
+    } else {
+      const presetsBtn = page.locator("header").first().locator("button").filter({ has: page.locator("svg.lucide-layers") }).first();
+      await presetsBtn.click();
+      await page.getByRole("button", { name: /Auditoria|Quality/i }).click();
+    }
 
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -121,7 +127,7 @@ test.describe("PAPYRUS Mobile Layout & iOS Standards", () => {
     test.skip(!isMobile, "Mobile specific test");
 
     // Check that Quick Jump bar exists and has pills
-    const personalPill = page.getByRole("button", { name: /Pessoal|Personal/i }).first();
+    const personalPill = page.locator('[data-testid="jump-personal"]').or(page.getByRole("button", { name: /Pessoais|Pessoal|Personal/i })).first();
     await expect(personalPill).toBeVisible();
 
     // Click quick jump pill for a section

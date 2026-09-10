@@ -46,13 +46,13 @@ export function CVCompareModal({
   const [scale, setScale] = useState(0.6);
 
   // Default comparison target: pick a preset different from active CV
-  const defaultPreset = useMemo(() => {
-    const alternate = PRESET_SEEDS.find((s) => s.id !== activeCV.template) || PRESET_SEEDS[0];
-    return alternate.cv;
+  const defaultPresetSeed = useMemo(() => {
+    return PRESET_SEEDS.find((s) => s.id !== activeCV.template) || PRESET_SEEDS[0];
   }, [activeCV.template]);
 
-  const [compareCV, setCompareCV] = useState<CVDocument>(defaultPreset);
-  const [compareSourceTitle, setCompareSourceTitle] = useState<string>("Classic Preset");
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(defaultPresetSeed.id);
+  const [compareCV, setCompareCV] = useState<CVDocument>(defaultPresetSeed.cv);
+  const [compareSourceTitle, setCompareSourceTitle] = useState<string>(`${defaultPresetSeed.name} Preset`);
 
   const paneARef = useRef<HTMLDivElement>(null);
   const paneBRef = useRef<HTMLDivElement>(null);
@@ -66,6 +66,7 @@ export function CVCompareModal({
   // Update default compare CV if active CV template changes
   useEffect(() => {
     const alternate = PRESET_SEEDS.find((s) => s.id !== activeCV.template) || PRESET_SEEDS[0];
+    setSelectedPresetId(alternate.id);
     setCompareCV(alternate.cv);
     setCompareSourceTitle(`${alternate.name} Preset`);
   }, [activeCV.template]);
@@ -120,6 +121,7 @@ export function CVCompareModal({
   const handleSelectPreset = (presetId: string) => {
     const found = PRESET_SEEDS.find((s) => s.id === presetId);
     if (found) {
+      setSelectedPresetId(presetId);
       setCompareCV(found.cv);
       setCompareSourceTitle(`${found.name} Preset`);
     }
@@ -135,6 +137,7 @@ export function CVCompareModal({
       try {
         const parsed = JSON.parse(event.target?.result as string);
         if (parsed && typeof parsed === "object" && parsed.personalInfo) {
+          setSelectedPresetId(null);
           setCompareCV(parsed);
           setCompareSourceTitle(file.name);
         } else {
@@ -161,6 +164,7 @@ export function CVCompareModal({
     <div
       role="dialog"
       aria-modal="true"
+      aria-labelledby="compare-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4 overflow-hidden"
     >
       <div className="bg-white dark:bg-zinc-900 w-full max-w-7xl h-full max-h-[96vh] rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -171,7 +175,7 @@ export function CVCompareModal({
               <GitCompare className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+              <h2 id="compare-modal-title" className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
                 {isPt ? "Comparador Visual de CVs" : "Visual CV Comparator & Diff Engine"}
                 <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
                   {diffResult.summary.totalChanges} {isPt ? "alterações" : "changes"}
@@ -229,10 +233,15 @@ export function CVCompareModal({
               <span className="text-[11px] text-zinc-400 font-medium">{isPt ? "Alvo:" : "Target:"}</span>
               <select
                 aria-label={isPt ? "Selecionar versão de comparação" : "Select comparison target"}
-                value={compareSourceTitle.startsWith("Classic") ? "classic" : compareSourceTitle.startsWith("Lateralis") ? "lateralis" : compareSourceTitle.startsWith("Matrix") ? "matrix" : "empty"}
+                value={selectedPresetId || ""}
                 onChange={(e) => handleSelectPreset(e.target.value)}
                 className="text-xs bg-transparent border-none text-zinc-800 dark:text-zinc-200 focus:outline-hidden font-medium cursor-pointer"
               >
+                {!selectedPresetId && (
+                  <option value="" disabled className="dark:bg-zinc-800">
+                    {compareSourceTitle}
+                  </option>
+                )}
                 {PRESET_SEEDS.map((p) => (
                   <option key={p.id} value={p.id} className="dark:bg-zinc-800">
                     {p.name}
@@ -344,7 +353,7 @@ export function CVCompareModal({
                     }}
                     className="transition-transform duration-75"
                   >
-                    <CVPage cv={activeCV} lang={lang} />
+                    <CVPage cv={activeCV} lang={lang} id="compare-active-cv" />
                   </div>
                 </div>
               </div>
@@ -392,7 +401,7 @@ export function CVCompareModal({
                     }}
                     className="transition-transform duration-75"
                   >
-                    <CVPage cv={compareCV} lang={lang} />
+                    <CVPage cv={compareCV} lang={lang} id="compare-target-cv" />
                   </div>
                 </div>
               </div>

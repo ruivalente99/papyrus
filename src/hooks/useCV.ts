@@ -240,9 +240,7 @@ export function useCV() {
       if (activeProfileData) {
         setCvState(activeProfileData.cv);
         cvRef.current = activeProfileData.cv;
-        if (activeProfileData.coverLetter) {
-          setCoverLetter(activeProfileData.coverLetter);
-        }
+        setCoverLetter(activeProfileData.coverLetter || softwareEngineerCoverLetter);
         setHasCachedDoc(true);
       }
 
@@ -258,8 +256,6 @@ export function useCV() {
         try {
           localStorage.setItem(SETUP_COMPLETED_KEY, "true");
         } catch {}
-      } else if (activeProfileData) {
-        setIsSetupOpen(false);
       } else if (!isCompleted) {
         // First visit: open Setup Screen
         setIsSetupOpen(true);
@@ -346,20 +342,20 @@ export function useCV() {
           typeof updater === "function" ? updater(prev.personalInfo) : { ...prev.personalInfo, ...updater },
       }));
     },
-    []
+    [setCv]
   );
 
   // Template & Theme
   const setTemplate = useCallback((template: TemplateId) => {
     setCv((prev) => ({ ...prev, template }));
-  }, []);
+  }, [setCv]);
 
   const updateTheme = useCallback((themeUpdate: Partial<CVTheme>) => {
     setCv((prev) => ({
       ...prev,
       theme: { ...prev.theme, ...themeUpdate },
     }));
-  }, []);
+  }, [setCv]);
 
   // Section Management
   const updateSection = useCallback((sectionId: string, updater: (sec: CVSection) => CVSection) => {
@@ -367,7 +363,7 @@ export function useCV() {
       ...prev,
       sections: prev.sections.map((sec) => (sec.id === sectionId ? updater(sec) : sec)),
     }));
-  }, []);
+  }, [setCv]);
 
   const toggleSectionVisibility = useCallback((sectionId: string) => {
     setCv((prev) => ({
@@ -376,7 +372,7 @@ export function useCV() {
         sec.id === sectionId ? { ...sec, visible: !sec.visible } : sec
       ),
     }));
-  }, []);
+  }, [setCv]);
 
   const moveSection = useCallback((sectionId: string, direction: "up" | "down") => {
     setCv((prev) => {
@@ -396,7 +392,7 @@ export function useCV() {
         sections: newSections.map((s, i) => ({ ...s, order: i + 1 })),
       };
     });
-  }, []);
+  }, [setCv]);
 
   const deleteSection = useCallback((sectionId: string) => {
     setCv((prev) => ({
@@ -405,7 +401,7 @@ export function useCV() {
         .filter((s) => s.id !== sectionId)
         .map((s, i) => ({ ...s, order: i + 1 })),
     }));
-  }, []);
+  }, [setCv]);
 
   const addSection = useCallback(
     (type: SectionType, customTitleText?: string) => {
@@ -521,7 +517,7 @@ export function useCV() {
         sections: [...prev.sections, newSection],
       }));
     },
-    [cv.sections.length]
+    [cv.sections.length, setCv]
   );
 
   // Preset loading
@@ -656,7 +652,10 @@ export function useCV() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(importedDoc));
             setHasCachedDoc(true);
           } catch {}
-          return { success: true, format: detected };
+          return {
+            success: true,
+            format: detected === "unknown" ? undefined : detected,
+          };
         }
         return { success: false, error: "Unable to parse resume document" };
       } catch (err: any) {
@@ -685,7 +684,7 @@ export function useCV() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cloned));
     localStorage.setItem(SETUP_COMPLETED_KEY, "true");
     setHasCachedDoc(true);
-  }, [cv]);
+  }, [cv, setCv]);
 
   const deleteCV = useCallback(() => {
     try {
@@ -696,7 +695,7 @@ export function useCV() {
     } catch {}
     setCv(emptySeed);
     setHasCachedDoc(false);
-  }, []);
+  }, [setCv]);
 
   const completeSetup = useCallback((newCv: CVDocument) => {
     setCv(newCv);
@@ -735,9 +734,7 @@ export function useCV() {
     setActiveProfileId(profileId);
     setCvState(targetData.cv);
     cvRef.current = targetData.cv;
-    if (targetData.coverLetter) {
-      setCoverLetter(targetData.coverLetter);
-    }
+    setCoverLetter(targetData.coverLetter || softwareEngineerCoverLetter);
     setPast([]);
     setFuture([]);
     setHistory([]);
@@ -765,7 +762,15 @@ export function useCV() {
 
       setProfiles(updatedProfiles);
       setActiveProfileId(meta.id);
-      setCvState({ ...baseCv, title: meta.name, id: `cv-${Date.now()}` });
+      const created = loadProfile(meta.id);
+      if (created) {
+        setCvState(created.cv);
+        cvRef.current = created.cv;
+        setCoverLetter(created.coverLetter || softwareEngineerCoverLetter);
+      } else {
+        setCvState({ ...baseCv, title: meta.name, id: `cv-${Date.now()}` });
+        setCoverLetter(fromCurrent ? coverLetter : softwareEngineerCoverLetter);
+      }
       setPast([]);
       setFuture([]);
       setHistory([]);
@@ -786,9 +791,7 @@ export function useCV() {
       if (loaded) {
         setCvState(loaded.cv);
         cvRef.current = loaded.cv;
-        if (loaded.coverLetter) {
-          setCoverLetter(loaded.coverLetter);
-        }
+        setCoverLetter(loaded.coverLetter || softwareEngineerCoverLetter);
       }
       setPast([]);
       setFuture([]);
@@ -820,9 +823,7 @@ export function useCV() {
       if (nextData) {
         setCvState(nextData.cv);
         cvRef.current = nextData.cv;
-        if (nextData.coverLetter) {
-          setCoverLetter(nextData.coverLetter);
-        }
+        setCoverLetter(nextData.coverLetter || softwareEngineerCoverLetter);
       }
       setPast([]);
       setFuture([]);
@@ -842,9 +843,7 @@ export function useCV() {
     if (activeData) {
       setCvState(activeData.cv);
       cvRef.current = activeData.cv;
-      if (activeData.coverLetter) {
-        setCoverLetter(activeData.coverLetter);
-      }
+      setCoverLetter(activeData.coverLetter || softwareEngineerCoverLetter);
     }
     setPast([]);
     setFuture([]);

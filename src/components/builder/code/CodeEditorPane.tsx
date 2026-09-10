@@ -41,12 +41,14 @@ export function CodeEditorPane({
 
   // Sync internal JSON when CV changes externally (unless user has dirty edits)
   useEffect(() => {
-    try {
-      if (JSON.stringify(JSON.parse(jsonContent)) === JSON.stringify(cv)) {
-        return;
-      }
-    } catch {}
-    setJsonContent(JSON.stringify(cv, null, 2));
+    setJsonContent((prev) => {
+      try {
+        if (JSON.stringify(JSON.parse(prev)) === JSON.stringify(cv)) {
+          return prev;
+        }
+      } catch {}
+      return JSON.stringify(cv, null, 2);
+    });
     setJsonError(null);
   }, [cv]);
 

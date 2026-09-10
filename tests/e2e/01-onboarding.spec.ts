@@ -16,7 +16,7 @@ test.describe("PAPYRUS Onboarding & Template Lifecycle", () => {
 
     // Blank canvas and Demo buttons
     await expect(page.getByRole("button", { name: /Blank|Em Branco/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Demo/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Demo|Exemplo/i })).toBeVisible();
   });
 
   test("switching UI language on setup screen toggles between EN and PT", async ({ page }) => {
@@ -35,16 +35,16 @@ test.describe("PAPYRUS Onboarding & Template Lifecycle", () => {
   });
 
   test("selecting Demo preset loads the builder split-pane", async ({ page, isMobile }) => {
-    const demoBtn = page.getByRole("button", { name: /Demo/i });
+    const demoBtn = page.getByRole("button", { name: /Demo|Exemplo/i });
     await demoBtn.click();
 
     if (isMobile) {
       await expect(page.locator("#section-personal")).toBeVisible();
       // Switch to preview tab
-      await page.getByRole("button", { name: /Pré-visualização|Preview/i }).click();
-      await expect(page.locator("#cv-printable-page")).toBeVisible();
+      await page.getByRole("button", { name: /Pré-visualiz|Preview/i }).click();
+      await expect(page.locator("#cv-printable-page").first()).toBeVisible();
     } else {
-      await expect(page.locator("#cv-printable-page")).toBeVisible();
+      await expect(page.locator("#cv-printable-page").first()).toBeVisible();
       await expect(page.locator("#section-personal")).toBeVisible();
     }
   });
