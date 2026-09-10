@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { CVDocument, SupportedLanguage, TemplateId } from "@/types/cv";
 import { CVPage } from "./CVPage";
 import { exportToPdf, exportToPng, A4_H_PX, A4_W_PX } from "@/lib/pdfExport";
@@ -56,27 +57,63 @@ function CanvasTooltip({
   side?: "top" | "bottom" | "left" | "right";
 }) {
   const [show, setShow] = useState(false);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
-  const sideClasses = {
-    top: "bottom-full mb-2 left-1/2 -translate-x-1/2",
-    bottom: "top-full mt-2 left-1/2 -translate-x-1/2",
-    left: "right-full mr-2 top-1/2 -translate-y-1/2",
-    right: "left-full ml-2 top-1/2 -translate-y-1/2",
+  const handleOpen = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      let top = 0;
+      let left = 0;
+      if (side === "top") {
+        top = rect.top - 8;
+        left = rect.left + rect.width / 2;
+      } else if (side === "bottom") {
+        top = rect.bottom + 8;
+        left = rect.left + rect.width / 2;
+      } else if (side === "left") {
+        top = rect.top + rect.height / 2;
+        left = rect.left - 8;
+      } else if (side === "right") {
+        top = rect.top + rect.height / 2;
+        left = rect.right + 8;
+      }
+      setCoords({ top, left });
+      setShow(true);
+    }
   };
+
+  const handleClose = () => {
+    setShow(false);
+  };
+
+  const transformStyle = {
+    top: "translate(-50%, -100%)",
+    bottom: "translate(-50%, 0%)",
+    left: "translate(-100%, -50%)",
+    right: "translate(0%, -50%)",
+  }[side];
 
   return (
     <div
-      className="relative inline-flex items-center justify-center"
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      onFocus={() => setShow(true)}
-      onBlur={() => setShow(false)}
+      ref={triggerRef}
+      className="inline-flex items-center justify-center shrink-0"
+      onMouseEnter={handleOpen}
+      onMouseLeave={handleClose}
+      onFocus={handleOpen}
+      onBlur={handleClose}
     >
       {children}
-      {show && (
+      {show && coords && typeof document !== "undefined" && createPortal(
         <div
           role="tooltip"
-          className={`absolute z-50 pointer-events-none px-2.5 py-1 rounded-lg bg-stone-900/95 dark:bg-[#161b22]/95 backdrop-blur-md text-white border border-stone-700/60 dark:border-[#363d47] text-[10.5px] font-semibold shadow-xl whitespace-nowrap flex items-center gap-1.5 animate-in fade-in duration-100 ${sideClasses[side]}`}
+          style={{
+            position: "fixed",
+            top: coords.top,
+            left: coords.left,
+            transform: transformStyle,
+          }}
+          className="z-[9999] pointer-events-none px-2.5 py-1 rounded-lg bg-stone-900/95 dark:bg-[#161b22]/95 backdrop-blur-md text-white border border-stone-700/60 dark:border-[#363d47] text-[10.5px] font-semibold shadow-xl whitespace-nowrap flex items-center gap-1.5 animate-in fade-in duration-100"
         >
           <span>{label}</span>
           {shortcut && (
@@ -84,7 +121,8 @@ function CanvasTooltip({
               {shortcut}
             </kbd>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
@@ -581,7 +619,7 @@ export function CVPreviewContainer({
         </div>
 
         {/* DESKTOP TOOLBAR: Dedicated Exclusively to Styles & Document Appearance */}
-        <div className="hidden sm:flex items-center justify-between gap-3">
+        <div className="hidden sm:flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
           {/* Template Selector or Cover Letter Badge */}
           {activeDocTab === "cover-letter" ? (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 text-amber-900 dark:text-amber-300 rounded-full border border-amber-500/20 text-xs font-bold shadow-2xs shrink-0">
@@ -892,12 +930,12 @@ export function CVPreviewContainer({
                 onTouchEnd={(e) => e.stopPropagation()}
                 className={`absolute z-20 flex items-center bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-md border border-stone-200/80 dark:border-[#363d47] shadow-lg rounded-full p-1 text-stone-700 dark:text-[#c9d1d9] transition-all duration-200 hover:shadow-xl select-none ${
                   dockEdge === "bottom"
-                    ? "bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
+                    ? "bottom-4 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto no-scrollbar"
                     : dockEdge === "top"
-                    ? "top-14 sm:top-16 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto"
+                    ? "top-14 sm:top-16 left-1/2 -translate-x-1/2 flex-row gap-1 max-w-[96vw] overflow-x-auto no-scrollbar"
                     : dockEdge === "left"
-                    ? "left-3 top-1/2 -translate-y-1/2 flex-col gap-1 max-h-[85vh] overflow-y-auto"
-                    : "right-3 top-1/2 -translate-y-1/2 flex-col gap-1 max-h-[85vh] overflow-y-auto"
+                    ? "left-3 top-1/2 -translate-y-1/2 flex-col gap-1 max-h-[85vh] overflow-y-auto overflow-x-hidden no-scrollbar w-fit"
+                    : "right-3 top-1/2 -translate-y-1/2 flex-col gap-1 max-h-[85vh] overflow-y-auto overflow-x-hidden no-scrollbar w-fit"
                 }`}
               >
                 {/* Grip Handle for Dragging or Cycling Edges */}
@@ -934,9 +972,11 @@ export function CVPreviewContainer({
                 {/* Page Count Badge */}
                 <span
                   title={`${pageCount} ${pageCount === 1 ? tr("preview.toolbar.pageCountSingle") : tr("preview.toolbar.pageCountPlural")}`}
-                  className="text-[10px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] px-2 py-0.5 rounded-full font-mono border border-stone-200 dark:border-[#363d47] shrink-0 whitespace-nowrap"
+                  className={`text-[10px] font-bold bg-stone-100 dark:bg-[#21262d] text-stone-700 dark:text-[#f0f3f6] rounded-full font-mono border border-stone-200 dark:border-[#363d47] shrink-0 whitespace-nowrap flex items-center justify-center ${
+                    isVertical ? "w-7 h-6 px-0.5" : "px-2 py-0.5"
+                  }`}
                 >
-                  {pageCount} {isVertical ? "p" : (pageCount === 1 ? tr("preview.toolbar.pageCountSingle") : tr("preview.toolbar.pageCountPlural"))}
+                  {isVertical ? `${pageCount}p` : `${pageCount} ${pageCount === 1 ? tr("preview.toolbar.pageCountSingle") : tr("preview.toolbar.pageCountPlural")}`}
                 </span>
 
                 {/* Divider */}
@@ -954,7 +994,9 @@ export function CVPreviewContainer({
                       <ZoomOut size={12} />
                     </button>
                   </CanvasTooltip>
-                  <span className="text-[10.5px] font-mono px-0.5 min-w-[28px] text-center font-bold text-stone-700 dark:text-[#c9d1d9]">
+                  <span className={`font-mono text-center font-bold text-stone-700 dark:text-[#c9d1d9] ${
+                    isVertical ? "text-[9.5px] w-7 py-0.5" : "text-[10.5px] px-0.5 min-w-[28px]"
+                  }`}>
                     {Math.round(zoom * 100)}%
                   </span>
                   <CanvasTooltip label={tr("preview.canvas.zoomIn")} shortcut="+10%" side={tooltipSide}>
@@ -1109,7 +1151,9 @@ export function CVPreviewContainer({
                       disabled={isExporting !== null}
                       title={tr("preview.toolbar.exportPdf")}
                       aria-label={tr("preview.toolbar.exportPdf")}
-                      className="flex items-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white px-2.5 sm:px-3 py-1 rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0 min-h-[26px]"
+                      className={`flex items-center justify-center gap-1 text-xs font-bold bg-amber-700 hover:bg-amber-800 text-white rounded-full shadow-xs transition-all disabled:opacity-50 shrink-0 ${
+                        isVertical ? "w-7 h-7 p-1" : "px-2.5 sm:px-3 py-1 min-h-[26px]"
+                      }`}
                     >
                       {isExporting === "pdf" ? (
                         <Loader2 size={12} className="animate-spin" />
@@ -1126,7 +1170,9 @@ export function CVPreviewContainer({
                       disabled={isExporting !== null}
                       title={tr("preview.toolbar.png")}
                       aria-label={tr("preview.toolbar.png")}
-                      className="flex items-center gap-1 text-xs font-semibold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-2.5 sm:px-3 py-1 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs disabled:opacity-50 shrink-0 min-h-[26px]"
+                      className={`flex items-center justify-center gap-1 text-xs font-semibold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs disabled:opacity-50 shrink-0 ${
+                        isVertical ? "w-7 h-7 p-1" : "px-2.5 sm:px-3 py-1 min-h-[26px]"
+                      }`}
                     >
                       <ImageIcon size={12} />
                       {!isVertical && <span className="text-[11px] font-medium">{tr("preview.toolbar.png")}</span>}
