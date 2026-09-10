@@ -17,6 +17,7 @@ import {
   importFromJsonResume,
   exportToEuropassXml,
   importFromEuropassXml,
+  exportCVToSvg,
 } from "../src/lib/cv-helper";
 import { encryptPdf, auditPdfAccessibility } from "../src/lib/pdfSecurity";
 import type { SupportedLanguage } from "../src/types/cv";
@@ -63,6 +64,9 @@ Commands:
 
   europass-import <path.xml> [--out=path.json]
     Import a Europass XML resume into PAPYRUS format.
+
+  svg-export [preset/file] [--out=path.svg] [--lang=en|pt]
+    Export CV to high-precision standard A4 Vector SVG (794x1123px) for Figma/Illustrator.
 
   add-skill [preset/file] --cat-en="..." --cat-pt="..." --skill="..." [--out=path.json]
     Add a skill tag to a category.
@@ -351,6 +355,17 @@ async function main() {
       const outPath = (flags.out as string) || "imported-cv.json";
       saveCV(cv, outPath);
       console.log(`✓ Imported Europass XML into PAPYRUS format: ${outPath}`);
+      break;
+    }
+
+    case "svg-export": {
+      const target = args[1] || "lateralis";
+      const cv = loadCV(target);
+      const targetLang = ((flags.lang as string) || lang) as SupportedLanguage;
+      const outPath = (flags.out as string) || "resume.svg";
+      const svg = exportCVToSvg(cv, targetLang);
+      fs.writeFileSync(outPath, svg, "utf-8");
+      console.log(`✓ Exported CV to Vector SVG: ${outPath} (${targetLang.toUpperCase()})`);
       break;
     }
 

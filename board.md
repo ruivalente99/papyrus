@@ -1,7 +1,7 @@
 # 📋 PAPYRUS — Project Board & Strategic Roadmap
 
 > **Product, Engineering & Roadmap Tracking Center**  
-> *Last Updated:* 2026-09-10 • *Status:* Active • *Stable Version:* v1.4.0
+> *Last Updated:* 2026-09-10 • *Status:* Active • *Stable Version:* v1.5.0
 
 ---
 
@@ -196,16 +196,33 @@
   - Render distinct QR scan icon glyph when `iconType === "qr"` in `qrCode.ts`.
   - LaTeX-safe escaping of QR URLs in `\qrcode{...}` and support `p.links[0].url` fallback.
   - Correct photo upload file input `aria-label` in `PersonalInfoForm.tsx` and crop modal close aria key.
+ 
+- [x] **[FEAT-032]** **Mobile Navigation Dock, Unified Language Switcher & Canvas Polish** `tags: mobile, ui/ux, canvas`
+  - Resolved mobile dropdown clipping by configuring `<header>` with permanent `overflow-visible` and responsive width constraints.
+  - Implemented unified LanguageSwitcher (`variant="unified"`) decoupling UI interface language and CV document language with zero redundancy.
+  - Streamlined top bar cognitive load by consolidating secondary utilities into a dedicated Tools (`🛠️ Ferramentas`) dropdown.
+  - Engineered fixed bottom navigation dock on mobile viewports (`fixed md:hidden bottom-0`) with 48px touch targets for Editor and Preview.
+  - Replaced section jump bar with an integrated, rounded pill bar featuring touch/wheel/drag scroll and global expand/collapse toggle.
+  - Refactored Cover Letter layout to natural top-to-bottom flow (`justify-start`) and left-aligned typography (`text-left`), eliminating awkward word rivers.
+  - Built instant floating tooltips (`CanvasTooltip`) and canvas cheat-sheet legend (`[?]`) explaining controls and gestures.
+  - Created automatic zoom auto-fit engine recalculating scale on window resize and mobile orientation change (`isAutoFit`).
+
+- [x] **[FEAT-033]** **Vector SVG Export Engine for Figma & Illustrator** `tags: export, vector, svg`
+  - High-precision standard A4 Vector SVG (794x1123px at 96 DPI) export engine (`src/lib/svgExport.ts`).
+  - Standalone pure TypeScript SVG generator `exportCVToSvg` for CLI and automated agents with XML escaping and Inter font embedding.
+  - Client-side DOM-to-SVG export `exportToSvg` integrated into Header Export menu and Command Palette (`Cmd+K`).
+  - CLI command `npm run cv -- svg-export <preset/file> [--out=path.svg] [--lang=en|pt]`.
+  - Automated test suite `scripts/test-svg-export.ts` verifying SVG validity, A4 dimensions, and special characters.
 
 ---
 
-### 🔄 In Progress / Current Sprint (v1.4)
+### 🔄 In Progress / Current Sprint (v1.5)
 
-*(Sprint v1.4 code review hardening completed and shipped!)*
+*(Sprint v1.5 completed and shipped!)*
 
 ---
 
-### 📋 Priority Backlog (v1.4 - v2.0)
+### 📋 Priority Backlog (v1.5 - v2.0)
 
 *(All sprint backlog tickets active in current sprint!)*
 
@@ -215,8 +232,6 @@
 
 - [ ] **[IDEA-001]** **Private Cloud Sync (WebDAV, Nextcloud, or Google Drive)**
   - Optional end-to-end encrypted backup to the user's private cloud storage while preserving the offline-first architecture.
-- [ ] **[IDEA-002]** **Vector SVG Export Engine**
-  - Export resume layers as vector SVG for fine-tuning in Figma or Adobe Illustrator.
 
 ---
 

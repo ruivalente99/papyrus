@@ -2,7 +2,7 @@
 
 > **Product Architecture & Engineering Document**  
 > **Version:** 1.0.0 — Specification / Technical Proposal  
-> **Status:** Ready for Implementation
+> **Status:** Implemented & Shipped (v1.3.0 / FEAT-012)
 
 ---
 

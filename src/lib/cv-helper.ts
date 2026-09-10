@@ -592,5 +592,7 @@ export {
 
 export {
   exportToDarkPdf,
+  exportToSvg,
+  exportCVToSvg,
 } from "@/lib/pdfExport";
 

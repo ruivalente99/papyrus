@@ -43,29 +43,29 @@ export function CoverLetterPreview({
       padding: "p-8 sm:p-10",
       headerPb: "pb-4 mb-5",
       recipientMb: "mb-5",
-      bodySpacing: "space-y-2.5 text-[12.5px] leading-normal",
-      footerMt: "mt-5 pt-3",
+      bodySpacing: "space-y-3 text-[12.5px] leading-normal",
+      footerMt: "mt-6 pt-2",
     },
     normal: {
-      padding: "p-12 sm:p-14",
-      headerPb: "pb-6 mb-7",
-      recipientMb: "mb-7",
-      bodySpacing: "space-y-3.5 text-[13.5px] leading-relaxed",
-      footerMt: "mt-8 pt-4",
+      padding: "p-10 sm:p-12 md:p-14",
+      headerPb: "pb-5 mb-6",
+      recipientMb: "mb-6",
+      bodySpacing: "space-y-4 text-[13.5px] leading-relaxed",
+      footerMt: "mt-8 pt-3",
     },
     spacious: {
-      padding: "p-14 sm:p-16",
-      headerPb: "pb-7 mb-9",
-      recipientMb: "mb-9",
-      bodySpacing: "space-y-4 text-[14px] leading-loose",
-      footerMt: "mt-10 pt-5",
+      padding: "p-12 sm:p-14 md:p-16",
+      headerPb: "pb-6 mb-8",
+      recipientMb: "mb-8",
+      bodySpacing: "space-y-5 text-[14px] leading-loose",
+      footerMt: "mt-10 pt-4",
     },
   }[spacing] || {
-    padding: "p-12 sm:p-14",
-    headerPb: "pb-6 mb-7",
-    recipientMb: "mb-7",
-    bodySpacing: "space-y-3.5 text-[13.5px] leading-relaxed",
-    footerMt: "mt-8 pt-4",
+    padding: "p-10 sm:p-12 md:p-14",
+    headerPb: "pb-5 mb-6",
+    recipientMb: "mb-6",
+    bodySpacing: "space-y-4 text-[13.5px] leading-relaxed",
+    footerMt: "mt-8 pt-3",
   };
 
   // Format date if ISO string (YYYY-MM-DD)
@@ -115,7 +115,7 @@ export function CoverLetterPreview({
         style={{ backgroundColor: primaryColor }}
       />
 
-      <div className={`${spacingStyles.padding} flex flex-col ${pageCount === 1 ? "justify-between" : "justify-start"} min-h-[1115px]`}>
+      <div className={`${spacingStyles.padding} flex flex-col justify-start min-h-[1115px]`}>
         {/* Top Section: Sender Header & Contact Row */}
         <div>
           {letter.showSenderHeader && (
@@ -220,7 +220,7 @@ export function CoverLetterPreview({
           )}
 
           {/* Date & Recipient Details */}
-          <div className={`grid grid-cols-2 gap-6 ${spacingStyles.recipientMb} text-xs`}>
+          <div className={`flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 ${spacingStyles.recipientMb} text-xs`}>
             {/* Left: Recipient Information */}
             <div className="space-y-1 text-stone-800">
               {recipient.hiringManagerName && (
@@ -242,7 +242,7 @@ export function CoverLetterPreview({
             </div>
 
             {/* Right: Date */}
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               {formattedDate && (
                 <p className="font-medium text-stone-500 tracking-tight">{formattedDate}</p>
               )}
@@ -250,7 +250,7 @@ export function CoverLetterPreview({
           </div>
 
           {/* Letter Body */}
-          <main className={`${spacingStyles.bodySpacing} text-stone-800 text-justify`}>
+          <main className={`${spacingStyles.bodySpacing} text-stone-800 text-left`}>
             {/* Salutation */}
             {t(content.salutation) && (
               <p className="font-bold text-stone-950 mb-3">{t(content.salutation)}</p>

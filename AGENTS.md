@@ -17,7 +17,7 @@ PAPYRUS is an offline-first, multilingual dynamic CV management and builder plat
                                        ▼
                   ┌─────────────────────────────────────────┐
                   │       Core Data Store & i18n Hook       │
-                  │               (useCV.ts)                │
+                  │         (useCV.ts, useProfiles.ts)      │
                   └─────────┬───────────────────┬───────────┘
                             │                   │
               ┌─────────────▼─────────┐       ┌─▼─────────────────────┐
@@ -26,16 +26,17 @@ PAPYRUS is an offline-first, multilingual dynamic CV management and builder plat
               │  - PersonalInfoForm   │       │  - LateralisTemplate  │
               │  - ExperienceForm     │       │  - ClassicTemplate    │
               │  - EducationForm      │       │  - MatrixTemplate     │
-              │  - SkillsForm         │       │                       │
-              │  - LanguagesForm      │       │  - PDF Hyperlink &    │
-              │  - TeX & JSON Modal   │       │    Smart Break Engine │
-              │  - Linter & Scoring   │       │  - TeX Export/Import  │
+              │  - SkillsForm         │       │  - CoverLetterPreview │
+              │  - LanguagesForm      │       │                       │
+              │  - CoverLetterForm    │       │  - PDF Hyperlink &    │
+              │  - Section Navigation │       │    Smart Break Engine │
+              │  - Tools & Linter     │       │  - TeX / Diff / Canvas│
               └───────────────────────┘       └───────────────────────┘
 ```
 
 ---
 
-## 📐 Data Schema (`src/types/cv.ts`)
+## 📐 Data Schema (`src/types/cv.ts` & `src/types/coverLetter.ts`)
 
 Every text field in the CV is stored as a multilingual map `MultiLangString`:
 ```typescript
@@ -47,12 +48,14 @@ export interface MultiLangString {
 ```
 
 ### Key Models:
-- **`CVDocument`**: Top-level document containing metadata, defaultLanguage, currentLanguage, availableLanguages (`{ code, label }`), template (`lateralis` | `classic` | `matrix`), theme, personalInfo, and ordered sections.
-- **`PersonalInfo`**: Full name, headline (multilingual), email, phone, location (multilingual), website, photo URL, photoShape (`circle` | `rounded` | `square`), showPhoto, social links, and summary (multilingual).
+- **`CVDocument`**: Top-level document containing metadata, defaultLanguage, currentLanguage, availableLanguages (`{ code, label }`), template (`lateralis` | `classic` | `matrix`), theme, personalInfo, ordered sections, and typography settings.
+- **`PersonalInfo`**: Full name, headline (multilingual), email, phone, location (multilingual), website, photo URL, photoShape (`circle` | `rounded` | `square`), showPhoto, social links, summary (multilingual), and optional vector QR code configuration.
 - **`ExperienceItem`**: Role (multilingual), company, location (multilingual), startDate, endDate, isCurrent, highlights (multilingual array of bullet points), url, visible flag.
 - **`EducationItem`**: Degree (multilingual), institution, location (multilingual), startDate, endDate, isCurrent, qeq level, details (multilingual), url, visible flag.
 - **`SkillsSection`**: Grouped into categories (`SkillCategory`), each with a multilingual category name and an array of skill tags.
 - **`LanguageItem`**: Language name (multilingual), descriptive proficiency level (multilingual), and official CEFR code (`C2 (Native)`, `C1`, `B2`, `B1`, `A2`, `A1`).
+- **`CoverLetterDocument`**: Coordinated executive letter document with bilingual recipient details, salutation, body paragraphs, and sign-off block.
+- **`CVProfileMeta`**: Multi-profile storage item tracking profile id, title, timestamps, template, and document linkage.
 
 ---
 
@@ -127,11 +130,21 @@ npm run cv -- latex-import resume.tex --out=imported-cv.json
 # Run real-time quality linter
 npm run cv -- lint lateralis --lang=en
 
+# Semantic CV Diff between two versions
+npm run cv -- diff sourceA.json sourceB.json --lang=en
+
 # Find missing translations for target language
 npm run cv -- missing lateralis --target=pt
 
 # Add a skill to category
 npm run cv -- add-skill lateralis --cat-en="Technical Skills" --cat-pt="Competências Técnicas" --skill="GraphQL" --out=updated.json
+
+# Export JSON Resume or Europass XML
+npm run cv -- jsonresume-export lateralis --out=resume.json
+npm run cv -- europass-export lateralis --out=europass.xml
+
+# PDF Security & Encryption CLI
+npm run cv -- encrypt-pdf resume.pdf --password="SecretPassword" --out=secure.pdf
 
 # Export JSON backup
 npm run cv -- export lateralis --out=backup.json
@@ -144,6 +157,9 @@ npm run cv -- export lateralis --out=backup.json
 - **Exact A4 Dimensions**: Strictly locked to standard A4 at 96 DPI: **`794px × 1123px`** (`210mm × 297mm`).
 - **Interactive Hyperlinks**: Scans all `<a>` tags in the DOM, translates positions into millimeter page coordinates, and embeds native PDF link annotations using `jsPDF.link(x, y, w, h, { url })`.
 - **Smart Page Break Detection**: Evaluates child bounding boxes (`data-page-break-avoid="true"`) to break cleanly between blocks instead of slicing through text.
+- **Forced Page Breaks**: Honors `pageBreakBefore: true` on marked sections and syncs bidirectionally with LaTeX `\newpage`.
+- **Multi-Page Application Packages**: Generates cohesive PDF packages combining the Cover Letter (Page 1) and CV (Pages 2+) with mapped page offset links.
+- **Dynamic Auto-Fit Engine**: Automatically recalibrates zoom scale on window resize and mobile orientation change without horizontal scrollbars.
 - **Density Controls**: Supports `compact`, `normal`, and `spacious` font and spacing presets.
 
 ---
@@ -152,4 +168,5 @@ npm run cv -- export lateralis --out=backup.json
 
 - **Frequent Iterative Commits**: Make atomic git commits at every convenient iteration (e.g. after completing a refactor step, fixing an accessibility issue, adding new translation catalogs, or validating a feature). Never leave accumulated work uncommitted across session turns.
 - **Commit Format**: Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`).
-- **Verification Before Commit**: Always run `npm run build` and `npm run test:e2e` to ensure 0 TypeScript or runtime regressions.
+- **Verification Before Commit**: Always run `npm run lint`, `npm run build` and `npm run test:e2e` (plus relevant specialized test suites like `npm run test:letter`) to ensure 0 TypeScript or runtime regressions.
+

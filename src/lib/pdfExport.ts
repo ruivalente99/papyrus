@@ -477,3 +477,5 @@ export async function exportApplicationPackagePdf(
   triggerDownload(pdfBlob, filename);
 }
 
+export { exportToSvg, exportCVToSvg } from "./svgExport";
+

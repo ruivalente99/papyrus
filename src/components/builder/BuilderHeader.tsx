@@ -26,7 +26,6 @@ import {
   Command,
   History,
   Clock,
-  Download,
   GitCompare,
   Target,
   FileText,
@@ -34,6 +33,7 @@ import {
   ShieldCheck,
   Briefcase,
   Moon,
+  Wrench,
 } from "lucide-react";
 import { ProfileSwitcherDropdown } from "@/components/profile/ProfileSwitcherDropdown";
 import type { CVProfileMeta } from "@/types/profile";
@@ -55,6 +55,7 @@ interface Props {
   onExportJson: () => void;
   onExportJsonResume?: (lang?: SupportedLanguage) => void;
   onExportEuropassXml?: (lang?: SupportedLanguage) => void;
+  onExportSvg?: () => void;
   onImportAnyResume?: (content: string, defaultLang?: SupportedLanguage) => { success: boolean; format?: string; error?: string };
   activeDocTab?: "cv" | "cover-letter";
   onSelectDocTab?: (tab: "cv" | "cover-letter") => void;
@@ -96,6 +97,7 @@ export function BuilderHeader({
   onExportJson,
   onExportJsonResume,
   onExportEuropassXml,
+  onExportSvg,
   onImportAnyResume,
   activeDocTab = "cv",
   onSelectDocTab,
@@ -126,6 +128,7 @@ export function BuilderHeader({
   const handleAddCvLang = onAddCvLanguage || onAddLanguage || (() => {});
 
   const [showPresets, setShowPresets] = useState(false);
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [showLinterModal, setShowLinterModal] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -205,7 +208,7 @@ export function BuilderHeader({
   };
 
   return (
-    <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/80 dark:bg-[#161b22]/95 backdrop-blur-md px-2 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors max-w-full overflow-hidden sm:overflow-visible">
+    <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/80 dark:bg-[#161b22]/95 backdrop-blur-md px-2 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors max-w-full overflow-visible">
       {/* Brand: Minimalist Logo + lowercase papyrus */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <Link
@@ -373,27 +376,18 @@ export function BuilderHeader({
         )}
       </div>
 
-      {/* Center Controls: CV Language, UI Language / Nationality, Theme Selector, Linter Badge */}
+      {/* Center Controls: Unified Language Switcher, Theme Selector, Linter Badge */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0 flex-nowrap">
-        {/* CV Document Content Language */}
+        {/* Unified Language Switcher (Document Content & UI Language) */}
         <LanguageSwitcher
-          variant="cv"
+          variant="unified"
           activeLang={currentCvLang}
           uiLang={currentUiLang}
           availableLanguages={cv.availableLanguages}
           onSwitchLanguage={handleSwitchCvLang}
+          onSwitchUiLang={handleSwitchUiLang}
           onAddLanguage={handleAddCvLang}
         />
-
-        {/* App UI Language & Nationality (Desktop / Tablet) */}
-        <div className="hidden sm:flex items-center">
-          <LanguageSwitcher
-            variant="ui"
-            activeLang={currentUiLang}
-            uiLang={currentUiLang}
-            onSwitchLanguage={handleSwitchUiLang}
-          />
-        </div>
 
         {/* Theme Selector (Desktop / Tablet) */}
         <div className="hidden sm:flex items-center">
@@ -409,59 +403,8 @@ export function BuilderHeader({
         </div>
       </div>
 
-      {/* Actions: Presets, TeX, JSON */}
-      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-        {/* Guide / Tutorial Link */}
-        <Link
-          href="/guide"
-          title={tr("builder.header.guideTitle")}
-          aria-label={tr("builder.header.guideTitle")}
-          className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
-        >
-          <BookOpen size={13} />
-          <span className="hidden md:inline">{tr("builder.header.guide")}</span>
-        </Link>
-
-
-        {/* Visual CV Comparator Button */}
-        {onOpenComparator && (
-          <button
-            type="button"
-            onClick={onOpenComparator}
-            title={tr("builder.header.compareTitle")}
-            aria-label={tr("builder.header.compareTitle")}
-            className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-indigo-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
-          >
-            <GitCompare size={13} />
-            <span className="hidden md:inline">{tr("builder.header.compareCV")}</span>
-          </button>
-        )}
-
-        {/* ATS Job Vacancy Matcher Button */}
-        {onOpenJobMatcher && (
-          <button
-            type="button"
-            onClick={onOpenJobMatcher}
-            title={tr("builder.header.jobMatcherTitle")}
-            aria-label={tr("builder.header.jobMatcherTitle")}
-            className="hidden sm:flex items-center justify-center gap-1 text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-amber-500/20 transition-all shadow-2xs shrink-0 active:scale-95 min-w-[28px] min-h-[28px]"
-          >
-            <Target size={13} />
-            <span className="hidden md:inline">{tr("builder.header.jobMatcher")}</span>
-          </button>
-        )}
-
-        {/* Setup / Home screen button (Desktop / Tablet only) */}
-        {onOpenSetup && (
-          <button
-            onClick={onOpenSetup}
-            title={tr("builder.header.newDoc")}
-            className="hidden sm:flex items-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-800 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs"
-          >
-            <Plus size={13} className="text-amber-700 dark:text-amber-400" />
-            <span className="hidden md:inline">{tr("builder.header.newDoc")}</span>
-          </button>
-        )}
+      {/* Actions: Presets (Modelos), Ferramentas (Tools), Exportar */}
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
 
         {/* Presets dropdown */}
         <div className="relative">
@@ -477,7 +420,7 @@ export function BuilderHeader({
           </button>
 
           {showPresets && (
-            <div className="absolute right-0 mt-1.5 w-64 sm:w-60 max-w-[90vw] bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-2 z-50 animate-in fade-in duration-100 max-h-[85vh] overflow-y-auto">
+            <div className="absolute right-0 mt-1.5 w-64 sm:w-60 max-w-[calc(100vw-1rem)] bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-2 z-50 animate-in fade-in duration-100 max-h-[85vh] overflow-y-auto">
               {/* Mobile Preferences & Quality Audit Score */}
               <div className="sm:hidden space-y-1.5 mb-2 pb-2 border-b border-stone-150 dark:border-[#363d47]">
                 {/* Quality Audit Score Banner */}
@@ -653,6 +596,19 @@ export function BuilderHeader({
                     <span>{tr("builder.header.exportEuropassXml")}</span>
                   </button>
                 )}
+                {onExportSvg && (
+                  <button
+                    onClick={() => {
+                      onExportSvg();
+                      setShowPresets(false);
+                      showToast(tr("builder.header.svgDownloaded"), "success");
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
+                  >
+                    <Code2 size={13} className="text-violet-600 dark:text-violet-400" />
+                    <span>{tr("builder.header.exportSvg")}</span>
+                  </button>
+                )}
                 {onExportCoverLetterPdf && (
                   <button
                     onClick={() => {
@@ -721,27 +677,7 @@ export function BuilderHeader({
           )}
         </div>
 
-        {/* Direct TeX Download Button (Desktop / Tablet) */}
-        <button
-          type="button"
-          onClick={handleDownloadTex}
-          title={tr("builder.header.downloadTex")}
-          aria-label={tr("builder.header.downloadTex")}
-          className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 hover:text-amber-950 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95"
-        >
-          <Download size={13} className="text-amber-700 dark:text-amber-400" />
-          <span className="hidden lg:inline">.tex</span>
-        </button>
-
-        {/* Import Document (JSON, XML, TeX) (Desktop / Tablet) */}
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          title={tr("common.actions.import")}
-          aria-label={tr("a11y.actions.importJson")}
-          className="hidden sm:flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
-        >
-          <FileUp size={13} />
-        </button>
+        {/* Hidden File Input for Import */}
         <input
           ref={fileInputRef}
           type="file"
@@ -751,15 +687,152 @@ export function BuilderHeader({
           className="hidden"
         />
 
-        {/* Export Dropdown Menu (Desktop / Tablet) */}
+        {/* Tools Dropdown Menu (Ferramentas) */}
         <div className="relative hidden sm:block">
           <button
+            type="button"
+            onClick={() => setShowToolsMenu(!showToolsMenu)}
+            aria-label={currentUiLang === "pt" ? "Ferramentas e Utilidades" : "Tools & Utilities"}
+            title={currentUiLang === "pt" ? "Ferramentas" : "Tools"}
+            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs shrink-0 min-h-[28px]"
+          >
+            <Wrench size={13} className="text-amber-600 dark:text-amber-400" />
+            <span className="hidden md:inline">{currentUiLang === "pt" ? "Ferramentas" : "Tools"}</span>
+            <ChevronDown size={11} className={`text-stone-400 transition-transform ${showToolsMenu ? "rotate-180" : ""}`} />
+          </button>
+
+          {showToolsMenu && (
+            <div
+              className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100"
+              onMouseLeave={() => setShowToolsMenu(false)}
+            >
+              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
+                {currentUiLang === "pt" ? "Produtividade & Análise" : "Productivity & Analysis"}
+              </p>
+
+              {onOpenJobMatcher && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenJobMatcher();
+                    setShowToolsMenu(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+                >
+                  <Target size={14} className="text-amber-600 dark:text-amber-400 shrink-0" />
+                  <span>{tr("builder.header.jobMatcher")}</span>
+                </button>
+              )}
+
+              {onOpenComparator && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenComparator();
+                    setShowToolsMenu(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+                >
+                  <GitCompare size={14} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
+                  <span>{tr("builder.header.compareCV")}</span>
+                </button>
+              )}
+
+              {onOpenPdfSecurity && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenPdfSecurity();
+                    setShowToolsMenu(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+                >
+                  <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <span>{tr("pdfSecurity.modalTitle")}</span>
+                </button>
+              )}
+
+              <Link
+                href="/guide"
+                onClick={() => setShowToolsMenu(false)}
+                className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+              >
+                <BookOpen size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                <span>{tr("builder.header.guide")}</span>
+              </Link>
+
+              <div className="border-t border-stone-150 dark:border-[#363d47] my-1 pt-1" />
+
+              {onOpenSetup && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenSetup();
+                    setShowToolsMenu(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+                >
+                  <Plus size={14} className="text-amber-700 dark:text-amber-400 shrink-0" />
+                  <span>{tr("builder.header.newDoc")}</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  fileInputRef.current?.click();
+                  setShowToolsMenu(false);
+                }}
+                className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+              >
+                <FileUp size={14} className="text-stone-600 dark:text-[#c9d1d9] shrink-0" />
+                <span>{tr("common.actions.import")}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  handleDownloadTex();
+                  setShowToolsMenu(false);
+                }}
+                className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
+              >
+                <Code2 size={14} className="text-amber-700 dark:text-amber-400 shrink-0" />
+                <span>{tr("builder.header.downloadTex")}</span>
+              </button>
+
+              {onOpenCommandPalette && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenCommandPalette();
+                    setShowToolsMenu(false);
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between font-medium text-stone-800 dark:text-[#f0f3f6] border-t border-stone-150 dark:border-[#363d47] mt-1 pt-1.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <Command size={14} className="text-stone-500 shrink-0" />
+                    <span>{tr("common.shortcuts.commandPalette")}</span>
+                  </div>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 bg-stone-100 dark:bg-[#0d1117] rounded-sm text-stone-500">⌘K</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Primary Export Dropdown Menu */}
+        <div className="relative">
+          <button
+            type="button"
             onClick={() => setShowExportMenu(!showExportMenu)}
             title={tr("common.actions.export")}
             aria-label={tr("common.actions.export")}
-            className="flex p-1.5 text-stone-600 dark:text-[#c9d1d9] hover:text-stone-900 dark:hover:text-[#f0f3f6] bg-white dark:bg-[#21262d] hover:bg-stone-50 dark:hover:bg-[#30363d] border border-stone-200 dark:border-[#363d47] rounded-full transition-all shadow-2xs min-w-[28px] min-h-[28px] items-center justify-center"
+            className="flex items-center gap-1.5 text-xs font-bold text-stone-800 dark:text-[#f0f3f6] hover:text-stone-950 bg-amber-500/15 hover:bg-amber-500/25 dark:bg-amber-500/20 dark:hover:bg-amber-500/30 border border-amber-400/50 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95 shrink-0"
           >
-            <FileDown size={13} />
+            <FileDown size={13} className="text-amber-700 dark:text-amber-400" />
+            <span className="hidden sm:inline">{tr("common.actions.export")}</span>
+            <ChevronDown size={11} className={`text-stone-500 transition-transform hidden sm:inline ${showExportMenu ? "rotate-180" : ""}`} />
           </button>
 
           {showExportMenu && (
@@ -801,6 +874,19 @@ export function BuilderHeader({
                 >
                   <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.exportEuropassXml")}</span>
                   <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">.xml</span>
+                </button>
+              )}
+              {onExportSvg && (
+                <button
+                  onClick={() => {
+                    onExportSvg();
+                    setShowExportMenu(false);
+                    showToast(tr("builder.header.svgDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.header.exportSvg")}</span>
+                  <span className="text-[10px] font-mono text-violet-600 dark:text-violet-400 font-bold">.svg</span>
                 </button>
               )}
               <button
