@@ -287,7 +287,10 @@ export default function BuilderPage() {
 
   return (
     <I18nProvider lang={uiLang} onLanguageChange={setUiLang}>
-      <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300">
+      <div
+        style={{ height: "100dvh", maxHeight: "100dvh" }}
+        className="flex flex-col h-screen max-w-full overflow-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300"
+      >
         {/* Top Application Header */}
         <BuilderHeader
           cv={cv}
@@ -342,17 +345,17 @@ export default function BuilderPage() {
               "--split-inv": `${100 - splitRatio}%`,
             } as React.CSSProperties
           }
-          className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-x-hidden ${
+          className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-hidden ${
             isDraggingSplit ? "select-none cursor-col-resize" : ""
           }`}
         >
           {/* Left Column: Form / Code Editor Pane */}
           <div
-            className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-[#161b22] border-r border-stone-200/70 dark:border-[#30363d] overflow-y-auto h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
-              mobileTab === "edit" ? "block" : "hidden md:block"
+            className={`w-full md:w-[var(--split-ratio)] bg-stone-50/50 dark:bg-[#161b22] border-r border-stone-200/70 dark:border-[#30363d] overflow-y-auto flex-1 md:flex-initial h-full md:max-h-[calc(100vh-53px)] p-3 sm:p-5 builder-form-pane overscroll-contain transition-colors ${
+              mobileTab === "edit" ? "flex flex-col" : "hidden md:block"
             }`}
           >
-            <div className="max-w-2xl mx-auto space-y-3.5 pb-28 sm:pb-8">
+            <div className="max-w-2xl mx-auto w-full space-y-3 pb-24 md:pb-8">
               {/* Left Column Header Bar: Mode Switcher & Counter */}
               <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
@@ -431,7 +434,7 @@ export default function BuilderPage() {
                 onAddSection={addSection}
               />
             ) : (
-              <div className="h-[calc(100dvh-175px)] md:h-[calc(100vh-145px)]">
+              <div className="flex-1 min-h-[350px] md:h-[calc(100vh-145px)]">
                 <CodeEditorPane
                   cv={cv}
                   lang={cvLang}
@@ -486,8 +489,8 @@ export default function BuilderPage() {
 
         {/* Right Column: Live A4 Synchronized Preview Pane */}
         <div
-          className={`w-full md:w-[var(--split-inv)] md:sticky md:top-[53px] h-[calc(100dvh-50px-58px)] md:h-[calc(100vh-53px)] overflow-hidden builder-preview-pane ${
-            mobileTab === "preview" ? "block" : "hidden md:block"
+          className={`w-full md:w-[var(--split-inv)] md:sticky md:top-[53px] flex-1 md:flex-initial h-full md:h-[calc(100vh-53px)] overflow-hidden builder-preview-pane ${
+            mobileTab === "preview" ? "flex flex-col" : "hidden md:block"
           }`}
         >
           <CVPreviewContainer
@@ -506,35 +509,35 @@ export default function BuilderPage() {
         </div>
       </main>
 
-      {/* Mobile Docked Bottom Bar - Clean Docked Navigation */}
+      {/* Mobile Docked Bottom Bar - Clean Native Docked Navigation */}
       <nav
         aria-label={translate("a11y.mobileNavigation", uiLang)}
-        className="fixed md:hidden bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl border-t border-stone-200/90 dark:border-[#363d47] px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] shadow-lg flex items-center justify-center"
+        className="shrink-0 md:hidden z-30 bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl border-t border-stone-200/90 dark:border-[#363d47] px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] shadow-lg flex items-center justify-center"
       >
-        <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] p-1 rounded-full border border-stone-200/80 dark:border-[#30363d] w-full max-w-[320px]">
+        <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] p-1 rounded-full border border-stone-200/80 dark:border-[#30363d] w-full max-w-[340px]">
           <button
             type="button"
             onClick={() => setMobileTab("edit")}
-            className={`w-1/2 py-2 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-2 active:scale-95 ${
+            className={`w-1/2 py-2.5 min-h-[42px] text-xs sm:text-sm font-bold rounded-full transition-all flex items-center justify-center gap-1.5 whitespace-nowrap active:scale-95 ${
               mobileTab === "edit"
                 ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200/80 dark:border-[#484f58]"
                 : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
-            <Pencil size={14} className={mobileTab === "edit" ? "text-amber-600 dark:text-amber-400" : ""} />
-            <span>{translate("common.tabs.editor", uiLang)}</span>
+            <Pencil size={14} className={mobileTab === "edit" ? "text-amber-600 dark:text-amber-400 shrink-0" : "shrink-0"} />
+            <span className="truncate">{translate("common.tabs.editor", uiLang)}</span>
           </button>
           <button
             type="button"
             onClick={() => setMobileTab("preview")}
-            className={`w-1/2 py-2 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-2 active:scale-95 ${
+            className={`w-1/2 py-2.5 min-h-[42px] text-xs sm:text-sm font-bold rounded-full transition-all flex items-center justify-center gap-1.5 whitespace-nowrap active:scale-95 ${
               mobileTab === "preview"
                 ? "bg-white dark:bg-[#21262d] text-amber-700 dark:text-amber-400 shadow-xs border border-stone-200/80 dark:border-[#484f58]"
                 : "text-stone-500 dark:text-[#8b949e] hover:text-stone-900 dark:hover:text-[#f0f3f6]"
             }`}
           >
-            <Eye size={14} className={mobileTab === "preview" ? "text-amber-600 dark:text-amber-400" : ""} />
-            <span>{translate("common.tabs.preview", uiLang)}</span>
+            <Eye size={14} className={mobileTab === "preview" ? "text-amber-600 dark:text-amber-400 shrink-0" : "shrink-0"} />
+            <span className="truncate">{translate("common.tabs.preview", uiLang)}</span>
           </button>
         </div>
       </nav>
