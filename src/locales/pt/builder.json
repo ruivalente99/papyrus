@@ -463,6 +463,7 @@
     "importFileAria": "Carregar documento de CV (JSON, XML, TeX)",
     "newDoc": "Novo / Iniciar",
     "templates": "Modelos",
+    "qualityAudit": "Auditoria de Qualidade",
     "jsonBackup": "Cópia JSON",
     "exportJsonResume": "Exportar JSON Resume",
     "exportEuropassXml": "Exportar Europass XML",

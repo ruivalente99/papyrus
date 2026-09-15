@@ -464,6 +464,7 @@
     "importFileAria": "Upload CV document (JSON, XML, TeX)",
     "newDoc": "New / Setup",
     "templates": "Templates",
+    "qualityAudit": "Quality Audit",
     "jsonBackup": "JSON Backup",
     "exportJsonResume": "Export JSON Resume",
     "exportEuropassXml": "Export Europass XML",
