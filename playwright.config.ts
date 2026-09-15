@@ -26,7 +26,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_TEST_BASE_URL
     ? undefined
     : {
-        command: `npm run start -- -p ${PORT}`,
+        command: `bun run start -- -p ${PORT}`,
         url: `http://127.0.0.1:${PORT}`,
         reuseExistingServer: !process.env.CI,
         timeout: 30000,
