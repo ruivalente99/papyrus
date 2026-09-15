@@ -32,7 +32,6 @@ import {
   Mail,
   ShieldCheck,
   Briefcase,
-  Moon,
   Wrench,
 } from "lucide-react";
 import { ProfileSwitcherDropdown } from "@/components/profile/ProfileSwitcherDropdown";
@@ -127,9 +126,11 @@ export function BuilderHeader({
   const handleSwitchCvLang = onSwitchCvLang || onSwitchLanguage || (() => {});
   const handleAddCvLang = onAddCvLanguage || onAddLanguage || (() => {});
 
-  const [showPresets, setShowPresets] = useState(false);
-  const [showToolsMenu, setShowToolsMenu] = useState(false);
-  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<"presets" | "tools" | "export" | null>(null);
+  const toggleMenu = (menu: "presets" | "tools" | "export") => {
+    setActiveMenu((prev) => (prev === menu ? null : menu));
+  };
+  const closeMenu = () => setActiveMenu(null);
   const [showLinterModal, setShowLinterModal] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -209,6 +210,15 @@ export function BuilderHeader({
 
   return (
     <header className="border-b border-stone-200/70 dark:border-[#30363d] bg-white/80 dark:bg-[#161b22]/95 backdrop-blur-md px-2 sm:px-5 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-2.5 sm:pb-3 flex items-center justify-between gap-1 sm:gap-2.5 sticky top-0 z-30 shadow-2xs transition-colors max-w-full overflow-visible">
+      {/* Dismiss backdrop when any dropdown menu is active */}
+      {activeMenu && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20 dark:bg-black/40 backdrop-blur-2xs animate-in fade-in duration-100"
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Brand: Minimalist Logo + lowercase papyrus */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         <Link
@@ -409,18 +419,23 @@ export function BuilderHeader({
         {/* Presets dropdown */}
         <div className="relative">
           <button
-            onClick={() => setShowPresets(!showPresets)}
+            type="button"
+            onClick={() => toggleMenu("presets")}
             aria-label={tr("builder.header.templates")}
             title={tr("builder.header.templates")}
-            className="flex items-center justify-center gap-1 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] p-1.5 sm:px-3 sm:py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs shrink-0 min-w-[28px] min-h-[28px]"
+            className={`flex items-center justify-center gap-1 text-xs font-bold transition-all shadow-2xs shrink-0 min-w-[28px] min-h-[28px] p-1.5 sm:px-3 sm:py-1.5 rounded-full border ${
+              activeMenu === "presets"
+                ? "bg-stone-200 dark:bg-[#30363d] text-stone-950 dark:text-[#f0f3f6] border-stone-300 dark:border-[#484f58]"
+                : "bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] border-stone-200 dark:border-[#363d47]"
+            }`}
           >
             <Layers size={13} />
             <span className="hidden md:inline">{tr("builder.header.templates")}</span>
-            <ChevronDown size={11} className="hidden sm:inline" />
+            <ChevronDown size={11} className={`hidden sm:inline transition-transform ${activeMenu === "presets" ? "rotate-180" : ""}`} />
           </button>
 
-          {showPresets && (
-            <div className="absolute right-0 mt-1.5 w-64 sm:w-60 max-w-[calc(100vw-1rem)] bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-2 z-50 animate-in fade-in duration-100 max-h-[85vh] overflow-y-auto">
+          {activeMenu === "presets" && (
+            <div className="absolute right-0 mt-1.5 w-[calc(100vw-1.5rem)] max-w-xs sm:w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-2 z-50 animate-in fade-in duration-100 max-h-[85vh] overflow-y-auto">
               {/* Mobile Preferences & Quality Audit Score */}
               <div className="sm:hidden space-y-1.5 mb-2 pb-2 border-b border-stone-150 dark:border-[#363d47]">
                 {/* Quality Audit Score Banner */}
@@ -428,7 +443,7 @@ export function BuilderHeader({
                   type="button"
                   onClick={() => {
                     setShowLinterModal(true);
-                    setShowPresets(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl bg-stone-50 dark:bg-[#161b22] hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold border border-stone-200/60 dark:border-[#30363d]"
                 >
@@ -485,7 +500,7 @@ export function BuilderHeader({
                   key={p.id}
                   onClick={() => {
                     onLoadPreset(p.id);
-                    setShowPresets(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs"
                 >
@@ -497,7 +512,7 @@ export function BuilderHeader({
               <div className="sm:hidden border-t border-stone-150 dark:border-[#363d47] my-1 pt-1 space-y-0.5">
                 <Link
                   href="/guide"
-                  onClick={() => setShowPresets(false)}
+                  onClick={closeMenu}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                 >
                   <BookOpen size={13} className="text-amber-700 dark:text-amber-400" />
@@ -508,7 +523,7 @@ export function BuilderHeader({
                   <button
                     onClick={() => {
                       onOpenComparator();
-                      setShowPresets(false);
+                      closeMenu();
                     }}
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
@@ -520,7 +535,7 @@ export function BuilderHeader({
                   <button
                     onClick={() => {
                       onOpenJobMatcher();
-                      setShowPresets(false);
+                      closeMenu();
                     }}
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
@@ -532,7 +547,7 @@ export function BuilderHeader({
                   <button
                     onClick={() => {
                       onOpenSetup();
-                      setShowPresets(false);
+                      closeMenu();
                     }}
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
@@ -540,119 +555,11 @@ export function BuilderHeader({
                     <span>{tr("builder.header.newDoc")}</span>
                   </button>
                 )}
-                <button
-                  onClick={() => {
-                    handleDownloadTex();
-                    setShowPresets(false);
-                  }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                >
-                  <Code2 size={13} className="text-amber-700 dark:text-amber-400" />
-                  <span>{tr("builder.header.downloadTex")}</span>
-                </button>
-                <button
-                  onClick={() => {
-                    fileInputRef.current?.click();
-                    setShowPresets(false);
-                  }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                >
-                  <FileUp size={13} />
-                  <span>{tr("common.actions.import")}</span>
-                </button>
-                <button
-                  onClick={() => {
-                    onExportJson();
-                    setShowPresets(false);
-                  }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                >
-                  <FileDown size={13} />
-                  <span>{tr("builder.header.jsonBackup")}</span>
-                </button>
-                {onExportJsonResume && (
-                  <button
-                    onClick={() => {
-                      onExportJsonResume(currentCvLang);
-                      setShowPresets(false);
-                      showToast(tr("builder.header.jsonResumeDownloaded"), "success");
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                  >
-                    <FileDown size={13} className="text-amber-600 dark:text-amber-400" />
-                    <span>{tr("builder.header.exportJsonResume")}</span>
-                  </button>
-                )}
-                {onExportEuropassXml && (
-                  <button
-                    onClick={() => {
-                      onExportEuropassXml(currentCvLang);
-                      setShowPresets(false);
-                      showToast(tr("builder.header.europassDownloaded"), "success");
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                  >
-                    <FileDown size={13} className="text-blue-600 dark:text-blue-400" />
-                    <span>{tr("builder.header.exportEuropassXml")}</span>
-                  </button>
-                )}
-                {onExportSvg && (
-                  <button
-                    onClick={() => {
-                      onExportSvg();
-                      setShowPresets(false);
-                      showToast(tr("builder.header.svgDownloaded"), "success");
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                  >
-                    <Code2 size={13} className="text-violet-600 dark:text-violet-400" />
-                    <span>{tr("builder.header.exportSvg")}</span>
-                  </button>
-                )}
-                {onExportCoverLetterPdf && (
-                  <button
-                    onClick={() => {
-                      onExportCoverLetterPdf();
-                      setShowPresets(false);
-                      showToast(tr("builder.coverLetter.letterDownloaded"), "success");
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                  >
-                    <Mail size={13} className="text-amber-600 dark:text-amber-400" />
-                    <span>{tr("builder.coverLetter.exportPdf")}</span>
-                  </button>
-                )}
-                {onExportApplicationPackage && (
-                  <button
-                    onClick={() => {
-                      onExportApplicationPackage();
-                      setShowPresets(false);
-                      showToast(tr("builder.coverLetter.packageDownloaded"), "success");
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                  >
-                    <Layers size={13} className="text-emerald-600 dark:text-emerald-400" />
-                    <span>{tr("builder.coverLetter.exportPackage")}</span>
-                  </button>
-                )}
-                {onExportDarkPdf && (
-                  <button
-                    onClick={() => {
-                      onExportDarkPdf();
-                      setShowPresets(false);
-                      showToast(tr("builder.header.darkPdfDownloaded"), "success");
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
-                  >
-                    <Moon size={13} className="text-indigo-500 dark:text-indigo-400" />
-                    <span>{tr("builder.modals.commandPalette.commands.exportDarkPdf.title")}</span>
-                  </button>
-                )}
                 {onOpenPdfSecurity && (
                   <button
                     onClick={() => {
                       onOpenPdfSecurity();
-                      setShowPresets(false);
+                      closeMenu();
                     }}
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold border-t border-stone-200/60 dark:border-[#363d47] mt-1 pt-2"
                   >
@@ -664,7 +571,7 @@ export function BuilderHeader({
                   <button
                     onClick={() => {
                       onOpenProfileManager();
-                      setShowPresets(false);
+                      closeMenu();
                     }}
                     className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 text-stone-800 dark:text-[#f0f3f6] font-semibold"
                   >
@@ -691,20 +598,24 @@ export function BuilderHeader({
         <div className="relative hidden sm:block">
           <button
             type="button"
-            onClick={() => setShowToolsMenu(!showToolsMenu)}
+            onClick={() => toggleMenu("tools")}
             aria-label={currentUiLang === "pt" ? "Ferramentas e Utilidades" : "Tools & Utilities"}
             title={currentUiLang === "pt" ? "Ferramentas" : "Tools"}
-            className="flex items-center gap-1.5 text-xs font-bold bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] px-3 py-1.5 rounded-full border border-stone-200 dark:border-[#363d47] transition-all shadow-2xs shrink-0 min-h-[28px]"
+            className={`flex items-center gap-1.5 text-xs font-bold transition-all shadow-2xs shrink-0 min-h-[28px] px-3 py-1.5 rounded-full border ${
+              activeMenu === "tools"
+                ? "bg-stone-200 dark:bg-[#30363d] text-stone-950 dark:text-[#f0f3f6] border-stone-300 dark:border-[#484f58]"
+                : "bg-stone-100 dark:bg-[#21262d] hover:bg-stone-200 dark:hover:bg-[#30363d] text-stone-700 dark:text-[#f0f3f6] border-stone-200 dark:border-[#363d47]"
+            }`}
           >
             <Wrench size={13} className="text-amber-600 dark:text-amber-400" />
             <span className="hidden md:inline">{currentUiLang === "pt" ? "Ferramentas" : "Tools"}</span>
-            <ChevronDown size={11} className={`text-stone-400 transition-transform ${showToolsMenu ? "rotate-180" : ""}`} />
+            <ChevronDown size={11} className={`text-stone-400 transition-transform ${activeMenu === "tools" ? "rotate-180" : ""}`} />
           </button>
 
-          {showToolsMenu && (
+          {activeMenu === "tools" && (
             <div
               className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100"
-              onMouseLeave={() => setShowToolsMenu(false)}
+              onMouseLeave={closeMenu}
             >
               <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
                 {currentUiLang === "pt" ? "Produtividade & Análise" : "Productivity & Analysis"}
@@ -715,7 +626,7 @@ export function BuilderHeader({
                   type="button"
                   onClick={() => {
                     onOpenJobMatcher();
-                    setShowToolsMenu(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
                 >
@@ -729,7 +640,7 @@ export function BuilderHeader({
                   type="button"
                   onClick={() => {
                     onOpenComparator();
-                    setShowToolsMenu(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
                 >
@@ -743,7 +654,7 @@ export function BuilderHeader({
                   type="button"
                   onClick={() => {
                     onOpenPdfSecurity();
-                    setShowToolsMenu(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
                 >
@@ -754,7 +665,7 @@ export function BuilderHeader({
 
               <Link
                 href="/guide"
-                onClick={() => setShowToolsMenu(false)}
+                onClick={closeMenu}
                 className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
               >
                 <BookOpen size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
@@ -768,7 +679,7 @@ export function BuilderHeader({
                   type="button"
                   onClick={() => {
                     onOpenSetup();
-                    setShowToolsMenu(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
                 >
@@ -781,7 +692,7 @@ export function BuilderHeader({
                 type="button"
                 onClick={() => {
                   fileInputRef.current?.click();
-                  setShowToolsMenu(false);
+                  closeMenu();
                 }}
                 className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
               >
@@ -793,7 +704,7 @@ export function BuilderHeader({
                 type="button"
                 onClick={() => {
                   handleDownloadTex();
-                  setShowToolsMenu(false);
+                  closeMenu();
                 }}
                 className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center gap-2 font-medium text-stone-800 dark:text-[#f0f3f6]"
               >
@@ -806,7 +717,7 @@ export function BuilderHeader({
                   type="button"
                   onClick={() => {
                     onOpenCommandPalette();
-                    setShowToolsMenu(false);
+                    closeMenu();
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between font-medium text-stone-800 dark:text-[#f0f3f6] border-t border-stone-150 dark:border-[#363d47] mt-1 pt-1.5"
                 >
@@ -825,25 +736,30 @@ export function BuilderHeader({
         <div className="relative">
           <button
             type="button"
-            onClick={() => setShowExportMenu(!showExportMenu)}
+            onClick={() => toggleMenu("export")}
             title={tr("common.actions.export")}
             aria-label={tr("common.actions.export")}
-            className="flex items-center gap-1.5 text-xs font-bold text-stone-800 dark:text-[#f0f3f6] hover:text-stone-950 bg-amber-500/15 hover:bg-amber-500/25 dark:bg-amber-500/20 dark:hover:bg-amber-500/30 border border-amber-400/50 dark:border-amber-500/40 px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95 shrink-0"
+            className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full transition-all shadow-2xs min-h-[28px] active:scale-95 shrink-0 border ${
+              activeMenu === "export"
+                ? "bg-amber-500/25 dark:bg-amber-500/35 text-stone-950 dark:text-[#f0f3f6] border-amber-500/60 dark:border-amber-400/60"
+                : "text-stone-800 dark:text-[#f0f3f6] hover:text-stone-950 bg-amber-500/15 hover:bg-amber-500/25 dark:bg-amber-500/20 dark:hover:bg-amber-500/30 border-amber-400/50 dark:border-amber-500/40"
+            }`}
           >
             <FileDown size={13} className="text-amber-700 dark:text-amber-400" />
             <span className="hidden sm:inline">{tr("common.actions.export")}</span>
-            <ChevronDown size={11} className={`text-stone-500 transition-transform hidden sm:inline ${showExportMenu ? "rotate-180" : ""}`} />
+            <ChevronDown size={11} className={`text-stone-500 transition-transform hidden sm:inline ${activeMenu === "export" ? "rotate-180" : ""}`} />
           </button>
 
-          {showExportMenu && (
-            <div className="absolute right-0 mt-1.5 w-56 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-1.5 z-50 animate-in fade-in duration-100">
+          {activeMenu === "export" && (
+            <div className="absolute right-0 mt-1.5 w-[calc(100vw-1.5rem)] max-w-xs sm:w-60 bg-white dark:bg-[#21262d] rounded-2xl shadow-xl border border-stone-200 dark:border-[#363d47] p-2 z-50 animate-in fade-in duration-100 max-h-[85vh] overflow-y-auto">
               <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-stone-400 dark:text-[#8b949e] px-2 py-1">
                 {tr("common.actions.export")}
               </p>
               <button
+                type="button"
                 onClick={() => {
                   onExportJson();
-                  setShowExportMenu(false);
+                  closeMenu();
                 }}
                 className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
               >
@@ -852,9 +768,10 @@ export function BuilderHeader({
               </button>
               {onExportJsonResume && (
                 <button
+                  type="button"
                   onClick={() => {
                     onExportJsonResume(currentCvLang);
-                    setShowExportMenu(false);
+                    closeMenu();
                     showToast(tr("builder.header.jsonResumeDownloaded"), "success");
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
@@ -865,9 +782,10 @@ export function BuilderHeader({
               )}
               {onExportEuropassXml && (
                 <button
+                  type="button"
                   onClick={() => {
                     onExportEuropassXml(currentCvLang);
-                    setShowExportMenu(false);
+                    closeMenu();
                     showToast(tr("builder.header.europassDownloaded"), "success");
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
@@ -878,9 +796,10 @@ export function BuilderHeader({
               )}
               {onExportSvg && (
                 <button
+                  type="button"
                   onClick={() => {
                     onExportSvg();
-                    setShowExportMenu(false);
+                    closeMenu();
                     showToast(tr("builder.header.svgDownloaded"), "success");
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
@@ -890,9 +809,10 @@ export function BuilderHeader({
                 </button>
               )}
               <button
+                type="button"
                 onClick={() => {
                   handleDownloadTex();
-                  setShowExportMenu(false);
+                  closeMenu();
                 }}
                 className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
               >
@@ -901,9 +821,10 @@ export function BuilderHeader({
               </button>
               {onExportCoverLetterPdf && (
                 <button
+                  type="button"
                   onClick={() => {
                     onExportCoverLetterPdf();
-                    setShowExportMenu(false);
+                    closeMenu();
                     showToast(tr("builder.coverLetter.letterDownloaded"), "success");
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
@@ -914,9 +835,10 @@ export function BuilderHeader({
               )}
               {onExportApplicationPackage && (
                 <button
+                  type="button"
                   onClick={() => {
                     onExportApplicationPackage();
-                    setShowExportMenu(false);
+                    closeMenu();
                     showToast(tr("builder.coverLetter.packageDownloaded"), "success");
                   }}
                   className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
@@ -925,13 +847,39 @@ export function BuilderHeader({
                   <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">Package</span>
                 </button>
               )}
+              {onExportDarkPdf && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onExportDarkPdf();
+                    closeMenu();
+                    showToast(tr("builder.header.darkPdfDownloaded"), "success");
+                  }}
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
+                >
+                  <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("builder.modals.commandPalette.commands.exportDarkPdf.title")}</span>
+                  <span className="text-[10px] font-mono text-indigo-500 dark:text-indigo-400 font-bold">Dark PDF</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  fileInputRef.current?.click();
+                  closeMenu();
+                }}
+                className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between border-t border-stone-200/60 dark:border-[#363d47] mt-1 pt-2"
+              >
+                <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("common.actions.import")}</span>
+                <span className="text-[10px] font-mono text-stone-400 dark:text-[#8b949e]">JSON / TeX</span>
+              </button>
               {onOpenPdfSecurity && (
                 <button
+                  type="button"
                   onClick={() => {
                     onOpenPdfSecurity();
-                    setShowExportMenu(false);
+                    closeMenu();
                   }}
-                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between border-t border-stone-200/60 dark:border-[#363d47] mt-1 pt-2"
+                  className="w-full text-left p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-[#30363d] transition-colors text-xs flex items-center justify-between"
                 >
                   <span className="font-semibold text-stone-800 dark:text-[#f0f3f6]">{tr("pdfSecurity.modalTitle")}</span>
                   <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">PDF/UA</span>
