@@ -289,7 +289,7 @@ export default function BuilderPage() {
     <I18nProvider lang={uiLang} onLanguageChange={setUiLang}>
       <div
         style={{ height: "100dvh", maxHeight: "100dvh" }}
-        className="flex flex-col h-screen max-w-full overflow-hidden charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300"
+        className="flex flex-col h-screen max-w-full overflow-hidden print:h-auto print:max-h-none print:overflow-visible charm-bg-dynamic text-stone-900 dark:text-stone-100 transition-colors duration-300"
       >
         {/* Top Application Header */}
         <BuilderHeader
@@ -345,7 +345,7 @@ export default function BuilderPage() {
               "--split-inv": `${100 - splitRatio}%`,
             } as React.CSSProperties
           }
-          className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-hidden ${
+          className={`flex flex-col md:flex-row flex-1 min-h-0 overflow-hidden print:h-auto print:max-h-none print:overflow-visible print:block ${
             isDraggingSplit ? "select-none cursor-col-resize" : ""
           }`}
         >
@@ -355,7 +355,7 @@ export default function BuilderPage() {
               mobileTab === "edit" ? "flex flex-col" : "hidden md:block"
             }`}
           >
-            <div className="max-w-2xl mx-auto w-full space-y-3 pb-24 md:pb-8">
+            <div className="max-w-2xl mx-auto w-full space-y-3 pb-28 md:pb-8 flex-1">
               {/* Left Column Header Bar: Mode Switcher & Counter */}
               <div className="flex items-center justify-between px-1 py-0.5 flex-wrap gap-2">
                 <div className="flex items-center gap-2">

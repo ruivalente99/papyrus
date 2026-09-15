@@ -212,6 +212,18 @@
     display: none !important;
   }
 
+  /* Reset fixed app shell to allow multi-page print layout */
+  html,
+  body,
+  #__next,
+  main#main-content,
+  div:has(> main#main-content) {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
   .builder-preview-pane {
     width: 100% !important;
     height: auto !important;
