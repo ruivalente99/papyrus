@@ -10,25 +10,32 @@ jobs:
   verify:
     name: Verify & Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
-          cache: 'npm'
+          bun-version: latest
+
+      - name: Authenticate to GitHub Packages
+        run: |
+          echo "@ruivalente99:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
       - name: Install Dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Run Linters (Code Quality & Unused Variables)
-        run: npm run lint
+        run: bun run lint
 
       - name: Run E2E Verification & Schemas
-        run: npm run test:e2e
+        run: bun run test:e2e
 
       - name: Type Check & Production Build
-        run: npm run build
+        run: bun run build

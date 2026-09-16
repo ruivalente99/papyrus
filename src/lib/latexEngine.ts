@@ -14,24 +14,9 @@ import type {
 import { t, tArray } from "@/lib/i18n";
 import { generateId } from "@/lib/utils";
 import { getLatexFontPackage } from "@/lib/typography";
+import { escapeLatex } from "@ruivalente99/bibliotheca/export";
 
-/**
- * Escapes LaTeX special characters in plain text strings
- */
-export function escapeLatex(text: string | undefined | null): string {
-  if (!text) return "";
-  return text
-    .replace(/\\/g, "\\textbackslash{}")
-    .replace(/&/g, "\\&")
-    .replace(/%/g, "\\%")
-    .replace(/\$/g, "\\$")
-    .replace(/#/g, "\\#")
-    .replace(/_/g, "\\_")
-    .replace(/\{/g, "\\{")
-    .replace(/\}/g, "\\}")
-    .replace(/~/g, "\\textasciitilde{}")
-    .replace(/\^/g, "\\textasciicircum{}");
-}
+export { escapeLatex };
 
 /**
  * Generates clean, compilable LaTeX code from a CVDocument
