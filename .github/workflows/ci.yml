@@ -10,6 +10,9 @@ jobs:
   verify:
     name: Verify & Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Checkout Code
@@ -19,6 +22,11 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+
+      - name: Authenticate to GitHub Packages
+        run: |
+          echo "@ruivalente99:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
 
       - name: Install Dependencies
         run: bun install --frozen-lockfile
