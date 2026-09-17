@@ -1,6 +1,7 @@
 {
   "mainContent": "Editor e pré-visualização do CV",
   "splitResizer": "Ajustar divisão entre editor e pré-visualização",
+  "mobileNavigation": "Seletor de modo de navegação mobile",
   "helpInfo": "Informação de ajuda: {{content}}",
   "sectionCard": {
     "moveUp": "Mover secção {{name}} para cima",

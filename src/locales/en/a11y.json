@@ -1,6 +1,7 @@
 {
   "mainContent": "CV Editor and Preview",
   "splitResizer": "Adjust split between editor and preview",
+  "mobileNavigation": "Mobile navigation mode selector",
   "helpInfo": "Help information: {{content}}",
   "sectionCard": {
     "moveUp": "Move section {{name}} up",

@@ -298,7 +298,8 @@
         "exportPdf": {
           "title": "Exportar PDF Vetorial A4",
           "subtitle": "Documento oficial pronto a entregar (210×297mm)",
-          "keywords": "pdf download export imprimir vector"
+          "keywords": "pdf download export imprimir vector",
+          "shortcut": "PDF"
         },
         "exportPng": {
           "title": "Exportar Imagem PNG em Alta Resolução",
@@ -434,7 +435,9 @@
       "rotate90": "Rodar 90°",
       "cancel": "Cancelar",
       "apply": "Aplicar Foto",
-      "closeAria": "Fechar modal de recorte de foto"
+      "close": "Fechar",
+      "closeAria": "Fechar modal de recorte de foto",
+      "imgAlt": "Imagem para recorte"
     }
   },
   "header": {
@@ -485,6 +488,21 @@
     "exportPackage": "Exportar Candidatura Completa (Carta + CV)",
     "packageDownloaded": "Candidatura completa (.pdf) gerada com sucesso!",
     "letterDownloaded": "Carta de apresentação (.pdf) exportada com sucesso!"
+  },
+  "cropModal": {
+    "title": "Ajustar e Recortar Foto",
+    "subtitle": "Arrasta para centrar, faz zoom ou roda",
+    "dragHint": "Arrasta para posicionar",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Reduzir zoom",
+    "zoomAria": "Nível de zoom da foto",
+    "orientation": "Orientação:",
+    "rotate90": "Rodar 90°",
+    "cancel": "Cancelar",
+    "apply": "Aplicar Foto",
+    "close": "Fechar",
+    "closeAria": "Fechar modal de recorte de foto",
+    "imgAlt": "Imagem para recorte"
   },
   "iconPicker": {
     "title": "Escolher Ícone",

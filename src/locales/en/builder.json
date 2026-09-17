@@ -435,7 +435,9 @@
       "rotate90": "Rotate 90°",
       "cancel": "Cancel",
       "apply": "Apply Photo",
-      "closeAria": "Close photo crop modal"
+      "close": "Close",
+      "closeAria": "Close photo crop modal",
+      "imgAlt": "Crop target"
     }
   },
   "header": {
@@ -486,6 +488,21 @@
     "exportPackage": "Export Application Packet (Letter + CV)",
     "packageDownloaded": "Application package (.pdf) generated successfully!",
     "letterDownloaded": "Cover letter (.pdf) exported successfully!"
+  },
+  "cropModal": {
+    "title": "Crop & Rotate Photo",
+    "subtitle": "Drag to center, zoom or rotate",
+    "dragHint": "Drag to position",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomAria": "Photo zoom level",
+    "orientation": "Orientation:",
+    "rotate90": "Rotate 90°",
+    "cancel": "Cancel",
+    "apply": "Apply Photo",
+    "close": "Close",
+    "closeAria": "Close photo crop modal",
+    "imgAlt": "Crop target"
   },
   "iconPicker": {
     "title": "Choose Icon",
