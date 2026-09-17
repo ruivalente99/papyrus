@@ -10,6 +10,10 @@
     "densityTooltip": "Spacing density",
     "decreaseFont": "Decrease spacing density",
     "increaseFont": "Increase spacing density",
+    "textSize": "Text Size",
+    "decreaseTextSize": "Decrease text size",
+    "increaseTextSize": "Increase text size",
+    "textSizeSlider": "Text size slider",
     "style": "Style",
     "print": "Print",
     "pdf": "PDF",
@@ -89,5 +93,19 @@
     "compact": "More content",
     "normal": "Balanced",
     "spacious": "Breathing room"
+  },
+  "textSizeOptions": {
+    "xs": "Extra Small",
+    "sm": "Small",
+    "md": "Medium",
+    "lg": "Large",
+    "xl": "Extra Large"
+  },
+  "textSizeDescriptions": {
+    "xs": "88% text scale",
+    "sm": "94% text scale",
+    "md": "100% default scale",
+    "lg": "106% text scale",
+    "xl": "112% text scale"
   }
 }

@@ -100,7 +100,8 @@ export function CoverLetterPreview({
     <div
       data-testid="cover-letter-preview"
       id="cover-letter-canvas"
-      className="bg-white text-stone-900 shadow-2xl relative select-text transition-all duration-200 print:shadow-none print:m-0"
+      data-text-scale={cv.theme.textScale || "md"}
+      className="cv-sheet bg-white text-stone-900 shadow-2xl relative select-text transition-all duration-200 print:shadow-none print:m-0"
       style={{
         width: 794,
         minHeight: Math.max(1123, pageCount * 1123),

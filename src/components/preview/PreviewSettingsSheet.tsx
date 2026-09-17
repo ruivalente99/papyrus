@@ -15,7 +15,7 @@ import {
   Type,
 } from "lucide-react";
 import { FONT_CATALOG, type FontCategory, type FontFamilyId } from "@/lib/typography";
-import { FontSizeSelector } from "@/components/common/FontSizeSelector";
+import { DensitySelector, TextSizeSelector, type TextScaleId } from "@/components/common/FontSizeSelector";
 
 export const ACCENT_COLORS = [
   { name: "Teal (Lateralis)", hex: "#005555" },
@@ -33,6 +33,7 @@ interface Props {
   lang: SupportedLanguage;
   currentTemplate: TemplateId;
   currentDensity?: "compact" | "normal" | "spacious";
+  currentTextScale?: TextScaleId;
   currentColor?: string;
   currentFont?: FontFamilyId;
   onSetTemplate: (template: TemplateId) => void;
@@ -45,6 +46,7 @@ export function PreviewSettingsSheet({
   lang,
   currentTemplate,
   currentDensity = "normal",
+  currentTextScale = "md",
   currentColor = "#005555",
   currentFont = "inter",
   onSetTemplate,
@@ -189,7 +191,7 @@ export function PreviewSettingsSheet({
               </span>
             </div>
 
-            <FontSizeSelector
+            <DensitySelector
               value={currentDensity}
               onChange={(fontSize) => onUpdateTheme({ fontSize })}
               lang={lang}
@@ -199,6 +201,32 @@ export function PreviewSettingsSheet({
               classNames={{
                 container: "w-full grid grid-cols-3 p-1.5 rounded-2xl",
                 option: "py-2 px-2 text-xs flex-col items-center justify-center rounded-xl",
+              }}
+            />
+          </div>
+
+          {/* 3. Text Size / Font Scale Selection */}
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500 dark:text-[#8b949e]">
+                {tr("preview.toolbar.textSize")}
+              </span>
+              <span className="text-[11px] font-mono text-stone-400 dark:text-[#8b949e]">
+                {tr(`preview.textSizeDescriptions.${currentTextScale}` as any)}
+              </span>
+            </div>
+
+            <TextSizeSelector
+              value={currentTextScale}
+              onChange={(textScale) => onUpdateTheme({ textScale })}
+              lang={lang}
+              size="md"
+              variant="slider"
+              showIcon
+              className="w-full"
+              classNames={{
+                container: "w-full p-2.5 rounded-2xl justify-between",
+                slider: "flex-1",
               }}
             />
           </div>

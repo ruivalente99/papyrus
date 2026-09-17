@@ -10,6 +10,10 @@
     "densityTooltip": "Densidade de espaçamento",
     "decreaseFont": "Diminuir densidade de espaçamento",
     "increaseFont": "Aumentar densidade de espaçamento",
+    "textSize": "Tamanho de Texto",
+    "decreaseTextSize": "Diminuir tamanho de texto",
+    "increaseTextSize": "Aumentar tamanho de texto",
+    "textSizeSlider": "Controlo de tamanho de texto",
     "style": "Estilo",
     "print": "Imprimir",
     "pdf": "PDF",
@@ -89,5 +93,19 @@
     "compact": "Mais compacto",
     "normal": "Padrão equilibrado",
     "spacious": "Maior respiro"
+  },
+  "textSizeOptions": {
+    "xs": "Muito Pequeno",
+    "sm": "Pequeno",
+    "md": "Médio",
+    "lg": "Grande",
+    "xl": "Muito Grande"
+  },
+  "textSizeDescriptions": {
+    "xs": "Escala de 88%",
+    "sm": "Escala de 94%",
+    "md": "Escala padrão 100%",
+    "lg": "Escala de 106%",
+    "xl": "Escala de 112%"
   }
 }

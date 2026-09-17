@@ -206,6 +206,7 @@ export interface CVTheme {
   secondaryColor?: string;
   fontFamily: FontFamilyId;
   fontSize: "compact" | "normal" | "spacious";
+  textScale?: "xs" | "sm" | "md" | "lg" | "xl";
   sidebarPosition?: "left" | "right";
 }
 

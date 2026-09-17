@@ -30,7 +30,7 @@ import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 import { CoverLetterPreview } from "./CoverLetterPreview";
 import type { CoverLetterDocument } from "@/types/coverLetter";
 import { useToast } from "@/context/ToastContext";
-import { FontSizeSelector } from "@/components/common/FontSizeSelector";
+import { DensitySelector, TextSizeSelector } from "@/components/common/FontSizeSelector";
 
 interface Props {
   cv: CVDocument;
@@ -669,13 +669,23 @@ export function CVPreviewContainer({
 
           {/* Right: Density, Palette Colors, Custom Picker & Full Settings Trigger */}
           <div className="flex items-center gap-2.5 shrink-0">
-            {/* Density / Font Size Selector */}
-            <FontSizeSelector
+            {/* Density Selector */}
+            <DensitySelector
               value={(cv.theme.fontSize as any) || "normal"}
               onChange={(fontSize) => onUpdateTheme({ fontSize })}
               lang={lang}
               size="xs"
               variant="segmented"
+            />
+
+            {/* Text Size Selector */}
+            <TextSizeSelector
+              value={(cv.theme.textScale as any) || "md"}
+              onChange={(textScale) => onUpdateTheme({ textScale })}
+              lang={lang}
+              size="xs"
+              variant="slider"
+              showIcon
             />
 
             {/* Accent Color Circles */}
@@ -1250,6 +1260,7 @@ export function CVPreviewContainer({
         lang={currentUiLang}
         currentTemplate={cv.template}
         currentDensity={cv.theme.fontSize}
+        currentTextScale={cv.theme.textScale || "md"}
         currentColor={cv.theme.primaryColor}
         currentFont={cv.theme.fontFamily || "inter"}
         onSetTemplate={onSetTemplate}
