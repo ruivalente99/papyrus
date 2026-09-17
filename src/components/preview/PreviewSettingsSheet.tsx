@@ -15,6 +15,7 @@ import {
   Type,
 } from "lucide-react";
 import { FONT_CATALOG, type FontCategory, type FontFamilyId } from "@/lib/typography";
+import { FontSizeSelector } from "@/components/common/FontSizeSelector";
 
 export const ACCENT_COLORS = [
   { name: "Teal (Lateralis)", hex: "#005555" },
@@ -87,24 +88,6 @@ export function PreviewSettingsSheet({
       name: tr("preview.templates.matrix"),
       subtitle: tr("preview.templates.matrixSub"),
       icon: LayoutGrid,
-    },
-  ];
-
-  const DENSITIES: { id: "compact" | "normal" | "spacious"; label: string; desc: string }[] = [
-    {
-      id: "compact",
-      label: tr("preview.toolbar.densityCompact"),
-      desc: tr("preview.densityDescriptions.compact"),
-    },
-    {
-      id: "normal",
-      label: tr("preview.toolbar.densityNormal"),
-      desc: tr("preview.densityDescriptions.normal"),
-    },
-    {
-      id: "spacious",
-      label: tr("preview.toolbar.densitySpacious"),
-      desc: tr("preview.densityDescriptions.spacious"),
     },
   ];
 
@@ -206,25 +189,18 @@ export function PreviewSettingsSheet({
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 bg-stone-100/90 dark:bg-[#0d1117] p-1.5 rounded-2xl border border-stone-200/80 dark:border-[#363d47]">
-              {DENSITIES.map((d) => {
-                const isSelected = currentDensity === d.id;
-                return (
-                  <button
-                    key={d.id}
-                    onClick={() => onUpdateTheme({ fontSize: d.id })}
-                    className={`py-2 px-2 rounded-xl text-xs font-bold transition-all text-center flex flex-col items-center justify-center ${
-                      isSelected
-                        ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] shadow-xs"
-                        : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                    }`}
-                  >
-                    <span>{d.label}</span>
-                    <span className="text-[9.5px] font-normal opacity-70 mt-0.5">{d.desc}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <FontSizeSelector
+              value={currentDensity}
+              onChange={(fontSize) => onUpdateTheme({ fontSize })}
+              lang={lang}
+              size="md"
+              variant="segmented"
+              className="w-full"
+              classNames={{
+                container: "w-full grid grid-cols-3 p-1.5 rounded-2xl",
+                option: "py-2 px-2 text-xs flex-col items-center justify-center rounded-xl",
+              }}
+            />
           </div>
 
           {/* 3. Accent Color Palette */}

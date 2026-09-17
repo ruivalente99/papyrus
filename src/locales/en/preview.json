@@ -8,6 +8,8 @@
     "densityNormal": "Balanced",
     "densitySpacious": "Spacious",
     "densityTooltip": "Spacing density",
+    "decreaseFont": "Decrease spacing density",
+    "increaseFont": "Increase spacing density",
     "style": "Style",
     "print": "Print",
     "pdf": "PDF",

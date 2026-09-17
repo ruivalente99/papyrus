@@ -14,7 +14,7 @@
         "@radix-ui/react-slot": "^1.1.2",
         "@radix-ui/react-tabs": "^1.1.3",
         "@radix-ui/react-tooltip": "^1.1.8",
-        "@ruivalente99/bibliotheca": "^0.5.0",
+        "@ruivalente99/bibliotheca": "^0.6.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "jspdf": "^2.5.2",
@@ -350,7 +350,7 @@
 
     "@rtsao/scc": ["@rtsao/scc@1.1.0", "", {}, "sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g=="],
 
-    "@ruivalente99/bibliotheca": ["@ruivalente99/bibliotheca@0.5.0", "https://npm.pkg.github.com/download/@ruivalente99/bibliotheca/0.5.0/bde3b9d456b8b6e40df1c6cb06fb3516871591f2", { "dependencies": { "clsx": "^2.1.1", "jspdf": "^2.5.2", "lucide-react": "^0.475.0", "modern-screenshot": "^4.5.5", "tailwind-merge": "^3.0.1" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-P+qq2zp1DA1sYKvwb/TLiwlSuFetAmxXdOfLToJVkYLM5Nt2fIftn/9K20yxdYHBGDD/BWPMFPdAYi08wiD1aA=="],
+    "@ruivalente99/bibliotheca": ["@ruivalente99/bibliotheca@0.6.0", "https://npm.pkg.github.com/download/@ruivalente99/bibliotheca/0.6.0/97f7c4b0240bf69c55a412503aaae84db6122499", { "dependencies": { "clsx": "^2.1.1", "jspdf": "^2.5.2", "lucide-react": "^0.475.0", "modern-screenshot": "^4.5.5", "tailwind-merge": "^3.0.1" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-OVqmnr+g8H3I03Z3ya+KTHnraZx/g0JGnTD8AqfJOBKLD1C/B2nqp+qqfvukLZ8l3FtBYgfN2v5HjCtrWjk64w=="],
 
     "@rushstack/eslint-patch": ["@rushstack/eslint-patch@1.16.1", "", {}, "sha512-TvZbIpeKqGQQ7X0zSCvPH9riMSFQFSggnfBjFZ1mEoILW+UuXCKwOoPcgjMwiUtRqFZ8jWhPJc4um14vC6I4ag=="],
 
