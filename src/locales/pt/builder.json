@@ -298,7 +298,8 @@
         "exportPdf": {
           "title": "Exportar PDF Vetorial A4",
           "subtitle": "Documento oficial pronto a entregar (210×297mm)",
-          "keywords": "pdf download export imprimir vector"
+          "keywords": "pdf download export imprimir vector",
+          "shortcut": "PDF"
         },
         "exportPng": {
           "title": "Exportar Imagem PNG em Alta Resolução",
@@ -434,7 +435,9 @@
       "rotate90": "Rodar 90°",
       "cancel": "Cancelar",
       "apply": "Aplicar Foto",
-      "closeAria": "Fechar modal de recorte de foto"
+      "close": "Fechar",
+      "closeAria": "Fechar modal de recorte de foto",
+      "imgAlt": "Imagem para recorte"
     }
   },
   "header": {
@@ -480,11 +483,27 @@
   },
   "coverLetter": {
     "tabTitle": "Carta",
+    "tabShort": "Carta",
     "cvTab": "Curriculum Vitae",
     "exportPdf": "Exportar Carta (PDF)",
     "exportPackage": "Exportar Candidatura Completa (Carta + CV)",
     "packageDownloaded": "Candidatura completa (.pdf) gerada com sucesso!",
     "letterDownloaded": "Carta de apresentação (.pdf) exportada com sucesso!"
+  },
+  "cropModal": {
+    "title": "Ajustar e Recortar Foto",
+    "subtitle": "Arrasta para centrar, faz zoom ou roda",
+    "dragHint": "Arrasta para posicionar",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Reduzir zoom",
+    "zoomAria": "Nível de zoom da foto",
+    "orientation": "Orientação:",
+    "rotate90": "Rodar 90°",
+    "cancel": "Cancelar",
+    "apply": "Aplicar Foto",
+    "close": "Fechar",
+    "closeAria": "Fechar modal de recorte de foto",
+    "imgAlt": "Imagem para recorte"
   },
   "iconPicker": {
     "title": "Escolher Ícone",
@@ -555,7 +574,9 @@
     "darkModeTitle": "Fundo escuro de alto contraste (Portfólios criativos e digitais)",
     "exportPdf": "Exportar PDF Seguro",
     "exportPackage": "Exportar Pacote de Candidatura",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "rulesPassed": "regras validadas",
+    "auditChecklist": "Lista de Verificação ISO 14289-1 & WCAG 2.1 AA"
   },
   "profiles": {
     "switcherTitle": "Perfis",
@@ -584,6 +605,7 @@
     "bundleImportError": "Falha ao importar pacote de perfis. Formato inválido.",
     "createSuccess": "Perfil criado com sucesso!",
     "lastUpdated": "Atualizado {{time}}",
-    "onlyOneProfile": "É necessário manter pelo menos um perfil."
+    "onlyOneProfile": "É necessário manter pelo menos um perfil.",
+    "noProfilesFound": "Nenhum perfil encontrado com a pesquisa."
   }
 }

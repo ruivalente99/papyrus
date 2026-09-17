@@ -20,6 +20,7 @@ import {
   exportCVToSvg,
 } from "../src/lib/cv-helper";
 import { encryptPdf, auditPdfAccessibility } from "../src/lib/pdfSecurity";
+import { runI18nAudit } from "./audit-i18n";
 import type { SupportedLanguage } from "../src/types/cv";
 
 const args = process.argv.slice(2);
@@ -85,6 +86,9 @@ Commands:
 
   audit-a11y [preset/file] [--lang=en|pt] [--json]
     Audit CV structure against PDF/UA (ISO 14289-1) and WCAG 2.1 AA accessibility guidelines.
+
+  audit-i18n [--json]
+    Audit TypeScript/TSX codebase for missing UI labels, translation keys and catalog symmetry.
 
 Presets:
   lateralis | classic | matrix | empty
@@ -420,6 +424,57 @@ async function main() {
           console.log(`   ${c.details}`);
         });
         console.log();
+      }
+      break;
+    }
+
+    case "audit-i18n":
+    case "i18n-audit": {
+      const report = runI18nAudit();
+
+      if (flags.json) {
+        console.log(JSON.stringify(report, null, 2));
+      } else {
+        console.log(`\n=== PAPYRUS i18n & UI LABEL COMPLETENESS AUDIT ===`);
+        console.log(`Scanned Calls:     ${report.totalSourceCalls}`);
+        console.log(`Distinct Keys:     ${report.uniqueSourceKeys}`);
+        console.log(`EN Leaves:         ${report.dictionaryStats.en.totalLeaves}`);
+        console.log(`PT Leaves:         ${report.dictionaryStats.pt.totalLeaves}`);
+        console.log(`Status:            ${report.isValid ? "✅ PERFECT 100% COVERAGE" : "❌ ISSUES DETECTED"}\n`);
+
+        if (report.missingInEn.length > 0) {
+          console.log(`❌ Missing in EN (${report.missingInEn.length}):`);
+          report.missingInEn.forEach((m) => console.log(`   - [${m.file}:${m.line}] "${m.key}"`));
+        } else {
+          console.log(`✓ All source keys resolve in English`);
+        }
+
+        if (report.missingInPt.length > 0) {
+          console.log(`❌ Missing in PT (${report.missingInPt.length}):`);
+          report.missingInPt.forEach((m) => console.log(`   - [${m.file}:${m.line}] "${m.key}"`));
+        } else {
+          console.log(`✓ All source keys resolve in Portuguese`);
+        }
+
+        if (report.symmetryIssues.inEnNotPt.length > 0 || report.symmetryIssues.inPtNotEn.length > 0) {
+          console.log(`❌ Dictionary Asymmetry:`);
+          report.symmetryIssues.inEnNotPt.forEach((k) => console.log(`   + EN only: ${k}`));
+          report.symmetryIssues.inPtNotEn.forEach((k) => console.log(`   + PT only: ${k}`));
+        } else {
+          console.log(`✓ 100% symmetrical key parity between EN and PT`);
+        }
+
+        if (report.rawKeysInJsx.length > 0) {
+          console.log(`❌ Raw Translation Keys in JSX (${report.rawKeysInJsx.length}):`);
+          report.rawKeysInJsx.forEach((r) => console.log(`   - [${r.file}:${r.line}] "${r.text}"`));
+        } else {
+          console.log(`✓ Zero raw translation keys detected in JSX`);
+        }
+        console.log();
+      }
+
+      if (!report.isValid) {
+        process.exit(1);
       }
       break;
     }

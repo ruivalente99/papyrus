@@ -300,7 +300,7 @@ export function ProfileManagerModal({
         <div className="p-3 sm:p-5 overflow-y-auto space-y-2.5 flex-1">
           {filteredProfiles.length === 0 ? (
             <div className="text-center py-8 text-stone-400 dark:text-[#8b949e] text-xs">
-              No profiles found matching your search.
+              {t("builder.profiles.noProfilesFound")}
             </div>
           ) : (
             filteredProfiles.map((p) => {
