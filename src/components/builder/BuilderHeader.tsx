@@ -257,7 +257,7 @@ export function BuilderHeader({
           >
             <Mail size={12} className={activeDocTab === "cover-letter" ? "text-amber-600 dark:text-amber-400" : ""} />
             <span className="hidden md:inline">{tr("builder.coverLetter.tabTitle")}</span>
-            <span className="md:hidden">Letter</span>
+            <span className="md:hidden">{tr("builder.coverLetter.tabShort")}</span>
           </button>
         </div>
 

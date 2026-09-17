@@ -137,7 +137,7 @@ export function PdfSecurityModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common.actions.close") || "Close"}
             className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-[#21262d] transition-colors"
           >
             <X size={18} />
@@ -203,7 +203,7 @@ export function PdfSecurityModal({
                   </div>
                 </div>
                 <div className="text-xs font-mono text-stone-500 dark:text-[#8b949e]">
-                  {auditReport.passedCount} / {auditReport.totalCount} rules passed
+                  {auditReport.passedCount} / {auditReport.totalCount} {t("pdfSecurity.rulesPassed")}
                 </div>
               </div>
 
@@ -228,7 +228,7 @@ export function PdfSecurityModal({
               {/* Audit Checklist Items */}
               <div className="space-y-2">
                 <div className="text-xs font-bold font-mono uppercase tracking-wider text-stone-500 dark:text-[#8b949e] px-1">
-                  ISO 14289-1 & WCAG 2.1 AA Audit Checklist
+                  {t("pdfSecurity.auditChecklist")}
                 </div>
                 <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                   {auditReport.items.map((item) => (

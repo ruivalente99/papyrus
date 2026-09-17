@@ -130,6 +130,9 @@ npm run cv -- latex-import resume.tex --out=imported-cv.json
 # Run real-time quality linter
 npm run cv -- lint lateralis --lang=en
 
+# Audit i18n translations & UI label completeness
+npm run cv -- audit-i18n
+
 # Semantic CV Diff between two versions
 npm run cv -- diff sourceA.json sourceB.json --lang=en
 

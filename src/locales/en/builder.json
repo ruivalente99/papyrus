@@ -483,6 +483,7 @@
   },
   "coverLetter": {
     "tabTitle": "Cover Letter",
+    "tabShort": "Letter",
     "cvTab": "Curriculum Vitae",
     "exportPdf": "Export Cover Letter (PDF)",
     "exportPackage": "Export Application Packet (Letter + CV)",
@@ -573,7 +574,9 @@
     "darkModeTitle": "High-contrast dark mode canvas (Creative & digital portfolios)",
     "exportPdf": "Export Secure PDF",
     "exportPackage": "Export Application Packet",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "rulesPassed": "rules passed",
+    "auditChecklist": "ISO 14289-1 & WCAG 2.1 AA Audit Checklist"
   },
   "profiles": {
     "switcherTitle": "Profiles",
@@ -602,6 +605,7 @@
     "bundleImportError": "Failed to import profiles bundle. Invalid format!",
     "createSuccess": "Profile created successfully!",
     "lastUpdated": "Last updated {{time}}",
-    "onlyOneProfile": "You must have at least one profile."
+    "onlyOneProfile": "You must have at least one profile.",
+    "noProfilesFound": "No profiles found matching your search."
   }
 }

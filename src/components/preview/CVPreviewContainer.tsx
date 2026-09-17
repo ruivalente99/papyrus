@@ -1256,7 +1256,7 @@ export function CVPreviewContainer({
                         <Printer size={12} className="text-amber-600 shrink-0" />
                         <span>{isPt ? "Modo Impressão" : "Print Emulation"}</span>
                       </span>
-                      <span className="font-mono text-[10px] text-stone-400">Folhas A4</span>
+                      <span className="font-mono text-[10px] text-stone-400">{isPt ? "Folhas A4" : "A4 Sheets"}</span>
                     </div>
                     <div className="flex items-center justify-between py-0.5">
                       <span className="flex items-center gap-1.5 font-medium">
