@@ -24,6 +24,7 @@ export const CVPage = forwardRef<HTMLDivElement, Props>(
         ref={ref}
         id={id}
         data-template={template}
+        data-text-scale={cv.theme.textScale || "md"}
         className={`cv-sheet cv-template-${template} bg-white shadow-2xl rounded-xs mx-auto overflow-hidden relative select-none`}
         style={{
           width: `${A4_W_PX}px`,
