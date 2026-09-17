@@ -30,6 +30,7 @@ import { PreviewSettingsSheet, ACCENT_COLORS } from "./PreviewSettingsSheet";
 import { CoverLetterPreview } from "./CoverLetterPreview";
 import type { CoverLetterDocument } from "@/types/coverLetter";
 import { useToast } from "@/context/ToastContext";
+import { FontSizeSelector } from "@/components/common/FontSizeSelector";
 
 interface Props {
   cv: CVDocument;
@@ -668,45 +669,14 @@ export function CVPreviewContainer({
 
           {/* Right: Density, Palette Colors, Custom Picker & Full Settings Trigger */}
           <div className="flex items-center gap-2.5 shrink-0">
-            {/* Density Selector */}
-            <div className="flex items-center bg-stone-100 dark:bg-[#0d1117] rounded-full p-1 border border-stone-200 dark:border-[#363d47] shadow-2xs shrink-0">
-              <button
-                onClick={() => onUpdateTheme({ fontSize: "compact" })}
-                title={tr("preview.toolbar.densityCompact")}
-                aria-label={tr("preview.toolbar.densityCompact")}
-                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                  cv.theme.fontSize === "compact"
-                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
-                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                }`}
-              >
-                {tr("preview.toolbar.densityCompact")}
-              </button>
-              <button
-                onClick={() => onUpdateTheme({ fontSize: "normal" })}
-                title={tr("preview.toolbar.densityNormal")}
-                aria-label={tr("preview.toolbar.densityNormal")}
-                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                  cv.theme.fontSize === "normal" || !cv.theme.fontSize
-                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
-                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                }`}
-              >
-                {tr("preview.toolbar.densityNormal")}
-              </button>
-              <button
-                onClick={() => onUpdateTheme({ fontSize: "spacious" })}
-                title={tr("preview.toolbar.densitySpacious")}
-                aria-label={tr("preview.toolbar.densitySpacious")}
-                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all ${
-                  cv.theme.fontSize === "spacious"
-                    ? "bg-white dark:bg-[#21262d] text-stone-900 dark:text-[#f0f3f6] font-bold shadow-xs"
-                    : "text-stone-500 dark:text-[#8b949e] hover:text-stone-800 dark:hover:text-[#f0f3f6]"
-                }`}
-              >
-                {tr("preview.toolbar.densitySpacious")}
-              </button>
-            </div>
+            {/* Density / Font Size Selector */}
+            <FontSizeSelector
+              value={(cv.theme.fontSize as any) || "normal"}
+              onChange={(fontSize) => onUpdateTheme({ fontSize })}
+              lang={lang}
+              size="xs"
+              variant="segmented"
+            />
 
             {/* Accent Color Circles */}
             <div className="flex items-center gap-1.5 pl-2 border-l border-stone-200 dark:border-[#363d47] shrink-0">
