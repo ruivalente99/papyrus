@@ -806,7 +806,13 @@ export function CVPreviewContainer({
             className="relative shadow-2xl rounded-xs bg-white dark:bg-[#161b22] dark:shadow-[0_12px_44px_rgba(0,0,0,0.8)] dark:ring-1 dark:ring-white/10"
           >
             {activeDocTab === "cover-letter" && coverLetter ? (
-              <div ref={pageRef} id="cover-letter-preview-wrapper" style={{ width: "794px" }}>
+              <div
+                ref={pageRef}
+                id="cover-letter-preview-wrapper"
+                data-text-scale={cv.theme.textScale || "md"}
+                className="cv-sheet"
+                style={{ width: "794px" }}
+              >
                 <CoverLetterPreview
                   letter={coverLetter}
                   cv={cv}

@@ -201,12 +201,14 @@ export type FontFamilyId =
   | "fira-code"
   | "roboto-mono";
 
+export type TextScale = "xs" | "sm" | "md" | "lg" | "xl";
+
 export interface CVTheme {
   primaryColor: string; // e.g. "#004f90" or "#047857" or "#292524"
   secondaryColor?: string;
   fontFamily: FontFamilyId;
   fontSize: "compact" | "normal" | "spacious";
-  textScale?: "xs" | "sm" | "md" | "lg" | "xl";
+  textScale?: TextScale;
   sidebarPosition?: "left" | "right";
 }
 
