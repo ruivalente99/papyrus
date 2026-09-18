@@ -4,6 +4,7 @@ import React from "react";
 import type { CVDocument, SupportedLanguage } from "@/types/cv";
 import type { CoverLetterDocument } from "@/types/coverLetter";
 import { getFontFamilyCss } from "@/lib/typography";
+import { getCvTextScaleCss } from "@/lib/textScale";
 import { HeaderQrCode } from "@/components/common/HeaderQrCode";
 import { Mail, Phone, MapPin, Globe, Linkedin, Github } from "lucide-react";
 
@@ -110,6 +111,9 @@ export function CoverLetterPreview({
         transformOrigin: "top center",
       }}
     >
+      {cv.theme.textScale && cv.theme.textScale !== "md" && (
+        <style dangerouslySetInnerHTML={{ __html: getCvTextScaleCss(cv.theme.textScale) }} />
+      )}
       {/* Top decorative accent bar matching active CV palette */}
       <div
         className="h-2 w-full transition-colors duration-300"

@@ -6,6 +6,7 @@ import { LateralisTemplate } from "./templates/LateralisTemplate";
 import { ClassicTemplate } from "./templates/ClassicTemplate";
 import { MatrixTemplate } from "./templates/MatrixTemplate";
 import { A4_W_PX, A4_H_PX } from "@/lib/pdfExport";
+import { getCvTextScaleCss } from "@/lib/textScale";
 
 interface Props {
   cv: CVDocument;
@@ -33,6 +34,9 @@ export const CVPage = forwardRef<HTMLDivElement, Props>(
           boxSizing: "border-box",
         }}
       >
+        {cv.theme.textScale && cv.theme.textScale !== "md" && (
+          <style dangerouslySetInnerHTML={{ __html: getCvTextScaleCss(cv.theme.textScale) }} />
+        )}
         {(template === "classic" || template === "latex") && (
           <ClassicTemplate
             cv={cv}
