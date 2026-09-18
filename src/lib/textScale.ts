@@ -4,7 +4,7 @@ import type { TextScale } from "@/types/cv";
  * Returns scoped CSS rules that scale document font sizes according to the active textScale.
  * Scoped attribute selectors guarantee 100% fidelity in both DOM preview and modern-screenshot PDF canvas capture.
  */
-export function getCvTextScaleCss(scale?: TextScale): string {
+export function getCvTextScaleCss(scale?: TextScale, scope: string = ".cv-sheet"): string {
   if (!scale || scale === "md") {
     return "";
   }
@@ -92,11 +92,11 @@ export function getCvTextScaleCss(scale?: TextScale): string {
   for (const [key, val] of Object.entries(currentMap)) {
     if (key.endsWith("px")) {
       rules.push(
-        `[class*="text-[${key}]"], .text-\\[${key.replace(".", "\\.")}\\] { font-size: ${val} !important; }`
+        `${scope} [class*="text-[${key}]"], ${scope} .text-\\[${key.replace(".", "\\.")}\\] { font-size: ${val} !important; }`
       );
     } else {
       rules.push(
-        `[class~="text-${key}"], .text-${key} { font-size: ${val} !important; }`
+        `${scope} [class~="text-${key}"], ${scope} .text-${key} { font-size: ${val} !important; }`
       );
     }
   }
