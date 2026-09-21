@@ -172,4 +172,10 @@ npm run cv -- export lateralis --out=backup.json
 - **Frequent Iterative Commits**: Make atomic git commits at every convenient iteration (e.g. after completing a refactor step, fixing an accessibility issue, adding new translation catalogs, or validating a feature). Never leave accumulated work uncommitted across session turns.
 - **Commit Format**: Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`).
 - **Verification Before Commit**: Always run `npm run lint`, `npm run build` and `npm run test:e2e` (plus relevant specialized test suites like `npm run test:letter`) to ensure 0 TypeScript or runtime regressions.
+- **Strict Branching Policy**:
+  - **Never push directly to main**: Direct pushes to `main` are strictly forbidden.
+  - **Always create a dedicated branch**: Before starting any task, refactor, or bug fix, create a new branch from up-to-date `main` (`git checkout -b <type>/<short-description>`).
+  - **Pre-push Quality Gate**: Always run `npm run lint`, `npm run build`, and `npm run test:e2e` before pushing.
+  - **Push and Pull Request**: Push exclusively to the feature/fix branch (`git push -u origin <branch-name>`) and merge to `main` strictly through a Pull Request.
+
 
