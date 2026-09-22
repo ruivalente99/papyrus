@@ -2,18 +2,20 @@
 
 > Dynamic, Multilingual Resume & Curriculum Vitae Engine with Real-Time Quality Auditing, LaTeX/JSON Support, Interactive Live Preview, Cover Letter Engine, and AI Agent Automation.
 
+Powered by **`@ruivalente99/bibliotheca`** design tokens and editor core.
+
 ---
 
-## ✨ Key Features
+## Key Capabilities
 
 1. **Multilingual by Design (Decoupled i18n)**:
-   - Full decoupling between the Application Interface Language (`uiLang`) and Document CV Language (`cvLang`).
+   - Full decoupling between Application Interface Language (`uiLang`) and Document CV Language (`cvLang`).
    - Symmetrical English and Portuguese catalogs with unified, accessible language switcher and search.
 
 2. **Split-Pane Interactive Builder**:
    - Left Pane: Modular, collapsible form sections, integrated section navigation pill bar with mouse/touch dragging, and global expand/collapse controls.
-   - Right Pane: Synchronized live A4 preview with zoom controls (40% to 140%), dynamic auto-fit on window resize & orientation change, instant tooltips, and canvas cheat-sheet legend (`[?]`).
-   - Clean top bar with consolidated secondary tools menu (**Tools (`🛠️ Ferramentas`)**).
+   - Right Pane: Synchronized live A4 preview with zoom controls (40% to 140%), dynamic auto-fit on window resize and orientation change, instant tooltips, and canvas cheat-sheet legend (`[?]`).
+   - Clean top bar with consolidated secondary tools menu (**Tools / Ferramentas**).
 
 3. **Cover Letter Generator & Unified Application Package**:
    - Coordinated executive cover letter matching active CV typography, font size, and accent color.
@@ -27,7 +29,10 @@
    - **`Blank Canvas`**: Clean starting slate for custom profiles.
 
 5. **Editorial Typography Selector (12 ATS Fonts)**:
-   - Curated collection of 12 ATS-optimized font families (Sans: Inter, Roboto, Outfit, Plus Jakarta Sans, Raleway; Serif: Merriweather, EB Garamond, Lora, Source Serif 4; Mono: JetBrains Mono, Fira Code, Roboto Mono).
+   - Curated collection of 12 ATS-optimized font families:
+     - Sans: Inter, Roboto, Outfit, Plus Jakarta Sans, Raleway.
+     - Serif: Merriweather, EB Garamond, Lora, Source Serif 4.
+     - Mono: JetBrains Mono, Fira Code, Roboto Mono.
    - Bi-directional LaTeX font package synchronization.
 
 6. **Visual CV Comparator & Semantic Diff Engine**:
@@ -44,28 +49,28 @@
    - Fast profile duplication, renaming, deletion safeguards, and full bundle backup/restore.
 
 9. **Precision PDF Export Engine with Security & Accessibility**:
-   - Standard A4 locked dimensions (794px × 1123px at 96 DPI).
+   - Standard A4 locked dimensions (794px x 1123px at 96 DPI).
    - Smart page break algorithm (`data-page-break-avoid`) and visual manual split (`\pagebreak`).
    - Zero-dependency 128-bit PDF Standard Encryption (ISO 32000-1) with user/owner passwords and permission bitmasks.
-   - PDF/UA (ISO 14289-1) and WCAG 2.1 AA accessibility tagger.
+   - PDF/UA (ISO 14289-1) and WCAG 2.1 AA accessibility tagging.
    - Creative Dark Mode PDF export option.
 
-10. **TeX (`.tex`), JSON Resume & Europass XML Interoperability**:
+10. **TeX (.tex), JSON Resume & Europass XML Interoperability**:
     - Bi-directional TeX export and import with character escaping.
     - Full support for JSON Resume (`jsonresume.org`) v1.0.0 and European Union Europass XML schemas.
 
 11. **Mobile Ergonomics**:
-    - Docked bottom navigation bar on mobile devices (`[Editar]` | `[Pré-visualização]`).
+    - Docked bottom navigation bar on mobile devices (`[Editar]` | `[Pre-visualizacao]`).
     - Unclipped responsive menus and dropdowns.
     - Zero horizontal ghost scrolling and ghost dragging prevention.
 
 ---
 
-## 🤖 Antigravity AI Agent Skill (`cv-agent`)
+## AI Agent Automation Skill (`cv-agent`)
 
-PAPYRUS comes equipped with a dedicated **AI Agent Skill** located at [`.agents/skills/cv-agent/SKILL.md`](./.agents/skills/cv-agent/SKILL.md). This allows AI agents (such as Antigravity, Claude, or custom LLMs) to programmatically audit, translate, mutate, and export resumes directly via CLI or TypeScript API without needing a browser.
+PAPYRUS includes an automated agent skill at [`.agents/skills/cv-agent/SKILL.md`](./.agents/skills/cv-agent/SKILL.md). This allows AI agents to programmatically audit, translate, mutate, and export resumes via CLI or TypeScript API without opening a browser.
 
-### 🛠️ Skill CLI Commands (`npm run cv -- <command>`)
+### Skill CLI Commands (`npm run cv -- <command>`)
 
 ```bash
 # 1. Inspect Resume Summary
@@ -100,7 +105,7 @@ npm run cv -- export lateralis --out=backup.json
 
 ---
 
-## 🧪 Testing & Quality Gates
+## Quality Gates & Verification
 
 ```bash
 # Run all verification suites
@@ -118,6 +123,15 @@ npm run lint
 # Production compilation
 npm run build
 ```
+
+---
+
+## The Four Canonical Documentation Pillars
+
+- [AGENTS.md](./AGENTS.md): Operational manual for agents and developers.
+- [DESIGN.md](./DESIGN.md): Design system tokens, typography scales, mobile ergonomics, and accessibility.
+- [ARCHITECTURE.md](./ARCHITECTURE.md): System architecture, data flow, and Bibliotheca integration.
+- [SOUL.md](./SOUL.md): Philosophical manifesto on user sovereignty, career dignity, and technical sobriety.
 
 ---
 
